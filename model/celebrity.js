@@ -319,4 +319,4 @@ premiumIntelligence: {
 { timestamps: true }
 );
 
-export default mongoose.model("Celebrity", CelebritySchema);
+export default mongoose.models.Celebrity || mongoose.model("Celebrity", CelebritySchema);
