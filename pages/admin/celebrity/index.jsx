@@ -1330,18 +1330,7 @@ import {
 const InputField = ({ icon: Icon, label, required, hint, onChange, value, ...props }) => {
   const generatedId = useId();
   const id = props.id || generatedId;
-  const [localValue, setLocalValue] = useState(
-    typeof value === "number" ? String(value) : (value ?? "")
-  );
-  
-  useEffect(() => {
-    setLocalValue(typeof value === "number" ? String(value) : (value ?? ""));
-  }, [value]);
-
-  const handleChange = (e) => {
-    setLocalValue(e.target.value);
-    onChange?.(e);
-  };
+  const displayValue = typeof value === "number" ? String(value) : (value ?? "");
 
   return (
     <div className="space-y-1.5">
@@ -1365,8 +1354,8 @@ const InputField = ({ icon: Icon, label, required, hint, onChange, value, ...pro
           id={id}
           name={id}
           autoComplete={props.autoComplete ?? "off"}
-          value={localValue}
-          onChange={handleChange}
+            value={displayValue}
+            onChange={onChange}
           className={`w-full rounded-lg bg-gray-900/50 border border-gray-800 ${Icon ? 'pl-10' : 'px-4'
             } px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-700`}
         />
@@ -1409,16 +1398,7 @@ const SelectField = ({ icon: Icon, label, children, ...props }) => {
 const TextareaField = ({ icon: Icon, label, onChange, value, ...props }) => {
   const generatedId = useId();
   const id = props.id || generatedId;
-  const [localValue, setLocalValue] = useState(value ?? "");
-  
-  useEffect(() => {
-    setLocalValue(value ?? "");
-  }, [value]);
-
-  const handleChange = (e) => {
-    setLocalValue(e.target.value);
-    onChange?.(e);
-  };
+  const displayValue = value ?? "";
 
   return (
     <div className="space-y-1.5">
@@ -1434,8 +1414,8 @@ const TextareaField = ({ icon: Icon, label, onChange, value, ...props }) => {
           id={id}
           name={id}
           rows={props.rows || 3}
-          value={localValue}
-          onChange={handleChange}
+          value={displayValue}
+          onChange={onChange}
           className={`w-full rounded-lg bg-gray-900/50 border border-gray-800 ${Icon ? 'pl-10' : 'px-4'
             } px-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-700 resize-none`}
         />

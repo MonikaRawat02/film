@@ -2,7 +2,7 @@ import { LayoutGrid, DollarSign, Brain, User } from "lucide-react";
 
 export default function WhyFilmyFire() {
   return (
-    <section className="relative py-32">
+    <section id="ott-analysis" className="relative py-32">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#005005]/30 via-sky-900/20 to-transparent" />
       <div className="absolute inset-x-0 top-0 -z-10 h-px bg-gray-800/60" />
 
