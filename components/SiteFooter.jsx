@@ -1,14 +1,8 @@
  "use client";
  import Link from "next/link";
- import { Flame, Youtube, Twitter, Instagram, Mail } from "lucide-react";
+ import { Flame } from "lucide-react";
  
  export default function SiteFooter() {
-   const socials = [
-     { name: "YouTube", href: "#", icon: Youtube },
-     { name: "Twitter", href: "#", icon: Twitter },
-     { name: "Instagram", href: "#", icon: Instagram },
-     { name: "Email", href: "#", icon: Mail },
-   ];
  
    const about = [
      { name: "About FilmyFire", href: "/about" },
@@ -38,23 +32,6 @@
    return (
      <footer className="border-t border-gray-800 bg-black/30">
       <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-10">
-        <p className="text-center text-base md:text-lg text-gray-400 pt-10">Follow FilmyFire Across Platforms</p>
-        <div className="flex justify-center gap-5 py-8">
-           {socials.map((s) => {
-             const Icon = s.icon;
-             return (
-               <Link
-                 key={s.name}
-                 href={s.href}
-                 aria-label={s.name}
-                className="inline-flex h-10 w-10 lg:h-12 lg:w-12 items-center justify-center rounded-xl border border-gray-800 bg-black/30 text-gray-300 hover:text-white hover:border-gray-700"
-               >
-                 <Icon className="h-5 w-5" />
-               </Link>
-             );
-           })}
-         </div>
- 
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 xl:gap-16 py-12">
            <div>
              <div className="inline-flex items-center gap-2">

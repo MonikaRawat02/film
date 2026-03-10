@@ -1,4 +1,13 @@
+import Link from "next/link";
+
 export default function CelebritySection() {
+  const celebrities = [
+    { slug: "shah-rukh-khan", name: "Shah Rukh Khan" },
+    { slug: "salman-khan", name: "Salman Khan" },
+    { slug: "aamir-khan", name: "Aamir Khan" },
+    { slug: "akshay-kumar", name: "Akshay Kumar" },
+  ];
+
   return (
     <section className="relative py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0f0015] via-fuchsia-900/20 to-transparent" />
@@ -27,10 +36,10 @@ export default function CelebritySection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
+          {celebrities.map((celeb, i) => (
             <div
               key={i}
-              className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-black/30 p-4 pb-5"
+              className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-black/30 p-4 pb-5 hover:border-gray-600 transition-all duration-300"
             >
               <div className="rounded-xl overflow-hidden">
                 <div className="aspect-[16/9] w-full bg-gray-800/60" />
@@ -54,12 +63,12 @@ export default function CelebritySection() {
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  className="w-full rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-600 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-fuchsia-500 hover:to-pink-500 active:scale-95"
+                <Link
+                  href={`/celebrity/${celeb.slug}/networth`}
+                  className="block w-full rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-600 py-3 text-sm font-semibold text-white shadow-sm transition hover:from-fuchsia-500 hover:to-pink-500 active:scale-95 text-center cursor-pointer"
                 >
                   View Complete Profile
-                </button>
+                </Link>
               </div>
             </div>
           ))}
