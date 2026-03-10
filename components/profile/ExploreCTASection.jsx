@@ -1,6 +1,8 @@
 "use client";
 
-export default function ExploreCTASection() {
+export default function ExploreCTASection({ celebrity }) {
+  const premium = celebrity?.premiumIntelligence || {};
+  
   const stats = [
     { value: "500+", label: "Celebrity Profiles" },
     { value: "50K+", label: "Monthly Readers" },
@@ -21,7 +23,7 @@ export default function ExploreCTASection() {
 
         {/* Heading */}
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-          Explore More Celebrity
+          {premium.title || "Explore More Celebrity"}
         </h2>
         <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-yellow-400 mb-6">
           Net Worth Intelligence
@@ -29,14 +31,14 @@ export default function ExploreCTASection() {
 
         {/* Description */}
         <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-sm sm:text-base">
-          Discover comprehensive wealth analysis, income breakdowns, and lifestyle insights for your favorite celebrities and industry leaders.
+          {premium.description || "Discover comprehensive wealth analysis, income breakdowns, and lifestyle insights for your favorite celebrities and industry leaders."}
         </p>
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
           <button className="w-full sm:w-auto px-6 py-3 bg-gradient-to-r from-cyan-500 to-cyan-400 text-white font-semibold rounded-full hover:from-cyan-400 hover:to-cyan-300 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer">
             <span>📈</span>
-            View Richest Actors
+            {premium.primaryCTA?.label || "View Richest Actors"}
             <span>→</span>
           </button>
           <button className="w-full sm:w-auto px-6 py-3 bg-gray-800 text-white font-semibold rounded-full hover:bg-gray-700 transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer border border-gray-700">

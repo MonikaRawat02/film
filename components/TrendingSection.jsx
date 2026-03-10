@@ -1,6 +1,6 @@
 export default function TrendingSection() {
   return (
-    <section className="relative py-28">
+    <section id="box-office" className="relative py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#050505] via-gray-950/30 to-transparent" />
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
         <div className="flex items-center justify-between gap-6 mb-10">

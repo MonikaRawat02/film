@@ -2,7 +2,7 @@ import { Film, Clapperboard, Tv, PlaySquare, TrendingUp, Users, ArrowUpRight } f
 
 export default function CategoryHubSection() {
   return (
-    <section className="relative py-28">
+    <section id="categories" className="relative py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#050505] via-gray-950/20 to-transparent" />
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
         <div className="text-center space-y-4 mb-12">

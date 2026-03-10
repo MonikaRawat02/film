@@ -9,12 +9,12 @@
    const [query, setQuery] = useState("");
  
    const nav = [
-     { name: "Explained", href: "/explained" },
-     { name: "Box Office", href: "/box-office" },
-     { name: "OTT Analysis", href: "/ott-analysis" },
-     { name: "Celebrities", href: "/celebrities" },
-     { name: "Categories", href: "/categories" },
-   ];
+    { name: "Explained", href: "/explained" },
+    { name: "Box Office", href: "/#box-office" },
+    { name: "OTT Analysis", href: "/#ott-analysis" },
+    { name: "Celebrities", href: "/#celebrities" },
+    { name: "Categories", href: "/#categories" },
+  ];
  
    return (
      <>
