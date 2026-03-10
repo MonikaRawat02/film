@@ -1,3 +1,4 @@
+// /api/admin/celebrity/getCelebrity
 import dbConnect from "../../../../lib/mongodb";
 import Celebrity from "../../../../model/celebrity";
 import jwt from "jsonwebtoken";
