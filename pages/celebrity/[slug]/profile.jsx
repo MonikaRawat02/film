@@ -1,4 +1,3 @@
-import PublicLayout from "@/components/PublicLayout";
 import ProfileHeroSection from "@/components/profile/ProfileHeroSection";
 import QuickStatsSection from "@/components/profile/QuickStatsSection";
 import WealthBreakdownSection from "@/components/profile/WealthBreakdownSection";
@@ -16,7 +15,7 @@ export default function CelebrityProfile() {
   // const { slug } = router.query;
   
   return (
-    <PublicLayout>
+    <>
       <ProfileHeroSection />
       <QuickStatsSection />
       <WealthBreakdownSection />
@@ -28,6 +27,6 @@ export default function CelebrityProfile() {
       <FAQSection />
       <EditorialTrustSection />
       <ExploreCTASection />
-    </PublicLayout>
+    </>
   );
 }

@@ -1,62 +1,64 @@
 "use client";
+import { DollarSign, Calendar, Ruler, CalendarDays, MapPin, Briefcase } from "lucide-react";
 
 export default function QuickStatsSection({ celebrity }) {
   // Static data - will be replaced by API
   const stats = [
     {
-      icon: "💵",
-      iconBg: "bg-green-500",
+      Icon: DollarSign,
+      iconBg: "from-amber-500 to-amber-600",
       label: "Net Worth",
       value: "$780M",
     },
     {
-      icon: "📅",
-      iconBg: "bg-blue-500",
+      Icon: Calendar,
+      iconBg: "from-blue-500 to-blue-600",
       label: "Age",
       value: "59 Years",
     },
     {
-      icon: "📏",
-      iconBg: "bg-yellow-500",
+      Icon: Ruler,
+      iconBg: "from-green-500 to-green-600",
       label: "Height",
       value: "5'8\" (173cm)",
     },
     {
-      icon: "🎂",
-      iconBg: "bg-orange-500",
+      Icon: CalendarDays,
+      iconBg: "from-purple-500 to-purple-600",
       label: "Birth Date",
       value: "Nov 2, 1965",
     },
     {
-      icon: "📍",
-      iconBg: "bg-red-500",
+      Icon: MapPin,
+      iconBg: "from-orange-500 to-orange-600",
       label: "Nationality",
       value: "Indian",
     },
     {
-      icon: "🏢",
-      iconBg: "bg-purple-500",
+      Icon: Briefcase,
+      iconBg: "from-pink-500 to-pink-600",
       label: "Industry",
       value: "Entertainment",
     },
   ];
 
   return (
-    <section className="bg-[#0a0c14] py-8 sm:py-12">
+    <section className="bg-[#0a0c14] py-10 sm:py-12">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {stats.map((stat, index) => (
             <div
               key={index}
-              className="bg-[#141824] rounded-xl border border-gray-800 p-4 sm:p-5 hover:border-gray-600 transition-all duration-300 cursor-pointer group"
+              className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-2xl border border-white/10 p-5 sm:p-6 shadow-lg hover:border-white/20 transition-all duration-300 cursor-pointer group"
             >
-              <div
-                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${stat.iconBg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}
-              >
-                <span className="text-lg sm:text-xl">{stat.icon}</span>
+              <div className={`h-10 w-10 sm:h-12 sm:w-12 rounded-xl bg-gradient-to-br ${stat.iconBg} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform ring-1 ring-white/10 shadow`}>
+                {(() => {
+                  const Icon = stat.Icon;
+                  return <Icon className="h-5 w-5 text-white" />;
+                })()}
               </div>
-              <p className="text-xs text-gray-500 mb-1">{stat.label}</p>
-              <p className="text-sm sm:text-base font-bold text-white">{stat.value}</p>
+              <p className="text-xs text-slate-400 mb-1">{stat.label}</p>
+              <p className="text-lg font-bold text-white">{stat.value}</p>
             </div>
           ))}
         </div>

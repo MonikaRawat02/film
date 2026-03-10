@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { TrendingUp, CheckCircle } from "lucide-react";
 
 export default function ProfileHeroSection({ celebrity }) {
   // Static data - will be replaced by API
@@ -15,9 +16,9 @@ export default function ProfileHeroSection({ celebrity }) {
   };
 
   const trustBadges = [
-    { icon: "✓", text: "Multi-Source Verified", color: "text-cyan-400 border-cyan-400/30" },
-    { icon: "✓", text: "Updated Monthly", color: "text-yellow-400 border-yellow-400/30" },
-    { icon: "✓", text: "Public Data Based", color: "text-green-400 border-green-400/30" },
+    { text: "Multi-Source Verified" },
+    { text: "Updated Monthly" },
+    { text: "Public Data Based" },
   ];
 
   return (
@@ -40,60 +41,58 @@ export default function ProfileHeroSection({ celebrity }) {
           <span className="text-yellow-500">{data.name}</span>
         </nav>
 
-        <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-start gap-8 lg:gap-12">
           {/* Left Content */}
-          <div className="flex-1 space-y-6 sm:space-y-8">
+          <div className="lg:col-span-7 space-y-6 sm:space-y-8 lg:space-y-10">
             {/* Title */}
             <div>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold italic">
-                <span className="text-cyan-400">{data.name}</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+                <span className="bg-gradient-to-r from-blue-400 via-blue-300 to-blue-500 bg-clip-text text-transparent">
+                  {data.name}
+                </span>
+                <br />
+                <span className="text-white">Net Worth, Biography,</span>
+                <br />
+                <span className="text-white">Income &amp; Assets (2025)</span>
               </h1>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mt-2">
-                <span className="text-yellow-500">Net Worth,</span>
-              </h2>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
-                <span className="text-yellow-500">Biography,</span>
-              </h2>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
-                <span className="text-cyan-400">Income & Assets</span>
-              </h2>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold">
-                <span className="text-cyan-400">(2025)</span>
-              </h2>
             </div>
 
             {/* AI Quick Summary Card */}
-            <div className="bg-[#141824] rounded-2xl border border-gray-800 p-4 sm:p-6 max-w-md">
+            <div className="relative w-full bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-2xl border border-white/10 ring-1 ring-amber-500/20 p-5 sm:p-6 lg:p-8 shadow-lg">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-                  <span className="text-white text-sm">~</span>
+                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                  <TrendingUp className="h-4 w-4 text-white" />
                 </div>
-                <span className="font-semibold text-white">AI Quick Summary</span>
+                <span className="font-semibold text-slate-100"> Quick Summary</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 sm:gap-6">
+              <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Net Worth</p>
-                  <p className="text-lg sm:text-xl font-bold text-red-500">{data.netWorth}</p>
-                  <p className="text-xs text-gray-500">(Estimated)</p>
+                  <p className="text-sm text-slate-400 mb-1">Net Worth</p>
+                  <p className="text-xl sm:text-2xl font-bold text-transparent bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text">
+                    {data.netWorth}
+                  </p>
+                  <p className="text-xs text-slate-500">(Estimated)</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Profession</p>
-                  <p className="text-sm sm:text-base font-semibold text-white">{data.profession}</p>
+                  <p className="text-sm text-slate-400 mb-1">Profession</p>
+                  <p className="text-lg font-semibold text-white">{data.profession}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Primary Income</p>
-                  <p className="text-sm sm:text-base font-semibold text-white">{data.primaryIncome}</p>
+                  <p className="text-sm text-slate-400 mb-1">Primary Income</p>
+                  <p className="text-base font-semibold text-white">{data.primaryIncome}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Active Since</p>
-                  <p className="text-sm sm:text-base font-semibold text-white">{data.activeSince}</p>
+                  <p className="text-sm text-slate-400 mb-1">Active Since</p>
+                  <p className="text-lg font-semibold text-white">{data.activeSince}</p>
                 </div>
               </div>
 
-              <p className="text-xs text-gray-500 mt-4 italic">
-                * AI-generated summary based on public data. Figures are estimates and may vary.
-              </p>
+              <div className="mt-4 border-t border-white/5 pt-3">
+                <p className="text-xs text-slate-500 italic">
+                  * AI-generated summary based on public data. Figures are estimates and may vary.
+                </p>
+              </div>
             </div>
 
             {/* Trust Badges */}
@@ -101,27 +100,28 @@ export default function ProfileHeroSection({ celebrity }) {
               {trustBadges.map((badge, index) => (
                 <div
                   key={index}
-                  className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full border ${badge.color} bg-black/30`}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/5"
                 >
-                  <span className={badge.color.split(" ")[0]}>{badge.icon}</span>
-                  <span className={`text-xs sm:text-sm ${badge.color.split(" ")[0]}`}>{badge.text}</span>
+                  <CheckCircle className="h-4 w-4 text-green-400" />
+                  <span className="text-sm text-slate-300">{badge.text}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Right Image */}
-          <div className="w-full lg:w-auto lg:flex-shrink-0">
-            <div className="relative w-full sm:w-[400px] lg:w-[450px] aspect-[4/5] rounded-2xl overflow-hidden">
+          <div className="lg:col-span-5 w-full">
+            <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden">
               <img
                 src={data.image}
                 alt={data.name}
                 className="w-full h-full object-cover grayscale"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               {data.verified && (
-                <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1.5 bg-green-500 rounded-full">
-                  <span className="text-white text-sm">✓</span>
-                  <span className="text-white text-sm font-medium">Verified</span>
+                <div className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-full shadow-lg">
+                  <CheckCircle className="h-5 w-5" />
+                  <span className="text-sm font-medium">Verified</span>
                 </div>
               )}
             </div>

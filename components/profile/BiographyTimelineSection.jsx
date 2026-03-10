@@ -59,54 +59,43 @@ export default function BiographyTimelineSection({ celebrity }) {
   return (
     <section className="bg-[#0a0c14] py-12 sm:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-        {/* Header */}
         <div className="mb-8 sm:mb-10">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
             <span className="text-white">Biography </span>
-            <span className="text-yellow-400">Timeline</span>
+            <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text">Timeline</span>
           </h2>
-          <p className="text-gray-500 mt-2">
+          <p className="text-slate-400">
             Journey from Delhi to becoming the King of Bollywood
           </p>
         </div>
 
         {/* Timeline */}
-        <div className="relative max-w-4xl mx-auto">
-          {/* Continuous Vertical Line */}
-          <div className="absolute right-8 sm:right-12 top-0 bottom-0 w-0.5 bg-purple-500/30" />
+        <div className="relative w-full">
+          {/* Center spine */}
+          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/20 to-purple-500/20" />
 
           {/* Timeline Items */}
-          <div className="space-y-4">
+          <div className="space-y-6 md:space-y-8">
             {timelineItems.map((item, index) => (
-              <div key={index} className="relative pr-16 sm:pr-20">
-                {/* Timeline Dot - positioned at right edge */}
-                <div className="absolute right-[26px] sm:right-[42px] top-6 z-10">
-                  <div
-                    className={`w-3 h-3 bg-purple-500 rounded-full ${
-                      expandedIndex === index ? "ring-4 ring-purple-500/30" : ""
-                    }`}
-                  />
+              <div key={index} className="relative pr-8 md:px-12 pl-12 md:pl-0">
+                <div className="absolute left-4 md:left-1/2 -translate-x-1/2 top-6 z-10">
+                  <div className={`h-4 w-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 ${expandedIndex === index ? "ring-4 ring-purple-500/30" : "ring-2 ring-white/10"}`} />
                 </div>
 
-                {/* Card */}
                 <div
-                  className={`bg-[#0d1017] rounded-xl border-l-2 border-t border-r border-b transition-all duration-300 cursor-pointer ${
-                    expandedIndex === index
-                      ? "border-l-purple-500 border-t-gray-800 border-r-gray-800 border-b-gray-800"
-                      : "border-l-purple-500/50 border-t-gray-800 border-r-gray-800 border-b-gray-800 hover:border-l-purple-500"
-                  }`}
+                  className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-2xl border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer"
                   onClick={() => setExpandedIndex(expandedIndex === index ? -1 : index)}
                 >
-                  <div className="p-4 sm:p-6">
+                  <div className="p-5 sm:p-6 lg:p-8">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <span className="inline-block px-3 py-1 text-xs font-medium bg-purple-500/20 text-purple-400 rounded-full mb-3">
+                        <span className="inline-block px-3 py-1 text-xs font-medium rounded-full mb-3 bg-gradient-to-r from-blue-500/20 to-purple-400/20 text-purple-300">
                           {item.period}
                         </span>
-                        <h3 className="text-lg sm:text-xl font-bold text-white mb-1">
+                        <h3 className="text-xl font-bold text-white mb-2">
                           {item.title}
                         </h3>
-                        <p className="text-sm text-gray-400">{item.subtitle}</p>
+                        <p className="text-base text-slate-400">{item.subtitle}</p>
                       </div>
                       <button className="text-gray-400 hover:text-white transition-colors p-1 cursor-pointer">
                         <svg
@@ -127,17 +116,16 @@ export default function BiographyTimelineSection({ celebrity }) {
                       </button>
                     </div>
 
-                    {/* Expanded Content */}
                     {expandedIndex === index && (
-                      <div className="mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
+                      <div className="mt-4 pt-4 border-t border-white/10">
+                        <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
                           {item.content}
                         </p>
                         {item.hasFullStory && (
-                          <button className="mt-4 text-sm text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1 cursor-pointer">
+                          <span className="mt-4 inline-flex text-sm text-blue-400 hover:text-blue-300 transition-colors items-center gap-1 cursor-pointer">
                             Read full story
                             <span>→</span>
-                          </button>
+                          </span>
                         )}
                       </div>
                     )}
