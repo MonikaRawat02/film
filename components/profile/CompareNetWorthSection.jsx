@@ -1,9 +1,11 @@
 "use client";
+import Link from "next/link";
 
 export default function CompareNetWorthSection({ celebrity }) {
   if (!celebrity) return null;
   const name = celebrity.heroSection?.name || "Unknown";
   const baseNetWorth = (celebrity.netWorth?.netWorthUSD?.max || celebrity.netWorth?.netWorthUSD?.min || 0) / 1000000; // in millions
+  const slug = celebrity.heroSection?.slug || "";
 
   const comparisonsData = celebrity.celebrityComparisons?.comparisons || [];
   const comparisons = comparisonsData.map(comp => ({
@@ -113,10 +115,13 @@ export default function CompareNetWorthSection({ celebrity }) {
 
         {/* Compare CTA */}
         <div className="flex justify-center mt-8">
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-semibold rounded-full hover:from-purple-500 hover:to-purple-400 transition-all duration-300 flex items-center gap-2 cursor-pointer">
-            Compare with Any Celebrity
+          <Link
+            href={slug ? `/celebrity/${slug}/compare` : "#"}
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-500 text-white font-semibold rounded-full hover:from-purple-500 hover:to-purple-400 transition-all duration-300 flex items-center gap-2"
+          >
+            <span>Compare with Any Celebrity</span>
             <span>→</span>
-          </button>
+          </Link>
         </div>
       </div>
     </section>

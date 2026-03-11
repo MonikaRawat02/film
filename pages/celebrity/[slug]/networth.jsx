@@ -2,7 +2,10 @@ import NetWorthSection from "@/components/NetWorthSection";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const { req } = context;
+  const protocol = req.headers["x-forwarded-proto"] || "http";
+  const host = req.headers.host;
+  const baseUrl = `${protocol}://${host}`;
   
   try {
     // Fetch celebrity profile from public API
