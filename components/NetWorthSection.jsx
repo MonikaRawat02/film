@@ -3,29 +3,40 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp } from "lucide-react";
 
-export default function NetWorthSection() {
+export default function NetWorthSection({ celebrity }) {
   const [currency, setCurrency] = useState("USD");
   const [expandedCalculation, setExpandedCalculation] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(0);
 
-  // Static data for now - will be replaced by API data
-  const celebrity = {
-    name: "Shah Rukh Khan",
-    slug: "shah-rukh-khan",
-    image: "/uploads/ShahRukhKhan.jpeg",
-    tags: ["Actor", "Producer", "Entrepreneur"],
-    careerStatus: "Peak",
-    age: 59,
-    profession: "Actor, Producer, Entrepreneur",
-    activeSince: 1988,
+  // Process celebrity data from API
+  const processedCelebrity = celebrity ? {
+    name: celebrity.heroSection?.name || "Unknown",
+    slug: celebrity.heroSection?.slug || "",
+    image: celebrity.heroSection?.profileImage || "/placeholder.jpg",
+    tags: Array.isArray(celebrity.heroSection?.profession) 
+      ? celebrity.heroSection.profession 
+      : ["Professional"],
+    careerStatus: celebrity.heroSection?.careerStage || "Active",
+    age: celebrity.quickFacts?.age || null,
+    profession: Array.isArray(celebrity.heroSection?.profession) 
+      ? celebrity.heroSection.profession.join(", ") 
+      : celebrity.heroSection?.profession || "N/A",
+    activeSince: celebrity.quickFacts?.activeSince || null,
     netWorth: {
-      usd: { min: 770, max: 780 },
-      inr: { min: 6400, max: 6500 },
+      usd: { 
+        min: celebrity.netWorth?.netWorthUSD?.min || 0, 
+        max: celebrity.netWorth?.netWorthUSD?.max || 0 
+      },
+      inr: { 
+        min: celebrity.netWorth?.netWorthINR?.min || 0, 
+        max: celebrity.netWorth?.netWorthINR?.max || 0 
+      },
     },
-    lastUpdated: "February 23, 2025",
-    description:
-      "Shah Rukh Khan's estimated net worth of $770-780 million makes him one of the wealthiest actors globally. This fortune encompasses his iconic Bollywood career spanning three decades, strategic brand endorsements, ownership stake in Kolkata Knight Riders IPL team, and his production company Red Chillies Entertainment.",
-  };
+    lastUpdated: celebrity.netWorth?.lastUpdated 
+      ? new Date(celebrity.netWorth.lastUpdated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      : "Recently",
+    description: celebrity.netWorth?.analysisSummary || celebrity.netWorth?.description || "",
+  } : null;
 
   const incomeBreakdown = [
     {
@@ -197,7 +208,7 @@ export default function NetWorthSection() {
             Celebrities
           </Link>
           <span className="text-gray-600">&gt;</span>
-          <span className="text-white">{celebrity.name}</span>
+          <span className="text-white">{processedCelebrity?.name || "Celebrity"}</span>
         </nav>
       </div>
 
@@ -210,17 +221,17 @@ export default function NetWorthSection() {
               <div className="relative">
                 <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-gray-700">
                   <img
-                    src={celebrity.image}
-                    alt={celebrity.name}
+                    src={processedCelebrity?.image || "/placeholder.jpg"}
+                    alt={processedCelebrity?.name || "Celebrity"}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-[#0a0a0f]" />
               </div>
               <div className="space-y-3">
-                <h1 className="text-3xl font-bold text-white">{celebrity.name}</h1>
+                <h1 className="text-3xl font-bold text-white">{processedCelebrity?.name || "Unknown Celebrity"}</h1>
                 <div className="flex flex-wrap gap-2">
-                  {celebrity.tags.map((tag) => (
+                  {processedCelebrity?.tags.map((tag) => (
                     <span
                       key={tag}
                       className="px-3 py-1 text-sm bg-gray-800 text-gray-300 rounded-full border border-gray-700 hover:border-gray-500 transition-colors cursor-pointer"
@@ -232,7 +243,7 @@ export default function NetWorthSection() {
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-cyan-500/10 border border-cyan-500/30 rounded-full">
                   <span className="text-cyan-400">📈</span>
                   <span className="text-cyan-400 text-sm font-medium">
-                    Career: {celebrity.careerStatus}
+                    Career: {processedCelebrity?.careerStatus || "Active"}
                   </span>
                 </div>
               </div>
@@ -247,7 +258,7 @@ export default function NetWorthSection() {
               <div className="relative flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <h2 className="text-3xl md:text-4xl font-semibold text-slate-200">
-                    {celebrity.name} Net Worth
+                    {processedCelebrity?.name || "Celebrity"} Net Worth
                   </h2>
                   <span className="inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium text-[#00D9FF] bg-[#00D9FF1F]">
                     2025
@@ -279,31 +290,31 @@ export default function NetWorthSection() {
               <p className="relative text-[#6E6E73] text-sm mb-6">
                 Real-time estimated wealth analysis
               </p>
-
+            
               <div className="relative mb-6">
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl md:text-6xl leading-none font-semibold tracking-tight bg-gradient-to-r from-[#00D9FF] to-[#1AD1FF] bg-clip-text text-transparent">
                     {currencyConfig.symbol}
                     {currencyConfig.format(
-                      currency === "USD" ? celebrity.netWorth.usd.min : celebrity.netWorth.inr.min
-                    )}{" "}
+                      currency === "USD" ? processedCelebrity?.netWorth.usd.min : processedCelebrity?.netWorth.inr.min
+                    )}{' '}
                     {currencyConfig.unit}
                   </span>
                   <span className="text-2xl md:text-3xl text-gray-400">
                     – {currencyConfig.symbol}
                     {currencyConfig.format(
-                      currency === "USD" ? celebrity.netWorth.usd.max : celebrity.netWorth.inr.max
-                    )}{" "}
+                      currency === "USD" ? processedCelebrity?.netWorth.usd.max : processedCelebrity?.netWorth.inr.max
+                    )}{' '}
                     {currencyConfig.unit}
                   </span>
                 </div>
                 <p className="text-gray-500 mt-2">Estimated net worth</p>
               </div>
-
+            
               <div className="relative flex items-center gap-6 text-xs md:text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <Clock className="h-4 w-4" />
-                  <span>Last updated: {celebrity.lastUpdated}</span>
+                  <span>Last updated: {processedCelebrity?.lastUpdated}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Info className="h-4 w-4" />
@@ -311,9 +322,9 @@ export default function NetWorthSection() {
                 </div>
               </div>
             </div>
-
+            
             {/* Description */}
-            <p className="text-[#A1A1A8] leading-relaxed">{celebrity.description}</p>
+            <p className="text-[#A1A1A8] leading-relaxed">{processedCelebrity?.description}</p>
 
             {/* How Net Worth is Calculated */}
             <div
@@ -702,21 +713,21 @@ export default function NetWorthSection() {
                     <User className="w-4 h-4 text-[#00D9FF]" />
                     <div>
                       <p className="text-xs text-[#6E6E73]">Age</p>
-                      <p className="text-sm text-[#F5F5F7]">{celebrity.age} years</p>
+                      <p className="text-sm text-[#F5F5F7]">{processedCelebrity?.age ? `${processedCelebrity.age} years` : "N/A"}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Briefcase className="w-4 h-4 text-[#00D9FF]" />
                     <div>
                       <p className="text-xs text-[#6E6E73]">Profession</p>
-                      <p className="text-sm text-[#F5F5F7]">{celebrity.profession}</p>
+                      <p className="text-sm text-[#F5F5F7]">{processedCelebrity?.profession || "N/A"}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <Calendar className="w-4 h-4 text-[#00D9FF]" />
                     <div>
                       <p className="text-xs text-[#6E6E73]">Active Since</p>
-                      <p className="text-sm text-[#F5F5F7]">{celebrity.activeSince}</p>
+                      <p className="text-sm text-[#F5F5F7]">{processedCelebrity?.activeSince || "N/A"}</p>
                     </div>
                   </div>
                 </div>
@@ -750,13 +761,13 @@ export default function NetWorthSection() {
 
               {/* View Full Profile CTA */}
               <Link
-                href={`/celebrity/${celebrity.slug}/profile`}
+                href={processedCelebrity?.slug ? `/celebrity/${processedCelebrity.slug}/profile` : "#"}
                 className="flex items-center justify-between bg-gradient-to-br from-[#FF2D2D] to-[#E01414] rounded-2xl p-4 md:p-5 cursor-pointer hover:from-[#FF3B30] hover:to-[#FF2D2D] transition-all duration-300 group"
               >
                 <div>
                   <p className="text-sm text-white mb-1">View Full Profile</p>
                   <p className="text-xs text-white/80">
-                    Complete {celebrity.name} intelligence
+                    Complete {processedCelebrity?.name || "Celebrity"} intelligence
                   </p>
                 </div>
                 <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-white/10 text-white border border-white/20 group-hover:bg-white/20 transition">

@@ -15,19 +15,8 @@ export async function getServerSideProps(context) {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   
   try {
-    // We need a token for some APIs, but getCelebrity for profile might be public or use a different auth.
-    // Based on previous edits, getCelebrity required a token.
-    // However, for public profiles, we should probably have a public version.
-    // For now, let's try fetching it.
-    const res = await fetch(`${baseUrl}/api/admin/celebrity/getCelebrity?slug=${encodeURIComponent(slug)}`, {
-      headers: {
-        // If the API requires admin token, we might need to pass it here from a secure place or make the API public.
-        // For now, I'll assume we might need a token if the user's API still has the check.
-        // Actually, the user's API has a check for "admin" role.
-        // This is a bit problematic for a public profile page.
-        // But I will follow the user's lead.
-      }
-    });
+    // Fetch celebrity profile from public API
+    const res = await fetch(`${baseUrl}/api/celebrity/profile?slug=${encodeURIComponent(slug)}`);
     const data = await res.json();
 
     if (!res.ok || !data.data) {

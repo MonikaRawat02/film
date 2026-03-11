@@ -447,6 +447,45 @@ export default function CelebrityModule() {
     }
   };
 
+
+  const compressImage = async (dataUrl, maxSizeMB = 0.5) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = dataUrl;
+    
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let width = img.width;
+      let height = img.height;
+      
+      // Calculate new dimensions while maintaining aspect ratio
+      const maxDimension = 1200; // Max width/height
+      if (width > height && width > maxDimension) {
+        height = Math.round((height * maxDimension) / width);
+        width = maxDimension;
+      } else if (height > maxDimension) {
+        width = Math.round((width * maxDimension) / height);
+        height = maxDimension;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      
+      // Compress to JPEG with quality setting
+      const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7); // 70% quality
+      resolve(compressedDataUrl);
+    };
+    
+    img.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
+
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 0: // Basic Info
@@ -917,56 +956,275 @@ export default function CelebrityModule() {
           </SectionCard>
         );
 
+      // case 6: // Assets
+      //   return (
+      //     <SectionCard title="Assets" icon={Home}>
+      //       <div className="space-y-3">
+      //         {(form.assets || []).map((asset, idx) => (
+      //           <ArrayCard key={idx} onRemove={() => removeArrayItem("assets", idx)}>
+      //             <InputField
+      //               label="Asset Name"
+      //               value={asset.name}
+      //               onChange={(e) => update(`assets.${idx}.name`, e.target.value)}
+      //               placeholder="Mannat"
+      //             />
+      //             <InputField
+      //               label="Location"
+      //               value={asset.location}
+      //               onChange={(e) => update(`assets.${idx}.location`, e.target.value)}
+      //               placeholder="Mumbai"
+      //             />
+      //             <InputField
+      //               label="Value"
+      //               value={asset.value}
+      //               onChange={(e) => update(`assets.${idx}.value`, e.target.value)}
+      //               placeholder="$50M"
+      //             />
+      //             <InputField
+      //               label="Description"
+      //               value={asset.description}
+      //               onChange={(e) => update(`assets.${idx}.description`, e.target.value)}
+      //               placeholder="Brief description"
+      //               className="md:col-span-2"
+      //             />
+      //             <InputField
+      //               label="Image URL"
+      //               value={asset.image}
+      //               onChange={(e) => update(`assets.${idx}.image`, e.target.value)}
+      //               placeholder="https://example.com/image.jpg"
+      //               className="md:col-span-2"
+      //             />
+      //           </ArrayCard>
+      //         ))}
+      //         <button
+      //           onClick={() => addArrayItem("assets", { name: "", location: "", value: "", description: "", image: "" })}
+      //           className="w-full mt-4 px-4 py-3 rounded-lg border-2 border-dashed border-gray-800 hover:border-red-500/50 text-gray-400 hover:text-red-400 transition-all flex items-center justify-center gap-2 text-sm"
+      //         >
+      //           <Plus className="h-4 w-4" />
+      //           Add Asset
+      //         </button>
+      //       </div>
+      //     </SectionCard>
+      //   );
+
       case 6: // Assets
-        return (
-          <SectionCard title="Assets" icon={Home}>
-            <div className="space-y-3">
-              {(form.assets || []).map((asset, idx) => (
-                <ArrayCard key={idx} onRemove={() => removeArrayItem("assets", idx)}>
+  return (
+    <SectionCard title="Assets" icon={Home}>
+      <div className="space-y-3">
+        {(form.assets || []).map((asset, idx) => (
+          <ArrayCard key={idx} onRemove={() => removeArrayItem("assets", idx)}>
+            <InputField
+              label="Asset Name"
+              value={asset.name}
+              onChange={(e) => update(`assets.${idx}.name`, e.target.value)}
+              placeholder="Mannat Bungalow"
+            />
+            <InputField
+              label="Location"
+              value={asset.location}
+              onChange={(e) => update(`assets.${idx}.location`, e.target.value)}
+              placeholder="Mumbai, India"
+            />
+            <InputField
+              label="Value"
+              value={asset.value}
+              onChange={(e) => update(`assets.${idx}.value`, e.target.value)}
+              placeholder="$30M"
+            />
+            <InputField
+              label="Description"
+              value={asset.description}
+              onChange={(e) => update(`assets.${idx}.description`, e.target.value)}
+              placeholder="Iconic 6-story sea-facing mansion in Bandra"
+              className="md:col-span-2"
+            />
+            
+            {/* Image Upload Section */}
+            <div className="md:col-span-2 space-y-3">
+              <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Asset Image
+              </label>
+              
+              {/* Image Preview */}
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-32 h-32 rounded-lg border border-gray-800 bg-gray-900/30 overflow-hidden">
+                  {asset.imageUploading ? (
+                    <div className="h-full w-full flex flex-col items-center justify-center">
+                      <Loader2 className="h-6 w-6 animate-spin text-gray-500 mb-1" />
+                      <span className="text-xs text-gray-500">Compressing...</span>
+                    </div>
+                  ) : asset.image ? (
+                    <img 
+                      src={asset.image.startsWith('http') ? asset.image : asset.image} 
+                      alt={asset.name || "Asset preview"}
+                      className="h-full w-full object-cover"
+                      onError={(e) => {
+                        if (!asset.image.startsWith('http') && !asset.image.startsWith('/uploads')) {
+                          e.target.src = `/uploads/${asset.image.split('/').pop()}`;
+                        }
+                      }}
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <Image className="h-8 w-8 text-gray-600" />
+                    </div>
+                  )}
+                </div>
+                
+                {/* Upload Controls */}
+                <div className="flex-1 space-y-3">
+                  {/* File Upload with size warning */}
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        
+                        // Check file size (in MB)
+                        const fileSizeMB = file.size / (1024 * 1024);
+                        if (fileSizeMB > 5) {
+                          setError(`File size (${fileSizeMB.toFixed(1)}MB) exceeds 5MB limit. Please choose a smaller image.`);
+                          return;
+                        }
+                        
+                        // Set uploading state for this specific asset
+                        update(`assets.${idx}.imageUploading`, true);
+                        setError(""); // Clear any previous errors
+                        
+                        try {
+                          // Read file as data URL
+                          const reader = new FileReader();
+                          
+                          const dataUrl = await new Promise((resolve, reject) => {
+                            reader.onload = () => resolve(reader.result);
+                            reader.onerror = reject;
+                            reader.readAsDataURL(file);
+                          });
+                          
+                          // Compress image if it's large
+                          let processedDataUrl = dataUrl;
+                          if (fileSizeMB > 1) {
+                            update(`assets.${idx}.imageUploading`, true);
+                            processedDataUrl = await compressImage(dataUrl, 0.5);
+                          }
+                          
+                          // Create a clean filename
+                          const baseName = (asset.name || form.heroSection?.name || 'asset')
+                            .replace(/[^a-zA-Z0-9]/g, '_')
+                            .toLowerCase()
+                            .substring(0, 30);
+                          const timestamp = Date.now();
+                          const fileName = `${baseName}_${timestamp}`;
+                          
+                          // Upload to your API
+                          const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+                          
+                          const res = await fetch("/api/admin/upload", {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                              Authorization: token ? `Bearer ${token}` : ""
+                            },
+                            body: JSON.stringify({ 
+                              data: processedDataUrl, 
+                              fileName: fileName 
+                            })
+                          });
+                          
+                          if (!res.ok) {
+                            if (res.status === 413) {
+                              throw new Error("Image too large. Please try a smaller image.");
+                            }
+                            const errorData = await res.json().catch(() => ({}));
+                            throw new Error(errorData.message || "Image upload failed");
+                          }
+                          
+                          const out = await res.json();
+                          
+                          // Update the asset with the returned URL path
+                          update(`assets.${idx}.image`, out.url);
+                          setSuccess("Image uploaded successfully!");
+                          
+                        } catch (error) {
+                          console.error("Upload error:", error);
+                          setError(error.message || "Image upload failed");
+                        } finally {
+                          update(`assets.${idx}.imageUploading`, false);
+                          // Clear the file input
+                          e.target.value = '';
+                        }
+                      }}
+                      className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-800 file:text-gray-300 hover:file:bg-gray-700 file:cursor-pointer cursor-pointer"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      Max file size: 5MB (will compress larger images)
+                    </p>
+                  </div>
+                  
+                  {/* Divider */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 h-px bg-gray-800"></div>
+                    <span className="text-xs text-gray-500">OR</span>
+                    <div className="flex-1 h-px bg-gray-800"></div>
+                  </div>
+                  
+                  {/* URL Input as fallback */}
                   <InputField
-                    label="Asset Name"
-                    value={asset.name}
-                    onChange={(e) => update(`assets.${idx}.name`, e.target.value)}
-                    placeholder="Mannat"
-                  />
-                  <InputField
-                    label="Location"
-                    value={asset.location}
-                    onChange={(e) => update(`assets.${idx}.location`, e.target.value)}
-                    placeholder="Mumbai"
-                  />
-                  <InputField
-                    label="Value"
-                    value={asset.value}
-                    onChange={(e) => update(`assets.${idx}.value`, e.target.value)}
-                    placeholder="$50M"
-                  />
-                  <InputField
-                    label="Description"
-                    value={asset.description}
-                    onChange={(e) => update(`assets.${idx}.description`, e.target.value)}
-                    placeholder="Brief description"
-                    className="md:col-span-2"
-                  />
-                  <InputField
-                    label="Image URL"
-                    value={asset.image}
+                    label="Image URL (optional)"
+                    value={asset.image || ''}
                     onChange={(e) => update(`assets.${idx}.image`, e.target.value)}
                     placeholder="https://example.com/image.jpg"
-                    className="md:col-span-2"
+                    icon={Globe}
                   />
-                </ArrayCard>
-              ))}
-              <button
-                onClick={() => addArrayItem("assets", { name: "", location: "", value: "", description: "", image: "" })}
-                className="w-full mt-4 px-4 py-3 rounded-lg border-2 border-dashed border-gray-800 hover:border-red-500/50 text-gray-400 hover:text-red-400 transition-all flex items-center justify-center gap-2 text-sm"
-              >
-                <Plus className="h-4 w-4" />
-                Add Asset
-              </button>
+                  
+                  {/* Display current image path */}
+                  {asset.image && (
+                    <div className="flex items-center justify-between p-2 rounded-lg bg-gray-900/50 border border-gray-800">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <CheckCircle className="h-3 w-3 text-green-500 flex-shrink-0" />
+                        <span className="text-xs text-gray-400 truncate">{asset.image}</span>
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (confirm('Remove this image?')) {
+                            update(`assets.${idx}.image`, '');
+                          }
+                        }}
+                        className="text-red-500 hover:text-red-400 flex-shrink-0 ml-2"
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </div>
+                  )}
+                  
+                  <p className="text-xs text-gray-500">
+                    Upload a new image (will be compressed if needed) or provide a URL
+                  </p>
+                </div>
+              </div>
             </div>
-          </SectionCard>
-        );
+          </ArrayCard>
+        ))}
+        
+        <button
+          onClick={() => addArrayItem("assets", { 
+            name: "", 
+            location: "", 
+            value: "", 
+            description: "", 
+            image: "",
+            imageUploading: false 
+          })}
+          className="w-full mt-4 px-4 py-3 rounded-lg border-2 border-dashed border-gray-800 hover:border-red-500/50 text-gray-400 hover:text-red-400 transition-all flex items-center justify-center gap-2 text-sm"
+        >
+          <Plus className="h-4 w-4" />
+          Add Asset
+        </button>
+      </div>
+    </SectionCard>
+  );
 
       case 7: // Comparisons
         return (
@@ -986,12 +1244,126 @@ export default function CelebrityModule() {
                     onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.slug`, e.target.value)}
                     placeholder="salman-khan"
                   />
-                  <InputField
-                    label="Image URL"
-                    value={comp.image}
-                    onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.image`, e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  
+                  {/* Comparison Image Upload */}
+                  <div className="md:col-span-2 space-y-3">
+                    <label className="text-xs font-medium text-gray-400 uppercase tracking-wider">
+                      Comparison Image
+                    </label>
+                    
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-32 h-32 rounded-lg border border-gray-800 bg-gray-900/30 overflow-hidden">
+                        {comp.imageUploading ? (
+                          <div className="h-full w-full flex flex-col items-center justify-center">
+                            <Loader2 className="h-6 w-6 animate-spin text-gray-500 mb-1" />
+                            <span className="text-xs text-gray-500">Compressing...</span>
+                          </div>
+                        ) : comp.image ? (
+                          <img 
+                            src={comp.image} 
+                            alt={comp.name || "Comparison preview"}
+                            className="h-full w-full object-cover"
+                            onError={(e) => {
+                              if (!comp.image.startsWith('http') && !comp.image.startsWith('/uploads')) {
+                                e.target.src = `/uploads/${comp.image.split('/').pop()}`;
+                              }
+                            }}
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center">
+                            <Image className="h-8 w-8 text-gray-600" />
+                          </div>
+                        )}
+                      </div>
+                      
+                      <div className="flex-1 space-y-3">
+                        <div>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              
+                              const fileSizeMB = file.size / (1024 * 1024);
+                              if (fileSizeMB > 5) {
+                                setError(`File size (${fileSizeMB.toFixed(1)}MB) exceeds 5MB limit. Please choose a smaller image.`);
+                                return;
+                              }
+                              
+                              update(`celebrityComparisons.comparisons.${idx}.imageUploading`, true);
+                              setError("");
+                              
+                              try {
+                                const reader = new FileReader();
+                                const dataUrl = await new Promise((resolve, reject) => {
+                                  reader.onload = () => resolve(reader.result);
+                                  reader.onerror = reject;
+                                  reader.readAsDataURL(file);
+                                });
+                                
+                                let processedDataUrl = dataUrl;
+                                if (fileSizeMB > 1) {
+                                  processedDataUrl = await compressImage(dataUrl, 0.5);
+                                }
+                                
+                                const baseName = (comp.name || form.heroSection?.name || 'comparison')
+                                  .replace(/[^a-zA-Z0-9]/g, '_')
+                                  .toLowerCase()
+                                  .substring(0, 30);
+                                const timestamp = Date.now();
+                                const fileName = `${baseName}_${timestamp}`;
+                                
+                                const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+                                
+                                const res = await fetch("/api/admin/upload", {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                    Authorization: token ? `Bearer ${token}` : ""
+                                  },
+                                  body: JSON.stringify({ 
+                                    data: processedDataUrl, 
+                                    fileName: fileName 
+                                  })
+                                });
+                                
+                                if (!res.ok) {
+                                  throw new Error("Image upload failed");
+                                }
+                                
+                                const out = await res.json();
+                                update(`celebrityComparisons.comparisons.${idx}.image`, out.url);
+                                setSuccess("Comparison image uploaded successfully!");
+                                
+                              } catch (error) {
+                                setError(error.message || "Image upload failed");
+                              } finally {
+                                update(`celebrityComparisons.comparisons.${idx}.imageUploading`, false);
+                                e.target.value = '';
+                              }
+                            }}
+                            className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-gray-800 file:text-gray-300 hover:file:bg-gray-700 file:cursor-pointer cursor-pointer"
+                          />
+                        </div>
+                        
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-px bg-gray-800"></div>
+                          <span className="text-xs text-gray-500">OR</span>
+                          <div className="flex-1 h-px bg-gray-800"></div>
+                        </div>
+                        
+                        <InputField
+                          label="Image URL (optional)"
+                          value={comp.image || ''}
+                          onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.image`, e.target.value)}
+                          placeholder="https://example.com/image.jpg"
+                          icon={Globe}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <InputField
                     label="Net Worth"
                     value={comp.netWorth}
@@ -1017,7 +1389,7 @@ export default function CelebrityModule() {
                 </ArrayCard>
               ))}
               <button
-                onClick={() => addArrayItem("celebrityComparisons.comparisons", { name: "", slug: "", image: "", netWorth: "", netWorthDisplay: "", careerStage: "Peak" })}
+                onClick={() => addArrayItem("celebrityComparisons.comparisons", { name: "", slug: "", image: "", netWorth: "", netWorthDisplay: "", careerStage: "Peak", imageUploading: false })}
                 className="w-full mt-4 px-4 py-3 rounded-lg border-2 border-dashed border-gray-800 hover:border-red-500/50 text-gray-400 hover:text-red-400 transition-all flex items-center justify-center gap-2 text-sm"
               >
                 <Plus className="h-4 w-4" />
