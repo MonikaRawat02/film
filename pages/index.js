@@ -3,9 +3,11 @@ import WhyFilmyFire from "@/components/WhyFilmyFire";
 import CelebritySection from "@/components/CelebritySection";
 import TrendingSection from "@/components/TrendingSection";
 import CategoryHubSection from "@/components/CategoryHubSection";
+import GuidesSection from "@/components/GuidesSection";
 import OurCommitment from "@/components/OurCommitment";
 import InnovationRoadmap from "@/components/InnovationRoadmap";
 import JoinCommunity from "@/components/JoinCommunity";
+import InsightsDuoSection from "@/components/InsightsDuoSection";
 
 export default function Home() {
   return (
@@ -14,6 +16,8 @@ export default function Home() {
       <WhyFilmyFire />
       <TrendingSection />
       <CategoryHubSection />
+      <GuidesSection />
+      <InsightsDuoSection />
       <CelebritySection />
       <OurCommitment />
       <InnovationRoadmap />

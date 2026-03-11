@@ -73,7 +73,7 @@ export default function CelebritySection() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {(loading ? new Array(4).fill(null) : items).map((item, i) => {
             const name = item?.name || "";
             const netWorth = item?.netWorth || "";
@@ -106,19 +106,19 @@ export default function CelebritySection() {
                 )}
 
                 {/* Content */}
-                <div className="absolute inset-0 flex flex-col justify-end p-5">
+                <div className="absolute bottom-0 left-0 right-0 flex flex-col justify-end p-6">
                   {/* Name */}
                   <h3 className="mb-4 text-3xl font-bold text-white leading-tight">{name}</h3>
                   
                   {/* Net Worth Card */}
-                  <div className="mb-3 rounded-2xl bg-white/5 p-4 backdrop-blur-md border border-white/10">
+                  <div className="mb-3 rounded-lg bg-black/40 p-3 backdrop-blur-sm border border-white/10">
                     <div className="flex items-center gap-3">
                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-400">
                          <DollarSign className="h-5 w-5" />
                        </div>
                        <div>
                          <div className="text-xs font-medium text-gray-400 uppercase tracking-wide">Net Worth</div>
-                         <div className="text-xl font-bold text-white">{netWorth || "N/A"}</div>
+                         <div className="text-base font-bold text-white">{netWorth || "N/A"}</div>
                        </div>
                     </div>
                   </div>
@@ -126,23 +126,23 @@ export default function CelebritySection() {
                   {/* Stats Grid */}
                   <div className="grid grid-cols-2 gap-3 mb-5">
                      {/* Films */}
-                     <div className="rounded-2xl bg-white/5 p-3 backdrop-blur-md border border-white/10 flex items-center gap-3">
+                     <div className="rounded-lg bg-black/40 p-3 backdrop-blur-sm border border-white/10 flex items-center gap-3">
                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
                          <Film className="h-4 w-4" />
                        </div>
                        <div>
-                         <div className="text-[10px] font-medium text-gray-400 uppercase">Films</div>
+                         <div className="text-xs font-medium text-gray-400 uppercase">Films</div>
                          <div className="text-sm font-bold text-white">{films || "0"}+</div>
                        </div>
                      </div>
 
                      {/* Awards */}
-                     <div className="rounded-2xl bg-white/5 p-3 backdrop-blur-md border border-white/10 flex items-center gap-3">
+                     <div className="rounded-lg bg-black/40 p-3 backdrop-blur-sm border border-white/10 flex items-center gap-3">
                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400">
                          <Award className="h-4 w-4" />
                        </div>
                        <div>
-                         <div className="text-[10px] font-medium text-gray-400 uppercase">Awards</div>
+                         <div className="text-xs font-medium text-gray-400 uppercase">Awards</div>
                          <div className="text-sm font-bold text-white">{awards || "0"}</div>
                        </div>
                      </div>
