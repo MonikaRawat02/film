@@ -2,44 +2,34 @@
 import { Film, Megaphone, Trophy, House } from "lucide-react";
 
 export default function WealthBreakdownSection({ celebrity }) {
-  const name = celebrity?.name || "Shah Rukh Khan";
+  if (!celebrity) return null;
 
-  // Static data - will be replaced by API
-  const breakdownItems = [
-    {
-      Icon: Film,
-      iconBg: "from-blue-500 to-blue-600",
-      title: "Film Earnings",
-      percentage: 41,
-      amount: "$320M",
-      barColor: "bg-blue-500",
-    },
-    {
-      Icon: Megaphone,
-      iconBg: "from-purple-500 to-purple-600",
-      title: "Brand Endorsements",
-      percentage: 23,
-      amount: "$180M",
-      barColor: "bg-gradient-to-r from-purple-500 to-purple-500",
-      highlight: true,
-    },
-    {
-      Icon: Trophy,
-      iconBg: "from-green-500 to-green-600",
-      title: "Business Ventures",
-      percentage: 18,
-      amount: "$140M",
-      barColor: "bg-green-500",
-    },
-    {
-      Icon: House,
-      iconBg: "from-orange-500 to-orange-600",
-      title: "IPL Team Ownership",
-      percentage: 12,
-      amount: "$90M",
-      barColor: "bg-orange-500",
-    },
-  ];
+  const name = celebrity.heroSection?.name || "Unknown";
+  const incomeSources = celebrity.netWorthCalculation?.incomeSources || [];
+  const totalNetWorth = celebrity.netWorth?.netWorthUSD?.max || celebrity.netWorth?.netWorthUSD?.min || 0;
+
+  const icons = [Film, Megaphone, Trophy, House];
+  const colors = ["from-blue-500 to-blue-600", "from-purple-500 to-purple-600", "from-green-500 to-green-600", "from-orange-500 to-orange-600"];
+  const barColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-orange-500"];
+
+  const breakdownItems = incomeSources.map((source, index) => {
+    const amountVal = totalNetWorth ? (totalNetWorth * (source.percentage / 100)) : 0;
+    const amountDisplay = amountVal >= 1000000 
+      ? `$${(amountVal / 1000000).toFixed(1)}M` 
+      : amountVal >= 1000 
+        ? `$${(amountVal / 1000).toFixed(1)}K`
+        : `$${amountVal}`;
+
+    return {
+      Icon: icons[index % icons.length],
+      iconBg: colors[index % colors.length],
+      title: source.sourceName,
+      percentage: source.percentage,
+      amount: amountDisplay !== "$0" ? amountDisplay : `${source.percentage}%`,
+      barColor: barColors[index % barColors.length],
+      description: source.description
+    };
+  });
 
   return (
     <section className="bg-[#0a0c14] py-12 sm:py-16">

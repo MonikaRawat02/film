@@ -2,43 +2,44 @@
 import { DollarSign, Calendar, Ruler, CalendarDays, MapPin, Briefcase } from "lucide-react";
 
 export default function QuickStatsSection({ celebrity }) {
-  // Static data - will be replaced by API
+  if (!celebrity) return null;
+
   const stats = [
     {
       Icon: DollarSign,
       iconBg: "from-amber-500 to-amber-600",
       label: "Net Worth",
-      value: "$780M",
+      value: celebrity.netWorth?.netWorthUSD?.display || celebrity.netWorth?.netWorthINR?.display || "N/A",
     },
     {
       Icon: Calendar,
       iconBg: "from-blue-500 to-blue-600",
       label: "Age",
-      value: "59 Years",
+      value: celebrity.quickFacts?.age ? `${celebrity.quickFacts.age} Years` : "N/A",
     },
     {
       Icon: Ruler,
       iconBg: "from-green-500 to-green-600",
       label: "Height",
-      value: "5'8\" (173cm)",
+      value: celebrity.heroSection?.height || "N/A",
     },
     {
       Icon: CalendarDays,
       iconBg: "from-purple-500 to-purple-600",
       label: "Birth Date",
-      value: "Nov 2, 1965",
+      value: celebrity.quickFacts?.birthDate ? new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A",
     },
     {
       Icon: MapPin,
       iconBg: "from-orange-500 to-orange-600",
       label: "Nationality",
-      value: "Indian",
+      value: celebrity.heroSection?.nationality || "N/A",
     },
     {
       Icon: Briefcase,
       iconBg: "from-pink-500 to-pink-600",
       label: "Industry",
-      value: "Entertainment",
+      value: celebrity.heroSection?.industry || "N/A",
     },
   ];
 

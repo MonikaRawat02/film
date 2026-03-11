@@ -2,50 +2,19 @@
 import { Film, Megaphone, IndianRupee, Building2 } from "lucide-react";
 
 export default function IncomeSourcesSection({ celebrity }) {
-  // Static data - will be replaced by API
-  const incomeSources = [
-    {
-      Icon: Film,
-      iconBg: "from-blue-500 to-blue-600",
-      title: "Movies Income",
-      amount: "$40-60M per film",
-      description:
-        "One of the highest-paid actors globally, earning from acting fees, profit sharing, and backend deals.",
-    },
-    {
-      Icon: Megaphone,
-      iconBg: "from-violet-500 to-violet-600",
-      title: "Brand Endorsements",
-      amount: "$3-5M per brand",
-      description:
-        "Endorses 20+ major brands including Hyundai, Tag Heuer, and Dubai Tourism.",
-    },
-    {
-      Icon: IndianRupee,
-      iconBg: "from-emerald-500 to-emerald-600",
-      title: "IPL Earnings",
-      amount: "$15-20M annually",
-      description:
-        "Co-owner of Kolkata Knight Riders, one of the most valuable IPL franchises.",
-    },
-    {
-      Icon: Building2,
-      iconBg: "from-cyan-500 to-cyan-600",
-      title: "Business Ventures",
-      amount: "$10-15M annually",
-      description:
-        "Red Chillies Entertainment, VFX studio, and various production investments.",
-    },
-    {
-      Icon: Building2,
-      iconBg: "from-pink-500 to-pink-600",
-      title: "Real Estate",
-      amount: "$50M portfolio",
-      description:
-        "Luxury properties including iconic Mannat bungalow and international real estate.",
-      fullWidth: true,
-    },
-  ];
+  if (!celebrity) return null;
+
+  const incomeSourcesData = celebrity.netWorthCalculation?.incomeSources || [];
+  const icons = [Film, Megaphone, IndianRupee, Building2];
+  const colors = ["from-blue-500 to-blue-600", "from-violet-500 to-violet-600", "from-emerald-500 to-emerald-600", "from-cyan-500 to-cyan-600"];
+
+  const incomeSources = incomeSourcesData.map((source, index) => ({
+    Icon: icons[index % icons.length],
+    iconBg: colors[index % colors.length],
+    title: source.sourceName,
+    amount: `${source.percentage}% contribution`,
+    description: source.description
+  }));
 
   return (
     <section className="bg-[#0a0c14] py-12 sm:py-16 bg-gradient-to-b from-slate-950/0 to-slate-900/10">

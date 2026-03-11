@@ -1,12 +1,13 @@
 "use client";
 
 export default function ExploreCTASection({ celebrity }) {
-  const premium = celebrity?.premiumIntelligence || {};
+  if (!celebrity) return null;
+  const premium = celebrity.premiumIntelligence || {};
   
   const stats = [
-    { value: "500+", label: "Celebrity Profiles" },
-    { value: "50K+", label: "Monthly Readers" },
-    { value: "95%", label: "Accuracy Rate" },
+    { value: premium.stats?.celebrityProfiles || "500+", label: "Celebrity Profiles" },
+    { value: premium.stats?.monthlyReaders || "50K+", label: "Monthly Readers" },
+    { value: premium.stats?.accuracyRate ? `${premium.stats.accuracyRate}%` : "95%", label: "Accuracy Rate" },
   ];
 
   return (

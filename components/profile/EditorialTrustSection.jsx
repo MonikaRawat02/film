@@ -1,6 +1,10 @@
 "use client";
 
-export default function EditorialTrustSection() {
+export default function EditorialTrustSection({ celebrity }) {
+  const lastUpdated = celebrity?.netWorth?.lastUpdated 
+    ? new Date(celebrity.netWorth.lastUpdated).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+    : "February 23, 2025";
+
   const trustInfo = [
     {
       icon: "👤",
@@ -20,7 +24,7 @@ export default function EditorialTrustSection() {
       icon: "📅",
       iconBg: "bg-green-500",
       label: "Last Updated",
-      value: "February 23, 2025",
+      value: lastUpdated,
       subtext: "Updated Monthly",
     },
     {

@@ -1,74 +1,22 @@
 "use client";
 
 export default function RelatedIntelligenceSection({ celebrity }) {
-  // Static data - will be replaced by API
-  const articles = [
-    {
-      icon: "💰",
-      iconBg: "bg-blue-500",
-      tag: "Earnings",
-      tagColor: "bg-red-500",
-      title: "SRK Income Per Movie",
-      description: "How much Shah Rukh Khan charges per film in 2025",
-    },
-    {
-      icon: "🏠",
-      iconBg: "bg-gray-600",
-      tag: "Real Estate",
-      tagColor: "bg-cyan-500",
-      title: "Mannat House Details",
-      description: "Inside Shah Rukh Khan's iconic Rs 200 crore mansion",
-    },
-    {
-      icon: "📈",
-      iconBg: "bg-green-500",
-      tag: "Rankings",
-      tagColor: "bg-green-500",
-      title: "Richest Actors in India",
-      description: "Complete list of India's wealthiest actors in 2025",
-      highlight: true,
-    },
-    {
-      icon: "👤",
-      iconBg: "bg-orange-500",
-      tag: "Industry",
-      tagColor: "bg-orange-500",
-      title: "Bollywood Highest Paid",
-      description: "Top 10 highest-paid Bollywood actors and their fees",
-    },
-    {
-      icon: "🏢",
-      iconBg: "bg-blue-500",
-      tag: "Business",
-      tagColor: "bg-red-500",
-      title: "SRK Business Ventures",
-      description: "All of Shah Rukh Khan's business investments explained",
-    },
-    {
-      icon: "⭐",
-      iconBg: "bg-yellow-500",
-      tag: "Endorsements",
-      tagColor: "bg-cyan-500",
-      title: "SRK Brand Endorsements",
-      description: "Complete list of brands endorsed by Shah Rukh Khan",
-    },
-    {
-      icon: "🏏",
-      iconBg: "bg-purple-500",
-      tag: "IPL",
-      tagColor: "bg-purple-500",
-      title: "KKR Team Net Worth",
-      description: "Kolkata Knight Riders valuation and earnings breakdown",
-    },
-    {
-      icon: "🎬",
-      iconBg: "bg-orange-500",
-      tag: "Projects",
-      tagColor: "bg-green-500",
-      title: "SRK Upcoming Movies",
-      description: "All upcoming Shah Rukh Khan films and expected earnings",
-    },
-  ];
+  if (!celebrity) return null;
+
+  const relatedData = celebrity.relatedIntelligence || [];
+  const icons = ["💰", "🏠", "📈", "👤", "🏢", "⭐", "🏏", "🎬"];
+  const iconBgs = ["bg-blue-500", "bg-gray-600", "bg-green-500", "bg-orange-500", "bg-blue-500", "bg-yellow-500", "bg-purple-500", "bg-orange-500"];
+  const tagColors = ["bg-red-500", "bg-cyan-500", "bg-green-500", "bg-orange-500", "bg-red-500", "bg-cyan-500", "bg-purple-500", "bg-green-500"];
+
+  const articles = relatedData.map((item, index) => ({
+    icon: icons[index % icons.length],
+    iconBg: iconBgs[index % iconBgs.length],
+    tag: item.category,
+    tagColor: tagColors[index % tagColors.length],
+    title: item.title,
+    description: item.description,
+    highlight: index === 2
+  }));
 
   return (
     <section className="bg-[#0a0c14] py-12 sm:py-16">
