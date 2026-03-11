@@ -28,22 +28,9 @@ export default async function handler(req, res) {
       return res.status(200).json({ data: item });
     }
 
-    // If no slug, it's an admin request to list celebrities. Proceed with auth.
-    const auth = req.headers.authorization || "";
-    const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
-    if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-    let payload;
-    try {
-      payload = jwt.verify(token, process.env.JWT_SECRET);
-    } catch {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-    if (payload.role !== "admin") {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-
+    // Allow public listing but handle auth if provided for admin specific features (optional)
+    // For now, we allow public access to GET celebrity list for comparisons and directory.
+    
     const lim = Math.min(Number(limit) || 20, 100);
     const pg = Math.max(Number(page) || 1, 1);
     
@@ -59,6 +46,7 @@ export default async function handler(req, res) {
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
+      success: true,
       data,
       pagination: {
         page: pg,

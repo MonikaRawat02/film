@@ -6,7 +6,7 @@
   return (
     <div className="min-h-screen bg-black text-gray-100">
       <SiteHeader />
-      <main className="pt-24">{children}</main>
+      <main className="pt-16">{children}</main>
       <SiteFooter />
     </div>
   );

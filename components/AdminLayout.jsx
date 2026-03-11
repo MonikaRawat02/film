@@ -2,7 +2,7 @@
  import { useEffect, useState } from "react";
  import { useRouter } from "next/router";
  import Link from "next/link";
- import { Menu, LogOut, LayoutDashboard, Star } from "lucide-react";
+ import { Menu, LogOut, LayoutDashboard, Star, BarChart, Tv } from "lucide-react";
  
  export default function AdminLayout({ children }) {
    const router = useRouter();
@@ -18,6 +18,8 @@
    const nav = [
      { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
      { name: "Celebrity", href: "/admin/celebrity", icon: Star },
+     { name: "Box Office", href: "/admin/box-office", icon: BarChart },
+     { name: "OTT Analysis", href: "/admin/ott-intelligence", icon: Tv },
    ];
  
    const isActive = (href) => router.pathname === href;
@@ -78,15 +80,6 @@
                <Menu className="h-5 w-5" />
              </button>
              <span className="font-semibold">Dashboard</span>
-           </div>
-           <div className="flex items-center gap-3">
-             <button
-               onClick={handleLogout}
-               className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-gray-200"
-             >
-               <LogOut className="h-5 w-5" />
-               <span className="text-sm">Logout</span>
-             </button>
            </div>
          </header>
  

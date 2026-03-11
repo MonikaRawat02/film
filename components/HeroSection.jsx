@@ -1,6 +1,6 @@
  export default function HeroSection() {
    return (
-   <section className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 py-32 text-center">
+   <section id="hero" className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 py-32 text-center">
       <div className="space-y-10">
         <div className="inline-flex items-center gap-2 rounded-full border border-red-600/10 bg-red-600/10 px-5 py-2.5 text-xs md:text-sm">
           <span className="block w-2 h-2 bg-red-600 rounded-full animate-pulse flex-shrink-0"></span>

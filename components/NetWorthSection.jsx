@@ -7,6 +7,23 @@ export default function NetWorthSection({ celebrity }) {
   const [currency, setCurrency] = useState("USD");
   const [expandedCalculation, setExpandedCalculation] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(0);
+  const [allCelebrities, setAllCelebrities] = useState([]);
+
+  // Fetch all celebrities for comparisons
+  useEffect(() => {
+    const fetchAllCelebrities = async () => {
+      try {
+        const res = await fetch("/api/admin/celebrity/getCelebrity?limit=100");
+        const data = await res.json();
+        if (data.success) {
+          setAllCelebrities(data.data || []);
+        }
+      } catch (error) {
+        console.error("Error fetching all celebrities for comparison:", error);
+      }
+    };
+    fetchAllCelebrities();
+  }, []);
 
   // Process celebrity data from API
   const processedCelebrity = celebrity ? {
@@ -92,37 +109,18 @@ export default function NetWorthSection({ celebrity }) {
     { year: 2025, text: "Continued global expansion", color: "bg-red-500" },
   ];
 
-  const comparisons = [
-    {
-      name: "Salman Khan",
-      image: "/uploads/s.avif",
-      netWorth: "$350M",
-      status: "Peak",
-      statusColor: "text-cyan-400",
-    },
-    {
-      name: "Aamir Khan",
-      image: "/uploads/s.avif",
-      netWorth: "$225M",
-      status: "Transition",
-      statusColor: "text-gray-400",
-    },
-    {
-      name: "Akshay Kumar",
-      image: "/uploads/s.avif",
-      netWorth: "$340M",
-      status: "Peak",
-      statusColor: "text-cyan-400",
-      highlight: true,
-    },
-    {
-      name: "Top 5 Richest",
-      image: "/uploads/s.avif",
-      netWorth: "View List",
-      status: "Rising",
-      statusColor: "text-green-400",
-    },
-  ];
+  // Dynamically generate comparisons from fetched celebrities
+  const comparisons = allCelebrities
+    .filter(c => c.heroSection?.slug !== processedCelebrity?.slug) // Don't compare with self
+    .map(c => ({
+      name: c.heroSection?.name || "Unknown",
+      slug: c.heroSection?.slug || "",
+      image: c.heroSection?.profileImage || "/placeholder.jpg",
+      netWorth: c.netWorth?.netWorthUSD?.display || `$${c.netWorth?.netWorthUSD?.min}M`,
+      status: c.heroSection?.careerStage || "Active",
+      statusColor: c.heroSection?.careerStage === "Peak" ? "text-cyan-400" : "text-green-400",
+    }))
+    .slice(0, 4); // Show top 4 for now
 
   const relatedIntelligence = [
     {
@@ -501,8 +499,9 @@ export default function NetWorthSection({ celebrity }) {
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 {comparisons.map((celeb, index) => (
-                  <div
+                  <Link
                     key={index}
+                    href={`/celebrity/${celeb.slug}/networth`}
                     className={`group relative rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer ${
                       celeb.highlight
                         ? "border-cyan-500 bg-[#12121a]"
@@ -556,7 +555,7 @@ export default function NetWorthSection({ celebrity }) {
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
             </div>
