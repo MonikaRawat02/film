@@ -1,42 +1,17 @@
 "use client";
 
 export default function CompareNetWorthSection({ celebrity }) {
-  const name = celebrity?.name || "Shah Rukh Khan";
-  const baseNetWorth = 780; // in millions
+  if (!celebrity) return null;
+  const name = celebrity.heroSection?.name || "Unknown";
+  const baseNetWorth = (celebrity.netWorth?.netWorthUSD?.max || celebrity.netWorth?.netWorthUSD?.min || 0) / 1000000; // in millions
 
-  // Static data - will be replaced by API
-  const comparisons = [
-    {
-      name: "Salman Khan",
-      netWorth: 360,
-      trend: "down",
-    },
-    {
-      name: "Amitabh Bachchan",
-      netWorth: 420,
-      trend: "down",
-    },
-    {
-      name: "Akshay Kumar",
-      netWorth: 340,
-      trend: "down",
-    },
-    {
-      name: "Tom Cruise",
-      netWorth: 600,
-      trend: "down",
-    },
-    {
-      name: "Robert Downey Jr.",
-      netWorth: 300,
-      trend: "down",
-    },
-    {
-      name: "Dwayne Johnson",
-      netWorth: 800,
-      trend: "up",
-    },
-  ];
+  const comparisonsData = celebrity.celebrityComparisons?.comparisons || [];
+  const comparisons = comparisonsData.map(comp => ({
+    name: comp.name,
+    netWorth: comp.netWorth / 1000000, // assume raw number in API is in USD
+    trend: "down", // default trend
+    display: comp.netWorthDisplay
+  }));
 
   const getPercentage = (value) => Math.round((value / baseNetWorth) * 100);
   

@@ -3,15 +3,18 @@ import Link from "next/link";
 import { TrendingUp, CheckCircle } from "lucide-react";
 
 export default function ProfileHeroSection({ celebrity }) {
-  // Static data - will be replaced by API
-  const data = celebrity || {
-    name: "Shah Rukh Khan",
-    slug: "shah-rukh-khan",
-    image: "/uploads/ShahRukhKhan.jpeg",
-    netWorth: "$780 Million",
-    profession: "Actor, Producer, Entrepreneur",
-    primaryIncome: "Films, Endorsements, IPL Team",
-    activeSince: "1988",
+  if (!celebrity) return null;
+
+  const data = {
+    name: celebrity.heroSection?.name || "Unknown",
+    slug: celebrity.heroSection?.slug || "",
+    image: celebrity.heroSection?.profileImage || "/placeholder.jpg",
+    netWorth: celebrity.netWorth?.netWorthUSD?.display || celebrity.netWorth?.netWorthINR?.display || "N/A",
+    profession: Array.isArray(celebrity.heroSection?.profession) 
+      ? celebrity.heroSection.profession.join(", ") 
+      : celebrity.heroSection?.profession || "N/A",
+    primaryIncome: celebrity.netWorthCalculation?.incomeSources?.[0]?.sourceName || "N/A",
+    activeSince: celebrity.quickFacts?.activeSince || "N/A",
     verified: true,
   };
 

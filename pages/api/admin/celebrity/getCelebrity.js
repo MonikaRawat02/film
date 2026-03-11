@@ -9,6 +9,26 @@ export default async function handler(req, res) {
   }
 
   try {
+    await dbConnect();
+    const { slug, q, page = 1, limit = 20 } = req.query;
+
+    // If a slug is provided, this is a public request for a single profile.
+    if (slug) {
+      // Find a celebrity whose slug is either a case-insensitive match for the given slug
+      // or a case-insensitive match for the slug with spaces instead of hyphens.
+      const item = await Celebrity.findOne({
+        $or: [
+          { "heroSection.slug": new RegExp(`^${slug}$`, 'i') },
+          { "heroSection.slug": new RegExp(`^${slug.replace(/-/g, ' ')}$`, 'i') },
+        ]
+      });
+      if (!item) {
+        return res.status(404).json({ message: "Not found" });
+      }
+      return res.status(200).json({ data: item });
+    }
+
+    // If no slug, it's an admin request to list celebrities. Proceed with auth.
     const auth = req.headers.authorization || "";
     const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
     if (!token) {
@@ -24,20 +44,9 @@ export default async function handler(req, res) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    await dbConnect();
-
-    const { slug, q, page = 1, limit = 20 } = req.query;
     const lim = Math.min(Number(limit) || 20, 100);
     const pg = Math.max(Number(page) || 1, 1);
-
-    if (slug) {
-      const item = await Celebrity.findOne({ "heroSection.slug": slug });
-      if (!item) {
-        return res.status(404).json({ message: "Not found" });
-      }
-      return res.status(200).json({ data: item });
-    }
-
+    
     const filter = {};
     if (q) {
       filter["heroSection.name"] = { $regex: q, $options: "i" };

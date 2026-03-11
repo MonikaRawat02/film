@@ -2,59 +2,17 @@
 import { useState } from "react";
 
 export default function BiographyTimelineSection({ celebrity }) {
+  if (!celebrity) return null;
   const [expandedIndex, setExpandedIndex] = useState(0);
 
-  // Static data - will be replaced by API
-  const timelineItems = [
-    {
-      period: "1965-1988",
-      title: "Early Life",
-      subtitle: "Born in New Delhi, educated at Hansraj College",
-      content:
-        "Shah Rukh Khan was born on November 2, 1965, in New Delhi, India. He completed his schooling at St. Columba's School and graduated with a bachelor's degree in Economics from Hansraj College. Khan began his career in theatre and television before transitioning to films.",
-      hasFullStory: true,
-    },
-    {
-      period: "1988-1992",
-      title: "Career Beginning",
-      subtitle: "Television breakthrough with Fauji and Circus",
-      content:
-        "Khan made his television debut with the series Fauji in 1988, followed by Circus in 1989. His charismatic screen presence quickly made him a household name on Indian television.",
-      hasFullStory: false,
-    },
-    {
-      period: "1992-1995",
-      title: "Breakthrough",
-      subtitle: "Film debut and rise to stardom with DDLJ",
-      content:
-        "His film career began with Deewana (1992). The iconic Dilwale Dulhania Le Jayenge (1995) established him as the 'King of Romance' in Bollywood.",
-      hasFullStory: false,
-    },
-    {
-      period: "1995-2005",
-      title: "Global Expansion",
-      subtitle: "International recognition and blockbuster success",
-      content:
-        "During this decade, Shah Rukh Khan became a global icon with films like Kuch Kuch Hota Hai, Mohabbatein, and Kal Ho Naa Ho, establishing a massive international fan base.",
-      hasFullStory: false,
-    },
-    {
-      period: "2005-2015",
-      title: "Business Empire",
-      subtitle: "Red Chillies Entertainment and KKR ownership",
-      content:
-        "Khan expanded into production with Red Chillies Entertainment and became co-owner of Kolkata Knight Riders IPL team, diversifying his income streams significantly.",
-      hasFullStory: false,
-    },
-    {
-      period: "2015-Present",
-      title: "Legacy Era",
-      subtitle: "Continued dominance and new milestones",
-      content:
-        "With blockbusters like Pathaan (2023), Shah Rukh Khan continues to break records and remains one of the most influential figures in global entertainment.",
-      hasFullStory: false,
-    },
-  ];
+  const biographyTimeline = celebrity.biographyTimeline || [];
+  const timelineItems = biographyTimeline.map(item => ({
+    period: item.period,
+    title: item.title,
+    subtitle: item.subDescription,
+    content: item.description,
+    hasFullStory: false
+  }));
 
   return (
     <section className="bg-[#0a0c14] py-12 sm:py-16">
