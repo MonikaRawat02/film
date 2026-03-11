@@ -10,7 +10,7 @@
  
    const nav = [
     { name: "Explained", href: "/explained" },
-    { name: "Box Office", href: "/#ott-intelligence" },
+    { name: "Box Office", href: "/#box-office" },
     { name: "OTT Analysis", href: "/#ott-intelligence" },
     { name: "Celebrities", href: "/#celebrities" },
     { name: "Categories", href: "/#categories" },
