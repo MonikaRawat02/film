@@ -51,7 +51,16 @@ export default function GuidesSection() {
               Premium Authority Content
             </span>
           </div>
-          <h2 className={`${playfair.className} text-white text-5xl font-bold leading-tight mb-6`} style={{ fontFamily: '"Playfair Display", Georgia, serif' }}>
+          <h2
+            className="text-white mb-6"
+            style={{
+              ...playfair.style,
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: "48px",
+              lineHeight: "60px",
+              fontWeight: 800,
+            }}
+          >
             Ultimate Movie & Series Guides
           </h2>
           <p className="text-gray-400 text-xl leading-relaxed max-w-3xl mx-auto">

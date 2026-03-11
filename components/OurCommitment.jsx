@@ -1,4 +1,11 @@
 import { XCircle, CheckCircle2, Shield } from "lucide-react";
+import { Playfair_Display } from "next/font/google";
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  weight: ["700", "800"],
+  display: "swap",
+});
 
 export default function OurCommitment() {
   const items = [
@@ -25,14 +32,24 @@ export default function OurCommitment() {
   ];
 
   return (
-    <section className="relative py-28">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0f0015] via-fuchsia-900/10 to-transparent" />
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+    <section className="relative py-32 bg-[#050505]">
+      <div className="absolute inset-0 -z-10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-red-600/5 to-green-600/5 rounded-full blur-3xl -z-10" />
+      <div className="mx-auto max-w-[1200px] px-6 lg:px-12 relative text-center">
         <div className="text-center space-y-4 mb-12">
-          <span className="inline-flex items-center justify-center px-4 py-2 rounded-full border border-gray-800 bg-black/40 text-xs md:text-sm font-semibold uppercase tracking-wider text-gray-400">
-            Our Commitment
-          </span>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-white">
+          <div className="inline-block px-4 py-2 bg-white/5 border border-gray-800 rounded-full mb-10 uppercase text-gray-400 text-sm font-semibold tracking-wider">
+            OUR COMMITMENT
+          </div>
+          <h2
+            className="text-white mb-2"
+            style={{
+              ...playfair.style,
+              fontFamily: '"Playfair Display", Georgia, serif',
+              fontSize: "48px",
+              lineHeight: "60px",
+              fontWeight: 800,
+            }}
+          >
             Why FilmyFire Is Different
           </h2>
         </div>
@@ -41,49 +58,43 @@ export default function OurCommitment() {
           {items.map((it, idx) => (
             <div
               key={idx}
-              className={`group relative overflow-hidden rounded-2xl p-8 text-center transition-all duration-300 bg-[#0b0b10] border ${
+              className={`group relative overflow-hidden rounded-3xl p-10 text-center transition-all duration-300 ${
                 it.type === "positive"
-                  ? "border-emerald-700/40 hover:border-emerald-500/60"
-                  : "border-rose-800/40 hover:border-rose-600/60"
+                  ? "bg-gradient-to-br from-green-950/20 to-transparent border-2 border-green-900/30"
+                  : "bg-gradient-to-br from-red-950/20 to-transparent border-2 border-red-900/30"
               }`}
             >
               <div
-                className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border ${
-                  it.type === "positive"
-                    ? "text-emerald-300 border-emerald-700/40 bg-emerald-500/10"
-                    : "text-rose-300 border-rose-800/40 bg-rose-500/10"
-                }`}
+                className={`w-16 h-16 ${
+                  it.type === "positive" ? "bg-green-600/20" : "bg-red-600/20"
+                } rounded-2xl flex items-center justify-center mx-auto mb-6`}
               >
-                {it.icon}
+                {it.type === "positive" ? (
+                  <CheckCircle2 className="w-9 h-9 text-green-500" />
+                ) : (
+                  <XCircle className="w-9 h-9 text-red-500" />
+                )}
               </div>
-              <p className="text-base md:text-lg font-semibold text-white leading-snug">
+              <p className="text-white text-xl font-bold leading-relaxed">
                 {it.title}
               </p>
-              <div
-                className={`pointer-events-none absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-10 transition-opacity ${
-                  it.type === "positive"
-                    ? "bg-gradient-to-br from-emerald-500 to-green-600"
-                    : "bg-gradient-to-br from-rose-600 to-pink-600"
-                }`}
-              />
             </div>
           ))}
         </div>
 
-        <div className="relative rounded-3xl border border-gray-800 bg-[#0b0b10] px-6 py-10 sm:px-10 lg:px-14 lg:py-12 overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 rounded-3xl bg-[radial-gradient(ellipse_at_top_left,rgba(236,72,153,0.25),transparent_50%),radial-gradient(ellipse_at_bottom_right,rgba(34,197,94,0.25),transparent_50%)]" />
-          <div className="relative flex items-start gap-4 md:gap-6">
-            <div className="mt-1 flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-2xl border border-pink-700/40 bg-pink-600/10 text-pink-300 flex-shrink-0">
-              <Shield className="h-7 w-7 md:h-8 md:w-8" />
-            </div>
-            <p className="text-base md:text-xl leading-relaxed text-gray-200">
+        <div className="relative rounded-3xl border border-gray-800 bg-[#0b0b10] px-6 py-10 sm:px-10 lg:px-14 lg:py-12 overflow-hidden text-center">
+          <div className="absolute inset-0 bg-gradient-to-r from-red-600/5 to-orange-600/5" />
+          <div className="relative flex flex-col items-center gap-4 md:gap-6">
+            <Shield className="w-12 h-12 text-red-500 mx-auto mb-8" />
+            <p className="text-white text-3xl font-bold leading-relaxed max-w-4xl mx-auto">
               FilmyFire is a{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 via-orange-300 to-yellow-300 font-semibold">
+              <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
                 reference platform
               </span>{" "}
-              for serious movie & web series enthusiasts who seek{" "}
-              <span className="text-white font-semibold">intelligence</span>, not just{" "}
-              <span className="text-white font-semibold">information</span>.
+              for serious movie &amp; web series enthusiasts who seek{" "}
+              <span className="bg-gradient-to-r from-red-500 to-orange-500 bg-clip-text text-transparent">
+                intelligence, not just information.
+              </span>
             </p>
           </div>
         </div>
