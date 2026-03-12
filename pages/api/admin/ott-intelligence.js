@@ -22,7 +22,12 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const data = await OTTIntelligence.find({}).sort({ createdAt: -1 });
+        const { q } = req.query;
+        let query = {};
+        if (q) {
+          query = { platformName: { $regex: q, $options: "i" } };
+        }
+        const data = await OTTIntelligence.find(query).sort({ createdAt: -1 });
         return res.status(200).json({ success: true, data });
       } catch (error) {
         return res.status(400).json({ success: false, message: error.message });
