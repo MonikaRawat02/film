@@ -8,6 +8,39 @@ export default function NetWorthSection({ celebrity }) {
   const [expandedCalculation, setExpandedCalculation] = useState(false);
   const [expandedFaq, setExpandedFaq] = useState(0);
   const [allCelebrities, setAllCelebrities] = useState([]);
+  const [dynamicTimeline, setTimelineData] = useState([]);
+  const [dynamicMilestones, setMilestones] = useState([]);
+  const [dynamicFaqs, setFaqs] = useState([]);
+  const [activeSection, setActiveSection] = useState("net-worth-estimate");
+  const [hoveredPoint, setHoveredPoint] = useState(null);
+  const [showTop5Modal, setShowTop5Modal] = useState(false);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Fetch specialized timeline and milestones data
+  useEffect(() => {
+    if (!celebrity?.heroSection?.slug) return;
+    
+    const fetchTimelineData = async () => {
+      try {
+        const res = await fetch(`/api/celebrity/timeline?slug=${celebrity.heroSection.slug}`);
+        const result = await res.json();
+        if (result.success) {
+          setTimelineData(result.data.timeline || []);
+          setMilestones(result.data.keyMilestones || []);
+          setFaqs(result.data.faqs || []);
+        }
+      } catch (error) {
+        console.error("Error fetching timeline data from API:", error);
+      }
+    };
+    
+    fetchTimelineData();
+  }, [celebrity?.heroSection?.slug]);
 
   // Fetch all celebrities for comparisons
   useEffect(() => {
@@ -89,25 +122,60 @@ export default function NetWorthSection({ celebrity }) {
     },
   ];
 
-  const timelineData = [
-    { year: 2000, value: 50 },
-    { year: 2005, value: 150 },
-    { year: 2010, value: 280 },
-    { year: 2015, value: 480 },
-    { year: 2018, value: 600 },
-    { year: 2020, value: 650 },
-    { year: 2023, value: 720 },
-    { year: 2025, value: 780 },
-  ];
+  const parseNetWorthString = (str) => {
+    if (!str) return 0;
+    if (typeof str === 'number') return str;
+    // Remove symbols and handle M/Cr
+    const clean = str.replace(/[₹$,]/g, "").toUpperCase();
+    let val = parseFloat(clean);
+    if (clean.includes("M")) val = val; // Assuming base is M
+    else if (clean.includes("CR")) val = val * 0.12; // Very rough conversion for scale, but let's just use numeric values
+    return isNaN(val) ? 0 : val;
+  };
 
-  const milestones = [
-    { year: 2005, text: "DDLJ becomes longest running film", color: "bg-yellow-500" },
-    { year: 2010, text: "My Name Is Khan global success", color: "bg-red-500" },
-    { year: 2015, text: "Dilwale breaks records", color: "bg-yellow-500" },
-    { year: 2018, text: "KKR IPL championship win", color: "bg-red-500" },
-    { year: 2023, text: "Pathaan breaks all-time records", color: "bg-yellow-500" },
-    { year: 2025, text: "Continued global expansion", color: "bg-red-500" },
-  ];
+  const timelineData = dynamicTimeline.length > 0
+    ? dynamicTimeline.map(item => ({
+        year: item.year,
+        value: parseNetWorthString(item.netWorth),
+        displayValue: item.netWorth
+      })).sort((a, b) => a.year - b.year)
+    : celebrity?.netWorthTimeline?.timeline && celebrity.netWorthTimeline.timeline.length > 0
+    ? celebrity.netWorthTimeline.timeline.map(item => ({
+        year: item.year,
+        value: parseNetWorthString(item.netWorth),
+        displayValue: item.netWorth
+      })).sort((a, b) => a.year - b.year)
+    : [
+        { year: 2000, value: 50 },
+        { year: 2005, value: 150 },
+        { year: 2010, value: 280 },
+        { year: 2015, value: 480 },
+        { year: 2018, value: 600 },
+        { year: 2020, value: 650 },
+        { year: 2023, value: 720 },
+        { year: 2025, value: 780 },
+      ];
+
+  const milestones = dynamicMilestones.length > 0
+    ? dynamicMilestones.map((m, index) => ({
+        year: m.year,
+        text: m.milestone,
+        color: index % 2 === 0 ? "bg-yellow-500" : "bg-red-500"
+      }))
+    : celebrity?.netWorthTimeline?.keyMilestones && celebrity.netWorthTimeline.keyMilestones.length > 0
+    ? celebrity.netWorthTimeline.keyMilestones.map((m, index) => ({
+        year: m.year,
+        text: m.milestone,
+        color: index % 2 === 0 ? "bg-yellow-500" : "bg-red-500"
+      }))
+    : [
+        { year: 2005, text: "DDLJ becomes longest running film", color: "bg-yellow-500" },
+        { year: 2010, text: "My Name Is Khan global success", color: "bg-red-500" },
+        { year: 2015, text: "Dilwale breaks records", color: "bg-yellow-500" },
+        { year: 2018, text: "KKR IPL championship win", color: "bg-red-500" },
+        { year: 2023, text: "Pathaan breaks all-time records", color: "bg-yellow-500" },
+        { year: 2025, text: "Continued global expansion", color: "bg-red-500" },
+      ];
 
   // Dynamically generate comparisons from fetched celebrities
   const comparisons = allCelebrities
@@ -120,7 +188,15 @@ export default function NetWorthSection({ celebrity }) {
       status: c.heroSection?.careerStage || "Active",
       statusColor: c.heroSection?.careerStage === "Peak" ? "text-cyan-400" : "text-green-400",
     }))
-    .slice(0, 4); // Show top 4 for now
+    .slice(0, 3); // Show 3 to leave room for Top 5 Richest card
+
+  const top5Richest = [...allCelebrities]
+    .sort((a, b) => {
+      const aVal = a.netWorth?.netWorthUSD?.max || 0;
+      const bVal = b.netWorth?.netWorthUSD?.max || 0;
+      return bVal - aVal;
+    })
+    .slice(0, 5);
 
   const relatedIntelligence = [
     {
@@ -154,28 +230,38 @@ export default function NetWorthSection({ celebrity }) {
     },
   ];
 
-  const faqs = [
-    {
-      question: "Is Shah Rukh Khan the richest actor in India?",
-      answer:
-        "Yes, Shah Rukh Khan is currently estimated to be the richest actor in India with a net worth of approximately $770-780 million. This places him significantly ahead of other Bollywood actors. His wealth comes from a combination of film earnings, production ventures, brand endorsements, and business investments including his stake in the Kolkata Knight Riders IPL team.",
-    },
-    {
-      question: "Does this estimate include his IPL team ownership?",
-      answer:
-        "Yes, the estimate includes the value of his stake in Kolkata Knight Riders, which is estimated to be worth around $150-200 million based on current IPL team valuations.",
-    },
-    {
-      question: "How accurate are these net worth estimates?",
-      answer:
-        "Our estimates are calculated using publicly available data including film earnings, brand endorsements, business investments, and asset valuations. We cross-reference multiple industry sources and financial reports to provide the most accurate range possible.",
-    },
-    {
-      question: "How does SRK's net worth compare globally?",
-      answer:
-        "Shah Rukh Khan ranks among the top 10 richest actors in the world, competing with Hollywood stars. His diversified portfolio and business acumen have helped him build wealth comparable to international A-list celebrities.",
-    },
-  ];
+  const faqs = dynamicFaqs.length > 0
+    ? dynamicFaqs.map(faq => ({
+        question: faq.question,
+        answer: faq.answer
+      }))
+    : celebrity?.faqs && celebrity.faqs.length > 0
+    ? celebrity.faqs.map(faq => ({
+        question: faq.question,
+        answer: faq.answer
+      }))
+    : [
+        {
+          question: "Is Shah Rukh Khan the richest actor in India?",
+          answer:
+            "Yes, Shah Rukh Khan is currently estimated to be the richest actor in India with a net worth of approximately $770-780 million. This places him significantly ahead of other Bollywood actors. His wealth comes from a combination of film earnings, production ventures, brand endorsements, and business investments including his stake in the Kolkata Knight Riders IPL team.",
+        },
+        {
+          question: "Does this estimate include his IPL team ownership?",
+          answer:
+            "Yes, the estimate includes the value of his stake in Kolkata Knight Riders, which is estimated to be worth around $150-200 million based on current IPL team valuations.",
+        },
+        {
+          question: "How accurate are these net worth estimates?",
+          answer:
+            "Our estimates are calculated using publicly available data including film earnings, brand endorsements, business investments, and asset valuations. We cross-reference multiple industry sources and financial reports to provide the most accurate range possible.",
+        },
+        {
+          question: "How does SRK's net worth compare globally?",
+          answer:
+            "Shah Rukh Khan ranks among the top 10 richest actors in the world, competing with Hollywood stars. His diversified portfolio and business acumen have helped him build wealth comparable to international A-list celebrities.",
+        },
+      ];
 
   const sections = [
     { id: "net-worth-estimate", label: "Net Worth Estimate" },
@@ -186,12 +272,14 @@ export default function NetWorthSection({ celebrity }) {
     { id: "faqs", label: "FAQs" },
   ];
 
-  const [activeSection, setActiveSection] = useState("net-worth-estimate");
-
   const currencyConfig =
     currency === "USD"
       ? { symbol: "$", unit: "million", format: (n) => new Intl.NumberFormat("en-US").format(n) }
       : { symbol: "₹", unit: "crore", format: (n) => new Intl.NumberFormat("en-IN").format(n) };
+
+  if (!isClient) {
+    return null; // or a loading spinner
+  }
 
   return (
     <section className="min-h-screen bg-[#0a0a0f]">
@@ -411,65 +499,92 @@ export default function NetWorthSection({ celebrity }) {
 
               {/* Chart */}
               <div className="relative h-64 mb-8">
-                <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-[#6E6E73]">
-                  <span>$800M</span>
-                  <span>$600M</span>
-                  <span>$400M</span>
-                  <span>$200M</span>
-                  <span>$0M</span>
-                </div>
-                <svg
-                  className="w-full h-full pl-12"
-                  viewBox="0 0 800 200"
-                  preserveAspectRatio="none"
-                >
-                  <defs>
-                    <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" stopColor="#00D9FF" />
-                      <stop offset="100%" stopColor="#FF3B30" />
-                    </linearGradient>
-                  </defs>
-                  {/* Grid lines */}
-                  {[0, 1, 2, 3, 4].map((i) => (
-                    <line
-                      key={i}
-                      x1="0"
-                      y1={i * 50}
-                      x2="800"
-                      y2={i * 50}
-                      stroke="#1f2733"
-                      strokeDasharray="4"
-                    />
-                  ))}
-                  {/* Guide line at 2020 */}
-                  <line x1="500" y1="0" x2="500" y2="200" stroke="#9ca3af" strokeOpacity="0.5" />
-                  {/* Line chart */}
-                  <path
-                    d="M 0,175 L 100,162 L 200,130 L 300,88 L 400,50 L 500,37 L 600,25 L 700,10"
-                    fill="none"
-                    stroke="url(#lineGradient)"
-                    strokeWidth="3"
-                  />
-                  {/* Data points */}
-                  {timelineData.map((point, index) => (
-                    <circle
-                      key={index}
-                      cx={index * 100}
-                      cy={200 - (point.value / 800) * 200}
-                      r="6"
-                      fill={index < 5 ? "#eab308" : "#ef4444"}
-                      className="cursor-pointer hover:r-8 transition-all"
-                    />
-                  ))}
-                  {/* Highlight ring at 2020 */}
-                  <circle cx="500" cy={200 - (650 / 800) * 200} r="7.5" fill="transparent" stroke="#ffffff" strokeOpacity="0.9" />
-                  <circle cx="500" cy={200 - (650 / 800) * 200} r="5" fill="#0a0a0f" stroke="#FF3B30" strokeWidth="2" />
-                </svg>
-                <div className="absolute bottom-0 left-12 right-0 flex justify-between text-xs text-gray-500">
-                  {timelineData.map((point) => (
-                    <span key={point.year}>{point.year}</span>
-                  ))}
-                </div>
+                {(() => {
+                  const maxVal = Math.max(...timelineData.map(d => d.value), 800);
+                  const minYear = Math.min(...timelineData.map(d => d.year));
+                  const maxYear = Math.max(...timelineData.map(d => d.year));
+                  const yearRange = maxYear - minYear || 1;
+                  
+                  const getX = (year) => ((year - minYear) / yearRange) * 800;
+                  const getY = (value) => 200 - (value / maxVal) * 200;
+                  
+                  const pathData = timelineData.map((d, i) => 
+                    `${i === 0 ? 'M' : 'L'} ${getX(d.year)},${getY(d.value)}`
+                  ).join(' ');
+
+                  return (
+                    <>
+                      <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-[#6E6E73]">
+                        <span>${maxVal}M</span>
+                        <span>${Math.round(maxVal * 0.75)}M</span>
+                        <span>${Math.round(maxVal * 0.5)}M</span>
+                        <span>${Math.round(maxVal * 0.25)}M</span>
+                        <span>$0M</span>
+                      </div>
+                      <svg
+                        className="w-full h-full pl-12"
+                        viewBox="0 0 800 200"
+                        preserveAspectRatio="none"
+                      >
+                        <defs>
+                          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor="#00D9FF" />
+                            <stop offset="100%" stopColor="#FF3B30" />
+                          </linearGradient>
+                        </defs>
+                        {/* Grid lines */}
+                        {[0, 0.25, 0.5, 0.75, 1].map((p, i) => (
+                          <line
+                            key={i}
+                            x1="0"
+                            y1={p * 200}
+                            x2="800"
+                            y2={p * 200}
+                            stroke="#1f2733"
+                            strokeDasharray="4"
+                          />
+                        ))}
+                        {/* Line chart */}
+                        <path
+                          d={pathData}
+                          fill="none"
+                          stroke="url(#lineGradient)"
+                          strokeWidth="3"
+                        />
+                        {/* Data points */}
+                        {timelineData.map((point, index) => {
+                          const hasMilestone = milestones.some(m => m.year === point.year);
+                          const cx = getX(point.year);
+                          const cy = getY(point.value);
+                          
+                          return (
+                            <g key={index} className="group/point">
+                              {hasMilestone && (
+                                <>
+                                  <circle cx={cx} cy={cy} r="10" fill="transparent" stroke="#ffffff" strokeOpacity="0.5" />
+                                  <circle cx={cx} cy={cy} r="6" fill="#0a0a0f" stroke="#ef4444" strokeWidth="2" />
+                                </>
+                              )}
+                              <circle
+                                cx={cx}
+                                cy={cy}
+                                r="6"
+                                fill={hasMilestone ? "transparent" : (index < timelineData.length / 2 ? "#eab308" : "#ef4444")}
+                                className="cursor-pointer group-hover/point:r-8 transition-all"
+                              />
+                              <title>{point.year}: {point.displayValue || `$${point.value}M`}</title>
+                            </g>
+                          );
+                        })}
+                      </svg>
+                      <div className="absolute bottom-0 left-12 right-0 flex justify-between text-xs text-gray-500">
+                        {timelineData.map((point) => (
+                          <span key={point.year}>{point.year}</span>
+                        ))}
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Key Milestones */}
@@ -501,7 +616,7 @@ export default function NetWorthSection({ celebrity }) {
                 {comparisons.map((celeb, index) => (
                   <Link
                     key={index}
-                    href={`/celebrity/${processedCelebrity?.slug}/compare?with=${celeb.slug}`}
+                    href={`/celebrity/${celeb.slug}/profile`}
                     className={`group relative rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer ${
                       celeb.highlight
                         ? "border-cyan-500 bg-[#12121a]"
@@ -515,21 +630,6 @@ export default function NetWorthSection({ celebrity }) {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                      <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <svg
-                          className="w-4 h-4 text-red-500"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5l7 7-7 7"
-                          />
-                        </svg>
-                      </div>
                     </div>
                     <div className="p-4">
                       <h4
@@ -557,6 +657,44 @@ export default function NetWorthSection({ celebrity }) {
                     </div>
                   </Link>
                 ))}
+
+                {/* Top 5 Richest Card */}
+                <div 
+                  onClick={() => setShowTop5Modal(true)}
+                  className="group relative rounded-xl overflow-hidden border border-gray-800 bg-[#12121a] hover:border-gray-600 transition-all duration-300 cursor-pointer"
+                >
+                  <div className="relative aspect-[3/4] overflow-hidden">
+                    <img
+                      src={top5Richest[0]?.heroSection?.profileImage || "/placeholder.jpg"}
+                      alt="Top 5 Richest"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                    <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <svg
+                        className="w-4 h-4 text-red-500"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-semibold text-white">Top 5 Richest</h4>
+                    <p className="text-cyan-400 font-bold">View List</p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <TrendingUp className="w-3 h-3 text-cyan-400" />
+                      <span className="text-xs px-2 py-0.5 rounded border border-cyan-500/30 text-cyan-400">Rising</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -789,6 +927,79 @@ export default function NetWorthSection({ celebrity }) {
           </div>
         </div>
       </div>
+
+      {/* Top 5 Richest Modal */}
+      {showTop5Modal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#1A1A24] border border-gray-800 rounded-3xl w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="p-6 border-b border-gray-800 flex items-center justify-between bg-[#0F0F14]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-cyan-400" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Top 5 Richest</h3>
+                  <p className="text-xs text-gray-500">Global net worth rankings</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowTop5Modal(false)}
+                className="p-2 hover:bg-white/5 rounded-full text-gray-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            
+            <div className="p-4 space-y-3 max-h-[60vh] overflow-y-auto custom-scrollbar">
+              {top5Richest.map((celeb, index) => (
+                <Link
+                  key={celeb._id}
+                  href={`/celebrity/${celeb.heroSection.slug}/profile`}
+                  className="flex items-center gap-4 p-3 rounded-2xl bg-[#0F0F14] border border-gray-800 hover:border-cyan-500/50 hover:bg-[#12121a] transition-all group cursor-pointer"
+                >
+                  <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+                    <img 
+                      src={celeb.heroSection.profileImage || "/placeholder.jpg"} 
+                      alt={celeb.heroSection.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute top-1 left-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-white/10">
+                      #{index + 1}
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-white font-semibold truncate group-hover:text-cyan-400 transition-colors">
+                      {celeb.heroSection.name}
+                    </h4>
+                    <p className="text-xs text-gray-500 truncate">
+                      {Array.isArray(celeb.heroSection.profession) 
+                        ? celeb.heroSection.profession[0] 
+                        : celeb.heroSection.profession}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-cyan-400 font-bold">
+                      {celeb.netWorth?.netWorthUSD?.display || `$${celeb.netWorth?.netWorthUSD?.max}M`}
+                    </p>
+                    <p className="text-[10px] text-gray-600 uppercase tracking-wider">Net Worth</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+            
+            <div className="p-6 bg-[#0F0F14] border-t border-gray-800">
+              <Link 
+                href="/celebrities/top-10-richest"
+                className="block w-full py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-white text-center font-bold hover:from-cyan-500 hover:to-blue-500 transition-all shadow-lg shadow-cyan-900/20"
+              >
+                View Full Top 10 Ranking
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

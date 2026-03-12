@@ -130,9 +130,7 @@ function CelebrityDropdown({ label, selected, onSelect, disabled = false }) {
   );
 }
 
-export default function CompareTopSection({ celebrityA, celebrityB, onSelectA, onSelectB }) {
-  const [currency, setCurrency] = useState("USD");
-
+export default function CompareTopSection({ celebrityA, celebrityB, onSelectA, onSelectB, currency, setCurrency }) {
   const formatSelection = (celeb) => {
     if (!celeb) return null;
     return {

@@ -1,56 +1,105 @@
+import { useState, useEffect } from "react";
+import { Clock, Eye, ArrowRight } from "lucide-react";
+
 export default function TrendingSection() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      try {
+        const res = await fetch("/api/trending-intelligence");
+        const data = await res.json();
+        if (data.success) {
+          setItems(data.data.slice(0, 6));
+        }
+      } catch (error) {
+        console.error("Failed to fetch trending intelligence:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTrending();
+  }, []);
+
+  const getCategoryColor = (cat) => {
+    switch (cat) {
+      case "Explained": return "bg-purple-600";
+      case "Box Office": return "bg-emerald-600";
+      case "OTT": return "bg-blue-600";
+      default: return "bg-gray-600";
+    }
+  };
+
   return (
-    <section id="box-office" className="relative py-28">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#050505] via-gray-950/30 to-transparent" />
+    <section id="trending-intelligence" className="relative py-28 bg-[#050505]">
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
-        <div className="flex items-center justify-between gap-6 mb-10">
-          <div className="space-y-3">
-            <div className="inline-block px-4 py-2 bg-red-600/10 border border-red-600/30 rounded-full">
-              <span className="text-red-500 font-semibold text-sm uppercase tracking-wider">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-red-600/10 bg-red-600/10 px-5 py-2.5 text-xs md:text-sm">
+              <span className="block w-2 h-2 bg-red-600 rounded-full animate-pulse flex-shrink-0" />
+              <span className="text-red-500 font-semibold text-sm uppercase tracking-wide">
                 Trending Now
               </span>
             </div>
-            <h2 className="text-5xl font-serif font-bold text-white">
+            <h2 className="text-4xl md:text-6xl font-serif font-bold text-white tracking-tight leading-tight">
               Trending Intelligence Pages
             </h2>
-            <p className="text-gray-400 text-xl">Deep explanations, not breaking news</p>
+            <p className="mx-auto max-w-4xl text-lg md:text-xl font-light text-gray-300">
+              Deep explanations, not breaking news
+            </p>
           </div>
           <a
-            href="#"
-            className="hidden md:inline-flex items-center gap-2 rounded-2xl border border-gray-800 bg-white/5 px-6 py-3 text-sm font-semibold text-white hover:bg-white/10 transition"
+            href="/intelligence"
+            className="group inline-flex items-center gap-2 rounded-2xl px-8 py-4 text-sm font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 shadow-sm transition active:scale-95 hover:from-red-500 hover:to-red-600"
           >
             View All Intelligence
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="group relative overflow-hidden rounded-2xl border border-gray-800 bg-black/30"
-            >
-              <div className="relative">
-                <div className="aspect-[4/5] w-full bg-gray-800/60 rounded-t-2xl" />
-                {/* category badge placeholder (left), omit right-side time/views */}
-                <div className="absolute left-4 top-4 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold border border-white/10 bg-white/10 backdrop-blur">
-                  <span className="inline-block h-3 w-12 rounded bg-white/40" />
-                </div>
-                <div className="pointer-events-none absolute inset-0 rounded-t-2xl bg-gradient-to-b from-transparent via-black/20 to-black/60" />
-              </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="aspect-[4/5] rounded-3xl bg-gray-900 animate-pulse border border-gray-800" />
+            ))
+          ) : (
+            items.map((item) => (
+              <div
+                key={item._id}
+                className="group relative flex flex-col overflow-hidden rounded-3xl border border-gray-800/50 bg-[#0F0F14] transition-all hover:border-red-500/30 card-hover"
+              >
+                {/* Image Container */}
+                <div className="relative aspect-[4/5] w-full overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0F0F14] via-transparent to-transparent opacity-90" />
+                  
+                  {/* Category Badge */}
+                  <div className={`absolute top-6 left-6 px-4 py-1.5 rounded-xl ${getCategoryColor(item.category)} text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-black/20`}>
+                    {item.category}
+                  </div>
 
-              <div className="p-5">
-                <div className="h-6 w-3/4 rounded bg-white/15 mb-3" />
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-400 transition-colors"
-                >
-                  Read Full Intelligence
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </button>
+                  {/* Content Overlay */}
+                  <div className="absolute bottom-0 left-0 right-0 p-8 space-y-4">
+                    <h3 className="text-2xl font-bold text-white leading-tight group-hover:text-red-400 transition-colors">
+                      {item.title}
+                    </h3>
+                    <a
+                      href={`/intelligence/${item.slug}`}
+                      className="inline-flex items-center gap-2 text-sm font-bold text-red-500 hover:text-red-400 transition-all group/link"
+                    >
+                      Read Full Intelligence
+                      <ArrowRight className="w-4 h-4 transition-transform group-hover/link:translate-x-1" />
+                    </a>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
     </section>

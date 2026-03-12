@@ -47,16 +47,18 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
   const router = useRouter();
   const [celebrityA, setCelebrityA] = useState(initialCelebrityA);
   const [celebrityB, setCelebrityB] = useState(initialCelebrityB);
+  const [currency, setCurrency] = useState("USD");
 
   const formatNetWorthData = (celeb) => {
     if (!celeb) return null;
+    const nw = currency === "USD" ? celeb.netWorth?.netWorthUSD : celeb.netWorth?.netWorthINR;
     return {
       name: celeb.heroSection?.name,
       image: celeb.heroSection?.profileImage,
       profession: Array.isArray(celeb.heroSection?.profession)
         ? celeb.heroSection.profession.join(", ")
         : celeb.heroSection?.profession,
-      netWorth: celeb.netWorth?.netWorthUSD?.display || `$${celeb.netWorth?.netWorthUSD?.min}M`,
+      netWorth: nw?.display || `${currency === "USD" ? "$" : "₹"}${nw?.min || 0}${currency === "USD" ? "M" : "Cr"}`,
       slug: celeb.heroSection?.slug,
     };
   };
@@ -65,7 +67,7 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
     if (!celeb?.netWorthTimeline?.timeline) return [];
     return celeb.netWorthTimeline.timeline.map(item => ({
       year: item.year,
-      value: item.netWorth
+      value: currency === "USD" ? item.netWorth : Math.round(item.netWorth * 83) // Approx conversion if INR not stored
     })).sort((a, b) => a.year - b.year);
   };
 
@@ -137,12 +139,14 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
         celebrityB={celebrityB} 
         onSelectA={handleSelectA}
         onSelectB={handleSelectB}
+        currency={currency}
+        setCurrency={setCurrency}
       />
       
       <CompareNetWorthSection 
         celebrityA={aNetWorth}
         celebrityB={bNetWorth}
-        currency="USD"
+        currency={currency}
       />
 
       <NetWorthGrowthTimeline
@@ -157,6 +161,7 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
           points: finalBTimeline,
         }}
         maxY={Math.max(...[...finalATimeline, ...finalBTimeline].map(p => p.value), 800) * 1.1}
+        currency={currency}
       />
 
       <IncomeSourceAnalysis
@@ -169,9 +174,9 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
           data: bIncome,
         }}
       />
-      <ComparisonStats />
-      <RelatedIntelligence />
-      <CompareFAQ />
+      <ComparisonStats celebrityA={celebrityA} celebrityB={celebrityB} />
+      <RelatedIntelligence celebrityA={celebrityA} celebrityB={celebrityB} />
+      <CompareFAQ celebrityA={celebrityA} />
       <ExploreCTA
         aSlug={celebrityA?.heroSection?.slug}
         bSlug={celebrityB?.heroSection?.slug}

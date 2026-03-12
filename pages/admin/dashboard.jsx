@@ -1,7 +1,8 @@
  "use client";
  import Head from "next/head";
  import AdminLayout from "@/components/AdminLayout";
- import { Gauge } from "lucide-react";
+ import Link from "next/link";
+ import { Gauge, BarChart, ArrowRight } from "lucide-react";
  
  export default function Dashboard() {
    return (
@@ -44,6 +45,16 @@
                </div>
                <div className="mt-3 h-8 rounded bg-gray-900 animate-pulse" />
              </div>
+             <Link href="/admin/trending-intelligence" className="rounded-2xl border border-gray-800 bg-black/30 p-5 hover:border-red-500/50 transition-all cursor-pointer group">
+               <div className="flex items-center justify-between">
+                 <span className="text-sm text-gray-400 group-hover:text-red-400">Trending Intelligence</span>
+                 <BarChart className="h-4 w-4 text-gray-400 group-hover:text-red-400" />
+               </div>
+               <div className="mt-3 flex items-center justify-between">
+                 <span className="text-2xl font-bold">Manage</span>
+                 <ArrowRight className="h-5 w-5 text-red-500" />
+               </div>
+             </Link>
            </section>
  
            <section className="grid grid-cols-1 lg:grid-cols-3 gap-4">

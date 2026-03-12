@@ -392,7 +392,7 @@ export default function CelebrityModule() {
       f.netWorthTimeline.timeline = f.netWorthTimeline.timeline.map(t => ({
         ...t,
         year: parseNumber(t.year),
-        netWorth: parseNumber(t.netWorth)
+        netWorth: String(t.netWorth || "") // Keep as string
       }));
     }
     if (Array.isArray(f.netWorthTimeline?.keyMilestones)) {

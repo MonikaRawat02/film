@@ -1,5 +1,15 @@
 import mongoose from "mongoose";
 
+const TimelineEntrySchema = new mongoose.Schema({
+  year: Number,
+  netWorth: String
+});
+
+const MilestoneEntrySchema = new mongoose.Schema({
+  year: Number,
+  milestone: String
+});
+
 const CelebritySchema = new mongoose.Schema(
 {
 
@@ -113,7 +123,9 @@ quickFacts: {
 
   profession: [String],
 
-  activeSince: Number
+  activeSince: Number,
+
+  brandEndorsements: Number
 
 },
 
@@ -140,19 +152,9 @@ netWorthCalculation: {
 netWorthTimeline: {
 
 
-  timeline: [
-    {
-      year: Number,
-      netWorth: Number
-    }
-  ],
+  timeline: [TimelineEntrySchema],
 
-  keyMilestones: [
-    {
-      year: Number,
-      milestone: String
-    }
-  ]
+  keyMilestones: [MilestoneEntrySchema]
 
 },
 
@@ -319,4 +321,5 @@ premiumIntelligence: {
 { timestamps: true }
 );
 
+delete mongoose.models.Celebrity;
 export default mongoose.models.Celebrity || mongoose.model("Celebrity", CelebritySchema);

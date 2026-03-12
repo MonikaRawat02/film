@@ -1,43 +1,23 @@
 "use client";
 import { useState, useRef } from "react";
 
-function formatMoneyM(n) {
+function formatMoneyM(n, currency = "USD") {
   const v = Number(n || 0);
-  return `$${Math.round(v)}M`;
+  return `${currency === "USD" ? "$" : "₹"}${Math.round(v)}${currency === "USD" ? "M" : "Cr"}`;
 }
 
 export default function NetWorthGrowthTimeline({
   title = "Net Worth Growth Timeline",
-  seriesA = {
-    name: "Shah Rukh Khan",
-    color: "#ef4444",
-    points: [
-      { year: 2010, value: 200 },
-      { year: 2014, value: 400 },
-      { year: 2018, value: 600 },
-      { year: 2022, value: 680 },
-      { year: 2026, value: 720 },
-    ],
-  },
-  seriesB = {
-    name: "Tom Cruise",
-    color: "#3b82f6",
-    points: [
-      { year: 2010, value: 250 },
-      { year: 2014, value: 380 },
-      { year: 2018, value: 500 },
-      { year: 2022, value: 570 },
-      { year: 2026, value: 610 },
-    ],
-  },
+  seriesA,
+  seriesB,
   maxY = 800,
   height = 350,
-  highlightYear = 2022,
+  currency = "USD",
 }) {
   const wrapRef = useRef(null);
   const [hover, setHover] = useState(null);
   const [pos, setPos] = useState({ x: 0, y: 0 });
-  const margin = { top: 24, right: 28, bottom: 40, left: 52 };
+  const margin = { top: 24, right: 40, bottom: 40, left: 60 };
   const width = 1000; // viewBox width; container is responsive
 
   const years = (seriesA.points || []).map((p) => p.year);
@@ -57,7 +37,7 @@ export default function NetWorthGrowthTimeline({
       .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.year)} ${yScale(p.value)}`)
       .join(" ");
 
-  const gridYTicks = [0, 200, 400, 600, 800];
+  const gridYTicks = [0, maxY * 0.25, maxY * 0.5, maxY * 0.75, maxY];
   const onMove = (e) => {
     const rect = wrapRef.current?.getBoundingClientRect();
     if (!rect) return;
@@ -162,7 +142,7 @@ export default function NetWorthGrowthTimeline({
                   textAnchor="end"
                   dominantBaseline="middle"
                 >
-                  {formatMoneyM(t)}
+                  {formatMoneyM(t, currency)}
                 </text>
               ))}
 
@@ -235,11 +215,11 @@ export default function NetWorthGrowthTimeline({
                   <div className="mt-1 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: seriesA.color }} />
-                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesA.points, years[hover]))}</span>
+                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesA.points, years[hover]), currency)}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: seriesB.color }} />
-                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesB.points, years[hover]))}</span>
+                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesB.points, years[hover]), currency)}</span>
                     </div>
                   </div>
                 </div>
