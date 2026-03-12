@@ -2,6 +2,9 @@ import CompareTopSection from "@/components/compare/CompareTopSection";
 import CompareNetWorthSection from "@/components/compare/CompareNetWorthSection";
 import NetWorthGrowthTimeline from "@/components/compare/NetWorthGrowthTimeline";
 import IncomeSourceAnalysis from "@/components/compare/IncomeSourceAnalysis";
+import ComparisonStats from "@/components/compare/ComparisonStats";
+import RelatedIntelligence from "@/components/compare/RelatedIntelligence";
+import CompareFAQ from "@/components/compare/CompareFAQ";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
@@ -81,6 +84,9 @@ export default function ComparePage({ celebrity }) {
           data: [],
         }}
       />
+      <ComparisonStats />
+      <RelatedIntelligence />
+      <CompareFAQ />
     </>
   );
 }

@@ -197,11 +197,7 @@ export default function NetWorthGrowthTimeline({
                   {hover != null && years[hover] === p.year ? (
                     <circle cx={xScale(p.year)} cy={yScale(p.value)} r="6" fill="none" stroke="#e5e7eb" strokeWidth="2" />
                   ) : null}
-                  <circle cx={xScale(p.year)} cy={yScale(p.value)} r="4" fill={seriesA.color}>
-                  <title>
-                    {seriesA.name} • {p.year} • {formatMoneyM(p.value)}
-                  </title>
-                  </circle>
+                  <circle cx={xScale(p.year)} cy={yScale(p.value)} r="4" fill={seriesA.color} />
                 </g>
               ))}
 
@@ -211,11 +207,7 @@ export default function NetWorthGrowthTimeline({
                   {hover != null && years[hover] === p.year ? (
                     <circle cx={xScale(p.year)} cy={yScale(p.value)} r="6" fill="none" stroke="#e5e7eb" strokeWidth="2" />
                   ) : null}
-                  <circle cx={xScale(p.year)} cy={yScale(p.value)} r="4" fill={seriesB.color}>
-                    <title>
-                      {seriesB.name} • {p.year} • {formatMoneyM(p.value)}
-                    </title>
-                  </circle>
+                  <circle cx={xScale(p.year)} cy={yScale(p.value)} r="4" fill={seriesB.color} />
                 </g>
               ))}
             </svg>
