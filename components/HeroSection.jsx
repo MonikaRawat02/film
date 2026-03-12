@@ -1,4 +1,6 @@
- export default function HeroSection() {
+import Link from "next/link";
+
+export default function HeroSection() {
    return (
    <section id="hero" className="relative z-10 max-w-[1400px] mx-auto px-6 lg:px-12 py-32 text-center">
       <div className="space-y-10">
@@ -36,13 +38,13 @@
         </div>
 
         <div className="flex flex-wrap items-center justify-center gap-5 mt-14 mb-10">
-          <a
-            href="#"
+          <Link
+            href="/create"
             className="group inline-flex items-center gap-2 rounded-2xl px-10 py-5 text-base font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 shadow-sm transition active:scale-95 hover:from-red-500 hover:to-red-600"
           >
             Explore Intelligence Pages
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </a>
+          </Link>
           <a
             href="#"
             className="group inline-flex items-center gap-2 rounded-2xl border-2 border-gray-800 bg-white/5 backdrop-blur-md px-10 py-5 text-base font-semibold text-white transition hover:border-gray-700 hover:bg-white/10 active:scale-95"
