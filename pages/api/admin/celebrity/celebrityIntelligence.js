@@ -45,7 +45,10 @@ export default async function handler(req, res) {
           awardsCount: c?.heroSection?.awardsCount ?? null,
           trendingPercentage: c?.heroSection?.growthPercentage ?? null,
           slug: c?.heroSection?.slug || null,
-          profileImage: c?.heroSection?.profileImage || null
+          profileImage: c?.heroSection?.profileImage || null,
+          profession: Array.isArray(c?.heroSection?.profession) 
+            ? c.heroSection.profession.join(", ") 
+            : c?.heroSection?.profession || null
         }
       });
     }
@@ -64,7 +67,10 @@ export default async function handler(req, res) {
       awardsCount: c?.heroSection?.awardsCount ?? null,
       trendingPercentage: c?.heroSection?.growthPercentage ?? null,
       slug: c?.heroSection?.slug || null,
-      profileImage: c?.heroSection?.profileImage || null
+      profileImage: c?.heroSection?.profileImage || null,
+      profession: Array.isArray(c?.heroSection?.profession) 
+        ? c.heroSection.profession.join(", ") 
+        : c?.heroSection?.profession || null
     }));
 
     return res.status(200).json({

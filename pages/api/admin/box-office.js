@@ -22,7 +22,12 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const data = await BoxOffice.find({}).sort({ createdAt: -1 });
+        const { q } = req.query;
+        let query = {};
+        if (q) {
+          query = { movieName: { $regex: q, $options: "i" } };
+        }
+        const data = await BoxOffice.find(query).sort({ createdAt: -1 });
         return res.status(200).json({ success: true, data });
       } catch (error) {
         return res.status(400).json({ success: false, message: error.message });

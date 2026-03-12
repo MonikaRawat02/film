@@ -130,35 +130,38 @@ function CelebrityDropdown({ label, selected, onSelect, disabled = false }) {
   );
 }
 
-export default function CompareTopSection({ celebrity }) {
-  const baseName = celebrity?.heroSection?.name || "Unknown";
-  const baseSlug = celebrity?.heroSection?.slug || "";
-  const baseImage = celebrity?.heroSection?.profileImage || "/placeholder.jpg";
-  const baseProfession = Array.isArray(celebrity?.heroSection?.profession)
-    ? celebrity.heroSection.profession.join(", ")
-    : celebrity?.heroSection?.profession || "Actor, Producer";
-
-  const options = Array.isArray(celebrity?.celebrityComparisons?.comparisons)
-    ? celebrity.celebrityComparisons.comparisons
-    : [];
-
+export default function CompareTopSection({ celebrityA, celebrityB, onSelectA, onSelectB }) {
   const [currency, setCurrency] = useState("USD");
-  const [selectedA, setSelectedA] = useState({
-    name: baseName,
-    slug: baseSlug,
-    image: baseImage,
-    profession: baseProfession,
-  });
-  const [selectedB, setSelectedB] = useState(
-    options[0]
-      ? {
-          name: options[0].name || "Select",
-          slug: options[0].slug || "",
-          image: options[0].image || "/placeholder.jpg",
-          profession: options[0].profession || "Actor, Producer",
-        }
-      : null
-  );
+
+  const formatSelection = (celeb) => {
+    if (!celeb) return null;
+    return {
+      name: celeb.heroSection?.name || "Select",
+      slug: celeb.heroSection?.slug || "",
+      image: celeb.heroSection?.profileImage || "/placeholder.jpg",
+      profession: Array.isArray(celeb.heroSection?.profession)
+        ? celeb.heroSection.profession.join(", ")
+        : celeb.heroSection?.profession || "Actor, Producer",
+    };
+  };
+
+  const selectedA = formatSelection(celebrityA);
+  const selectedB = formatSelection(celebrityB);
+
+  // Update URL when selections change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      if (selectedA?.slug) {
+        // We can't easily change the path slug without a reload in standard Next.js without router.push
+        // but we can at least keep 'with' query param in sync
+      }
+      if (selectedB?.slug) {
+        url.searchParams.set("with", selectedB.slug);
+        window.history.pushState({}, "", url.toString());
+      }
+    }
+  }, [selectedA, selectedB]);
 
   return (
     <div className="bg-[#0a0a0a]">
@@ -170,15 +173,19 @@ export default function CompareTopSection({ celebrity }) {
             <span>/</span>
             <Link href="/celebrities" className="hover:text-white transition-colors cursor-pointer">Celebrities</Link>
             <span>/</span>
-            <Link href={`/celebrity/${baseSlug}/networth`} className="hover:text-white transition-colors cursor-pointer">{baseName}</Link>
-            <span>/</span>
+            {selectedA && (
+              <>
+                <Link href={`/celebrity/${selectedA.slug}/networth`} className="hover:text-white transition-colors cursor-pointer">{selectedA.name}</Link>
+                <span>/</span>
+              </>
+            )}
             <span className="text-red-400">Compare</span>
           </div>
 
           {/* Title */}
           <div className="mb-6">
             <h1 className="text-5xl mb-3 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
-              Compare Celebrity Net Worths: {selectedA?.name || baseName}{selectedB ? ` vs ${selectedB.name}` : ""}
+              Compare Celebrity Net Worths: {selectedA?.name}{selectedB ? ` vs ${selectedB.name}` : ""}
             </h1>
             <p className="text-gray-400 text-lg">
               Instant comparison of estimated net worth, career, and earnings.
@@ -190,12 +197,12 @@ export default function CompareTopSection({ celebrity }) {
             <CelebrityDropdown
               label="Celebrity A"
               selected={selectedA}
-              onSelect={setSelectedA}
+              onSelect={(celeb) => onSelectA(celeb.slug)}
             />
             <CelebrityDropdown
               label="Celebrity B"
               selected={selectedB}
-              onSelect={setSelectedB}
+              onSelect={(celeb) => onSelectB(celeb.slug)}
             />
           </div>
 

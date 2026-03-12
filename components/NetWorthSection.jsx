@@ -501,7 +501,7 @@ export default function NetWorthSection({ celebrity }) {
                 {comparisons.map((celeb, index) => (
                   <Link
                     key={index}
-                    href={`/celebrity/${celeb.slug}/networth`}
+                    href={`/celebrity/${processedCelebrity?.slug}/compare?with=${celeb.slug}`}
                     className={`group relative rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer ${
                       celeb.highlight
                         ? "border-cyan-500 bg-[#12121a]"
