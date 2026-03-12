@@ -11,6 +11,7 @@ export default function NetWorthSection({ celebrity }) {
   const [dynamicTimeline, setTimelineData] = useState([]);
   const [dynamicMilestones, setMilestones] = useState([]);
   const [dynamicFaqs, setFaqs] = useState([]);
+  const [dynamicIncomeSources, setIncomeSources] = useState([]);
   const [activeSection, setActiveSection] = useState("net-worth-estimate");
   const [hoveredPoint, setHoveredPoint] = useState(null);
   const [showTop5Modal, setShowTop5Modal] = useState(false);
@@ -40,6 +41,25 @@ export default function NetWorthSection({ celebrity }) {
     };
     
     fetchTimelineData();
+  }, [celebrity?.heroSection?.slug]);
+
+  // Fetch specialized income sources data
+  useEffect(() => {
+    if (!celebrity?.heroSection?.slug) return;
+    
+    const fetchIncomeSourcesData = async () => {
+      try {
+        const res = await fetch(`/api/celebrity/income-sources?slug=${celebrity.heroSection.slug}`);
+        const result = await res.json();
+        if (result.success) {
+          setIncomeSources(result.data.incomeSources || []);
+        }
+      } catch (error) {
+        console.error("Error fetching income sources data from API:", error);
+      }
+    };
+    
+    fetchIncomeSourcesData();
   }, [celebrity?.heroSection?.slug]);
 
   // Fetch all celebrities for comparisons
@@ -88,7 +108,24 @@ export default function NetWorthSection({ celebrity }) {
     description: celebrity.netWorth?.analysisSummary || celebrity.netWorth?.description || "",
   } : null;
 
-  const incomeBreakdown = [
+  const getIconForSource = (name) => {
+    const lowerName = name.toLowerCase();
+    if (lowerName.includes("film") || lowerName.includes("acting") || lowerName.includes("movie")) return "🎬";
+    if (lowerName.includes("brand") || lowerName.includes("endorsement") || lowerName.includes("ad")) return "🏢";
+    if (lowerName.includes("sports") || lowerName.includes("ipl") || lowerName.includes("cricket")) return "🏏";
+    if (lowerName.includes("real estate") || lowerName.includes("property") || lowerName.includes("investment")) return "🏠";
+    return "💰"; // Default
+  };
+
+  const incomeBreakdown = dynamicIncomeSources.length > 0 
+    ? dynamicIncomeSources.map(source => ({
+        icon: getIconForSource(source.sourceName),
+        title: source.sourceName,
+        percentage: source.percentage,
+        description: source.description,
+        color: "from-[#00D9FF] to-[#FF3B30]", // Consistent with image
+      }))
+    : [
     {
       icon: "🎬",
       title: "Film Production & Acting",
