@@ -43,6 +43,8 @@ const ArticleSchema = new mongoose.Schema(
       views: { type: Number, default: 0 },
       likes: { type: Number, default: 0 },
       shares: { type: Number, default: 0 },
+      rating: { type: Number, default: 0 },
+      readTime: { type: String, default: "5 min read" },
     },
     status: {
       type: String,

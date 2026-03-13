@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { BookOpen, Clock, Star, Users, ArrowRight } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 
@@ -8,38 +10,28 @@ const playfair = Playfair_Display({
 });
 
 export default function GuidesSection() {
-  const guides = [
-    {
-      tag: "ULTIMATE GUIDE",
-      tagTone: "from-red-600 to-rose-600",
-      title: "Complete Marvel Cinematic Universe Timeline",
-      desc: "Every movie, TV show, and one-shot in chronological order with phase-wise breakdown and saga analysis",
-      read: "45 min read",
-      rating: "4.9",
-      readers: "2.1M readers",
-      cta: "Read Complete Guide",
-    },
-    {
-      tag: "FRANCHISE EXPLAINED",
-      tagTone: "from-orange-500 to-red-600",
-      title: "The Dark Knight Trilogy — Complete Intelligence",
-      desc: "Character arcs, symbolism, practical effects breakdown, box office analysis and directorial vision explained",
-      read: "38 min read",
-      rating: "4.8",
-      readers: "1.8M readers",
-      cta: "Read Complete Guide",
-    },
-    {
-      tag: "SERIES GUIDE",
-      tagTone: "from-rose-500 to-red-600",
-      title: "Game of Thrones — Complete Season Intelligence",
-      desc: "Episode-by-episode breakdown with character psychology, political intrigue, prophecies, endings and theories",
-      read: "52 min read",
-      rating: "4.7",
-      readers: "2.5M readers",
-      cta: "Read Complete Guide",
-    },
-  ];
+  const [guides, setGuides] = useState([]);
+
+  useEffect(() => {
+    const fetchGuides = async () => {
+      try {
+        const res = await fetch("/api/public/recent-guides");
+        const data = await res.json();
+        if (data.success) {
+          setGuides(data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch recent guides:", error);
+      }
+    };
+    fetchGuides();
+  }, []);
+
+  const formatReaders = (views) => {
+    if (views >= 1000000) return `${(views / 1000000).toFixed(1)}M readers`;
+    if (views >= 1000) return `${(views / 1000).toFixed(0)}K readers`;
+    return `${views} readers`;
+  };
 
   return (
     <section className="py-32 bg-gradient-to-b from-[#050505] via-red-950/5 to-[#050505] relative">
@@ -70,28 +62,29 @@ export default function GuidesSection() {
 
         <div className="mt-10 space-y-6">
           {guides.map((g, i) => (
-            <div
+            <Link
               key={i}
-              className="group relative rounded-2xl border border-red-800/30 bg-[#121112] overflow-hidden"
+              href={`/articles/${g.category}/${g.slug}`}
+              className="group block relative rounded-2xl border border-red-800/30 bg-[#121112] overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
               <div className="absolute inset-y-0 right-0 w-1/3 pointer-events-none bg-gradient-to-l from-red-900/10 to-transparent" />
               <div className="relative p-8 md:p-10 pl-12">
                 <div className="flex items-center gap-4 flex-wrap text-xs">
                   <span className="px-3 py-1 rounded-lg bg-red-600/10 border border-red-600/30 text-red-400 font-bold tracking-wide uppercase">
-                    {g.tag}
+                    {g.category}
                   </span>
-                  <div className="flex items-center gap-1 text-gray-400">
+                  {/* <div className="flex items-center gap-1 text-gray-400">
                     <Clock className="w-4 h-4" />
-                    <span>{g.read}</span>
+                    <span>{g.stats?.readTime}</span>
                   </div>
                   <div className="flex items-center gap-1 text-yellow-400">
                     <Star className="w-4 h-4" />
-                    <span>{g.rating}</span>
-                  </div>
+                    <span>{g.stats?.rating}</span>
+                  </div> */}
                   <div className="flex items-center gap-1 text-gray-400">
                     <Users className="w-4 h-4" />
-                    <span>{g.readers}</span>
+                    <span>{formatReaders(g.stats?.views || 0)}</span>
                   </div>
                 </div>
                 <div className="mt-3 flex items-start justify-between gap-6">
@@ -100,25 +93,25 @@ export default function GuidesSection() {
                       {g.title}
                     </h3>
                     <p className="mt-0 text-gray-400 text-lg leading-relaxed max-w-3xl">
-                      {g.desc}
+                      {g.summary}
                     </p>
                   </div>
                   <div className="hidden md:block">
-                    <button className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold shadow-lg hover:from-red-700 hover:to-red-800 transition-colors">
-                      {g.cta}
+                    <div className="group inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold shadow-lg hover:from-red-700 hover:to-red-800 transition-colors">
+                      Read Complete Guide
                       <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                    </button>
+                    </div>
                   </div>
                 </div>
                 <div className="mt-4 md:hidden">
-                  <button className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold shadow-lg hover:from-red-700 hover:to-red-800 transition-colors">
-                    {g.cta}
+                  <div className="w-full group inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 to-red-700 text-white font-bold shadow-lg hover:from-red-700 hover:to-red-800 transition-colors">
+                    Read Complete Guide
                     <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-                  </button>
+                  </div>
                 </div>
               </div>
               <div className="absolute inset-y-0 left-0 w-[4px] bg-red-600/40" />
-            </div>
+            </Link>
           ))}
         </div>
       </div>

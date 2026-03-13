@@ -1,5 +1,5 @@
 `use client`;
-import { useId } from "react";
+import { useId, useRef, useEffect } from "react";
 import { X } from "lucide-react";
 
 export const InputField = ({ icon: Icon, label, required, hint, onChange, value, ...props }) => {

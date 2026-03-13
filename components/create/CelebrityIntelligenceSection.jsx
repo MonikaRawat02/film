@@ -1,72 +1,26 @@
-"use client";
-
 import { useState, useEffect, useRef } from "react";
-import { Star, ChevronLeft, ChevronRight, TrendingUp, Award } from "lucide-react";
-
-const celebrities = [
-  {
-    name: "Ranbir Kapoor",
-    image: "/uploads/salmankhan.jpeg",
-    score: 92,
-    status: "Peak",
-    statusColor: "from-green-500/20 to-emerald-500/20",
-    statusTextColor: "text-green-400",
-    trending: "Top 2 Trending",
-    recentProjects: ["Animal", "Tu Jhoothi Main Makkaar"],
-  },
-  {
-    name: "Alia Bhatt",
-    image: "/uploads/salmankhan.jpeg",
-    score: 94,
-    status: "Peak",
-    statusColor: "from-green-500/20 to-emerald-500/20",
-    statusTextColor: "text-green-400",
-    trending: "Top 4 Trending",
-    recentProjects: ["Rocky Aur Rani", "Jigra"],
-  },
-  {
-    name: "Shah Rukh Khan",
-    image: "/uploads/ShahRukhKhan.jpeg",
-    score: 96,
-    status: "Peak",
-    statusColor: "from-blue-500/20 to-cyan-500/20",
-    statusTextColor: "text-blue-400",
-    trending: "Top 6 Trending",
-    recentProjects: ["Pathaan", "Jawan", "Dunki"],
-  },
-  {
-    name: "Deepika Padukone",
-    image: "/uploads/Ajaydevgan.avif",
-    score: 93,
-    status: "Rising",
-    statusColor: "from-purple-500/20 to-pink-500/20",
-    statusTextColor: "text-purple-400",
-    trending: "Top 8 Trending",
-    recentProjects: ["Pathaan", "Fighter", "Kalki 2898 AD"],
-  },
-  {
-    name: "Vicky Kaushal",
-    image: "/uploads/AmirKhan.jpeg",
-    score: 88,
-    status: "Reinvention",
-    statusColor: "from-amber-500/20 to-orange-500/20",
-    statusTextColor: "text-amber-400",
-    trending: "Top 10 Trending",
-    recentProjects: ["Sam Bahadur", "Dunki", "Chhaava"],
-  },
-  {
-    name: "Katrina Kaif",
-    image: "/uploads/Amitabh-bachchan.webp",
-    score: 85,
-    status: "Peak",
-    statusColor: "from-rose-500/20 to-red-500/20",
-    statusTextColor: "text-rose-400",
-    trending: "Top 12 Trending",
-    recentProjects: ["Tiger 3", "Merry Christmas"],
-  },
-];
+import { Star, ChevronLeft, ChevronRight, TrendingUp, Award, Loader2 } from "lucide-react";
+import Link from "next/link";
 
 function CelebrityCard({ celebrity }) {
+  const getStatusDetails = (status) => {
+    switch (status) {
+      case "Rising":
+        return { color: "from-purple-500/20 to-pink-500/20", text: "text-purple-400" };
+      case "Transition":
+        return { color: "from-amber-500/20 to-orange-500/20", text: "text-amber-400" };
+      case "Active":
+        return { color: "from-blue-500/20 to-cyan-500/20", text: "text-blue-400" };
+      case "Retired":
+        return { color: "from-rose-500/20 to-red-500/20", text: "text-rose-400" };
+      case "Peak":
+      default:
+        return { color: "from-green-500/20 to-emerald-500/20", text: "text-green-400" };
+    }
+  };
+
+  const statusStyle = getStatusDetails(celebrity.status);
+
   return (
     <div className="group relative flex-shrink-0 w-[320px] bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-2xl overflow-hidden hover:border-zinc-700/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 snap-start">
       {/* Image Container */}
@@ -90,7 +44,7 @@ function CelebrityCard({ celebrity }) {
         </div>
         
         {/* Status Badge - Top Right */}
-        <div className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${celebrity.statusColor} border border-white/10 ${celebrity.statusTextColor}`}>
+        <div className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${statusStyle.color} border border-white/10 ${statusStyle.text}`}>
           <TrendingUp className="w-3 h-3" />
           {celebrity.status}
         </div>
@@ -109,11 +63,11 @@ function CelebrityCard({ celebrity }) {
         <h3 className="text-2xl font-semibold text-white mb-1 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-red-400 group-hover:to-pink-400 group-hover:bg-clip-text transition-all duration-300">
           {celebrity.name}
         </h3>
-        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-5">Recent Projects</p>
+        <p className="text-xs text-zinc-500 uppercase tracking-wider mb-5">Profession</p>
         
-        {/* Recent Projects Tags */}
+        {/* Profession Tags */}
         <div className="flex flex-wrap gap-2 mb-5">
-          {celebrity.recentProjects.map((project, index) => (
+          {Array.isArray(celebrity.recentProjects) && celebrity.recentProjects.slice(0, 3).map((project, index) => (
             <span
               key={index}
               className="px-3 py-1.5 bg-zinc-800/80 rounded-lg text-xs text-zinc-300 border border-zinc-700/50"
@@ -124,23 +78,45 @@ function CelebrityCard({ celebrity }) {
         </div>
         
         {/* View Button */}
-        <button className="group/btn relative w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl text-sm font-medium text-white transition-all overflow-hidden">
+        <Link 
+          href={celebrity.slug ? `/celebrity/${celebrity.slug}/profile` : "#"}
+          className="group/btn relative w-full flex items-center justify-center gap-2 px-5 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl text-sm font-medium text-white transition-all overflow-hidden"
+        >
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 opacity-0 group-hover/btn:opacity-100 transition-opacity" />
           <span className="relative z-10">View Career Intelligence</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4 relative z-10">
             <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
             <circle cx="12" cy="12" r="3"/>
           </svg>
-        </button>
+        </Link>
       </div>
     </div>
   );
 }
 
 export default function CelebrityIntelligenceSection() {
+  const [celebrities, setCelebrities] = useState([]);
+  const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+
+  useEffect(() => {
+    const fetchCelebrities = async () => {
+      try {
+        const res = await fetch("/api/celebrities");
+        const json = await res.json();
+        if (json.success) {
+          setCelebrities(json.data);
+        }
+      } catch (error) {
+        console.error("Error fetching celebrities:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCelebrities();
+  }, []);
 
   const checkScroll = () => {
     const el = scrollRef.current;
@@ -156,7 +132,7 @@ export default function CelebrityIntelligenceSection() {
       el.addEventListener("scroll", checkScroll);
       return () => el.removeEventListener("scroll", checkScroll);
     }
-  }, []);
+  }, [celebrities]);
 
   const scroll = (direction) => {
     const container = scrollRef.current;
@@ -201,14 +177,25 @@ export default function CelebrityIntelligenceSection() {
       </div>
 
       {/* Horizontal Scroll Container */}
-      <div
-        ref={scrollRef}
-        className="flex gap-6 overflow-x-hidden snap-x snap-mandatory scroll-smooth"
-      >
-        {celebrities.map((celebrity, index) => (
-          <CelebrityCard key={index} celebrity={celebrity} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="flex justify-center items-center py-32">
+          <Loader2 className="w-10 h-10 text-red-500 animate-spin" />
+        </div>
+      ) : (
+        <div
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-hidden snap-x snap-mandatory scroll-smooth pb-4"
+        >
+          {celebrities.map((celebrity, index) => (
+            <CelebrityCard key={index} celebrity={celebrity} />
+          ))}
+          {celebrities.length === 0 && (
+            <div className="w-full text-center py-16">
+              <p className="text-zinc-400 text-lg">No celebrity intelligence profiles found.</p>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }
