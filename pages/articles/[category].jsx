@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -17,7 +17,6 @@ import {
   TrendingUp,
   Users
 } from "lucide-react";
-import PublicLayout from "@/components/PublicLayout";
 
 export async function getServerSideProps(context) {
   const { category } = context.params;
@@ -84,43 +83,59 @@ export default function ArticleCategoryPage({ initialArticles, category, paginat
         <title>{categoryLabels[category] || category} | Filmy Intelligence</title>
       </Head>
 
-      <div className="bg-[#050505] text-white pb-20">
-        {/* Header Section */}
-        <div className="relative pb-2 pt-2 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-red-600/10 via-transparent to-transparent" />
-          <div className="mx-auto max-w-[1400px] px-6 lg:px-12 relative z-10">
-            <nav className="flex items-center gap-2 text-sm text-gray-500 mb-8">
-              <Link href="/" className="hover:text-white transition-colors">Home</Link>
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-gray-300">Articles</span>
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-red-500 font-medium">{category}</span>
-            </nav>
-
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-              <div className="space-y-4">
-                <div className="inline-flex items-center gap-3 px-4 py-2 bg-red-600/10 border border-red-600/20 rounded-full">
-                  <Icon className="h-5 w-5 text-red-500" />
-                  <span className="text-red-500 text-sm font-bold uppercase tracking-widest">
-                    {category} PORTAL
-                  </span>
-                </div>
-                <h1 className="text-5xl md:text-6xl font-serif font-bold leading-tight">
-                  {categoryLabels[category] || category}
-                </h1>
-                <p className="text-xl text-gray-400 max-w-2xl">
-                  In-depth analysis, psychological profiles, and industry intelligence for {category}.
-                </p>
-              </div>
-
-              <div className="relative w-full md:w-96">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-500" />
+      <div className="bg-[#050505] text-white min-h-screen pt-16">
+        {/* Breadcrumb Navigation Bar */}
+        <div className="bg-[#0a0a0a] border-b border-zinc-800/60">
+          <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+            <div className="flex items-center justify-between h-14">
+              <nav className="flex items-center gap-2 text-sm">
+                <Link href="/" className="text-zinc-400 hover:text-white transition-colors">
+                  Home
+                </Link>
+                <ChevronRight className="h-4 w-4 text-zinc-600" />
+                <span className="text-zinc-400">Articles</span>
+                <ChevronRight className="h-4 w-4 text-zinc-600" />
+                <span className="text-white font-medium">{category}</span>
+              </nav>
+              
+              {/* Desktop Search */}
+              <div className="relative hidden md:block">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                 <input
                   type="text"
-                  placeholder="Search articles..."
+                  placeholder={`Search ${category.toLowerCase()}...`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-gray-900/50 border border-gray-800 rounded-2xl pl-12 pr-4 py-4 text-gray-200 focus:outline-none focus:border-red-500 transition-all"
+                  className="w-72 bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Hero Section */}
+        <div className="relative bg-gradient-to-b from-[#0f0f12] to-[#050505] py-8 lg:py-12">
+          <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+            <div className="max-w-3xl">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white mb-3">
+                {categoryLabels[category] || category}
+              </h1>
+              
+              <p className="text-base text-zinc-400 max-w-2xl leading-relaxed">
+                In-depth analysis, psychological profiles, and industry intelligence for {category}.
+              </p>
+            </div>
+
+            {/* Mobile Search */}
+            <div className="mt-8 md:hidden">
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500" />
+                <input
+                  type="text"
+                  placeholder={`Search ${category.toLowerCase()}...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-12 pr-4 py-3 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                 />
               </div>
             </div>
@@ -128,7 +143,7 @@ export default function ArticleCategoryPage({ initialArticles, category, paginat
         </div>
 
         {/* Articles Grid */}
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12 pb-20">
           {loading ? (
             <div className="py-20 flex flex-col items-center justify-center gap-4">
               <Loader2 className="h-10 w-10 text-red-500 animate-spin" />
