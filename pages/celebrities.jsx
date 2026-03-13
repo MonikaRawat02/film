@@ -58,12 +58,12 @@ export default function AllCelebrities() {
   }, [searchQuery, items]);
 
   return (
-    <div className="relative min-h-screen pb-20">
+    <div className="relative bg-[#0f0015] pb-20 pt-16">
         {/* Background */}
         <div className="absolute inset-0 -z-10 bg-[#0f0015]" />
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-fuchsia-900/10 via-transparent to-transparent" />
 
-        <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pt-10">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
           
           {/* Content Area */}
           {error && (
@@ -173,3 +173,5 @@ export default function AllCelebrities() {
       </div>
   );
 }
+
+AllCelebrities.noPadding = true;

@@ -1437,9 +1437,9 @@ export default function CelebrityModule() {
                 <Plus className="h-5 w-5" />
                 <span>Create Celebrity</span>
               </button>
-              <div className="h-10 w-10 rounded-xl bg-red-600/20 flex items-center justify-center">
-                <Star className="h-5 w-5 text-red-500" />
-              </div>
+              {/* <div className="h-10 w-10 rounded-xl bg-red-600/20 flex items-center justify-center"> */}
+                {/* <Star className="h-5 w-5 text-red-500" /> */}
+              {/* </div> */}
             </div>
           </div>
 

@@ -25,3 +25,5 @@ export default function Home() {
     </>
   );
 }
+
+Home.noPadding = true;

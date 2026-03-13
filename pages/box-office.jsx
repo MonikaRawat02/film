@@ -45,7 +45,7 @@ export default function BoxOfficePage() {
         <title>Box Office Truth Database | FilmyFire</title>
       </Head>
       
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-12 pt-4">
+      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-12 pt-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <Link 
@@ -149,3 +149,5 @@ export default function BoxOfficePage() {
     </>
   );
 }
+
+BoxOfficePage.noPadding = true;

@@ -17,3 +17,5 @@ export default function CreatePage() {
     </div>
   );
 }
+
+CreatePage.noPadding = true;

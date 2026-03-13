@@ -1,6 +1,6 @@
+import dbConnect from "../../../../lib/mongodb";
+import Article from "../../../../model/article";
 import jwt from "jsonwebtoken";
-import fs from "fs";
-import path from "path";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -30,28 +30,20 @@ export default async function handler(req, res) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    const { data, fileName } = req.body || {};
-    if (!data) {
-      return res.status(400).json({ message: "Missing file data" });
+    await dbConnect();
+
+    const { title, slug, category } = req.body || {};
+    if (!title || !slug || !category) {
+      return res.status(400).json({ message: "Missing title, slug or category" });
     }
 
-    const matches = data.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,(.+)$/);
-    if (!matches) {
-      return res.status(400).json({ message: "Invalid data URL" });
+    const existing = await Article.findOne({ slug });
+    if (existing) {
+      return res.status(409).json({ message: "Slug already exists" });
     }
-    const mime = matches[1];
-    const base64 = matches[2];
-    const ext = mime.split("/")[1] || "png";
 
-    const uploadsDir = path.join(process.cwd(), "public", "uploads");
-    await fs.promises.mkdir(uploadsDir, { recursive: true });
-
-    const namePart = (fileName || `img_${Date.now()}`).replace(/[^a-zA-Z0-9_-]/g, "");
-    const filePath = path.join(uploadsDir, `${namePart}.${ext}`);
-    await fs.promises.writeFile(filePath, Buffer.from(base64, "base64"));
-
-    const urlPath = `/uploads/${namePart}.${ext}`;
-    return res.status(200).json({ url: urlPath });
+    const doc = await Article.create(req.body);
+    return res.status(201).json({ message: "Article created", data: doc });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

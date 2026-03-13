@@ -54,7 +54,7 @@ export default function IntelligenceListingPage() {
         <title>Trending Intelligence | FilmyFire</title>
       </Head>
       
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-24 pt-8">
+      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-24 pt-20">
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-6">
@@ -184,3 +184,5 @@ export default function IntelligenceListingPage() {
     </>
   );
 }
+
+IntelligenceListingPage.noPadding = true;
