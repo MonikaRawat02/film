@@ -2,6 +2,8 @@ import CreateHero from "@/components/create/Hero";
 import TrendingIntelligenceSection from "@/components/create/TrendingIntelligenceSection";
 import MovieDNADiscovery from "@/components/create/MovieDNADiscovery";
 import PopularTopicsSection from "@/components/create/PopularTopicsSection";
+import CelebrityIntelligenceSection from "@/components/create/CelebrityIntelligenceSection";
+import ExploreByPlatformSection from "@/components/create/ExploreByPlatformSection";
 import FinalCTASection from "@/components/create/FinalCTASection";
 
 export default function CreatePage() {
@@ -12,6 +14,8 @@ export default function CreatePage() {
         <TrendingIntelligenceSection />
         <MovieDNADiscovery />
         <PopularTopicsSection />
+        <CelebrityIntelligenceSection />
+        <ExploreByPlatformSection />
       </div>
       <FinalCTASection />
     </div>

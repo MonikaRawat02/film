@@ -17,16 +17,10 @@ export default function CompareNetWorthSection({ celebrity }) {
 
   const getPercentage = (value) => Math.round((value / baseNetWorth) * 100);
   
-  const getBarColor = (percentage) => {
-    if (percentage >= 100) return "bg-gradient-to-r from-green-500 to-emerald-400";
-    if (percentage >= 70) return "bg-gradient-to-r from-purple-500 to-purple-400";
-    if (percentage >= 50) return "bg-gradient-to-r from-purple-600 to-purple-500";
-    if (percentage >= 40) return "bg-gradient-to-r from-blue-500 to-cyan-400";
-    return "bg-gradient-to-r from-yellow-500 to-orange-400";
-  };
+  const getBarColor = () => "bg-gradient-to-r from-blue-500 to-purple-500";
 
   return (
-    <section className="bg-[#0a0c14] py-12 sm:py-16">
+    <section className="py-12 sm:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
         {/* Header */}
         <div className="mb-8 sm:mb-10">
@@ -39,79 +33,87 @@ export default function CompareNetWorthSection({ celebrity }) {
           </p>
         </div>
 
-        {/* Comparison Container */}
-        <div className="bg-[#0d1017] rounded-2xl border border-gray-800 overflow-hidden">
-          {/* Base Celebrity */}
-          <div className="p-4 sm:p-6 border-b border-gray-800">
+        {/* Base Card: separate block (not nested) */}
+        <div className="rounded-2xl border border-[var(--ff-border)] bg-[var(--ff-dark-elevated)] overflow-hidden">
+          <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900/90 to-slate-800/90 border border-[var(--ff-border-subtle)]">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg sm:text-xl font-bold text-white">{name}</h3>
-                <p className="text-sm text-orange-400">Base Comparison</p>
+                <p className="text-sm text-slate-400">Base Comparison</p>
               </div>
               <div className="text-right">
-                <p className="text-2xl sm:text-3xl font-bold text-cyan-400">${baseNetWorth}M</p>
-                <p className="text-xs text-gray-500">Net Worth (2025)</p>
+                <p className="text-2xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text">
+                  ${baseNetWorth}M
+                </p>
+                <p className="text-xs text-slate-400">Net Worth (2025)</p>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Comparison Rows */}
-          <div className="divide-y divide-gray-800/50">
+        {/* Comparison Rows: separate list */}
+        <div className="space-y-3 mt-4">
             {comparisons.map((celeb, index) => {
               const percentage = getPercentage(celeb.netWorth);
               return (
                 <div
                   key={index}
-                  className="p-4 sm:p-6 hover:bg-white/[0.02] transition-colors cursor-pointer group"
+                  className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-white/20 transition-all duration-300 cursor-pointer group"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     {/* Name & Progress */}
                     <div className="flex-1">
-                      <h4 className="text-base sm:text-lg font-semibold text-white mb-3">
+                      <h4 className="text-base sm:text-lg font-bold text-white mb-3">
                         {celeb.name}
                       </h4>
                       {/* Progress Bar */}
-                      <div className="relative">
-                        <div className="h-7 sm:h-8 bg-gray-800/50 rounded-lg overflow-hidden">
-                          <div
-                            className={`h-full ${getBarColor(percentage)} rounded-lg transition-all duration-700 flex items-center`}
-                            style={{ width: `${Math.min(percentage, 100)}%` }}
-                          >
-                            <span className="text-xs font-medium text-white ml-3 whitespace-nowrap">
-                              {percentage}% of SRK&apos;s net worth
-                            </span>
-                          </div>
+                      <div className="relative h-8 bg-slate-800/50 rounded-full overflow-hidden">
+                        <div
+                          className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${getBarColor()}`}
+                          style={{ width: `${Math.min(percentage, 100)}%` }}
+                        >
+                          <div className="absolute inset-0 bg-white/10" />
+                        </div>
+                        <div className="absolute inset-0 flex items-center px-4">
+                          <span className="text-sm font-semibold text-white">
+                            {percentage}% of {name}&apos;s net worth
+                          </span>
                         </div>
                       </div>
                     </div>
 
                     {/* Net Worth & Link */}
-                    <div className="flex items-center justify-between sm:flex-col sm:items-end gap-2 sm:w-32">
-                      <div className="flex items-center gap-1">
-                        <span className="text-lg sm:text-xl font-bold text-white">
-                          ${celeb.netWorth}M
-                        </span>
-                        {celeb.trend === "up" ? (
-                          <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                          </svg>
-                        )}
+                    <div className="flex-shrink-0 sm:w-48 flex flex-col items-end justify-center gap-1">
+                      <div className="flex items-center gap-1 leading-none">
+                        <span className="text-xl font-bold text-white">${celeb.netWorth}M</span>
+                        <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
                       </div>
-                      <button className="text-sm text-cyan-400 hover:text-cyan-300 transition-colors flex items-center gap-1 cursor-pointer">
+                      <span className="inline-flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-all mt-1 cursor-pointer">
                         View Profile
-                        <span>→</span>
-                      </button>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-arrow-right w-4 h-4"
+                        >
+                          <path d="M5 12h14" />
+                          <path d="m12 5 7 7-7 7" />
+                        </svg>
+                      </span>
                     </div>
                   </div>
                 </div>
               );
             })}
           </div>
-        </div>
 
         {/* Compare CTA */}
         <div className="flex justify-center mt-8">
