@@ -816,23 +816,23 @@ export default function CelebrityModule() {
                   title={`Source ${idx + 1}`}
                 >
                   <InputField
-                    label="Source Name"
+                    label="SOURCE NAME"
                     value={source.sourceName}
                     onChange={(e) => update(`netWorthCalculation.incomeSources.${idx}.sourceName`, e.target.value)}
-                    placeholder="Film Fees"
+                    placeholder="Acting Fees & OTT"
                   />
                   <InputField
-                    label="Percentage"
+                    label="PERCENTAGE"
                     value={source.percentage}
                     onChange={(e) => update(`netWorthCalculation.incomeSources.${idx}.percentage`, e.target.value)}
-                    placeholder="40"
+                    placeholder="45"
                     type="number"
                   />
                   <InputField
-                    label="Description"
+                    label="DESCRIPTION"
                     value={source.description}
                     onChange={(e) => update(`netWorthCalculation.incomeSources.${idx}.description`, e.target.value)}
-                    placeholder="Brief description"
+                    placeholder="Primary income from acting in 2-3 films annually"
                     className="md:col-span-2 lg:col-span-1"
                   />
                 </ArrayCard>
