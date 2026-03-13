@@ -102,66 +102,6 @@ export default function CreateHero() {
           </div>
         </div>
       </div>
-      
-      {/* Sticky Filter Bar - Separate Section */}
-      <div className="sticky top-0 z-40 transition-all duration-300 bg-black/95 backdrop-blur-2xl shadow-2xl shadow-purple-500/10 border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3 py-4 overflow-x-auto scrollbar-hide">
-            <button className="group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 text-white bg-gradient-to-r from-red-600 via-purple-600 to-blue-600 rounded-xl shadow-lg shadow-purple-500/30">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-funnel w-5 h-5 text-zinc-500 flex-shrink-0">
-                <path d="M11 20h2"/>
-                <path d="m19 9-6.7-6.7a2 2 0 0 0-2.6 0L3 9"/>
-                <path d="M21 9H3"/>
-                <path d="M3 9v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9"/>
-              </svg>
-              <span className="relative z-10">All Intelligence</span>
-              <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
-            </button>
-            
-            <button className="group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-800/50 rounded-xl transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-film w-4 h-4">
-                <path d="M10.5 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8.5L10.5 2Z"/>
-                <path d="M10 2v6a2 2 0 0 0 2 2h6"/>
-              </svg>
-              <span>Story Explained</span>
-            </button>
-            
-            <button className="group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-800/50 rounded-xl transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-bar-chart-3 w-4 h-4">
-                <path d="M3 3v18h18"/>
-                <path d="M18 17V9"/>
-                <path d="M13 17V5"/>
-                <path d="M8 17v-3"/>
-              </svg>
-              <span>Box Office Intelligence</span>
-            </button>
-            
-            <button className="group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-800/50 rounded-xl transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-tv w-4 h-4">
-                <path d="M21 19V2H3v17"/>
-                <path d="M3 15h18"/>
-                <path d="M3 8a2 2 0 0 1 2-2h3V2h8v4h3a2 2 0 0 1 2 2v11"/>
-              </svg>
-              <span>OTT Performance</span>
-            </button>
-            
-            <button className="group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-800/50 rounded-xl transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star w-4 h-4">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-              </svg>
-              <span>Celebrity Intelligence</span>
-            </button>
-            
-            <button className="group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-800/50 rounded-xl transition-all">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trending-up w-4 h-4">
-                <path d="M22 7 13.5 15.5 8.5 10.5 2 17"/>
-                <path d="M16 7h6v6"/>
-              </svg>
-              <span>Industry Insights</span>
-            </button>
-          </div>
-        </div>
-      </div>
     </section>
   );
 }

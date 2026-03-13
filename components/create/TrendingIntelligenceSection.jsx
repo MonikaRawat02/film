@@ -1,6 +1,7 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Film, BarChart3, Tv, Star, Funnel } from "lucide-react";
+import { useState } from "react";
 
 const TrendingCard = ({ 
   title, 
@@ -97,6 +98,16 @@ const TrendingCard = ({
 };
 
 export default function TrendingIntelligenceSection() {
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const filters = [
+    { id: "All", label: "All Intelligence", icon: Funnel },
+    { id: "Story Explained", label: "Story Explained", icon: Film },
+    { id: "Box Office Intelligence", label: "Box Office Intelligence", icon: BarChart3 },
+    { id: "OTT Performance", label: "OTT Performance", icon: Tv },
+    { id: "Celebrity Intelligence", label: "Celebrity Intelligence", icon: Star },
+  ];
+
   const trendingData = [
     {
       title: "Animal",
@@ -166,14 +177,44 @@ export default function TrendingIntelligenceSection() {
     }
   ];
 
+  const filteredData = activeFilter === "All" 
+    ? trendingData 
+    : trendingData.filter(item => item.category.includes(activeFilter) || activeFilter.includes(item.category));
+
   return (
-    <section className="py-16">
+    <section className="py-16" id="trending-intelligence">
+      {/* Sticky Filter Bar */}
+      <div className="sticky top-16 z-40 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 bg-black/95 backdrop-blur-2xl shadow-2xl shadow-purple-500/10 border-b border-white/5 mb-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-3 py-4 overflow-x-auto scrollbar-hide">
+            {filters.map((filter) => {
+              const Icon = filter.icon;
+              const isActive = activeFilter === filter.id;
+              return (
+                <button
+                  key={filter.id}
+                  onClick={() => setActiveFilter(filter.id)}
+                  className={`group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 ${
+                    isActive
+                      ? "text-white bg-gradient-to-r from-red-600 via-purple-600 to-blue-600 shadow-lg shadow-purple-500/30"
+                      : "text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-800/50"
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? "text-white" : ""}`} />
+                  <span className="relative z-10">{filter.label}</span>
+                  {isActive && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-500 via-purple-500 to-blue-500 rounded-xl opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
       <div className="flex items-center gap-4 mb-10">
         <div className="p-3 bg-gradient-to-br from-red-500 to-pink-500 rounded-2xl shadow-lg shadow-red-500/30">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trending-up w-7 h-7 text-white">
-            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
-            <polyline points="16 7 22 7 22 13"/>
-          </svg>
+          <TrendingUp className="w-7 h-7 text-white" />
         </div>
         <div>
           <h2 className="text-4xl text-white font-sans">Trending Intelligence</h2>
@@ -182,10 +223,16 @@ export default function TrendingIntelligenceSection() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {trendingData.map((item, index) => (
+        {filteredData.map((item, index) => (
           <TrendingCard key={index} {...item} />
         ))}
       </div>
+      
+      {filteredData.length === 0 && (
+        <div className="text-center py-16">
+          <p className="text-zinc-400 text-lg">No intelligence found for this category.</p>
+        </div>
+      )}
     </section>
   );
 }
