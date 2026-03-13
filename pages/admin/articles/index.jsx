@@ -97,7 +97,7 @@ export default function ArticleModule() {
       ...INITIAL_FORM,
       ...article,
       author: { ...INITIAL_FORM.author, ...article.author },
-      seo: { ...INITIAL_FORM.seo, ...article.seo },
+      stats: { ...INITIAL_FORM.stats, ...article.stats },
     });
     setImagePreview(article.coverImage || "");
     setOpen(true);
@@ -417,7 +417,7 @@ export default function ArticleModule() {
           </div>
         );
 
-      case 1: // Content Sections
+      case 1: // Content
         return (
           <div className="space-y-5">
             <SectionCard title="Article Content" icon={FileText}>
@@ -454,7 +454,12 @@ export default function ArticleModule() {
                 </button>
               </div>
             </SectionCard>
+          </div>
+        );
 
+      case 2: // Metadata
+        return (
+          <div className="space-y-5">
             <SectionCard title="Highlights & Verdict" icon={Award}>
               <div className="space-y-4">
                 <InputField
@@ -471,10 +476,39 @@ export default function ArticleModule() {
                 />
               </div>
             </SectionCard>
+            <SectionCard title="Tags" icon={Hash}>
+              <InputField
+                label="Tags (Comma separated)"
+                value={Array.isArray(form.tags) ? form.tags.join(", ") : form.tags}
+                onChange={(e) => update("tags", e.target.value)}
+              />
+            </SectionCard>
           </div>
         );
 
-
+      case 3: // Stats
+        return (
+          <div className="space-y-5">
+            <SectionCard title="Engagement Stats" icon={BarChart}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* <InputField
+                  label="Rating"
+                  type="number"
+                  step="0.1"
+                  value={form.stats?.rating}
+                  onChange={(e) => update("stats.rating", e.target.value)}
+                  placeholder="e.g., 4.8"
+                />
+                <InputField
+                  label="Read Time"
+                  value={form.stats?.readTime}
+                  onChange={(e) => update("stats.readTime", e.target.value)}
+                  placeholder="e.g., 15 min read"
+                /> */}
+              </div>
+            </SectionCard>
+          </div>
+        );
 
       default:
         return null;

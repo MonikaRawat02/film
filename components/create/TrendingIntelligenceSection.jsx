@@ -1,19 +1,23 @@
-"use client";
-
-import { TrendingUp, Film, BarChart3, Tv, Star, Funnel } from "lucide-react";
-import { useState } from "react";
+import { TrendingUp, Film, BarChart3, Tv, Star, Funnel, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
 const TrendingCard = ({ 
   title, 
   description, 
   image, 
   category, 
-  categoryColor, 
   categoryGradient,
   rating, 
   views, 
-  readTime 
+  readTime,
+  slug
 }) => {
+  const getHref = () => {
+    if (!slug) return "#";
+    return `/intelligence/${slug}`;
+  };
+
   return (
     <div className="group relative bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-2xl overflow-hidden hover:border-zinc-700/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20">
       {/* Hover Gradient Overlay */}
@@ -80,7 +84,10 @@ const TrendingCard = ({
         {/* View Intelligence Button */}
         <div className="relative">
           <div className={`absolute inset-0 bg-gradient-to-r ${categoryGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl shadow-lg`} />
-          <button className="relative w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl text-sm font-medium text-white transition-all overflow-hidden group/btn">
+          <Link 
+            href={getHref()}
+            className="relative w-full flex items-center justify-center gap-2 px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 rounded-xl text-sm font-medium text-white transition-all overflow-hidden group/btn"
+          >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-eye w-4 h-4">
               <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
               <circle cx="12" cy="12" r="3"/>
@@ -90,7 +97,7 @@ const TrendingCard = ({
               <path d="M7 7h10v10"/>
               <path d="M7 17 17 7"/>
             </svg>
-          </button>
+          </Link>
         </div>
       </div>
     </div>
@@ -99,87 +106,67 @@ const TrendingCard = ({
 
 export default function TrendingIntelligenceSection() {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [trendingData, setTrendingData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const filters = [
     { id: "All", label: "All Intelligence", icon: Funnel },
-    { id: "Story Explained", label: "Story Explained", icon: Film },
-    { id: "Box Office Intelligence", label: "Box Office Intelligence", icon: BarChart3 },
-    { id: "OTT Performance", label: "OTT Performance", icon: Tv },
-    { id: "Celebrity Intelligence", label: "Celebrity Intelligence", icon: Star },
+    { id: "Explained", label: "Story Explained", icon: Film },
+    { id: "Box Office", label: "Box Office Intelligence", icon: BarChart3 },
+    { id: "OTT", label: "OTT Performance", icon: Tv },
+    { id: "Celebrity", label: "Celebrity Intelligence", icon: Star },
   ];
 
-  const trendingData = [
-    {
-      title: "Animal",
-      description: "Deep dive into the psychological transformation of Ranvijay and the symbolism behind the climax.",
-      image: "/uploads/animal.jpg",
-      category: "Story Explained",
-      categoryColor: "bg-blue-500/90",
-      categoryGradient: "from-blue-500 to-cyan-500",
-      rating: "8.5",
-      views: "2.4M",
-      readTime: "12 min"
-    },
-    {
-      title: "Avatar: The Way of Water",
-      description: "Analysis of how Cameron achieved $2.3B worldwide and reasons for big-budget filmmaking.",
-      image: "/uploads/avatar.jpg",
-      category: "Box Office Intelligence",
-      categoryColor: "bg-emerald-500/90",
-      categoryGradient: "from-green-500 to-emerald-500",
-      rating: "9.2",
-      views: "3.1M",
-      readTime: "15 min"
-    },
-    {
-      title: "Mirzapur Season 3",
-      description: "How Mirzapur became Prime Video's biggest Indian web series and its audience retention patterns.",
-      image: "/uploads/mirzapur.jpg",
-      category: "OTT Performance Analysis",
-      categoryColor: "bg-purple-500/90",
-      categoryGradient: "from-purple-500 to-pink-500",
-      rating: "8.8",
-      views: "1.9M",
-      readTime: "10 min"
-    },
-    {
-      title: "Ranbir Kapoor",
-      description: "From Barfi to Animal: analyzing career choices and evolution as Bollywood's versatile star.",
-      image: "/uploads/ranbir.jpg",
-      category: "Career Intelligence",
-      categoryColor: "bg-orange-500/90",
-      categoryGradient: "from-orange-500 to-red-500",
-      rating: "9",
-      views: "2.2M",
-      readTime: "18 min"
-    },
-    {
-      title: "The Dark Knight",
-      description: "Exploring the philosophical depth and moral complexity behind Nolan's masterpiece.",
-      image: "/uploads/dark-knight.jpg",
-      category: "Movie DNA Analysis",
-      categoryColor: "bg-indigo-500/90",
-      categoryGradient: "from-indigo-500 to-purple-500",
-      rating: "9.5",
-      views: "4.2M",
-      readTime: "20 min"
-    },
-    {
-      title: "Jawan",
-      description: "Shah Rukh Khan's comeback strategy and how Jawan became a pan-India blockbuster phenomenon.",
-      image: "/uploads/jawan.jpg",
-      category: "Box Office Intelligence",
-      categoryColor: "bg-teal-500/90",
-      categoryGradient: "from-teal-500 to-cyan-500",
-      rating: "8.7",
-      views: "2.6M",
-      readTime: "14 min"
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch("/api/trending-intelligence");
+        const json = await res.json();
+        if (json.success) {
+          setTrendingData(json.data);
+        }
+      } catch (error) {
+        console.error("Error fetching trending intelligence:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const getCategoryDetails = (cat) => {
+    switch (cat) {
+      case "Explained":
+        return {
+          label: "Story Explained",
+          gradient: "from-blue-500 to-cyan-500",
+        };
+      case "Box Office":
+        return {
+          label: "Box Office Intelligence",
+          gradient: "from-green-500 to-emerald-500",
+        };
+      case "OTT":
+        return {
+          label: "OTT Performance Analysis",
+          gradient: "from-purple-500 to-pink-500",
+        };
+      case "Celebrity":
+        return {
+          label: "Celebrity Intelligence",
+          gradient: "from-orange-500 to-red-500",
+        };
+      default:
+        return {
+          label: cat,
+          gradient: "from-gray-500 to-zinc-500",
+        };
     }
-  ];
+  };
 
   const filteredData = activeFilter === "All" 
     ? trendingData 
-    : trendingData.filter(item => item.category.includes(activeFilter) || activeFilter.includes(item.category));
+    : trendingData.filter(item => item.category === activeFilter);
 
   return (
     <section className="py-16" id="trending-intelligence">
@@ -222,16 +209,33 @@ export default function TrendingIntelligenceSection() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {filteredData.map((item, index) => (
-          <TrendingCard key={index} {...item} />
-        ))}
-      </div>
-      
-      {filteredData.length === 0 && (
-        <div className="text-center py-16">
-          <p className="text-zinc-400 text-lg">No intelligence found for this category.</p>
+      {loading ? (
+        <div className="flex justify-center items-center py-32">
+          <Loader2 className="w-10 h-10 text-red-500 animate-spin" />
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredData.map((item, index) => {
+              const details = getCategoryDetails(item.category);
+              return (
+                <TrendingCard 
+                  key={item._id || index} 
+                  {...item} 
+                  category={details.label}
+                  categoryGradient={details.gradient}
+                  rating={item.rating || "8.5"} // Default rating if missing
+                />
+              );
+            })}
+          </div>
+          
+          {filteredData.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-zinc-400 text-lg">No intelligence found for this category.</p>
+            </div>
+          )}
+        </>
       )}
     </section>
   );

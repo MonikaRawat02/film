@@ -18,7 +18,7 @@ const TrendingIntelligenceSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ["Explained", "Box Office", "OTT"],
+      enum: ["Explained", "Box Office", "OTT", "Celebrity"],
       required: true,
     },
     readTime: {
