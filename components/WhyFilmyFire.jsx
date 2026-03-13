@@ -6,7 +6,7 @@ export default function WhyFilmyFire() {
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#005005]/30 via-sky-900/20 to-transparent" />
       <div className="absolute inset-x-0 top-0 -z-10 h-px bg-gray-800/60" />
 
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">
           <span className="inline-block px-4 py-2 rounded-full border border-gray-800 bg-black/40 text-sm font-semibold uppercase tracking-wider text-gray-400">
             CORE INTELLIGENCE

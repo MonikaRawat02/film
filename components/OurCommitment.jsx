@@ -35,7 +35,7 @@ export default function OurCommitment() {
     <section className="relative py-32 bg-[#050505]">
       <div className="absolute inset-0 -z-10" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-red-600/5 to-green-600/5 rounded-full blur-3xl -z-10" />
-      <div className="mx-auto max-w-[1200px] px-6 lg:px-12 relative text-center">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 relative text-center">
         <div className="text-center space-y-4 mb-12">
           <div className="inline-block px-4 py-2 bg-white/5 border border-gray-800 rounded-full mb-10 uppercase text-gray-400 text-sm font-semibold tracking-wider">
             OUR COMMITMENT

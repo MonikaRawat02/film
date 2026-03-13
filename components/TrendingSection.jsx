@@ -33,7 +33,7 @@ export default function TrendingSection() {
 
   return (
     <section id="trending-intelligence" className="relative py-28 bg-[#050505]">
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div className="space-y-4">
             <div className="inline-flex items-center gap-2 rounded-full border border-red-600/10 bg-red-600/10 px-5 py-2.5 text-xs md:text-sm">

@@ -311,9 +311,9 @@ export default function NetWorthSection({ celebrity }) {
       : { symbol: "₹", unit: "crore", format: (n) => new Intl.NumberFormat("en-IN").format(n) };
 
   return (
-    <section className="min-h-screen bg-[#0a0a0f]">
+    <section className="min-h-screen bg-[#0a0a0f] overflow-x-hidden">
       {/* Breadcrumb */}
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 py-6">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-6">
         <nav className="flex items-center gap-2 text-sm text-gray-400">
           <Link href="/" className="hover:text-white transition-colors cursor-pointer">
             Home
@@ -327,7 +327,7 @@ export default function NetWorthSection({ celebrity }) {
         </nav>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-20">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pb-20">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1 space-y-8">

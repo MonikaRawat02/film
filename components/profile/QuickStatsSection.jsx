@@ -45,7 +45,7 @@ export default function QuickStatsSection({ celebrity }) {
 
   return (
     <section className="bg-[#0a0c14] py-10 sm:py-12">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
           {stats.map((stat, index) => (
             <div

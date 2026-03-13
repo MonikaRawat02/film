@@ -29,7 +29,7 @@ export default function ProfileHeroSection({ celebrity }) {
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0c14] via-[#0f1220] to-[#0a0c14]" />
       
-      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12 pt-6 pb-12">
+      <div className="relative mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-6 pb-12">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8 sm:mb-12">
           <Link href="/" className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer">

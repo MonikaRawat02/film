@@ -43,7 +43,7 @@ export default function CelebritySection() {
   return (
     <section id="celebrities" className="relative py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#0f0015] via-fuchsia-900/20 to-transparent" />
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between gap-6 mb-10">
           <div className="space-y-3">
             <div className="inline-block px-4 py-2 bg-purple-600/10 border border-purple-600/30 rounded-full">

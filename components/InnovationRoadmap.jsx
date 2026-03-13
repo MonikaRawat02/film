@@ -49,7 +49,7 @@ export default function InnovationRoadmap() {
   return (
     <section className="relative py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black via-gray-900/20 to-transparent" />
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-600/30 bg-amber-500/10 text-amber-400 text-sm font-semibold uppercase tracking-wider">
             <Rocket className="w-4 h-4" />

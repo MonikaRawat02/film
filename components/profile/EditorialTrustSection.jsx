@@ -38,7 +38,7 @@ export default function EditorialTrustSection({ celebrity }) {
 
   return (
     <section className="bg-[#0a0c14] py-12 sm:py-16">
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Trust Card */}
         <div className="bg-[#0d1017] rounded-2xl border border-gray-800 p-6 sm:p-8 max-w-4xl mx-auto">
           {/* Header */}
