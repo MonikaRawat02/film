@@ -184,37 +184,6 @@ export default function ArticleDetailPage({ article, category }) {
               ))}
             </div>
           </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-4 space-y-10">
-            {/* Quick Highlights */}
-            <div className="bg-gray-900/30 border border-gray-800 rounded-3xl p-8 space-y-8 sticky top-24">
-              <h3 className="text-xl font-bold text-white uppercase tracking-widest border-b border-gray-800 pb-4">
-                Key Highlights
-              </h3>
-              <ul className="space-y-6">
-                {(article.highlights || []).map((highlight, i) => (
-                  <li key={i} className="flex items-start gap-4 group">
-                    <div className="h-6 w-6 rounded-full bg-red-600/10 border border-red-600/30 flex items-center justify-center shrink-0 mt-1 group-hover:bg-red-600 group-hover:text-white transition-all">
-                      <ChevronRight className="h-4 w-4" />
-                    </div>
-                    <span className="text-gray-400 font-medium group-hover:text-white transition-colors">{highlight}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <div className="pt-8 space-y-4">
-                <button className="w-full py-4 bg-red-600 hover:bg-red-700 text-white rounded-2xl font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all shadow-xl shadow-red-600/20">
-                  <Share2 className="h-5 w-5" />
-                  Share Analysis
-                </button>
-                <Link href={`/articles/${category}`} className="w-full py-4 bg-gray-900 hover:bg-gray-800 text-gray-400 hover:text-white rounded-2xl font-bold uppercase tracking-widest flex items-center justify-center gap-3 transition-all border border-gray-800">
-                  <ArrowLeft className="h-5 w-5" />
-                  Back to {category}
-                </Link>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </>
