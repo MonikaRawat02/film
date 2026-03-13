@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp } from "lucide-react";
+import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp, Film, Building2, BarChart3 } from "lucide-react";
 
 export default function NetWorthSection({ celebrity }) {
   const [currency, setCurrency] = useState("USD");
@@ -14,12 +14,8 @@ export default function NetWorthSection({ celebrity }) {
   const [activeSection, setActiveSection] = useState("net-worth-estimate");
   const [hoveredPoint, setHoveredPoint] = useState(null);
   const [showTop5Modal, setShowTop5Modal] = useState(false);
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
 
   // Fetch specialized timeline and milestones data
   useEffect(() => {
@@ -200,21 +196,21 @@ export default function NetWorthSection({ celebrity }) {
 
   const relatedIntelligence = [
     {
-      icon: "🎬",
+      icon: Film,
       iconBg: "bg-red-500/20",
       title: "Shah Rukh Khan Movies Intelligence",
       description:
         "Complete filmography analysis, box office performance, and career timeline",
     },
     {
-      icon: "🏢",
-      iconBg: "bg-green-500/20",
+      icon: Building2,
+      iconBg: "bg-cyan-500/20",
       title: "Shah Rukh Khan Business Empire",
       description:
         "Red Chillies Entertainment, KKR ownership, and investment portfolio breakdown",
     },
     {
-      icon: "📈",
+      icon: TrendingUp,
       iconBg: "bg-yellow-500/20",
       title: "Why SRK is India's Richest Actor",
       description:
@@ -222,8 +218,8 @@ export default function NetWorthSection({ celebrity }) {
       highlight: true,
     },
     {
-      icon: "📊",
-      iconBg: "bg-purple-500/20",
+      icon: BarChart3,
+      iconBg: "bg-blue-500/20",
       title: "SRK Career Impact Score",
       description:
         "Quantified analysis of cultural impact, industry influence, and legacy metrics",
@@ -276,10 +272,6 @@ export default function NetWorthSection({ celebrity }) {
     currency === "USD"
       ? { symbol: "$", unit: "million", format: (n) => new Intl.NumberFormat("en-US").format(n) }
       : { symbol: "₹", unit: "crore", format: (n) => new Intl.NumberFormat("en-IN").format(n) };
-
-  if (!isClient) {
-    return null; // or a loading spinner
-  }
 
   return (
     <section className="min-h-screen bg-[#0a0a0f]">
@@ -498,8 +490,8 @@ export default function NetWorthSection({ celebrity }) {
               </p>
 
               {/* Chart */}
-              <div className="relative h-64 mb-8">
-                {(() => {
+              <div className="relative h-64 mb-8" suppressHydrationWarning>
+                {mounted ? (() => {
                   const maxVal = Math.max(...timelineData.map(d => d.value), 800);
                   const minYear = Math.min(...timelineData.map(d => d.year));
                   const maxYear = Math.max(...timelineData.map(d => d.year));
@@ -584,7 +576,9 @@ export default function NetWorthSection({ celebrity }) {
                       </div>
                     </>
                   );
-                })()}
+                })() : (
+                  <div className="absolute inset-0 rounded-lg bg-black/20 border border-gray-800 animate-pulse" />
+                )}
               </div>
 
               {/* Key Milestones */}
@@ -617,43 +611,58 @@ export default function NetWorthSection({ celebrity }) {
                   <Link
                     key={index}
                     href={`/celebrity/${celeb.slug}/profile`}
-                    className={`group relative rounded-xl overflow-hidden border transition-all duration-300 cursor-pointer ${
+                    className={`group relative rounded-2xl overflow-hidden border bg-[var(--ff-dark-elevated)] transition-all duration-300 cursor-pointer hover:border-[var(--ff-cinema-red)] hover:shadow-[0_0_0_1px_var(--ff-cinema-red-glow)] ${
                       celeb.highlight
-                        ? "border-cyan-500 bg-[#12121a]"
-                        : "border-gray-800 bg-[#12121a] hover:border-gray-600"
+                        ? "border-cyan-600/50"
+                        : "border-[var(--ff-border)]"
                     }`}
                   >
-                    <div className="relative aspect-[3/4] overflow-hidden">
+                    <div className="w-full aspect-square rounded-lg overflow-hidden border border-[var(--ff-border-subtle)] relative">
                       <img
                         src={celeb.image}
                         alt={celeb.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                      <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--ff-deep-dark)]/80 backdrop-blur-sm border border-[var(--ff-border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="lucide lucide-chevron-right w-4 h-4 text-[var(--ff-cinema-red)]"
+                        >
+                          <path d="M9 18l6-6-6-6" />
+                        </svg>
+                      </div>
                     </div>
                     <div className="p-4">
                       <h4
-                        className={`font-semibold ${
-                          celeb.highlight ? "text-cyan-400" : "text-white"
+                        className={`text-base mb-2 font-semibold transition-colors ${
+                          celeb.highlight
+                            ? "text-[var(--ff-text-primary)] group-hover:text-[var(--ff-cinema-red)]"
+                            : "text-[var(--ff-text-primary)] group-hover:text-[var(--ff-cinema-red)]"
                         }`}
                       >
                         {celeb.name}
                       </h4>
-                      <p className="text-cyan-400 font-bold">{celeb.netWorth}</p>
-                      <div className="flex items-center gap-2 mt-2">
-                        <span className={`text-xs ${celeb.statusColor}`}>📈</span>
-                        <span
-                          className={`text-xs px-2 py-0.5 rounded border ${
-                            celeb.status === "Peak"
-                              ? "border-cyan-500/30 text-cyan-400"
-                              : celeb.status === "Rising"
-                              ? "border-green-500/30 text-green-400"
-                              : "border-gray-600 text-gray-400"
-                          }`}
-                        >
-                          {celeb.status}
-                        </span>
-                      </div>
+                      <p className="text-lg text-[var(--ff-electric-blue)] mb-3">{celeb.netWorth}</p>
+                      <span
+                        className={[
+                          "inline-flex items-center justify-center rounded-md px-2 py-0.5 w-fit whitespace-nowrap shrink-0 gap-1 text-xs font-medium border",
+                          celeb.status === "Peak"
+                            ? "text-[var(--ff-amber)] border-[var(--ff-amber)] bg-[var(--ff-amber-muted)]"
+                            : celeb.status === "Rising"
+                            ? "text-[var(--ff-electric-blue)] border-[var(--ff-electric-blue)] bg-[rgba(0,217,255,0.12)]"
+                            : "text-[var(--ff-neutral-text)] border-[var(--ff-neutral-border)] bg-[var(--ff-neutral-bg)]"
+                        ].join(" ")}
+                      >
+                        <TrendingUp className="w-3 h-3" />
+                        {celeb.status}
+                      </span>
                     </div>
                   </Link>
                 ))}
@@ -661,18 +670,18 @@ export default function NetWorthSection({ celebrity }) {
                 {/* Top 5 Richest Card */}
                 <div 
                   onClick={() => setShowTop5Modal(true)}
-                  className="group relative rounded-xl overflow-hidden border border-gray-800 bg-[#12121a] hover:border-gray-600 transition-all duration-300 cursor-pointer"
+                  className="group relative rounded-2xl overflow-hidden border border-[var(--ff-border)] bg-[var(--ff-dark-elevated)] hover:border-[var(--ff-cinema-red)] hover:shadow-[0_0_0_1px_var(--ff-cinema-red-glow)] transition-all duration-300 cursor-pointer"
                 >
-                  <div className="relative aspect-[3/4] overflow-hidden">
+                  <div className="w-full aspect-square rounded-lg overflow-hidden border border-[var(--ff-border-subtle)] relative">
                     <img
                       src={top5Richest[0]?.heroSection?.profileImage || "/placeholder.jpg"}
                       alt="Top 5 Richest"
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
+                    <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--ff-deep-dark)]/80 backdrop-blur-sm border border-[var(--ff-border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                       <svg
-                        className="w-4 h-4 text-red-500"
+                        className="w-4 h-4 text-[var(--ff-cinema-red)]"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -681,7 +690,7 @@ export default function NetWorthSection({ celebrity }) {
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M9 5l7 7-7 7"
+                          d="M9 18l6-6-6-6"
                         />
                       </svg>
                     </div>
@@ -709,27 +718,29 @@ export default function NetWorthSection({ celebrity }) {
                 {relatedIntelligence.map((item, index) => (
                   <div
                     key={index}
-                    className={`group p-5 rounded-xl border transition-all duration-300 cursor-pointer ${
-                      item.highlight
-                        ? "border-yellow-500/50 bg-[#12121a] hover:border-yellow-500"
-                        : "border-gray-800 bg-[#12121a] hover:border-gray-600"
-                    }`}
+                    className={[
+                      "group p-5 rounded-xl border transition-all cursor-pointer",
+                      "bg-[var(--ff-dark-elevated)] border-[var(--ff-border)] hover:border-[var(--ff-electric-blue)] hover:shadow-[var(--ff-electric-blue-glow)]"
+                    ].join(" ")}
                   >
                     <div className="flex items-start gap-4">
                       <div
-                        className={`w-12 h-12 rounded-lg ${item.iconBg} flex items-center justify-center flex-shrink-0`}
+                        className={`w-12 h-12 rounded-xl ${item.highlight ? "bg-[var(--ff-amber-muted)] text-[var(--ff-amber)]" : item.iconBg} flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110`}
                       >
-                        <span className="text-xl">{item.icon}</span>
+                        {item.icon ? <item.icon className="w-6 h-6" /> : null}
                       </div>
                       <div>
                         <h4
-                          className={`font-semibold mb-1 ${
-                            item.highlight ? "text-yellow-400" : "text-white"
-                          }`}
+                          className={[
+                            "font-semibold mb-1 transition-colors",
+                            "text-[var(--ff-text-primary)] group-hover:text-[var(--ff-electric-blue)]"
+                          ].join(" ")}
                         >
                           {item.title}
                         </h4>
-                        <p className="text-sm text-gray-500">{item.description}</p>
+                        <p className="text-sm leading-relaxed text-[#6E6E73] group-hover:text-[#6E6E73]">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   </div>
