@@ -486,6 +486,48 @@ export default function CelebrityModule() {
 };
 
 
+  const formatUSD = (val) => {
+    if (!val) return "";
+    const n = Number(val);
+    if (n >= 1000000000) return `$${(n / 1000000000).toFixed(1)}B`;
+    if (n >= 1000000) return `$${(n / 1000000).toFixed(0)}M`;
+    return `$${n.toLocaleString()}`;
+  };
+
+  const formatINR = (val) => {
+    if (!val) return "";
+    const n = Number(val);
+    if (n >= 10000000) return `₹${(n / 10000000).toFixed(0)} Cr`;
+    if (n >= 100000) return `₹${(n / 100000).toFixed(0)} Lakh`;
+    return `₹${n.toLocaleString()}`;
+  };
+
+  const handleUSDChange = (field, value) => {
+    const usdVal = Number(value);
+    const inrVal = usdVal * 83; // Current market rate approx
+    
+    setForm(prev => {
+      const next = JSON.parse(JSON.stringify(prev));
+      next.netWorth.netWorthUSD[field] = value;
+      next.netWorth.netWorthINR[field] = inrVal;
+      
+      // Update display strings
+      const min = Number(field === 'min' ? value : next.netWorth.netWorthUSD.min);
+      const max = Number(field === 'max' ? value : next.netWorth.netWorthUSD.max);
+      
+      if (min && max) {
+        next.netWorth.netWorthUSD.display = `${formatUSD(min)} - ${formatUSD(max)}`;
+        next.netWorth.netWorthINR.display = `${formatINR(min * 83)} - ${formatINR(max * 83)}`;
+      } else if (min || max) {
+        const val = min || max;
+        next.netWorth.netWorthUSD.display = formatUSD(val);
+        next.netWorth.netWorthINR.display = formatINR(val * 83);
+      }
+      
+      return next;
+    });
+  };
+
   const renderTabContent = () => {
     switch (activeTab) {
       case 0: // Basic Info
@@ -684,52 +726,23 @@ export default function CelebrityModule() {
               />
             </SectionCard>
 
-            <SectionCard title="INR Values" icon={DollarSign}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <InputField
-                  label="Minimum (INR)"
-                  value={form.netWorth.netWorthINR.min}
-                  onChange={(e) => update("netWorth.netWorthINR.min", e.target.value)}
-                  placeholder="7000000000"
-                  type="number"
-                />
-                <InputField
-                  label="Maximum (INR)"
-                  value={form.netWorth.netWorthINR.max}
-                  onChange={(e) => update("netWorth.netWorthINR.max", e.target.value)}
-                  placeholder="7500000000"
-                  type="number"
-                />
-                <InputField
-                  label="Display (INR)"
-                  value={form.netWorth.netWorthINR.display}
-                  onChange={(e) => update("netWorth.netWorthINR.display", e.target.value)}
-                  placeholder="₹7000 Cr"
-                />
-              </div>
-            </SectionCard>
-
-            <SectionCard title="USD Values" icon={DollarSign}>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <SectionCard title="Net Worth Estimate (USD)" icon={DollarSign}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <InputField
                   label="Minimum (USD)"
                   value={form.netWorth.netWorthUSD.min}
-                  onChange={(e) => update("netWorth.netWorthUSD.min", e.target.value)}
+                  onChange={(e) => handleUSDChange('min', e.target.value)}
                   placeholder="850000000"
                   type="number"
+                  hint="e.g., 850000000 for $850M"
                 />
                 <InputField
                   label="Maximum (USD)"
                   value={form.netWorth.netWorthUSD.max}
-                  onChange={(e) => update("netWorth.netWorthUSD.max", e.target.value)}
+                  onChange={(e) => handleUSDChange('max', e.target.value)}
                   placeholder="900000000"
                   type="number"
-                />
-                <InputField
-                  label="Display (USD)"
-                  value={form.netWorth.netWorthUSD.display}
-                  onChange={(e) => update("netWorth.netWorthUSD.display", e.target.value)}
-                  placeholder="$850M"
+                  hint="e.g., 900000000 for $900M"
                 />
               </div>
             </SectionCard>

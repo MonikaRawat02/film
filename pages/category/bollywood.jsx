@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import BollywoodHeroSection from "../../components/category/bollywood/BollywoodHeroSection";
-import BollywoodFilterBar from "../../components/category/bollywood/BollywoodFilterBar";
-import BollywoodArticlesGrid from "../../components/category/bollywood/BollywoodArticlesGrid";
+import CategoryHeroSection from "../../components/category/CategoryHeroSection";
+import CategoryFilterBar from "../../components/category/CategoryFilterBar";
+import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -66,9 +66,9 @@ export default function BollywoodPage({ initialArticles }) {
       </Head>
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
-        <BollywoodHeroSection />
-        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-        <BollywoodArticlesGrid articles={filteredArticles} loading={loading} />
+        <CategoryHeroSection category="Bollywood" />
+        <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="Bollywood" />
+        <CategoryArticlesGrid category="Bollywood" articles={filteredArticles} loading={loading} />
       </div>
     </>
   );

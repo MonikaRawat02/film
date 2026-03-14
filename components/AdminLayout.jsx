@@ -2,7 +2,7 @@
  import { useEffect, useState } from "react";
  import { useRouter } from "next/router";
  import Link from "next/link";
- import { Menu, LogOut, LayoutDashboard, Star, BarChart, Tv, FileText } from "lucide-react";
+ import { Menu, LogOut, LayoutDashboard, Star, BarChart, Tv, FileText, Lightbulb } from "lucide-react";
  
  export default function AdminLayout({ children }) {
    const router = useRouter();
@@ -22,6 +22,7 @@
      { name: "Box Office", href: "/admin/box-office", icon: BarChart },
      { name: "OTT Analysis", href: "/admin/ott-intelligence", icon: Tv },
      { name: "Articles", href: "/admin/articles", icon: FileText },
+     { name: "Popular Topics", href: "/admin/popular-topics", icon: Lightbulb },
    ];
  
    const isActive = (href) => router.pathname === href;

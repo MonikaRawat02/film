@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import BoxOfficeHeroSection from "../../components/category/boxoffice/BoxOfficeHeroSection";
-import BoxOfficeFilterBar from "../../components/category/boxoffice/BoxOfficeFilterBar";
-import BoxOfficeArticlesGrid from "../../components/category/boxoffice/BoxOfficeArticlesGrid";
+import CategoryHeroSection from "../../components/category/CategoryHeroSection";
+import CategoryFilterBar from "../../components/category/CategoryFilterBar";
+import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -66,9 +66,9 @@ export default function BoxOfficePage({ initialArticles }) {
       </Head>
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
-        <BoxOfficeHeroSection />
-        <BoxOfficeFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-        <BoxOfficeArticlesGrid articles={filteredArticles} loading={loading} />
+        <CategoryHeroSection category="BoxOffice" />
+        <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="BoxOffice" />
+        <CategoryArticlesGrid category="BoxOffice" articles={filteredArticles} loading={loading} />
       </div>
     </>
   );
