@@ -527,7 +527,7 @@ export default function NetWorthSection({ celebrity }) {
               </p>
 
               {/* Chart */}
-              <div className="relative h-64 mb-8" suppressHydrationWarning>
+              <div className="relative h-80 mb-8" suppressHydrationWarning>
                 {mounted ? (() => {
                   const maxVal = Math.max(...timelineData.map(d => d.value), 800);
                   const minYear = Math.min(...timelineData.map(d => d.year));
@@ -535,7 +535,7 @@ export default function NetWorthSection({ celebrity }) {
                   const yearRange = maxYear - minYear || 1;
                   
                   const getX = (year) => ((year - minYear) / yearRange) * 800;
-                  const getY = (value) => 200 - (value / maxVal) * 200;
+                  const getY = (value) => 240 - (value / maxVal) * 240;
                   
                   const pathData = timelineData.map((d, i) => 
                     `${i === 0 ? 'M' : 'L'} ${getX(d.year)},${getY(d.value)}`
@@ -543,7 +543,8 @@ export default function NetWorthSection({ celebrity }) {
 
                   return (
                     <>
-                      <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-[#6E6E73]">
+                      {/* Y-axis labels */}
+                      <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-[#6E6E73] pr-2">
                         <span>${maxVal}M</span>
                         <span>${Math.round(maxVal * 0.75)}M</span>
                         <span>${Math.round(maxVal * 0.5)}M</span>
@@ -552,63 +553,116 @@ export default function NetWorthSection({ celebrity }) {
                       </div>
                       <svg
                         className="w-full h-full pl-12"
-                        viewBox="0 0 800 200"
+                        viewBox="0 0 800 240"
                         preserveAspectRatio="none"
                       >
                         <defs>
                           <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                             <stop offset="0%" stopColor="#00D9FF" />
+                            <stop offset="50%" stopColor="#7C3AED" />
                             <stop offset="100%" stopColor="#FF3B30" />
                           </linearGradient>
                         </defs>
-                        {/* Grid lines */}
+                        
+                        {/* Horizontal grid lines */}
                         {[0, 0.25, 0.5, 0.75, 1].map((p, i) => (
+                          <g key={`hgrid-${i}`}>
+                            <line
+                              x1="0"
+                              y1={p * 240}
+                              x2="800"
+                              y2={p * 240}
+                              stroke="#2D3748"
+                              strokeDasharray="4 4"
+                              strokeWidth="1"
+                              opacity="0.4"
+                            />
+                          </g>
+                        ))}
+                        
+                        {/* Vertical grid lines */}
+                        {timelineData.map((point, i) => (
                           <line
-                            key={i}
-                            x1="0"
-                            y1={p * 200}
-                            x2="800"
-                            y2={p * 200}
-                            stroke="#1f2733"
-                            strokeDasharray="4"
+                            key={`vgrid-${i}`}
+                            x1={getX(point.year)}
+                            y1="0"
+                            x2={getX(point.year)}
+                            y2="240"
+                            stroke="#2D3748"
+                            strokeDasharray="4 4"
+                            strokeWidth="1"
+                            opacity="0.3"
                           />
                         ))}
-                        {/* Line chart */}
+                        
+                        {/* Axis lines */}
+                        <line x1="0" y1="240" x2="800" y2="240" stroke="#4A5568" strokeWidth="1.5" />
+                        <line x1="0" y1="0" x2="0" y2="240" stroke="#4A5568" strokeWidth="1.5" />
+                        
+                        {/* Line chart with gradient */}
                         <path
                           d={pathData}
                           fill="none"
                           stroke="url(#lineGradient)"
                           strokeWidth="3"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
                         />
+                        
                         {/* Data points */}
                         {timelineData.map((point, index) => {
                           const hasMilestone = milestones.some(m => m.year === point.year);
                           const cx = getX(point.year);
                           const cy = getY(point.value);
+                          const isEarly = index < timelineData.length / 2;
                           
                           return (
                             <g key={index} className="group/point">
+                              {/* Milestone marker */}
                               {hasMilestone && (
-                                <>
-                                  <circle cx={cx} cy={cy} r="10" fill="transparent" stroke="#ffffff" strokeOpacity="0.5" />
-                                  <circle cx={cx} cy={cy} r="6" fill="#0a0a0f" stroke="#ef4444" strokeWidth="2" />
-                                </>
+                                <circle
+                                  cx={cx}
+                                  cy={cy}
+                                  r="8"
+                                  fill="#1A1A24"
+                                  stroke={isEarly ? "#FBBF24" : "#EF4444"}
+                                  strokeWidth="3"
+                                  className="transition-all duration-300"
+                                />
                               )}
+                              
+                              {/* Regular data point */}
                               <circle
                                 cx={cx}
                                 cy={cy}
-                                r="6"
-                                fill={hasMilestone ? "transparent" : (index < timelineData.length / 2 ? "#eab308" : "#ef4444")}
-                                className="cursor-pointer group-hover/point:r-8 transition-all"
+                                r="5"
+                                fill={hasMilestone ? "transparent" : (isEarly ? "#FBBF24" : "#EF4444")}
+                                stroke={hasMilestone ? (isEarly ? "#FBBF24" : "#EF4444") : "transparent"}
+                                strokeWidth="2"
+                                className="cursor-pointer transition-all duration-300 group-hover/point:r-7"
                               />
+                              
+                              {/* Hover effect */}
+                              <circle
+                                cx={cx}
+                                cy={cy}
+                                r="12"
+                                fill="transparent"
+                                stroke="rgba(255,255,255,0.3)"
+                                strokeWidth="1"
+                                className="opacity-0 group-hover/point:opacity-100 transition-opacity"
+                              />
+                              
                               <title>{point.year}: {point.displayValue || `$${point.value}M`}</title>
                             </g>
                           );
                         })}
                       </svg>
-                      <div className="absolute bottom-0 left-12 right-0 flex justify-between text-xs text-gray-500">
+                      
+                      {/* X-axis labels */}
+                      <div className="absolute bottom-0 left-12 right-0 flex justify-between text-xs text-gray-500 pt-2">
                         {timelineData.map((point) => (
-                          <span key={point.year}>{point.year}</span>
+                          <span key={point.year} className="text-center">{point.year}</span>
                         ))}
                       </div>
                     </>

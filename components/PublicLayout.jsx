@@ -4,7 +4,7 @@ import SiteFooter from "@/components/SiteFooter";
 
 export default function PublicLayout({ children, noPadding = false }) {
   return (
-    <div className="min-h-screen bg-black text-gray-100 overflow-x-hidden">
+    <div className="min-h-screen bg-black text-gray-100" style={{ overflowX: 'clip' }}>
       <SiteHeader />
       <main className={noPadding ? "" : "pt-14 md:pt-16"}>{children}</main>
       <SiteFooter />

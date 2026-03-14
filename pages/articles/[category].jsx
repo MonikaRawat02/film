@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -84,50 +84,35 @@ export default function ArticleCategoryPage({ initialArticles, category, paginat
       </Head>
 
       <div className="bg-[#050505] text-white min-h-screen pt-16">
-        {/* Breadcrumb Navigation Bar */}
-        <div className="bg-[#0a0a0a] border-b border-zinc-800/60">
+        {/* Sticky Breadcrumb Navigation Bar */}
+        <div className="sticky top-16 z-40 bg-[#0a0a0a]/98 backdrop-blur-xl border-b border-zinc-800/60 shadow-lg">
           <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-            <div className="flex items-center justify-between h-14">
-              <nav className="flex items-center gap-2 text-sm">
-                <Link href="/" className="text-zinc-400 hover:text-white transition-colors">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 py-3">
+              <nav className="flex items-center gap-2 text-sm shrink-0">
+                <Link href="/" className="text-zinc-400 hover:text-white transition-colors whitespace-nowrap">
                   Home
                 </Link>
-                <ChevronRight className="h-4 w-4 text-zinc-600" />
-                <span className="text-zinc-400">Articles</span>
-                <ChevronRight className="h-4 w-4 text-zinc-600" />
-                <span className="text-white font-medium">{category}</span>
+                <ChevronRight className="h-4 w-4 text-zinc-600 shrink-0" />
+                <span className="text-zinc-400 whitespace-nowrap">Articles</span>
+                <ChevronRight className="h-4 w-4 text-zinc-600 shrink-0" />
+                <span className="text-white font-medium truncate max-w-[150px] md:max-w-none">{category}</span>
               </nav>
               
               {/* Desktop Search */}
-              <div className="relative hidden md:block">
+              <div className="relative hidden md:block w-full md:w-auto md:min-w-[280px]">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                 <input
                   type="text"
                   placeholder={`Search ${category.toLowerCase()}...`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-72 bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
+                  className="w-full md:w-72 bg-zinc-900 border border-zinc-800 rounded-lg pl-10 pr-4 py-2 text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                 />
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Hero Section */}
-        <div className="relative bg-gradient-to-b from-[#0f0f12] to-[#050505] py-8 lg:py-12">
-          <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
-            <div className="max-w-3xl">
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white mb-3">
-                {categoryLabels[category] || category}
-              </h1>
-              
-              <p className="text-base text-zinc-400 max-w-2xl leading-relaxed">
-                In-depth analysis, psychological profiles, and industry intelligence for {category}.
-              </p>
-            </div>
-
-            {/* Mobile Search */}
-            <div className="mt-8 md:hidden">
+            
+            {/* Mobile Search - Always visible in sticky header */}
+            <div className="md:hidden pb-2">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-zinc-500" />
                 <input
@@ -135,10 +120,23 @@ export default function ArticleCategoryPage({ initialArticles, category, paginat
                   placeholder={`Search ${category.toLowerCase()}...`}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-12 pr-4 py-3 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-12 pr-4 py-2.5 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
                 />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Hero Section */}
+        <div className="relative bg-gradient-to-b from-[#0f0f12] to-[#050505] py-10 lg:py-14">
+          <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-white mb-4">
+              {categoryLabels[category] || category}
+            </h1>
+            
+            <p className="text-sm sm:text-base md:text-lg text-zinc-400 leading-relaxed">
+              In-depth analysis, psychological profiles, and industry intelligence for {category}. Explore comprehensive coverage including story breakdowns, box office performance, OTT analytics, and celebrity insights.
+            </p>
           </div>
         </div>
 

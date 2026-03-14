@@ -410,6 +410,7 @@ export default function ArticleModule() {
                     value={form.summary}
                     onChange={(e) => update("summary", e.target.value)}
                     placeholder="Brief summary of the article..."
+                    className="no-scrollbar"
                   />
                 </div>
               </div>
@@ -659,7 +660,7 @@ export default function ArticleModule() {
               </div>
 
               {/* Modal Body */}
-              <div className="flex-1 overflow-y-auto p-6 bg-black/20">
+              <div className="flex-1 overflow-y-auto p-6 bg-black/20 no-scrollbar">
 
                 {renderTabContent()}
               </div>

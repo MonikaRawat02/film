@@ -13,10 +13,10 @@
    ];
  
    const categories = [
-     { name: "Bollywood", href: "/categories/bollywood" },
-     { name: "Hollywood", href: "/categories/hollywood" },
-     { name: "Web Series", href: "/categories/web-series" },
-     { name: "OTT Platforms", href: "/categories/ott-platforms" },
+     { name: "Bollywood", href: "/articles/Bollywood" },
+     { name: "Hollywood", href: "/articles/Hollywood" },
+     { name: "Web Series", href: "/articles/WebSeries" },
+     { name: "OTT Platforms", href: "/articles/OTT" },
      { name: "Box Office", href: "/box-office" },
      { name: "Celebrities", href: "/celebrities" },
    ];
