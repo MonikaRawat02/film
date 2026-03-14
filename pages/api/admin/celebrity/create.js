@@ -1,6 +1,8 @@
 import dbConnect from "../../../../lib/mongodb";
 import Celebrity from "../../../../model/celebrity";
+import Subscriber from "../../../../model/subscriber";
 import jwt from "jsonwebtoken";
+import { sendNotification } from "../../../../lib/mail";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -38,6 +40,22 @@ export default async function handler(req, res) {
     }
 
     const doc = await Celebrity.create(req.body);
+
+    // Send notification to all active subscribers (non-blocking)
+    try {
+      const activeSubscribers = await Subscriber.find({ active: true });
+      if (activeSubscribers.length > 0) {
+        await sendNotification(activeSubscribers, {
+          title: `${doc.heroSection.name} Profile Created`,
+          description: `Check out the new comprehensive intelligence profile for ${doc.heroSection.name}.`,
+          link: `/celebrity/${doc.heroSection.slug}/profile`,
+          category: "Celebrity Profile"
+        });
+      }
+    } catch (notificationError) {
+      console.error("Failed to send celebrity notification:", notificationError);
+    }
+
     return res.status(201).json({ message: "Celebrity created", id: doc._id });
   } catch (error) {
     return res.status(500).json({ message: error.message });

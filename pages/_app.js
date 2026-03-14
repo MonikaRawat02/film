@@ -16,7 +16,7 @@
      <div className="font-sans">
        {isAdmin ? content : <PublicLayout noPadding={Component.noPadding}>{content}</PublicLayout>}
        <ToastContainer
-         position="bottom-right"
+         position="top-right"
          autoClose={5000}
          hideProgressBar={false}
          newestOnTop={false}

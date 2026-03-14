@@ -1,6 +1,8 @@
 import dbConnect from "../../../lib/mongodb";
 import BoxOffice from "../../../model/boxOffice";
+import Subscriber from "../../../model/subscriber";
 import jwt from "jsonwebtoken";
+import { sendNotification } from "../../../lib/mail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -37,6 +39,22 @@ export default async function handler(req, res) {
       if (!isAdmin(token)) return res.status(401).json({ message: "Unauthorized" });
       try {
         const newItem = await BoxOffice.create(req.body);
+
+        // Send notification to all active subscribers (non-blocking)
+        try {
+          const activeSubscribers = await Subscriber.find({ active: true });
+          if (activeSubscribers.length > 0) {
+            await sendNotification(activeSubscribers, {
+              title: `Box Office Update: ${newItem.movieName}`,
+              description: `New box office analysis for ${newItem.movieName} is out. Check out the latest numbers and performance.`,
+              link: `/box-office`,
+              category: "Box Office"
+            });
+          }
+        } catch (notificationError) {
+          console.error("Failed to send box office notification:", notificationError);
+        }
+
         return res.status(201).json({ success: true, data: newItem });
       } catch (error) {
         return res.status(400).json({ success: false, message: error.message });

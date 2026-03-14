@@ -1,6 +1,8 @@
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
+import Subscriber from "../../../../model/subscriber";
 import jwt from "jsonwebtoken";
+import { sendNewArticleNotification } from "../../../../lib/mail";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -43,6 +45,19 @@ export default async function handler(req, res) {
     }
 
     const doc = await Article.create(req.body);
+
+    // Send notification to all active subscribers (non-blocking)
+    try {
+      const activeSubscribers = await Subscriber.find({ active: true });
+      if (activeSubscribers.length > 0) {
+        // We'll send them in batches or all at once depending on the size
+        // For now, let's just trigger it
+        await sendNewArticleNotification(activeSubscribers, doc);
+      }
+    } catch (notificationError) {
+      console.error("Failed to send article notifications:", notificationError);
+    }
+
     return res.status(201).json({ message: "Article created", data: doc });
   } catch (error) {
     return res.status(500).json({ message: error.message });

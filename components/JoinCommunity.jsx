@@ -1,12 +1,45 @@
-import { Youtube, Twitter, Instagram, Mail, MailOpen, Send } from "lucide-react";
+import { Youtube, Twitter, Instagram, Mail, MailOpen, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function JoinCommunity() {
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const socials = [
     { name: "YouTube", icon: Youtube, bg: "bg-white/10 hover:bg-white/20" },
     { name: "Twitter", icon: Twitter, bg: "bg-white/10 hover:bg-white/20" },
     { name: "Instagram", icon: Instagram, bg: "bg-white/10 hover:bg-white/20" },
     { name: "Email", icon: Mail, bg: "bg-white/10 hover:bg-white/20" },
   ];
+
+  const handleSubscribe = async (e) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        toast.success(data.message || "Successfully subscribed!");
+        setEmail("");
+      } else {
+        toast.error(data.message || "Failed to subscribe.");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <section className="py-32 bg-[#050505] relative">
@@ -27,23 +60,37 @@ export default function JoinCommunity() {
           </p>
         </div>
 
-        <div className="mx-auto max-w-2xl relative flex gap-4 mb-10">
+        <form onSubmit={handleSubscribe} className="mx-auto max-w-2xl relative flex flex-col md:flex-row gap-4 mb-10">
           <div className="relative flex-1">
-            <Mail className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-500" />
+            <Mail className={`absolute left-5 top-1/2 -translate-y-1/2 transition-colors ${loading ? "text-red-500 animate-pulse" : "text-gray-500"}`} />
             <input
               type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email for weekly intelligence"
               className="w-full pl-14 pr-6 py-5 bg-white/5 border-2 border-gray-800 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-600/50 focus:bg-white/10 transition-all"
+              disabled={loading}
             />
           </div>
           <button
-            type="button"
-            className="px-10 py-5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all font-bold text-lg shadow-lg shadow-red-800/30 inline-flex items-center gap-3"
+            type="submit"
+            disabled={loading}
+            className="px-10 py-5 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-xl hover:from-red-700 hover:to-red-800 transition-all font-bold text-lg shadow-lg shadow-red-800/30 inline-flex items-center justify-center gap-3 disabled:opacity-70 disabled:cursor-not-allowed min-w-[180px]"
           >
-            <span>Subscribe</span>
-            <Send className="w-5 h-5" />
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Processing...</span>
+              </>
+            ) : (
+              <>
+                <span>Subscribe</span>
+                <Send className="w-5 h-5" />
+              </>
+            )}
           </button>
-        </div>
+        </form>
 
         <p className="mt-4 text-center text-sm text-gray-500">
           <span className="inline-flex items-center gap-2">
