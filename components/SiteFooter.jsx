@@ -13,12 +13,12 @@
    ];
  
    const categories = [
-     { name: "Bollywood", href: "/articles/Bollywood" },
-     { name: "Hollywood", href: "/articles/Hollywood" },
-     { name: "Web Series", href: "/articles/WebSeries" },
-     { name: "OTT Platforms", href: "/articles/OTT" },
-     { name: "Box Office", href: "/box-office" },
-     { name: "Celebrities", href: "/celebrities" },
+     { name: "Bollywood", href: "/category/bollywood" },
+     { name: "Hollywood", href: "/category/hollywood" },
+     { name: "Web Series", href: "/category/webseries" },
+     { name: "OTT Platforms", href: "/category/ott" },
+     { name: "Box Office", href: "/category/boxoffice" },
+     { name: "Celebrities", href: "/category/celebrities" },
    ];
  
    const legal = [

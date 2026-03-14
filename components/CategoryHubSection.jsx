@@ -36,7 +36,7 @@ export default function CategoryHubSection() {
       iconBg: "from-red-600 via-orange-600 to-pink-600",
       border: "from-orange-500 via-amber-500 to-pink-600",
       textGrad: "from-orange-400 to-pink-500",
-      category: "Bollywood",
+      category: "bollywood",
     },
     {
       title: "Hollywood",
@@ -46,7 +46,7 @@ export default function CategoryHubSection() {
       iconBg: "from-blue-600 via-purple-600 to-pink-600",
       border: "from-blue-600 via-purple-600 to-pink-600",
       textGrad: "from-blue-400 to-pink-500",
-      category: "Hollywood",
+      category: "hollywood",
     },
     {
       title: "Web Series",
@@ -56,7 +56,7 @@ export default function CategoryHubSection() {
       iconBg: "from-emerald-600 via-teal-600 to-cyan-600",
       border: "from-emerald-500 via-teal-500 to-cyan-500",
       textGrad: "from-emerald-400 to-cyan-500",
-      category: "WebSeries",
+      category: "webseries",
     },
     {
       title: "OTT Platforms",
@@ -66,7 +66,7 @@ export default function CategoryHubSection() {
       iconBg: "from-rose-600 via-red-600 to-orange-600",
       border: "from-rose-500 via-red-500 to-orange-500",
       textGrad: "from-rose-400 to-orange-500",
-      category: "OTT",
+      category: "ott",
     },
     {
       title: "Box Office",
@@ -76,7 +76,7 @@ export default function CategoryHubSection() {
       iconBg: "from-amber-600 via-orange-600 to-red-600",
       border: "from-amber-500 via-orange-500 to-red-600",
       textGrad: "from-amber-400 to-red-500",
-      category: "BoxOffice",
+      category: "boxoffice",
     },
     {
       title: "Celebrities",
@@ -86,7 +86,7 @@ export default function CategoryHubSection() {
       iconBg: "from-fuchsia-600 via-violet-600 to-purple-600",
       border: "from-fuchsia-600 via-violet-600 to-purple-600",
       textGrad: "from-fuchsia-400 to-purple-500",
-      category: "Celebrities",
+      category: "celebrities",
     },
   ];
 
@@ -110,7 +110,7 @@ export default function CategoryHubSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {categories.map((c, i) => (
-            <Link href={`/articles/${c.category}`} key={i} className="group relative overflow-hidden rounded-2xl isolate cursor-pointer">
+            <Link href={`/category/${c.category}`} key={i} className="group relative overflow-hidden rounded-2xl isolate cursor-pointer">
               <div className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${c.border} opacity-0 group-hover:opacity-10 transition-all duration-500`} />
               <div className={`pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-r ${c.border} opacity-0 group-hover:opacity-20 blur-xl transition-all duration-500`} />
               <div className="relative z-10 rounded-2xl border-2 border-gray-800 hover:border-gray-700 transition-all duration-500 bg-gradient-to-b from-gray-900/60 to-black/40 p-10">

@@ -88,7 +88,7 @@ export default function ArticleDetailPage({ article, category }) {
             <nav className="flex items-center gap-2 text-sm text-gray-400 mb-8 font-semibold uppercase tracking-widest">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
               <ChevronRight className="h-4 w-4" />
-              <Link href={`/articles/${category}`} className="hover:text-white transition-colors">Articles</Link>
+              <Link href={`/category/${category}`} className="hover:text-white transition-colors">Articles</Link>
               <ChevronRight className="h-4 w-4" />
               <span className="text-red-500">{category}</span>
             </nav>
