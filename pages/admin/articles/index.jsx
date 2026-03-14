@@ -217,7 +217,6 @@ export default function ArticleModule() {
     const file = e.target.files?.[0];
     if (!file) return;
     setImageUploading(true);
-    setError("");
     try {
       const reader = new FileReader();
       const dataUrl = await new Promise((resolve, reject) => {
