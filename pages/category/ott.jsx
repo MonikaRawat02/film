@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import CategoryHeroSection from "../../components/category/CategoryHeroSection";
+import CategoryFilterBar from "../../components/category/CategoryFilterBar";
+import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
 
 
 export async function getServerSideProps(context) {
@@ -64,7 +67,9 @@ export default function OTTPage({ initialArticles }) {
       </Head>
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
-      
+        <CategoryHeroSection category="OTT" />
+        <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="OTT" />
+        <CategoryArticlesGrid category="OTT" articles={filteredArticles} loading={loading} />
       </div>
     </>
   );

@@ -2,6 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import CategoryHeroSection from "../../components/category/CategoryHeroSection";
+import CategoryFilterBar from "../../components/category/CategoryFilterBar";
+import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -63,7 +66,9 @@ export default function WebSeriesPage({ initialArticles }) {
       </Head>
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
-       
+        <CategoryHeroSection category="WebSeries" />
+        <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="WebSeries" />
+        <CategoryArticlesGrid category="WebSeries" articles={filteredArticles} loading={loading} />
       </div>
     </>
   );

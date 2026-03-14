@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp, Film, Building2, BarChart3 } from "lucide-react";
+import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp, Film, Building2, BarChart3, Users } from "lucide-react";
 
 export default function NetWorthSection({ celebrity }) {
   const [currency, setCurrency] = useState("USD");
@@ -231,37 +231,59 @@ export default function NetWorthSection({ celebrity }) {
     })
     .slice(0, 5);
 
-  const relatedIntelligence = [
-    {
-      icon: Film,
-      iconBg: "bg-red-500/20",
-      title: "Shah Rukh Khan Movies Intelligence",
-      description:
-        "Complete filmography analysis, box office performance, and career timeline",
-    },
-    {
-      icon: Building2,
-      iconBg: "bg-cyan-500/20",
-      title: "Shah Rukh Khan Business Empire",
-      description:
-        "Red Chillies Entertainment, KKR ownership, and investment portfolio breakdown",
-    },
-    {
-      icon: TrendingUp,
-      iconBg: "bg-yellow-500/20",
-      title: "Why SRK is India's Richest Actor",
-      description:
-        "Strategic analysis of business decisions and wealth accumulation strategies",
-      highlight: true,
-    },
-    {
-      icon: BarChart3,
-      iconBg: "bg-blue-500/20",
-      title: "SRK Career Impact Score",
-      description:
-        "Quantified analysis of cultural impact, industry influence, and legacy metrics",
-    },
-  ];
+  const relatedIntelligence = (celebrity.relatedIntelligence && celebrity.relatedIntelligence.length > 0)
+    ? celebrity.relatedIntelligence.map((item, index) => {
+        const text = (item.category + " " + item.title).toLowerCase();
+        let Icon = Users;
+        let iconBg = "bg-blue-500/10 text-blue-500";
+        
+        if (text.includes("movie") || text.includes("film")) {
+          Icon = Film;
+          iconBg = "bg-red-500/10 text-red-500";
+        } else if (text.includes("business") || text.includes("empire") || text.includes("company")) {
+          Icon = Building2;
+          iconBg = "bg-cyan-500/10 text-cyan-500";
+        } else if (text.includes("richest") || text.includes("wealth") || text.includes("money")) {
+          Icon = TrendingUp;
+          iconBg = "bg-yellow-500/10 text-yellow-500";
+        } else if (text.includes("impact") || text.includes("score") || text.includes("rank")) {
+          Icon = BarChart3;
+          iconBg = "bg-blue-500/10 text-blue-500";
+        }
+
+        return {
+          icon: Icon,
+          iconBg: iconBg,
+          title: item.title,
+          description: item.description,
+        };
+      })
+    : [
+        {
+          icon: Film,
+          iconBg: "bg-red-500/10 text-red-500",
+          title: `${processedCelebrity.name} Movies Intelligence`,
+          description: "Complete filmography analysis, box office performance, and career timeline",
+        },
+        {
+          icon: Building2,
+          iconBg: "bg-cyan-500/10 text-cyan-500",
+          title: `${processedCelebrity.name} Business Empire`,
+          description: "Production ventures, brand ownership, and investment portfolio breakdown",
+        },
+        {
+          icon: TrendingUp,
+          iconBg: "bg-yellow-500/10 text-yellow-500",
+          title: `Why ${processedCelebrity.name} is a Wealth Icon`,
+          description: "Strategic analysis of business decisions and wealth accumulation strategies",
+        },
+        {
+          icon: BarChart3,
+          iconBg: "bg-blue-500/10 text-blue-500",
+          title: `${processedCelebrity.name} Career Impact Score`,
+          description: "Quantified analysis of cultural impact, industry influence, and legacy metrics",
+        },
+      ];
 
   const faqs = dynamicFaqs.length > 0
     ? dynamicFaqs.map(faq => ({
@@ -305,10 +327,34 @@ export default function NetWorthSection({ celebrity }) {
     { id: "faqs", label: "FAQs" },
   ];
 
+  const EXCHANGE_RATE = 83;
+
+  const formatCurrency = (val, type) => {
+    if (!val) return "0";
+    const n = Number(val);
+    if (type === "USD") {
+      if (n >= 1000000000) return (n / 1000000000).toFixed(1);
+      if (n >= 1000000) return (n / 1000000).toFixed(0);
+      return n.toLocaleString();
+    } else {
+      if (n >= 10000000) return (n / 10000000).toFixed(0);
+      if (n >= 100000) return (n / 100000).toFixed(0);
+      return n.toLocaleString();
+    }
+  };
+
   const currencyConfig =
     currency === "USD"
-      ? { symbol: "$", unit: "million", format: (n) => new Intl.NumberFormat("en-US").format(n) }
-      : { symbol: "₹", unit: "crore", format: (n) => new Intl.NumberFormat("en-IN").format(n) };
+      ? { 
+          symbol: "$", 
+          unit: (n) => (n >= 1000000000 ? "billion" : "million"),
+          format: (n) => formatCurrency(n, "USD")
+        }
+      : { 
+          symbol: "₹", 
+          unit: (n) => (n >= 10000000 ? "crore" : "lakh"),
+          format: (n) => formatCurrency(n, "INR")
+        };
 
   return (
     <section className="min-h-screen bg-[#0a0a0f] overflow-x-hidden">
@@ -411,16 +457,20 @@ export default function NetWorthSection({ celebrity }) {
                   <span className="text-5xl md:text-6xl leading-none font-semibold tracking-tight bg-gradient-to-r from-[#00D9FF] to-[#1AD1FF] bg-clip-text text-transparent">
                     {currencyConfig.symbol}
                     {currencyConfig.format(
-                      currency === "USD" ? processedCelebrity?.netWorth.usd.min : processedCelebrity?.netWorth.inr.min
+                      currency === "USD" 
+                        ? processedCelebrity?.netWorth.usd.min 
+                        : (processedCelebrity?.netWorth.inr.min || processedCelebrity?.netWorth.usd.min * EXCHANGE_RATE)
                     )}{' '}
-                    {currencyConfig.unit}
+                    {currencyConfig.unit(currency === "USD" ? processedCelebrity?.netWorth.usd.min : (processedCelebrity?.netWorth.inr.min || processedCelebrity?.netWorth.usd.min * EXCHANGE_RATE))}
                   </span>
                   <span className="text-2xl md:text-3xl text-gray-400">
                     – {currencyConfig.symbol}
                     {currencyConfig.format(
-                      currency === "USD" ? processedCelebrity?.netWorth.usd.max : processedCelebrity?.netWorth.inr.max
+                      currency === "USD" 
+                        ? processedCelebrity?.netWorth.usd.max 
+                        : (processedCelebrity?.netWorth.inr.max || processedCelebrity?.netWorth.usd.max * EXCHANGE_RATE)
                     )}{' '}
-                    {currencyConfig.unit}
+                    {currencyConfig.unit(currency === "USD" ? processedCelebrity?.netWorth.usd.max : (processedCelebrity?.netWorth.inr.max || processedCelebrity?.netWorth.usd.max * EXCHANGE_RATE))}
                   </span>
                 </div>
                 <p className="text-gray-500 mt-2">Estimated net worth</p>
@@ -545,11 +595,11 @@ export default function NetWorthSection({ celebrity }) {
                     <>
                       {/* Y-axis labels */}
                       <div className="absolute left-0 top-0 bottom-8 flex flex-col justify-between text-xs text-[#6E6E73] pr-2">
-                        <span>${maxVal}M</span>
-                        <span>${Math.round(maxVal * 0.75)}M</span>
-                        <span>${Math.round(maxVal * 0.5)}M</span>
-                        <span>${Math.round(maxVal * 0.25)}M</span>
-                        <span>$0M</span>
+                        <span>{currencyConfig.symbol}{currencyConfig.format(maxVal * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))}{currencyConfig.unit(maxVal * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))[0].toUpperCase()}</span>
+                        <span>{currencyConfig.symbol}{currencyConfig.format(maxVal * 0.75 * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))}{currencyConfig.unit(maxVal * 0.75 * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))[0].toUpperCase()}</span>
+                        <span>{currencyConfig.symbol}{currencyConfig.format(maxVal * 0.5 * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))}{currencyConfig.unit(maxVal * 0.5 * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))[0].toUpperCase()}</span>
+                        <span>{currencyConfig.symbol}{currencyConfig.format(maxVal * 0.25 * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))}{currencyConfig.unit(maxVal * 0.25 * (currency === "USD" ? 1000000 : 1000000 * EXCHANGE_RATE))[0].toUpperCase()}</span>
+                        <span>{currencyConfig.symbol}0</span>
                       </div>
                       <svg
                         className="w-full h-full pl-12"
@@ -799,37 +849,29 @@ export default function NetWorthSection({ celebrity }) {
             </div>
 
             {/* Related Intelligence */}
-            <div id="related-intelligence">
-              <h3 className="text-xl font-bold text-white mb-2">Related Intelligence</h3>
-              <p className="text-gray-500 text-sm mb-6">
-                Deep dive into {celebrity.name}&apos;s career, business, and impact
+            <div id="related-intelligence" className="py-10 border-t border-gray-800/50 mt-10">
+              <h3 className="text-2xl font-bold text-white mb-2">Related Intelligence</h3>
+              <p className="text-gray-500 text-base mb-8">
+                Deep dive into {processedCelebrity.name}&apos;s career, business, and impact
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {relatedIntelligence.map((item, index) => (
                   <div
                     key={index}
-                    className={[
-                      "group p-5 rounded-xl border transition-all cursor-pointer",
-                      "bg-[var(--ff-dark-elevated)] border-[var(--ff-border)] hover:border-[var(--ff-electric-blue)] hover:shadow-[var(--ff-electric-blue-glow)]"
-                    ].join(" ")}
+                    className="group p-6 rounded-2xl border border-gray-800 bg-[#0d0d12] hover:border-gray-700 transition-all cursor-pointer"
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-5">
                       <div
-                        className={`w-12 h-12 rounded-xl ${item.highlight ? "bg-[var(--ff-amber-muted)] text-[var(--ff-amber)]" : item.iconBg} flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110`}
+                        className={`w-12 h-12 rounded-xl ${item.iconBg} flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110`}
                       >
                         {item.icon ? <item.icon className="w-6 h-6" /> : null}
                       </div>
                       <div>
-                        <h4
-                          className={[
-                            "font-semibold mb-1 transition-colors",
-                            "text-[var(--ff-text-primary)] group-hover:text-[var(--ff-electric-blue)]"
-                          ].join(" ")}
-                        >
+                        <h4 className="font-bold text-lg text-white mb-1 transition-colors group-hover:text-cyan-400">
                           {item.title}
                         </h4>
-                        <p className="text-sm leading-relaxed text-[#6E6E73] group-hover:text-[#6E6E73]">
+                        <p className="text-sm leading-relaxed text-gray-500">
                           {item.description}
                         </p>
                       </div>

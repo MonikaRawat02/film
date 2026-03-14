@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import CelebritiesHeroSection from "../../components/category/celebrities/CelebritiesHeroSection";
-import CelebritiesFilterBar from "../../components/category/celebrities/CelebritiesFilterBar";
-import CelebritiesArticlesGrid from "../../components/category/celebrities/CelebritiesArticlesGrid";
+import CategoryHeroSection from "../../components/category/CategoryHeroSection";
+import CategoryFilterBar from "../../components/category/CategoryFilterBar";
+import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -66,9 +66,9 @@ export default function CelebritiesPage({ initialArticles }) {
       </Head>
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
-        <CelebritiesHeroSection />
-        <CelebritiesFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-        <CelebritiesArticlesGrid articles={filteredArticles} loading={loading} />
+        <CategoryHeroSection category="Celebrities" />
+        <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="Celebrities" />
+        <CategoryArticlesGrid category="Celebrities" articles={filteredArticles} loading={loading} />
       </div>
     </>
   );
