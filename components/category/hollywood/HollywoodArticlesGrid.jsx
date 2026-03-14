@@ -31,7 +31,7 @@ export default function HollywoodArticlesGrid({ articles, loading }) {
           {articles.map((article) => (
             <Link
               key={article._id}
-              href={`/articles/Hollywood/${article.slug}`}
+              href={`/category/hollywood/${article.slug}`}
               className="group bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1"
             >
               <div className="aspect-video relative overflow-hidden">

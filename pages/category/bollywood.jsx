@@ -5,6 +5,9 @@ import Head from "next/head";
 import BollywoodHeroSection from "../../components/category/bollywood/BollywoodHeroSection";
 import BollywoodFilterBar from "../../components/category/bollywood/BollywoodFilterBar";
 import BollywoodArticlesGrid from "../../components/category/bollywood/BollywoodArticlesGrid";
+import BollywoodMovieIntelligence from "../../components/category/bollywood/BollywoodMovieIntelligence";
+import BollywoodBoxOfficeDashboard from "../../components/category/bollywood/BollywoodBoxOfficeDashboard";
+import CelebrityIntelligenceHub from "../../components/category/bollywood/CelebrityIntelligenceHub";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -69,6 +72,9 @@ export default function BollywoodPage({ initialArticles }) {
         <BollywoodHeroSection />
         <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
         <BollywoodArticlesGrid articles={filteredArticles} loading={loading} />
+        <BollywoodMovieIntelligence />
+        <BollywoodBoxOfficeDashboard />
+        <CelebrityIntelligenceHub />
       </div>
     </>
   );
