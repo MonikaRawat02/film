@@ -57,12 +57,12 @@ export default function BoxOfficePage() {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-12 pt-16">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <Link 
-              href="/" 
-              className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-4 text-xs font-bold uppercase tracking-widest"
+            <button 
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-4 text-xs font-bold uppercase tracking-widest cursor-pointer"
             >
-              <ArrowLeft className="w-3 h-3" /> Back to Home
-            </Link>
+              <ArrowLeft className="w-3 h-3" /> Back
+            </button>
             <div className="flex items-center gap-4">
               <div className="h-14 w-14 grid place-items-center rounded-2xl border border-emerald-700/40 bg-emerald-600/10 shadow-inner">
                 <BarChart3 className="w-8 h-8 text-green-500" />

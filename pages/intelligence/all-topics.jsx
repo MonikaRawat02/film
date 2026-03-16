@@ -2,8 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import Head from "next/head";
 import { Lightbulb, Search, X, ArrowLeft, Clock, Eye, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function PopularTopicsListingPage() {
+  const router = useRouter();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,12 +44,12 @@ export default function PopularTopicsListingPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-6">
-            <Link 
-              href="/" 
-              className="inline-flex items-center gap-2 text-gray-500 hover:text-yellow-500 transition-colors text-xs font-bold uppercase tracking-widest group"
+            <button 
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-2 text-gray-500 hover:text-yellow-500 transition-colors text-xs font-bold uppercase tracking-widest group cursor-pointer"
             >
-              <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back to Home
-            </Link>
+              <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back
+            </button>
             <div className="flex items-center gap-5">
               <div className="h-16 w-16 grid place-items-center rounded-2xl border border-yellow-900/40 bg-yellow-600/10 shadow-inner">
                 <Lightbulb className="w-8 h-8 text-yellow-500" />
