@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import CategoryHeroSection from "../../components/category/CategoryHeroSection";
-import CategoryFilterBar from "../../components/category/CategoryFilterBar";
-import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
+import HollywoodHeroSection from "../../components/category/hollywood/HollywoodHeroSection";
+import HollywoodArticlesGrid from "../../components/category/hollywood/HollywoodArticlesGrid";
+import HollywoodDatabaseSection from "../../components/category/hollywood/HollywoodDatabaseSection";
+import HollywoodCelebritySection from "../../components/category/hollywood/HollywoodCelebritySection";
+import HollywoodOTTSection from "../../components/category/hollywood/HollywoodOTTSection";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -12,7 +14,10 @@ export async function getServerSideProps(context) {
   const baseUrl = `${protocol}://${host}`;
 
   try {
-    const res = await fetch(`${baseUrl}/api/articles/list?category=Hollywood&limit=20`);
+    const res = await fetch(`${baseUrl}/api/articles/list?category=Hollywood&limit=6`);
+    if (!res.ok) {
+      throw new Error(`Failed to fetch: ${res.status}`);
+    }
     const data = await res.json();
 
     return {
@@ -21,7 +26,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    console.error("Error fetching articles:", error);
+    console.error("Error fetching articles in getServerSideProps:", error);
     return {
       props: {
         initialArticles: [],
@@ -31,32 +36,28 @@ export async function getServerSideProps(context) {
 }
 
 export default function HollywoodPage({ initialArticles }) {
-  const [activeFilter, setActiveFilter] = useState("All");
   const [articles, setArticles] = useState(initialArticles);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(initialArticles.length === 0);
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
+    if (initialArticles.length === 0) {
+      const fetchArticles = async () => {
         setLoading(true);
-        const res = await fetch("/api/articles/list?category=Hollywood&limit=20");
-        const data = await res.json();
-        if (data.data) {
-          setArticles(data.data);
+        try {
+          const res = await fetch("/api/articles/list?category=Hollywood&limit=6");
+          const data = await res.json();
+          if (data.data) {
+            setArticles(data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching articles on client-side:", error);
+        } finally {
+          setLoading(false);
         }
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArticles();
-  }, []);
-
-  const filteredArticles = activeFilter === "All" 
-    ? articles 
-    : articles.filter(article => article.category === activeFilter);
+      };
+      fetchArticles();
+    }
+  }, [initialArticles]);
 
   return (
     <>
@@ -65,10 +66,12 @@ export default function HollywoodPage({ initialArticles }) {
         <meta name="description" content="Explore thousands of Hollywood movies, celebrity profiles, streaming releases, and box office insights updated daily." />
       </Head>
 
-      <div className="min-h-screen bg-zinc-950 text-zinc-100">
-        <CategoryHeroSection category="Hollywood" />
-        <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="Hollywood" />
-        <CategoryArticlesGrid category="Hollywood" articles={filteredArticles} loading={loading} />
+      <div className="min-h-screen bg-[#0B0F1A] text-zinc-100">
+        <HollywoodHeroSection />
+        <HollywoodArticlesGrid articles={articles} loading={loading} />
+        <HollywoodDatabaseSection />
+        <HollywoodCelebritySection />
+        <HollywoodOTTSection />
       </div>
     </>
   );

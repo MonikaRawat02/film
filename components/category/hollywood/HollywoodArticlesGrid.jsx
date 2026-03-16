@@ -1,83 +1,86 @@
 "use client";
 
 import Link from "next/link";
-import { Flame, Sparkles, Film, Clock, Eye, ArrowRight } from "lucide-react";
+import { TrendingUp, Film } from "lucide-react";
+
+const placeholderArticles = [
+  { _id: 1, title: "Oppenheimer", year: "2023", genres: "Biography / Drama", image: "/placeholder/oppenheimer.jpg", tags: [{ name: "$976M", color: "green" }, { name: "Cinematic", color: "purple" }] },
+  { _id: 2, title: "Dune: Part Two", year: "2024", genres: "Sci-Fi / Adventure", image: "/placeholder/dune2.jpg", tags: [{ name: "$711M", color: "green" }, { name: "IMAX", color: "blue" }] },
+  { _id: 3, title: "Avatar: The Way of Water", year: "2022", genres: "Sci-Fi / Action", image: "/placeholder/avatar2.jpg", tags: [{ name: "$2.3B", color: "green" }, { name: "VFX", color: "teal" }] },
+  { _id: 4, title: "Inception", year: "2010", genres: "Sci-Fi / Thriller", image: "/placeholder/inception.jpg", tags: [{ name: "$837M", color: "green" }, { name: "Thriller", color: "red" }] },
+  { _id: 5, title: "The Dark Knight", year: "2008", genres: "Action / Crime", image: "/placeholder/darkknight.jpg", tags: [{ name: "$1.0B", color: "green" }, { name: "Action", color: "orange" }] },
+  { _id: 6, title: "Interstellar", year: "2014", genres: "Sci-Fi / Adventure", image: "/placeholder/interstellar.jpg", tags: [{ name: "$731M", color: "green" }, { name: "Cinematic", color: "purple" }] },
+];
+
+const tagColors = {
+  green: "bg-green-500/10 border-green-500/30 text-green-400",
+  purple: "bg-purple-500/10 border-purple-500/30 text-purple-400",
+  blue: "bg-blue-500/10 border-blue-500/30 text-blue-400",
+  teal: "bg-teal-500/10 border-teal-500/30 text-teal-400",
+  red: "bg-red-500/10 border-red-500/30 text-red-400",
+  orange: "bg-orange-500/10 border-orange-500/30 text-orange-400",
+};
 
 export default function HollywoodArticlesGrid({ articles, loading }) {
-  return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex items-center gap-3 mb-8">
-        <Flame className="w-6 h-6 text-purple-500" />
-        <h2 className="text-2xl font-bold text-white">Trending Hollywood Intelligence</h2>
-      </div>
+  const displayArticles = loading ? placeholderArticles : (articles.length > 0 ? articles : placeholderArticles);
 
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6 animate-pulse">
-              <div className="aspect-video bg-zinc-800 rounded-xl mb-4" />
-              <div className="h-4 bg-zinc-800 rounded mb-2" />
-              <div className="h-3 bg-zinc-800 rounded w-2/3" />
-            </div>
-          ))}
+  return (
+    <section className="bg-[#0B0F1A] text-white py-16 sm:py-24">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-3 mb-12">
+          <TrendingUp className="w-7 h-7 text-orange-500" />
+          <h2 className="text-3xl font-bold tracking-tight">Trending Hollywood Movies</h2>
         </div>
-      ) : articles.length === 0 ? (
-        <div className="text-center py-20 border-2 border-dashed border-zinc-800 rounded-2xl">
-          <Sparkles className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
-          <p className="text-zinc-400">No Hollywood intelligence available yet.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article) => (
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-10">
+          {displayArticles.map((article, index) => (
             <Link
-              key={article._id}
-              href={`/category/hollywood/${article.slug}`}
-              className="group bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-purple-500/30 transition-all duration-300 hover:-translate-y-1"
+              key={article._id || index}
+              href={article.slug ? `/category/hollywood/${article.slug}` : '#'}
+              className={`group block bg-[#121826] rounded-2xl border border-white/10 transition-all duration-300 hover:scale-[1.02] hover:border-pink-500/50 backdrop-blur-[10px] ${loading ? 'animate-pulse' : ''}`}
             >
-              <div className="aspect-video relative overflow-hidden">
-                {article.coverImage ? (
+              <div className="relative overflow-hidden rounded-t-2xl aspect-[2/3]">
+                {article.coverImage || article.image ? (
                   <img
-                    src={article.coverImage}
+                    src={article.coverImage || article.image}
                     alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                   />
                 ) : (
                   <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
-                    <Film className="w-8 h-8 text-zinc-700" />
+                    <Film className="w-12 h-12 text-zinc-700" />
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
-                <div className="absolute top-3 left-3">
-                  <span className="px-3 py-1 bg-purple-500/20 border border-purple-500/30 text-purple-500 text-xs font-bold uppercase tracking-wider rounded-lg">
-                    {article.contentType}
-                  </span>
-                </div>
-              </div>
-              <div className="p-5">
-                <h3 className="text-lg font-semibold text-white mb-2 line-clamp-2 group-hover:text-purple-500 transition-colors">
-                  {article.title}
-                </h3>
-                <p className="text-sm text-zinc-400 line-clamp-2 mb-4">
-                  {article.summary}
-                </p>
-                <div className="flex items-center justify-between text-xs text-zinc-500">
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {new Date(article.publishedAt || article.createdAt).toLocaleDateString()}
-                    </span>
-                    <span className="flex items-center gap-1">
-                      <Eye className="w-3 h-3" />
-                      {article.stats?.views || 0}
-                    </span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+                
+                <div className="absolute bottom-0 left-0 p-5 w-full">
+                  <div className="flex items-center gap-2 mb-3">
+                    {(article.tags || []).map((tag, i) => (
+                      <span key={i} className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${tagColors[tag.color] || tagColors.purple}`}>
+                        {tag.name}
+                      </span>
+                    ))}
                   </div>
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <h3 className="text-xl font-bold tracking-tight leading-tight transition-colors text-white group-hover:text-pink-400">
+                    {article.title}
+                  </h3>
+                  <p className="text-sm text-gray-400 mt-2 font-medium">
+                    {article.year ? `${article.year} - ${article.genres}` : (article.summary || ' ')}
+                  </p>
                 </div>
               </div>
             </Link>
           ))}
         </div>
-      )}
+
+        <div className="mt-16 text-center">
+          <div className="inline-block w-full max-w-4xl p-3 rounded-lg border border-dashed border-orange-500/30 bg-orange-500/5">
+            <p className="text-xs text-orange-300/80">
+              Automated Updates: This section updates daily via API integration - SEO URL: /hollywood/movies/[movie-name]
+            </p>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
