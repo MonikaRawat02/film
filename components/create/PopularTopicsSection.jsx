@@ -100,7 +100,7 @@
 
            <div className="mt-16 flex justify-center">
              <Link
-               href="/intelligence"
+               href="/intelligence/all-topics"
                className="inline-flex items-center gap-3 px-8 py-3 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 text-sm font-bold text-white transition-all uppercase tracking-widest active:scale-95"
              >
                Explore All Topics

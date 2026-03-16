@@ -3,11 +3,20 @@ import Head from "next/head";
 import PublicLayout from "@/components/PublicLayout";
 import { BarChart3, ExternalLink, ArrowLeft, Search, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function BoxOfficePage() {
+  const router = useRouter();
+  const { search } = router.query;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    if (search) {
+      setSearchQuery(search);
+    }
+  }, [search]);
 
   useEffect(() => {
     const fetchData = async () => {
