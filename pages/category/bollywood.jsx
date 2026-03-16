@@ -8,6 +8,11 @@ import BollywoodArticlesGrid from "../../components/category/bollywood/Bollywood
 import BollywoodMovieIntelligence from "../../components/category/bollywood/BollywoodMovieIntelligence";
 import BollywoodBoxOfficeDashboard from "../../components/category/bollywood/BollywoodBoxOfficeDashboard";
 import CelebrityIntelligenceHub from "../../components/category/bollywood/CelebrityIntelligenceHub";
+import BollywoodMovieDiscovery from "../../components/category/bollywood/BollywoodMovieDiscovery";
+import BollywoodTrendingTopics from "../../components/category/bollywood/BollywoodTrendingTopics";
+import BollywoodIndustryInsights from "../../components/category/bollywood/BollywoodIndustryInsights";
+import BollywoodExploreMore from "../../components/category/bollywood/BollywoodExploreMore";
+import BollywoodFooterSection from "../../components/category/bollywood/BollywoodFooterSection";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -75,6 +80,11 @@ export default function BollywoodPage({ initialArticles }) {
         <BollywoodMovieIntelligence />
         <BollywoodBoxOfficeDashboard />
         <CelebrityIntelligenceHub />
+        <BollywoodMovieDiscovery />
+        <BollywoodTrendingTopics />
+        <BollywoodIndustryInsights />
+        <BollywoodExploreMore />
+        <BollywoodFooterSection />
       </div>
     </>
   );
