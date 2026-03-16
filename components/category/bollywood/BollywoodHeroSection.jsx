@@ -1,8 +1,47 @@
 "use client";
 
 import { Flame, Search, Play, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function BollywoodHeroSection() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleSearch = async (e) => {
+    if (e.key === "Enter" || e.type === "click") {
+      const query = searchQuery.trim();
+      if (query.length < 2) return;
+
+      // Navigate to search results page (assuming /box-office handles search)
+      router.push(`/box-office?search=${encodeURIComponent(query)}`);
+
+      // Record the search analytics asynchronously (securely in background)
+      try {
+        fetch("/api/public/record-search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query, category: "Bollywood" }),
+        });
+      } catch (err) {
+        console.error("Failed to record search:", err);
+      }
+    }
+  };
+
+  const handleTagClick = (tag) => {
+    setSearchQuery(tag);
+    // Trigger search immediately on tag click
+    router.push(`/box-office?search=${encodeURIComponent(tag)}`);
+    
+    // Record analytics
+    fetch("/api/public/record-search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query: tag, category: "Bollywood" }),
+    });
+  };
+
   return (
     <section className="relative overflow-hidden border-b border-zinc-800">
       <div className="absolute inset-0 bg-gradient-to-b from-amber-950/20 via-zinc-950 to-zinc-950" />
@@ -27,10 +66,18 @@ export default function BollywoodHeroSection() {
 
           {/* Search Bar */}
           <div className="relative max-w-2xl mx-auto mb-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+            <button 
+              onClick={handleSearch}
+              className="absolute left-4 top-1/2 -translate-y-1/2 p-1 text-zinc-500 hover:text-amber-500 transition-colors"
+            >
+              <Search className="w-5 h-5" />
+            </button>
             <input
               type="text"
               placeholder="Search Bollywood movies, actors, box office, or story explanations"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearch}
               className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl pl-12 pr-4 py-4 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/20 transition-all"
             />
           </div>
@@ -40,6 +87,7 @@ export default function BollywoodHeroSection() {
             {["movie ending explained", "box office collection", "OTT release details", "actor career analysis"].map((tag, index) => (
               <button
                 key={index}
+                onClick={() => handleTagClick(tag)}
                 className="px-4 py-2 bg-zinc-900/50 border border-zinc-800 rounded-full text-sm text-zinc-400 hover:text-amber-500 hover:border-amber-500/30 transition-all"
               >
                 {tag}

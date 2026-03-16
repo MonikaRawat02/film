@@ -41,9 +41,12 @@ export default function IntelligenceDetailPage() {
       <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center text-center p-6">
         <h1 className="text-4xl font-serif font-black text-white mb-4">Intelligence Not Found</h1>
         <p className="text-gray-400 mb-8">The deep-dive you're looking for doesn't exist or has been moved.</p>
-        <Link href="/intelligence" className="text-red-500 font-black text-sm uppercase tracking-widest hover:text-red-400 transition-colors">
-          Back to all intelligence
-        </Link>
+        <button 
+          onClick={() => router.back()}
+          className="text-red-500 font-black text-sm uppercase tracking-widest hover:text-red-400 transition-colors cursor-pointer"
+        >
+          Back
+        </button>
       </div>
     );
   }
@@ -85,12 +88,12 @@ export default function IntelligenceDetailPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/80 to-transparent" />
           
           <div className="relative z-10 h-full mx-auto max-w-[1400px] px-6 lg:px-12 flex flex-col justify-end pb-20">
-            <Link 
-              href="/intelligence" 
-              className="inline-flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-12 group"
+            <button 
+              onClick={() => router.back()}
+              className="inline-flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors text-xs font-bold uppercase tracking-[0.2em] mb-12 group cursor-pointer"
             >
-              <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back to Intelligence Hub
-            </Link>
+              <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back
+            </button>
 
             <div className="max-w-4xl">
               <div className="flex items-center gap-4 mb-8">
