@@ -1,6 +1,8 @@
 "use client";
 
-import { Flame, Search, Play, TrendingUp } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Flame, Search, Play, TrendingUp, X, Loader2, Star, Film, ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const categoryConfig = {
   Bollywood: {
@@ -68,7 +70,58 @@ const categoryConfig = {
 };
 
 export default function CategoryHeroSection({ category }) {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+  const router = useRouter();
+
   const config = categoryConfig[category] || categoryConfig.Bollywood;
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const fetchResults = async () => {
+      const trimmedQuery = query.trim();
+      if (trimmedQuery.length < 2) {
+        setResults([]);
+        setShowDropdown(false);
+        return;
+      }
+
+      setLoading(true);
+      setShowDropdown(true);
+      try {
+        const res = await fetch(`/api/public/search?q=${encodeURIComponent(trimmedQuery)}`);
+        const data = await res.json();
+        if (data.success) {
+          setResults(data.data);
+        }
+      } catch (err) {
+        console.error("Search fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const debounce = setTimeout(fetchResults, 300);
+    return () => clearTimeout(debounce);
+  }, [query]);
+
+  const handleResultClick = (href) => {
+    router.push(href);
+    setShowDropdown(false);
+    setQuery("");
+  };
 
   // Hollywood-specific styling
   const isHollywood = category === "Hollywood";
@@ -108,13 +161,87 @@ export default function CategoryHeroSection({ category }) {
           </p>
 
           {/* Search Bar */}
-          <div className={`relative max-w-${isHollywood ? '3xl' : '2xl'} mx-auto mb-8`}>
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
-            <input
-              type="text"
-              placeholder={config.searchPlaceholder}
-              className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl pl-12 pr-4 py-4 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all"
-            />
+          <div className={`relative max-w-${isHollywood ? '3xl' : '2xl'} mx-auto mb-8`} ref={dropdownRef}>
+            <div className="relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500 group-focus-within:text-zinc-300 transition-colors" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder={config.searchPlaceholder}
+                className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl pl-12 pr-12 py-4 text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-zinc-600 transition-all shadow-2xl"
+              />
+              {query && (
+                <button 
+                  onClick={() => setQuery("")}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-zinc-800 rounded-full transition-colors"
+                >
+                  <X className="w-4 h-4 text-zinc-500 hover:text-white" />
+                </button>
+              )}
+            </div>
+
+            {/* Search Dropdown */}
+            {showDropdown && (
+              <div className="absolute top-full left-0 right-0 mt-3 bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-[100] backdrop-blur-2xl text-left">
+                {loading ? (
+                  <div className="p-10 flex flex-col items-center justify-center gap-3">
+                    <Loader2 className="w-8 h-8 text-zinc-500 animate-spin" />
+                    <p className="text-zinc-500 text-sm animate-pulse">Scanning intelligence database...</p>
+                  </div>
+                ) : results.length > 0 ? (
+                  <div className="max-h-[450px] overflow-y-auto custom-scrollbar">
+                    <div className="p-3 border-b border-zinc-800/50 bg-white/[0.02]">
+                      <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] ml-2">Intelligence Matches</span>
+                    </div>
+                    {results.map((result) => (
+                      <button
+                        key={result.id}
+                        onClick={() => handleResultClick(result.href)}
+                        className="w-full p-4 flex items-center gap-4 hover:bg-white/5 transition-all text-left group border-b border-zinc-800/30 last:border-0"
+                      >
+                        <div className="relative w-12 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-950 border border-zinc-800">
+                          {result.image ? (
+                            <img src={result.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              {result.type === "Celebrity" ? <Star className="w-5 h-5 text-zinc-700" /> : <Film className="w-5 h-5 text-zinc-700" />}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold uppercase tracking-tighter ${
+                              result.type === "Article" ? "bg-blue-900/30 text-blue-400 border border-blue-800/30" :
+                              result.type === "Celebrity" ? "bg-fuchsia-900/30 text-fuchsia-400 border border-fuchsia-800/30" :
+                              "bg-emerald-900/30 text-emerald-400 border border-emerald-800/30"
+                            }`}>
+                              {result.type}
+                            </span>
+                            {result.category && (
+                              <span className="text-[9px] text-zinc-500 font-medium uppercase tracking-widest">{result.category}</span>
+                            )}
+                          </div>
+                          <h4 className="text-white font-medium group-hover:text-amber-400 transition-colors truncate">{result.title}</h4>
+                          {result.description && (
+                            <p className="text-xs text-zinc-500 truncate mt-0.5 line-clamp-1">{result.description}</p>
+                          )}
+                        </div>
+                        <ArrowUpRight className="w-4 h-4 text-zinc-700 group-hover:text-amber-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-12 text-center">
+                    <div className="w-16 h-16 bg-white/[0.03] rounded-full flex items-center justify-center mx-auto mb-4 border border-zinc-800">
+                      <Search className="w-6 h-6 text-zinc-700" />
+                    </div>
+                    <p className="text-zinc-400 font-medium">No results found for "{query}"</p>
+                    <p className="text-zinc-600 text-sm mt-1">Try searching for a different keyword</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Quick Tags - Hollywood shows more tags */}
@@ -122,6 +249,7 @@ export default function CategoryHeroSection({ category }) {
             {config.quickTags.map((tag, index) => (
               <button
                 key={index}
+                onClick={() => setQuery(tag)}
                 className={`px-4 py-2 rounded-full text-sm transition-all ${
                   isHollywood
                     ? "bg-zinc-800/50 border border-zinc-700 text-zinc-300 hover:border-purple-500/50 hover:text-purple-300"
@@ -163,6 +291,21 @@ export default function CategoryHeroSection({ category }) {
           )}
         </div>
       </div>
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #333;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #444;
+        }
+      `}</style>
     </section>
   );
 }

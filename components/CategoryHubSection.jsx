@@ -11,6 +11,7 @@ export default function CategoryHubSection() {
     BoxOffice: 0,
     Celebrities: 0,
   });
+  const [celebrityPreview, setCelebrityPreview] = useState([]);
 
   useEffect(() => {
     async function fetchCounts() {
@@ -24,7 +25,21 @@ export default function CategoryHubSection() {
         console.error("Failed to fetch category counts", error);
       }
     }
+    
+    async function fetchCelebrityPreview() {
+      try {
+        const res = await fetch("/api/public/celebrities");
+        const data = await res.json();
+        if (data.success) {
+          setCelebrityPreview(data.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch celebrity preview", error);
+      }
+    }
+
     fetchCounts();
+    fetchCelebrityPreview();
   }, []);
 
   const categories = [
@@ -87,6 +102,11 @@ export default function CategoryHubSection() {
       border: "from-fuchsia-600 via-violet-600 to-purple-600",
       textGrad: "from-fuchsia-400 to-purple-500",
       category: "celebrities",
+      preview: celebrityPreview.slice(0, 3).map(c => ({
+        name: c.heroSection?.name,
+        image: c.heroSection?.profileImage,
+        slug: c.heroSection?.slug
+      }))
     },
   ];
 
@@ -113,7 +133,7 @@ export default function CategoryHubSection() {
             <Link href={`/category/${c.category}`} key={i} className="group relative overflow-hidden rounded-2xl isolate cursor-pointer">
               <div className={`pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br ${c.border} opacity-0 group-hover:opacity-10 transition-all duration-500`} />
               <div className={`pointer-events-none absolute -inset-0.5 rounded-2xl bg-gradient-to-r ${c.border} opacity-0 group-hover:opacity-20 blur-xl transition-all duration-500`} />
-              <div className="relative z-10 rounded-2xl border-2 border-gray-800 hover:border-gray-700 transition-all duration-500 bg-gradient-to-b from-gray-900/60 to-black/40 p-10">
+              <div className="relative z-10 rounded-2xl border-2 border-gray-800 hover:border-gray-700 transition-all duration-500 bg-gradient-to-b from-gray-900/60 to-black/40 p-10 h-full flex flex-col">
                 <div className={`mb-8 inline-flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${c.iconBg} shrink-0 transform-none transition-none group-hover:scale-100`}>
                   <c.icon className="h-8 w-8 text-white/85 transform-none group-hover:scale-100" />
                 </div>
@@ -121,7 +141,18 @@ export default function CategoryHubSection() {
                   {c.title}
                 </h3>
                 <p className="text-base text-gray-400 mb-2">{c.subtitle}</p>
-                <p className="text-sm font-semibold text-gray-500">{c.count}</p>
+                <div className="mt-auto">
+                  {c.preview && c.preview.length > 0 && (
+                    <div className="flex -space-x-3 mb-4">
+                      {c.preview.map((p, idx) => (
+                        <div key={idx} className="h-10 w-10 rounded-full border-2 border-gray-900 overflow-hidden ring-2 ring-white/10 group-hover:ring-white/30 transition-all">
+                          <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <p className="text-sm font-semibold text-gray-500">{c.count}</p>
+                </div>
                 <div
                   className="absolute bottom-10 right-10 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition-all duration-300 opacity-0 translate-y-1 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto"
                 >
