@@ -12,16 +12,16 @@ export default function CelebrityIntelligenceHub() {
   useEffect(() => {
     const fetchCelebrities = async () => {
       try {
-        const res = await fetch("/api/admin/celebrity/getCelebrity?limit=10");
+        const res = await fetch("/api/admin/celebrity/celebrityIntelligence?page=1&limit=8");
         const data = await res.json();
-        if (data.success) {
+        if (data.data) {
           setCelebrities(data.data.map(c => ({
-            name: c.heroSection?.name || "Unknown",
-            status: c.heroSection?.occupation || "Actor",
-            score: c.heroSection?.growthPercentage || 0,
-            projects: c.heroSection?.nationality || "Bollywood",
-            image: c.heroSection?.image || "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400&h=500",
-            slug: c.heroSection?.slug
+            name: c.name || "Unknown",
+            status: c.profession || "Actor",
+            score: c.trendingPercentage || 0,
+            projects: c.netWorth || "N/A",
+            image: c.profileImage || "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=400&h=500",
+            slug: c.slug
           })));
         }
       } catch (error) {

@@ -25,15 +25,15 @@
         </h3>
         <p className="text-sm text-zinc-400 mb-5 line-clamp-3 leading-relaxed flex-grow">{t.description}</p>
  
-         <div className="flex items-center gap-5 text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-5">
-           <div className="inline-flex items-center gap-1.5">
+        <div className="flex items-center gap-5 text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-5">
+            {/*  <div className="inline-flex items-center gap-1.5">
              <Eye className="w-3.5 h-3.5" />
              <span>{t.views}</span>
            </div>
            <div className="inline-flex items-center gap-1.5">
              <Clock className="w-3.5 h-3.5" />
              <span>{t.readTime}</span>
-           </div>
+           </div> */}
            <div className="inline-flex items-center gap-1.5">
              <Users className="w-3.5 h-3.5" />
              <span>analysis</span>

@@ -120,19 +120,23 @@ export default function TrendingIntelligenceSection() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/trending-intelligence");
+        let endpoint = "/api/trending-intelligence";
+        if (activeFilter === "Celebrity") {
+          endpoint = "/api/trending-celebrities";
+        }
+        const res = await fetch(endpoint);
         const json = await res.json();
         if (json.success) {
           setTrendingData(json.data);
         }
       } catch (error) {
-        console.error("Error fetching trending intelligence:", error);
+        console.error(`Error fetching trending data for ${activeFilter}:`, error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, []);
+  }, [activeFilter]);
 
   const getCategoryDetails = (cat) => {
     switch (cat) {
@@ -154,7 +158,7 @@ export default function TrendingIntelligenceSection() {
       case "Celebrity":
         return {
           label: "Celebrity Intelligence",
-          gradient: "from-orange-500 to-red-500",
+          gradient: "from-amber-500 to-red-500",
         };
       default:
         return {
@@ -166,6 +170,8 @@ export default function TrendingIntelligenceSection() {
 
   const filteredData = activeFilter === "All" 
     ? trendingData 
+    : activeFilter === "Celebrity"
+    ? trendingData
     : trendingData.filter(item => item.category === activeFilter);
 
   return (
