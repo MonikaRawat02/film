@@ -27,6 +27,11 @@ export default async function handler(req, res) {
       { $group: { _id: null, total: { $sum: "$stats.views" } } }
     ]);
 
+    // Fetch recent activity from trending intelligence
+    const recentTrending = await TrendingIntelligence.find({})
+      .sort({ createdAt: -1 })
+      .limit(5);
+
     res.status(200).json({
       success: true,
       data: {
@@ -37,6 +42,11 @@ export default async function handler(req, res) {
         ott: ottCount,
         trending: trendingCount,
         totalViews: totalViewsData[0]?.total || 0,
+        recentActivity: recentTrending.map(item => ({
+          type: "Trending",
+          title: item.title,
+          time: item.createdAt
+        }))
       },
     });
   } catch (error) {

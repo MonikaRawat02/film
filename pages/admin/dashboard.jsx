@@ -35,7 +35,7 @@ export default function Dashboard() {
           trendingIntelligence: data.trending,
           totalViews: data.totalViews,
           activeUsers: data.activeUsers,
-          recentActivity: [] // Optional: fetch separately if needed
+          recentActivity: data.recentActivity || []
         });
       }
     } catch (error) {
@@ -98,18 +98,6 @@ export default function Dashboard() {
         : stats.activeUsers,
       icon: Users,
       gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      label: "Reports Generated",
-      value: "1.2K+",
-      icon: Activity,
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      label: "Weekly Updates",
-      value: "50+",
-      icon: DollarSign,
-      gradient: "from-orange-500 to-red-500"
     }
   ];
 
@@ -119,7 +107,7 @@ export default function Dashboard() {
         <title>Admin Dashboard | FilmFire</title>
       </Head>
       <AdminLayout>
-        <div className="space-y-6">
+        <div className="p-4 lg:p-6 space-y-6">
           {/* Welcome Section */}
           <section className="rounded-2xl border border-gray-800 bg-black/30 p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -220,7 +208,7 @@ export default function Dashboard() {
             {loading ? (
               <div className="text-gray-400 text-sm">Loading...</div>
             ) : stats.recentActivity.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {stats.recentActivity.map((activity, index) => (
                   <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50">
                     <div className="flex items-center gap-3">
@@ -232,7 +220,9 @@ export default function Dashboard() {
                         <p className="text-xs text-gray-500">{activity.type}</p>
                       </div>
                     </div>
-                    <span className="text-xs text-gray-500">{activity.time}</span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(activity.time).toLocaleDateString()}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -242,6 +232,21 @@ export default function Dashboard() {
           </section>
         </div>
       </AdminLayout>
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #333;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #444;
+        }
+      `}</style>
     </>
   );
 }
