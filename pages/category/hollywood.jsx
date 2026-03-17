@@ -7,6 +7,9 @@ import HollywoodArticlesGrid from "../../components/category/hollywood/Hollywood
 import HollywoodDatabaseSection from "../../components/category/hollywood/HollywoodDatabaseSection";
 import HollywoodCelebritySection from "../../components/category/hollywood/HollywoodCelebritySection";
 import HollywoodOTTSection from "../../components/category/hollywood/HollywoodOTTSection";
+import HollywoodBoxOfficeSection from "../../components/category/hollywood/HollywoodBoxOfficeSection";
+import HollywoodThemesSection from "../../components/category/hollywood/HollywoodThemesSection";
+import HollywoodIndustryAnalysis from "../../components/category/hollywood/HollywoodIndustryAnalysis";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -72,6 +75,9 @@ export default function HollywoodPage({ initialArticles }) {
         <HollywoodDatabaseSection />
         <HollywoodCelebritySection />
         <HollywoodOTTSection />
+        <HollywoodBoxOfficeSection />
+        <HollywoodThemesSection />
+        <HollywoodIndustryAnalysis />
       </div>
     </>
   );

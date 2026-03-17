@@ -135,7 +135,7 @@ export default function HollywoodOTTSection() {
         {/* Footer Banner */}
         <div className="mt-8 p-4 rounded-xl border border-pink-500/30 bg-pink-500/5 text-center">
           <p className="text-pink-300 text-[11px] font-bold tracking-widest lowercase">
-            auto-generated pages: each platform generates dedicated pages with filters for new releases, trending & upcoming movies
+            Auto-generated pages: each platform generates dedicated pages with filters for new releases, trending & upcoming movies
           </p>
         </div>
 
