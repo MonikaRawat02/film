@@ -31,7 +31,7 @@ export default function IntelligenceDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-        <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-red-600 border-t-transparent rounded-full animate-spin "></div>
       </div>
     );
   }
@@ -118,10 +118,6 @@ export default function IntelligenceDetailPage() {
                   <Eye className="w-4 h-4 text-red-500" />
                   <span>{item.views || "0K"} VIEWS</span>
                 </div>
-                {/* <div className="flex items-center gap-6 ml-auto">
-                  <button className="hover:text-white transition-colors"><Share2 className="w-4 h-4" /></button>
-                  <button className="hover:text-white transition-colors"><Bookmark className="w-4 h-4" /></button>
-                </div> */}
               </div>
             </div>
           </div>
