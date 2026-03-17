@@ -60,7 +60,7 @@ export default function BollywoodArticlesGrid({ articles, loading }) {
                   {article.title}
                 </h3>
                 <p className="text-sm text-zinc-400 line-clamp-2 mb-6 leading-relaxed">
-                  {article.summary}
+                  {article.summary || (article.sections && article.sections[0]?.content) || "Explore the deep intelligence and analysis of this Bollywood feature."}
                 </p>
                 
                 <div className="flex items-center text-amber-500 text-sm font-bold group/btn">
