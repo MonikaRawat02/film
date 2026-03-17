@@ -12,6 +12,7 @@ export default function Dashboard() {
     ottIntelligence: 0,
     trendingIntelligence: 0,
     totalViews: 0,
+    activeUsers: 0,
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
@@ -22,43 +23,21 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const [celebritiesRes, boxOfficeRes, ottRes, trendingRes] = await Promise.all([
-        fetch("/api/admin/celebrity/getCelebrity"),
-        fetch("/api/admin/box-office"),
-        fetch("/api/admin/ott-intelligence"),
-        fetch("/api/trending-intelligence")
-      ]);
-
-      const celebritiesData = await celebritiesRes.json();
-      const boxOffice = await boxOfficeRes.json();
-      const ott = await ottRes.json();
-      const trendingData = await trendingRes.json();
-
-      const celebrities = celebritiesData.data || celebritiesData;
-      const boxOfficeData = Array.isArray(boxOffice) ? boxOffice : (boxOffice.data || []);
-      const ottData = Array.isArray(ott) ? ott : (ott.data || []);
-      const trending = trendingData.data || trendingData || [];
-
-      // Calculate total views from trending intelligence
-      const totalViews = Array.isArray(trending) ? trending.reduce((sum, item) => {
-        const viewValue = parseFloat(item.views?.replace(/[KM]+/, "") || "0");
-        return sum + (item.views?.includes("M") ? viewValue * 1000 : viewValue);
-      }, 0) : 0;
-
-      setStats({
-        celebrities: Array.isArray(celebrities) ? celebrities.length : 0,
-        boxOffice: Array.isArray(boxOfficeData) ? boxOfficeData.length : 0,
-        ottIntelligence: Array.isArray(ottData) ? ottData.length : 0,
-        trendingIntelligence: Array.isArray(trending) ? trending.length : 0,
-        totalViews: Math.round(totalViews),
-        recentActivity: Array.isArray(trending) ? [
-          ...trending.slice(0, 3).map(item => ({
-            type: "Trending",
-            title: item.title,
-            time: new Date(item.createdAt).toLocaleDateString()
-          }))
-        ] : []
-      });
+      const res = await fetch("/api/admin/stats");
+      const json = await res.json();
+      
+      if (json.success) {
+        const data = json.data;
+        setStats({
+          celebrities: data.celebrities,
+          boxOffice: data.boxOffice,
+          ottIntelligence: data.ott,
+          trendingIntelligence: data.trending,
+          totalViews: data.totalViews,
+          activeUsers: data.activeUsers,
+          recentActivity: [] // Optional: fetch separately if needed
+        });
+      }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -104,13 +83,19 @@ export default function Dashboard() {
   const overviewStats = [
     {
       label: "Total Views",
-      value: `${(stats.totalViews / 1000).toFixed(1)}M`,
+      value: stats.totalViews >= 1000000 
+        ? `${(stats.totalViews / 1000000).toFixed(1)}M` 
+        : stats.totalViews >= 1000 
+          ? `${(stats.totalViews / 1000).toFixed(1)}K` 
+          : stats.totalViews,
       icon: Eye,
       gradient: "from-blue-500 to-cyan-500"
     },
     {
       label: "Active Users",
-      value: "250K+",
+      value: stats.activeUsers >= 1000 
+        ? `${(stats.activeUsers / 1000).toFixed(1)}K+` 
+        : stats.activeUsers,
       icon: Users,
       gradient: "from-purple-500 to-pink-500"
     },
