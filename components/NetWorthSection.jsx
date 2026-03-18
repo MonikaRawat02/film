@@ -120,41 +120,9 @@ export default function NetWorthSection({ celebrity }) {
         title: source.sourceName,
         percentage: source.percentage,
         description: source.description,
-        color: "from-[#00D9FF] to-[#FF3B30]", // Consistent with image
+        color: "from-[#00D9FF] to-[#FF3B30]",
       }))
-    : [
-    {
-      icon: "🎬",
-      title: "Film Production & Acting",
-      percentage: 45,
-      description:
-        "Box office earnings, profit shares, and production ventures through Red Chillies Entertainment",
-      color: "from-green-500 to-emerald-500",
-    },
-    {
-      icon: "🏢",
-      title: "Brand Endorsements",
-      percentage: 30,
-      description: "Premium endorsement deals with global and Indian brands",
-      color: "from-green-500 to-yellow-500",
-    },
-    {
-      icon: "🏏",
-      title: "IPL & Sports Ventures",
-      percentage: 15,
-      description:
-        "Kolkata Knight Riders ownership and sports-related investments",
-      color: "from-green-500 to-green-400",
-    },
-    {
-      icon: "🏠",
-      title: "Real Estate & Investments",
-      percentage: 10,
-      description:
-        "Properties in Mumbai, Dubai, London, and strategic business investments",
-      color: "from-red-500 to-red-400",
-    },
-  ];
+    : [];
 
   const parseNetWorthString = (str) => {
     if (!str) return 0;
@@ -179,16 +147,7 @@ export default function NetWorthSection({ celebrity }) {
         value: parseNetWorthString(item.netWorth),
         displayValue: item.netWorth
       })).sort((a, b) => a.year - b.year)
-    : [
-        { year: 2000, value: 50 },
-        { year: 2005, value: 150 },
-        { year: 2010, value: 280 },
-        { year: 2015, value: 480 },
-        { year: 2018, value: 600 },
-        { year: 2020, value: 650 },
-        { year: 2023, value: 720 },
-        { year: 2025, value: 780 },
-      ];
+    : [];
 
   const milestones = dynamicMilestones.length > 0
     ? dynamicMilestones.map((m, index) => ({
@@ -196,20 +155,7 @@ export default function NetWorthSection({ celebrity }) {
         text: m.milestone,
         color: index % 2 === 0 ? "bg-yellow-500" : "bg-red-500"
       }))
-    : celebrity?.netWorthTimeline?.keyMilestones && celebrity.netWorthTimeline.keyMilestones.length > 0
-    ? celebrity.netWorthTimeline.keyMilestones.map((m, index) => ({
-        year: m.year,
-        text: m.milestone,
-        color: index % 2 === 0 ? "bg-yellow-500" : "bg-red-500"
-      }))
-    : [
-        { year: 2005, text: "DDLJ becomes longest running film", color: "bg-yellow-500" },
-        { year: 2010, text: "My Name Is Khan global success", color: "bg-red-500" },
-        { year: 2015, text: "Dilwale breaks records", color: "bg-yellow-500" },
-        { year: 2018, text: "KKR IPL championship win", color: "bg-red-500" },
-        { year: 2023, text: "Pathaan breaks all-time records", color: "bg-yellow-500" },
-        { year: 2025, text: "Continued global expansion", color: "bg-red-500" },
-      ];
+    : [];
 
   // Dynamically generate comparisons from fetched celebrities
   const comparisons = allCelebrities
@@ -259,32 +205,7 @@ export default function NetWorthSection({ celebrity }) {
           description: item.description,
         };
       })
-    : [
-        {
-          icon: Film,
-          iconBg: "bg-red-500/10 text-red-500",
-          title: `${processedCelebrity.name} Movies Intelligence`,
-          description: "Complete filmography analysis, box office performance, and career timeline",
-        },
-        {
-          icon: Building2,
-          iconBg: "bg-cyan-500/10 text-cyan-500",
-          title: `${processedCelebrity.name} Business Empire`,
-          description: "Production ventures, brand ownership, and investment portfolio breakdown",
-        },
-        {
-          icon: TrendingUp,
-          iconBg: "bg-yellow-500/10 text-yellow-500",
-          title: `Why ${processedCelebrity.name} is a Wealth Icon`,
-          description: "Strategic analysis of business decisions and wealth accumulation strategies",
-        },
-        {
-          icon: BarChart3,
-          iconBg: "bg-blue-500/10 text-blue-500",
-          title: `${processedCelebrity.name} Career Impact Score`,
-          description: "Quantified analysis of cultural impact, industry influence, and legacy metrics",
-        },
-      ];
+    : [];
 
   const faqs = dynamicFaqs.length > 0
     ? dynamicFaqs.map(faq => ({
@@ -296,28 +217,7 @@ export default function NetWorthSection({ celebrity }) {
         question: faq.question,
         answer: faq.answer
       }))
-    : [
-        {
-          question: "Is Shah Rukh Khan the richest actor in India?",
-          answer:
-            "Yes, Shah Rukh Khan is currently estimated to be the richest actor in India with a net worth of approximately $770-780 million. This places him significantly ahead of other Bollywood actors. His wealth comes from a combination of film earnings, production ventures, brand endorsements, and business investments including his stake in the Kolkata Knight Riders IPL team.",
-        },
-        {
-          question: "Does this estimate include his IPL team ownership?",
-          answer:
-            "Yes, the estimate includes the value of his stake in Kolkata Knight Riders, which is estimated to be worth around $150-200 million based on current IPL team valuations.",
-        },
-        {
-          question: "How accurate are these net worth estimates?",
-          answer:
-            "Our estimates are calculated using publicly available data including film earnings, brand endorsements, business investments, and asset valuations. We cross-reference multiple industry sources and financial reports to provide the most accurate range possible.",
-        },
-        {
-          question: "How does SRK's net worth compare globally?",
-          answer:
-            "Shah Rukh Khan ranks among the top 10 richest actors in the world, competing with Hollywood stars. His diversified portfolio and business acumen have helped him build wealth comparable to international A-list celebrities.",
-        },
-      ];
+    : [];
 
   const sections = [
     { id: "net-worth-estimate", label: "Net Worth Estimate" },
@@ -358,15 +258,15 @@ export default function NetWorthSection({ celebrity }) {
         };
 
   return (
-    <section className="min-h-screen bg-[#0a0a0f] overflow-x-hidden">
+    <section className="min-h-screen bg-[#0a0a0f]" style={{ overflowX: 'clip' }}>
       {/* Breadcrumb */}
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-6">
         <nav className="flex items-center gap-2 text-sm text-[var(--ff-text-muted)]">
-          <Link href="/" className="hover:text-[var(--ff-text-primary)] transition-colors cursor-pointer">
+          <Link href="/" className="ff-hover-text-primary transition-colors cursor-pointer">
             Home
           </Link>
           <span className="text-gray-600">&gt;</span>
-          <Link href="/celebrities" className="hover:text-[var(--ff-text-primary)] transition-colors cursor-pointer">
+          <Link href="/celebrities" className="ff-hover-text-primary transition-colors cursor-pointer">
             Celebrities
           </Link>
           <span className="text-gray-600">&gt;</span>
@@ -390,24 +290,26 @@ export default function NetWorthSection({ celebrity }) {
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-[#0a0a0f]" />
               </div>
-              <div className="space-y-3">
-                <h1 className="text-3xl font-bold text-[var(--ff-text-primary)]">{processedCelebrity?.name || "Unknown Celebrity"}</h1>
-                <div className="flex flex-wrap gap-2">
+              <div className="flex-1">
+                <h2 className="text-xl mb-2 text-[var(--ff-text-primary)]">{processedCelebrity?.name || "Unknown Celebrity"}</h2>
+                <div className="flex flex-wrap gap-2 mb-3">
                   {processedCelebrity?.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="px-3 py-1 text-sm bg-[var(--ff-dark-elevated)] text-[var(--ff-text-muted)] rounded-full border border-[var(--ff-border)] hover:border-[var(--ff-text-muted)] transition-colors cursor-pointer"
+                      data-slot="badge"
+                      className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 font-medium w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-[color,box-shadow] overflow-hidden [a&]:hover:bg-accent [a&]:hover:text-accent-foreground bg-[var(--ff-dark-elevated)] border-[var(--ff-border)] text-[var(--ff-text-secondary)] text-xs"
                     >
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-[var(--ff-electric-blue)]/10 border border-[var(--ff-electric-blue)]/30 rounded-full">
-                  <TrendingUp className="w-4 h-4 text-[var(--ff-electric-blue)]" />
-                  <span className="text-[var(--ff-electric-blue)] text-sm font-medium">
-                    Career: {processedCelebrity?.careerStatus || "Active"}
-                  </span>
-                </div>
+                <span
+                  data-slot="badge"
+                  className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-[color,box-shadow] overflow-hidden ff-hover-bg-amber-muted ff-text-amber ff-border-amber text-xs font-normal"
+                >
+                  <TrendingUp className="w-3 h-3 mr-1" />
+                  Career: {processedCelebrity?.careerStatus || "Active"}
+                </span>
               </div>
             </div>
 
@@ -431,8 +333,8 @@ export default function NetWorthSection({ celebrity }) {
                     onClick={() => setCurrency("USD")}
                     className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold rounded-md transition-all cursor-pointer ${
                       currency === "USD"
-                        ? "bg-[var(--ff-electric-blue)] text-[#0A0A0F]"
-                        : "bg-transparent text-[var(--ff-text-muted)] hover:text-[var(--ff-text-primary)]"
+                        ? "bg-[#00d9ff] text-[#0A0A0F]"
+                        : "bg-transparent text-[var(--ff-text-muted)] ff-hover-text-primary"
                     }`}
                   >
                     USD
@@ -441,8 +343,8 @@ export default function NetWorthSection({ celebrity }) {
                     onClick={() => setCurrency("INR")}
                     className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold rounded-md transition-all cursor-pointer ${
                       currency === "INR"
-                        ? "bg-[var(--ff-electric-blue)] text-[#0A0A0F]"
-                        : "bg-transparent text-[var(--ff-text-muted)] hover:text-[var(--ff-text-primary)]"
+                        ? "bg-[#00d9ff] text-[#0A0A0F]"
+                        : "bg-transparent text-[var(--ff-text-muted)] ff-hover-text-primary"
                     }`}
                   >
                     INR
@@ -672,7 +574,7 @@ export default function NetWorthSection({ celebrity }) {
                         </defs>
                         
                         {/* Horizontal grid lines */}
-                        {[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1].map((p, i) => (
+                        {[0, 0.25, 0.5, 0.75, 1].map((p, i) => (
                           <g key={`hgrid-${i}`}>
                             <line
                               x1="0"
@@ -682,25 +584,36 @@ export default function NetWorthSection({ celebrity }) {
                               stroke="var(--ff-text-muted)"
                               strokeDasharray="2 2"
                               strokeWidth="1"
-                              opacity="0.1"
+                              opacity="0.15"
                             />
                           </g>
                         ))}
                         
-                        {/* Vertical grid lines - At data points */}
-                        {timelineData.map((point, i) => (
-                          <line
-                            key={`vgrid-${i}`}
-                            x1={getX(point.year)}
-                            y1="0"
-                            x2={getX(point.year)}
-                            y2="240"
-                            stroke="var(--ff-text-muted)"
-                            strokeDasharray="2 2"
-                            strokeWidth="1"
-                            opacity="0.1"
-                          />
-                        ))}
+                        {/* Vertical grid lines - evenly spaced across years */}
+                        {(() => {
+                          const minYear = Math.min(...timelineData.map(d => d.year));
+                          const maxYear = Math.max(...timelineData.map(d => d.year));
+                          const yearRange = maxYear - minYear || 1;
+                          const verticalLines = [];
+                          
+                          for (let year = minYear; year <= maxYear; year += Math.ceil(yearRange / 8)) {
+                            verticalLines.push(year);
+                          }
+                          
+                          return verticalLines.map((year, i) => (
+                            <line
+                              key={`vgrid-${i}`}
+                              x1={getX(year)}
+                              y1="0"
+                              x2={getX(year)}
+                              y2="240"
+                              stroke="var(--ff-text-muted)"
+                              strokeDasharray="2 2"
+                              strokeWidth="1"
+                              opacity="0.15"
+                            />
+                          ));
+                        })()}
 
                         {/* Hover vertical guide */}
                         {hoveredPoint !== null && (
@@ -784,7 +697,7 @@ export default function NetWorthSection({ celebrity }) {
                             </p>
                             <p className="text-xs text-[var(--ff-text-muted)] mb-1">{timelineData[hoveredPoint].year}</p>
                             {milestones.find(m => m.year === timelineData[hoveredPoint].year) && (
-                              <p className="text-xs text-[var(--ff-electric-blue)] font-medium leading-tight mt-2 border-t border-[var(--ff-border)] pt-2">
+                              <p className="text-xs text-[var(--ff-electric-blue)] font-medium leading-tight mt-2 pt-2">
                                 {milestones.find(m => m.year === timelineData[hoveredPoint].year).text}
                               </p>
                             )}
@@ -793,7 +706,7 @@ export default function NetWorthSection({ celebrity }) {
                       )}
                       
                       {/* X-axis labels */}
-                      <div className="absolute bottom-0 left-12 right-0 h-6 text-xs text-[var(--ff-text-muted)]">
+                      <div className="absolute -bottom-6 left-12 right-0 h-6 text-xs text-[var(--ff-text-muted)]">
                         {timelineData.map((point) => (
                           <span 
                             key={point.year} 
@@ -829,6 +742,7 @@ export default function NetWorthSection({ celebrity }) {
                   ))}
                 </div>
               </div>
+            </div>
             </div>
 
             {/* Celebrity Comparisons */}
@@ -875,10 +789,10 @@ export default function NetWorthSection({ celebrity }) {
                     </div>
                     <div className="p-4">
                       <h4
-                        className={`text-base mb-2 font-semibold transition-colors ${
+                        className={`text-base mb-2 font-semibold ff-group-hover-text-red ${
                           celeb.highlight
-                            ? "text-[var(--ff-text-primary)] group-hover:text-[var(--ff-cinema-red)]"
-                            : "text-[var(--ff-text-primary)] group-hover:text-[var(--ff-cinema-red)]"
+                            ? "text-[var(--ff-text-primary)]"
+                            : "text-[var(--ff-text-primary)]"
                         }`}
                       >
                         {celeb.name}
@@ -961,7 +875,7 @@ export default function NetWorthSection({ celebrity }) {
                         {item.icon ? <item.icon className="w-6 h-6" /> : null}
                       </div>
                       <div>
-                        <h4 className="font-bold text-lg text-white mb-1 transition-colors group-hover:text-[var(--ff-electric-blue)]">
+                        <h4 className="font-bold text-lg text-white mb-1 ff-group-hover-text-blue">
                           {item.title}
                         </h4>
                         <p className="text-sm leading-relaxed text-[var(--ff-text-muted)]">
@@ -1075,31 +989,31 @@ export default function NetWorthSection({ celebrity }) {
               </p>
             </div>
           </div>
-        </div>
+
           {/* Sidebar */}
-          <aside className="w-full lg:w-80 flex-shrink-0 space-y-6">
-            <div className="hidden lg:block sticky top-6 space-y-6">
+          <aside className="w-80 flex-shrink-0">
+            <div className="hidden lg:block sticky top-10 space-y-6">
               {/* Quick Facts */}
               <div className="bg-[var(--ff-dark-elevated)] border border-[var(--ff-border)] rounded-xl p-5">
-                <h3 className="text-sm font-semibold text-[var(--ff-text-primary)] mb-4">Quick Facts</h3>
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <User className="w-4 h-4 text-[var(--ff-electric-blue)]" />
-                    <div>
+                <h3 className="text-sm mb-4 text-[var(--ff-text-primary)]">Quick Facts</h3>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <User className="lucide lucide-briefcase w-4 h-4 text-[var(--ff-electric-blue)]" />
+                    <div className="flex-1">
                       <p className="text-xs text-[var(--ff-text-muted)]">Age</p>
                       <p className="text-sm text-[var(--ff-text-primary)]">{processedCelebrity?.age ? `${processedCelebrity.age} years` : "N/A"}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Briefcase className="w-4 h-4 text-[var(--ff-electric-blue)]" />
-                    <div>
+                  <div className="flex items-center gap-2">
+                    <Briefcase className="lucide lucide-briefcase w-4 h-4 text-[var(--ff-electric-blue)]" />
+                    <div className="flex-1">
                       <p className="text-xs text-[var(--ff-text-muted)]">Profession</p>
                       <p className="text-sm text-[var(--ff-text-primary)]">{processedCelebrity?.profession || "N/A"}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-[var(--ff-electric-blue)]" />
-                    <div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="lucide lucide-briefcase w-4 h-4 text-[var(--ff-electric-blue)]" />
+                    <div className="flex-1">
                       <p className="text-xs text-[var(--ff-text-muted)]">Active Since</p>
                       <p className="text-sm text-[var(--ff-text-primary)]">{processedCelebrity?.activeSince || "N/A"}</p>
                     </div>
@@ -1109,7 +1023,7 @@ export default function NetWorthSection({ celebrity }) {
 
               {/* Jump to Section */}
               <div className="bg-[var(--ff-dark-elevated)] border border-[var(--ff-border)] rounded-xl p-5">
-                <h3 className="text-sm font-semibold text-[var(--ff-text-primary)] mb-4">Jump to Section</h3>
+                <h3 className="text-sm text-[var(--ff-text-primary)] mb-4">Jump to Section</h3>
                 <nav className="space-y-2">
                   {sections.map((section) => (
                     <button
@@ -1120,12 +1034,7 @@ export default function NetWorthSection({ celebrity }) {
                         const el = typeof window !== "undefined" ? document.getElementById(section.id) : null;
                         if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
                       }}
-                      className={[
-                        "w-full text-left text-sm transition-colors py-1.5 px-2 rounded",
-                        activeSection === section.id
-                          ? "bg-[#0F0F14] text-[var(--ff-cinema-red)]"
-                          : "text-[#A1A1A8] hover:text-[var(--ff-cinema-red)] hover:bg-[#0F0F14]"
-                      ].join(" ")}
+                      className="w-full text-left text-sm ff-text-secondary ff-hover-text-red ff-hover-bg-surface transition-colors py-1.5 px-2 rounded"
                     >
                       {section.label}
                     </button>
@@ -1136,7 +1045,10 @@ export default function NetWorthSection({ celebrity }) {
               {/* View Full Profile CTA */}
               <Link
                 href={processedCelebrity?.slug ? `/celebrity/${processedCelebrity.slug}/profile` : "#"}
-                className="flex items-center justify-between bg-gradient-to-br from-[var(--ff-cinema-red)] to-[var(--ff-cinema-red)]/80 rounded-xl p-4 md:p-5 cursor-pointer hover:shadow-[var(--ff-cinema-red-glow)] transition-all duration-300 group"
+                className="flex items-center justify-between rounded-xl p-4 hover:shadow-lg transition-all group"
+                style={{
+                  background: 'linear-gradient(to bottom right, #e50914, #e50914)'
+                }}
               >
                 <div>
                   <p className="text-sm text-white mb-1">View Full Profile</p>
@@ -1144,21 +1056,22 @@ export default function NetWorthSection({ celebrity }) {
                     Complete {processedCelebrity?.name || "Celebrity"} intelligence
                   </p>
                 </div>
-                <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-white/10 text-white border border-white/20 group-hover:bg-white/20 transition">
-                  <svg
-                    className="w-3.5 h-3.5"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M7 17L17 7" />
-                    <path d="M7 7h10v10" />
-                  </svg>
-                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-external-link w-4 h-4 text-white group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+                >
+                  <path d="M15 3h6v6" />
+                  <path d="M10 14 21 3" />
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                </svg>
               </Link>
             </div>
           </aside>
