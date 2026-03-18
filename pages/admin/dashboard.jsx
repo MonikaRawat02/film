@@ -12,6 +12,7 @@ export default function Dashboard() {
     ottIntelligence: 0,
     trendingIntelligence: 0,
     totalViews: 0,
+    activeUsers: 0,
     recentActivity: []
   });
   const [loading, setLoading] = useState(true);
@@ -22,43 +23,21 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      const [celebritiesRes, boxOfficeRes, ottRes, trendingRes] = await Promise.all([
-        fetch("/api/admin/celebrity/getCelebrity"),
-        fetch("/api/admin/box-office"),
-        fetch("/api/admin/ott-intelligence"),
-        fetch("/api/trending-intelligence")
-      ]);
-
-      const celebritiesData = await celebritiesRes.json();
-      const boxOffice = await boxOfficeRes.json();
-      const ott = await ottRes.json();
-      const trendingData = await trendingRes.json();
-
-      const celebrities = celebritiesData.data || celebritiesData;
-      const boxOfficeData = Array.isArray(boxOffice) ? boxOffice : (boxOffice.data || []);
-      const ottData = Array.isArray(ott) ? ott : (ott.data || []);
-      const trending = trendingData.data || trendingData || [];
-
-      // Calculate total views from trending intelligence
-      const totalViews = Array.isArray(trending) ? trending.reduce((sum, item) => {
-        const viewValue = parseFloat(item.views?.replace(/[KM]+/, "") || "0");
-        return sum + (item.views?.includes("M") ? viewValue * 1000 : viewValue);
-      }, 0) : 0;
-
-      setStats({
-        celebrities: Array.isArray(celebrities) ? celebrities.length : 0,
-        boxOffice: Array.isArray(boxOfficeData) ? boxOfficeData.length : 0,
-        ottIntelligence: Array.isArray(ottData) ? ottData.length : 0,
-        trendingIntelligence: Array.isArray(trending) ? trending.length : 0,
-        totalViews: Math.round(totalViews),
-        recentActivity: Array.isArray(trending) ? [
-          ...trending.slice(0, 3).map(item => ({
-            type: "Trending",
-            title: item.title,
-            time: new Date(item.createdAt).toLocaleDateString()
-          }))
-        ] : []
-      });
+      const res = await fetch("/api/admin/stats");
+      const json = await res.json();
+      
+      if (json.success) {
+        const data = json.data;
+        setStats({
+          celebrities: data.celebrities,
+          boxOffice: data.boxOffice,
+          ottIntelligence: data.ott,
+          trendingIntelligence: data.trending,
+          totalViews: data.totalViews,
+          activeUsers: data.activeUsers,
+          recentActivity: data.recentActivity || []
+        });
+      }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
@@ -104,27 +83,21 @@ export default function Dashboard() {
   const overviewStats = [
     {
       label: "Total Views",
-      value: `${(stats.totalViews / 1000).toFixed(1)}M`,
+      value: stats.totalViews >= 1000000 
+        ? `${(stats.totalViews / 1000000).toFixed(1)}M` 
+        : stats.totalViews >= 1000 
+          ? `${(stats.totalViews / 1000).toFixed(1)}K` 
+          : stats.totalViews,
       icon: Eye,
       gradient: "from-blue-500 to-cyan-500"
     },
     {
       label: "Active Users",
-      value: "250K+",
+      value: stats.activeUsers >= 1000 
+        ? `${(stats.activeUsers / 1000).toFixed(1)}K+` 
+        : stats.activeUsers,
       icon: Users,
       gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      label: "Reports Generated",
-      value: "1.2K+",
-      icon: Activity,
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      label: "Weekly Updates",
-      value: "50+",
-      icon: DollarSign,
-      gradient: "from-orange-500 to-red-500"
     }
   ];
 
@@ -134,7 +107,7 @@ export default function Dashboard() {
         <title>Admin Dashboard | FilmFire</title>
       </Head>
       <AdminLayout>
-        <div className="space-y-6">
+        <div className="p-4 lg:p-6 space-y-6">
           {/* Welcome Section */}
           <section className="rounded-2xl border border-gray-800 bg-black/30 p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -235,7 +208,7 @@ export default function Dashboard() {
             {loading ? (
               <div className="text-gray-400 text-sm">Loading...</div>
             ) : stats.recentActivity.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 {stats.recentActivity.map((activity, index) => (
                   <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50">
                     <div className="flex items-center gap-3">
@@ -247,7 +220,9 @@ export default function Dashboard() {
                         <p className="text-xs text-gray-500">{activity.type}</p>
                       </div>
                     </div>
-                    <span className="text-xs text-gray-500">{activity.time}</span>
+                    <span className="text-xs text-gray-500">
+                      {new Date(activity.time).toLocaleDateString()}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -257,6 +232,21 @@ export default function Dashboard() {
           </section>
         </div>
       </AdminLayout>
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #333;
+          border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #444;
+        }
+      `}</style>
     </>
   );
 }

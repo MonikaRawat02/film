@@ -72,8 +72,8 @@
          </div>
        </aside>
  
-       <div className="flex-1 flex flex-col">
-         <header className="h-16 flex items-center justify-between px-4 lg:px-6 border-b border-gray-800 bg-black/30">
+       <div className="flex-1 flex flex-col h-screen overflow-hidden">
+         <header className="h-16 flex items-center justify-between px-4 lg:px-6 border-b border-gray-800 bg-black/30 flex-shrink-0">
            <div className="flex items-center gap-3">
              <button
                aria-label="Open menu"
@@ -86,7 +86,7 @@
            </div>
          </header>
  
-         <main className="flex-1 p-4 lg:p-6">{children}</main>
+         <main className="flex-1 overflow-y-auto custom-scrollbar">{children}</main>
        </div>
  
        {openMobile && (
@@ -136,6 +136,21 @@
            </div>
          </div>
        )}
+       <style jsx global>{`
+         .custom-scrollbar::-webkit-scrollbar {
+           width: 6px;
+         }
+         .custom-scrollbar::-webkit-scrollbar-track {
+           background: transparent;
+         }
+         .custom-scrollbar::-webkit-scrollbar-thumb {
+           background: #333;
+           border-radius: 10px;
+         }
+         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+           background: #444;
+         }
+       `}</style>
      </div>
    );
  }

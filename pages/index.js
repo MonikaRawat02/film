@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import WhyFilmyFire from "@/components/WhyFilmyFire";
 import CelebritySection from "@/components/CelebritySection";
@@ -10,6 +11,11 @@ import JoinCommunity from "@/components/JoinCommunity";
 import InsightsDuoSection from "@/components/InsightsDuoSection";
 
 export default function Home() {
+  useEffect(() => {
+    // Record unique visit
+    fetch("/api/public/record-visit", { method: "POST" }).catch(err => console.error("Visit recording failed", err));
+  }, []);
+
   return (
     <>
       <HeroSection />
