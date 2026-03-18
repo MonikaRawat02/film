@@ -79,7 +79,7 @@ export default function BollywoodPage({ initialArticles }) {
         <BollywoodArticlesGrid articles={filteredArticles} loading={loading} />
         <BollywoodMovieIntelligence />
         <BollywoodBoxOfficeDashboard />
-        <CelebrityIntelligenceHub />
+        <CelebrityIntelligenceHub industry="Bollywood" />
         <BollywoodMovieDiscovery />
         <BollywoodTrendingTopics />
         <BollywoodIndustryInsights />

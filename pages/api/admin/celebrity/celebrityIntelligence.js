@@ -30,7 +30,7 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
 
-    const { slug, q, page = 1, limit = 20 } = req.query;
+    const { slug, q, industry, page = 1, limit = 20 } = req.query;
     const lim = Math.min(Number(limit) || 20, 100);
     const pg = Math.max(Number(page) || 1, 1);
 
@@ -46,6 +46,7 @@ export default async function handler(req, res) {
           trendingPercentage: c?.heroSection?.growthPercentage ?? null,
           slug: c?.heroSection?.slug || null,
           profileImage: c?.heroSection?.profileImage || null,
+          industry: c?.heroSection?.industry || null,
           profession: Array.isArray(c?.heroSection?.profession) 
             ? c.heroSection.profession.join(", ") 
             : c?.heroSection?.profession || null
@@ -53,7 +54,14 @@ export default async function handler(req, res) {
       });
     }
 
-    const filter = q ? { "heroSection.name": { $regex: q, $options: "i" } } : {};
+    const filter = {};
+    if (q) {
+      filter["heroSection.name"] = { $regex: q, $options: "i" };
+    }
+    if (industry) {
+      filter["heroSection.industry"] = industry;
+    }
+
     const total = await Celebrity.countDocuments(filter);
     const docs = await Celebrity.find(filter)
       .skip((pg - 1) * lim)
@@ -68,6 +76,7 @@ export default async function handler(req, res) {
       trendingPercentage: c?.heroSection?.growthPercentage ?? null,
       slug: c?.heroSection?.slug || null,
       profileImage: c?.heroSection?.profileImage || null,
+      industry: c?.heroSection?.industry || null,
       profession: Array.isArray(c?.heroSection?.profession) 
         ? c.heroSection.profession.join(", ") 
         : c?.heroSection?.profession || null

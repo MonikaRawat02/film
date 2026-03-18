@@ -1,7 +1,8 @@
 "use client";
-import { useState, useId, useCallback, useEffect } from "react";
+import { useState, useId, useCallback, useEffect, useRef } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
+import { toast } from "react-toastify";
 import {
   Star, PencilLine, Plus, X,
   User, DollarSign, TrendingUp,
@@ -203,8 +204,6 @@ const INITIAL_FORM = {
 export default function CelebrityModule() {
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const [imagePreview, setImagePreview] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
@@ -215,8 +214,21 @@ export default function CelebrityModule() {
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [showCreateMenu, setShowCreateMenu] = useState(false);
+  const createMenuRef = useRef(null);
 
   const [form, setForm] = useState(INITIAL_FORM);
+
+  // Close create menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (createMenuRef.current && !createMenuRef.current.contains(event.target)) {
+        setShowCreateMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const tabs = [
     { id: "basic", label: "Basic Info", icon: User },
@@ -286,21 +298,24 @@ export default function CelebrityModule() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || "Failed to delete celebrity");
+        toast.error(data.message || "Failed to delete celebrity");
         return;
       }
-      setSuccess("Celebrity deleted successfully!");
+      toast.success("Celebrity deleted successfully!");
       fetchCelebrities();
     } catch (e) {
-      setError("Failed to delete celebrity");
+      toast.error("Failed to delete celebrity");
     }
   };
 
-  const handleCreateNew = () => {
+  const handleCreateNew = (industry = "Bollywood") => {
     setEditingId(null);
-    setForm(INITIAL_FORM);
+    const newForm = JSON.parse(JSON.stringify(INITIAL_FORM));
+    newForm.heroSection.industry = industry;
+    setForm(newForm);
     setImagePreview("");
     setOpen(true);
+    setShowCreateMenu(false);
     setActiveTab(0);
   };
 
@@ -413,8 +428,6 @@ export default function CelebrityModule() {
 
   const submit = async () => {
     setSubmitting(true);
-    setError("");
-    setSuccess("");
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
       const payload = normalizePayload();
@@ -432,17 +445,17 @@ export default function CelebrityModule() {
       });
       const data = await res.json();
       if (!res.ok) {
-        setError(data.message || `Failed to ${editingId ? 'update' : 'create'} celebrity`);
+        toast.error(data.message || `Failed to ${editingId ? 'update' : 'create'} celebrity`);
         setSubmitting(false);
         return;
       }
-      setSuccess(`Celebrity ${editingId ? 'updated' : 'created'} successfully!`);
+      toast.success(`Celebrity ${editingId ? 'updated' : 'created'} successfully!`);
       setSubmitting(false);
       setOpen(false);
       setEditingId(null);
       fetchCelebrities();
     } catch (e) {
-      setError("Unexpected error occurred");
+      toast.error("Unexpected error occurred");
       setSubmitting(false);
     }
   };
@@ -529,6 +542,7 @@ export default function CelebrityModule() {
   };
 
   const renderTabContent = () => {
+    const isHollywood = form.heroSection.industry === "Hollywood";
     switch (activeTab) {
       case 0: // Basic Info
         return (
@@ -541,7 +555,7 @@ export default function CelebrityModule() {
                   required
                   value={form.heroSection.name}
                   onChange={(e) => update("heroSection.name", e.target.value)}
-                  placeholder="e.g., Shah Rukh Khan"
+                  placeholder={isHollywood ? "e.g., Tom Cruise" : "e.g., Shah Rukh Khan"}
                 />
                 <InputField
                   icon={Hash}
@@ -549,7 +563,7 @@ export default function CelebrityModule() {
                   required
                   value={form.heroSection.slug}
                   onChange={(e) => update("heroSection.slug", e.target.value)}
-                  placeholder="shah-rukh-khan"
+                  placeholder={isHollywood ? "tom-cruise" : "shah-rukh-khan"}
                   hint="URL-friendly name"
                 />
                 <InputField
@@ -557,7 +571,7 @@ export default function CelebrityModule() {
                   label="Profession(s)"
                   value={Array.isArray(form.heroSection.profession) ? form.heroSection.profession.join(", ") : form.heroSection.profession}
                   onChange={(e) => update("heroSection.profession", e.target.value)}
-                  placeholder="Actor, Producer, TV Host"
+                  placeholder={isHollywood ? "Actor, Director, Producer" : "Actor, Producer, TV Host"}
                   hint="Comma separated"
                   className="md:col-span-2"
                 />
@@ -566,14 +580,14 @@ export default function CelebrityModule() {
                   label="Nationality"
                   value={form.heroSection.nationality}
                   onChange={(e) => update("heroSection.nationality", e.target.value)}
-                  placeholder="Indian"
+                  placeholder={isHollywood ? "American" : "Indian"}
                 />
                 <InputField
                   icon={Briefcase}
                   label="Industry"
                   value={form.heroSection.industry}
                   onChange={(e) => update("heroSection.industry", e.target.value)}
-                  placeholder="Bollywood"
+                  placeholder={isHollywood ? "Hollywood" : "Bollywood"}
                 />
                 <InputField
                   icon={User}
@@ -655,12 +669,12 @@ export default function CelebrityModule() {
                               });
                               const out = await res.json();
                               if (!res.ok) {
-                                setError(out.message || "Image upload failed");
+                                toast.error(out.message || "Image upload failed");
                               } else {
                                 update("heroSection.profileImage", out.url);
                               }
                             } catch {
-                              setError("Image upload failed");
+                              toast.error("Image upload failed");
                             } finally {
                               setImageUploading(false);
                             }
@@ -707,7 +721,7 @@ export default function CelebrityModule() {
                   label="Title"
                   value={form.netWorth.title}
                   onChange={(e) => update("netWorth.title", e.target.value)}
-                  placeholder="Shah Rukh Khan's Net Worth"
+                  placeholder={isHollywood ? "Tom Cruise's Net Worth" : "Shah Rukh Khan's Net Worth"}
                 />
                 <InputField
                   label="Year"
@@ -721,7 +735,7 @@ export default function CelebrityModule() {
                 label="Description"
                 value={form.netWorth.description}
                 onChange={(e) => update("netWorth.description", e.target.value)}
-                placeholder="Detailed description of net worth..."
+                placeholder={isHollywood ? "Detailed breakdown of the Hollywood star's wealth..." : "Detailed description of net worth..."}
                 rows={3}
               />
             </SectionCard>
@@ -732,17 +746,17 @@ export default function CelebrityModule() {
                   label="Minimum (USD)"
                   value={form.netWorth.netWorthUSD.min}
                   onChange={(e) => handleUSDChange('min', e.target.value)}
-                  placeholder="850000000"
+                  placeholder={isHollywood ? "600000000" : "850000000"}
                   type="number"
-                  hint="e.g., 850000000 for $850M"
+                  hint={isHollywood ? "e.g., 600000000 for $600M" : "e.g., 850000000 for $850M"}
                 />
                 <InputField
                   label="Maximum (USD)"
                   value={form.netWorth.netWorthUSD.max}
                   onChange={(e) => handleUSDChange('max', e.target.value)}
-                  placeholder="900000000"
+                  placeholder={isHollywood ? "650000000" : "900000000"}
                   type="number"
-                  hint="e.g., 900000000 for $900M"
+                  hint={isHollywood ? "e.g., 650000000 for $650M" : "e.g., 900000000 for $900M"}
                 />
               </div>
             </SectionCard>
@@ -786,7 +800,7 @@ export default function CelebrityModule() {
                 label="Age"
                 value={form.quickFacts.age}
                 onChange={(e) => update("quickFacts.age", e.target.value)}
-                placeholder="58"
+                placeholder={isHollywood ? "61" : "58"}
                 type="number"
               />
               <InputField
@@ -794,7 +808,7 @@ export default function CelebrityModule() {
                 label="Birth Date"
                 value={form.quickFacts.birthDate}
                 onChange={(e) => update("quickFacts.birthDate", e.target.value)}
-                placeholder="1965-11-02"
+                placeholder={isHollywood ? "1962-07-03" : "1965-11-02"}
                 type="date"
               />
               <InputField
@@ -802,7 +816,7 @@ export default function CelebrityModule() {
                 label="Profession(s)"
                 value={Array.isArray(form.quickFacts.profession) ? form.quickFacts.profession.join(", ") : form.quickFacts.profession}
                 onChange={(e) => update("quickFacts.profession", e.target.value)}
-                placeholder="Actor, Producer"
+                placeholder={isHollywood ? "Actor, Producer, Director" : "Actor, Producer"}
                 hint="Comma separated"
                 className="md:col-span-2"
               />
@@ -811,7 +825,7 @@ export default function CelebrityModule() {
                 label="Active Since"
                 value={form.quickFacts.activeSince}
                 onChange={(e) => update("quickFacts.activeSince", e.target.value)}
-                placeholder="1988"
+                placeholder={isHollywood ? "1981" : "1988"}
                 type="number"
               />
             </div>
@@ -832,7 +846,7 @@ export default function CelebrityModule() {
                     label="SOURCE NAME"
                     value={source.sourceName}
                     onChange={(e) => update(`netWorthCalculation.incomeSources.${idx}.sourceName`, e.target.value)}
-                    placeholder="Acting Fees & OTT"
+                    placeholder={isHollywood ? "Film Salaries & Backend Deals" : "Acting Fees & OTT"}
                   />
                   <InputField
                     label="PERCENTAGE"
@@ -845,7 +859,7 @@ export default function CelebrityModule() {
                     label="DESCRIPTION"
                     value={source.description}
                     onChange={(e) => update(`netWorthCalculation.incomeSources.${idx}.description`, e.target.value)}
-                    placeholder="Primary income from acting in 2-3 films annually"
+                    placeholder={isHollywood ? "Primary income from blockbuster franchise roles" : "Primary income from acting in 2-3 films annually"}
                     className="md:col-span-2 lg:col-span-1"
                   />
                 </ArrayCard>
@@ -878,7 +892,7 @@ export default function CelebrityModule() {
                       label="Net Worth"
                       value={item.netWorth}
                       onChange={(e) => update(`netWorthTimeline.timeline.${idx}.netWorth`, e.target.value)}
-                      placeholder="$900M"
+                      placeholder={isHollywood ? "$600M" : "$900M"}
                       className="md:col-span-2"
                     />
                   </ArrayCard>
@@ -907,7 +921,7 @@ export default function CelebrityModule() {
                       label="Milestone"
                       value={item.milestone}
                       onChange={(e) => update(`netWorthTimeline.keyMilestones.${idx}.milestone`, e.target.value)}
-                      placeholder="Crossed $500M net worth"
+                      placeholder={isHollywood ? "Won Academy Award for Best Actor" : "Crossed $500M net worth"}
                       className="md:col-span-2"
                     />
                   </ArrayCard>
@@ -934,26 +948,26 @@ export default function CelebrityModule() {
                     label="Period"
                     value={item.period}
                     onChange={(e) => update(`biographyTimeline.${idx}.period`, e.target.value)}
-                    placeholder="1990-1995"
+                    placeholder={isHollywood ? "1981-1986" : "1990-1995"}
                   />
                   <InputField
                     label="Title"
                     value={item.title}
                     onChange={(e) => update(`biographyTimeline.${idx}.title`, e.target.value)}
-                    placeholder="Early Career"
+                    placeholder={isHollywood ? "Early Hollywood Years" : "Early Career"}
                   />
                   <InputField
                     label="Description"
                     value={item.description}
                     onChange={(e) => update(`biographyTimeline.${idx}.description`, e.target.value)}
-                    placeholder="Main description"
+                    placeholder={isHollywood ? "Breakthrough with 'Risky Business'" : "Main description"}
                     className="md:col-span-2"
                   />
                   <InputField
                     label="Sub Description"
                     value={item.subDescription}
                     onChange={(e) => update(`biographyTimeline.${idx}.subDescription`, e.target.value)}
-                    placeholder="Additional details"
+                    placeholder={isHollywood ? "Established as a major box office draw" : "Additional details"}
                     className="md:col-span-2"
                   />
                 </ArrayCard>
@@ -1030,25 +1044,25 @@ export default function CelebrityModule() {
               label="Asset Name"
               value={asset.name}
               onChange={(e) => update(`assets.${idx}.name`, e.target.value)}
-              placeholder="Mannat Bungalow"
+              placeholder={isHollywood ? "Beverly Hills Estate" : "Mannat Bungalow"}
             />
             <InputField
               label="Location"
               value={asset.location}
               onChange={(e) => update(`assets.${idx}.location`, e.target.value)}
-              placeholder="Mumbai, India"
+              placeholder={isHollywood ? "Los Angeles, USA" : "Mumbai, India"}
             />
             <InputField
               label="Value"
               value={asset.value}
               onChange={(e) => update(`assets.${idx}.value`, e.target.value)}
-              placeholder="$30M"
+              placeholder={isHollywood ? "$50M" : "$30M"}
             />
             <InputField
               label="Description"
               value={asset.description}
               onChange={(e) => update(`assets.${idx}.description`, e.target.value)}
-              placeholder="Iconic 6-story sea-facing mansion in Bandra"
+              placeholder={isHollywood ? "Luxury mansion with private theater and pool" : "Iconic 6-story sea-facing mansion in Bandra"}
               className="md:col-span-2"
             />
             
@@ -1098,13 +1112,12 @@ export default function CelebrityModule() {
                         // Check file size (in MB)
                         const fileSizeMB = file.size / (1024 * 1024);
                         if (fileSizeMB > 5) {
-                          setError(`File size (${fileSizeMB.toFixed(1)}MB) exceeds 5MB limit. Please choose a smaller image.`);
+                          toast.error(`File size (${fileSizeMB.toFixed(1)}MB) exceeds 5MB limit. Please choose a smaller image.`);
                           return;
                         }
                         
                         // Set uploading state for this specific asset
                         update(`assets.${idx}.imageUploading`, true);
-                        setError(""); // Clear any previous errors
                         
                         try {
                           // Read file as data URL
@@ -1158,11 +1171,11 @@ export default function CelebrityModule() {
                           
                           // Update the asset with the returned URL path
                           update(`assets.${idx}.image`, out.url);
-                          setSuccess("Image uploaded successfully!");
+                          toast.success("Image uploaded successfully!");
                           
                         } catch (error) {
                           console.error("Upload error:", error);
-                          setError(error.message || "Image upload failed");
+                          toast.error(error.message || "Image upload failed");
                         } finally {
                           update(`assets.${idx}.imageUploading`, false);
                           // Clear the file input
@@ -1249,13 +1262,13 @@ export default function CelebrityModule() {
                     label="Name"
                     value={comp.name}
                     onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.name`, e.target.value)}
-                    placeholder="Salman Khan"
+                    placeholder={isHollywood ? "Will Smith" : "Salman Khan"}
                   />
                   <InputField
                     label="Slug"
                     value={comp.slug}
                     onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.slug`, e.target.value)}
-                    placeholder="salman-khan"
+                    placeholder={isHollywood ? "will-smith" : "salman-khan"}
                   />
                   <InputField
                     label="Image URL"
@@ -1267,14 +1280,14 @@ export default function CelebrityModule() {
                     label="Net Worth"
                     value={comp.netWorth}
                     onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.netWorth`, e.target.value)}
-                    placeholder="800000000"
+                    placeholder={isHollywood ? "350000000" : "800000000"}
                     type="number"
                   />
                   <InputField
                     label="Display"
                     value={comp.netWorthDisplay}
                     onChange={(e) => update(`celebrityComparisons.comparisons.${idx}.netWorthDisplay`, e.target.value)}
-                    placeholder="$800M"
+                    placeholder={isHollywood ? "$350M" : "$800M"}
                   />
                   <SelectField
                     label="Career Stage"
@@ -1308,19 +1321,19 @@ export default function CelebrityModule() {
                     label="Category"
                     value={item.category}
                     onChange={(e) => update(`relatedIntelligence.${idx}.category`, e.target.value)}
-                    placeholder="OTT / Box Office"
+                    placeholder={isHollywood ? "Box Office / Studio Deals" : "OTT / Box Office"}
                   />
                   <InputField
                     label="Title"
                     value={item.title}
                     onChange={(e) => update(`relatedIntelligence.${idx}.title`, e.target.value)}
-                    placeholder="Netflix Deal"
+                    placeholder={isHollywood ? "Paramount Partnership" : "Netflix Deal"}
                   />
                   <TextareaField
                     label="Description"
                     value={item.description}
                     onChange={(e) => update(`relatedIntelligence.${idx}.description`, e.target.value)}
-                    placeholder="Description of the intelligence entry..."
+                    placeholder={isHollywood ? "Details about major studio collaborations..." : "Description of the intelligence entry..."}
                     rows={2}
                     className="md:col-span-2"
                   />
@@ -1347,14 +1360,14 @@ export default function CelebrityModule() {
                     label="Question"
                     value={faq.question}
                     onChange={(e) => update(`faqs.${idx}.question`, e.target.value)}
-                    placeholder="What is their current net worth?"
+                    placeholder={isHollywood ? "What is their Hollywood box office record?" : "What is their current net worth?"}
                     className="md:col-span-1"
                   />
                   <TextareaField
                     label="Answer"
                     value={faq.answer}
                     onChange={(e) => update(`faqs.${idx}.answer`, e.target.value)}
-                    placeholder="Their current net worth is estimated at..."
+                    placeholder={isHollywood ? "They have grossed over $10 billion worldwide..." : "Their current net worth is estimated at..."}
                     rows={2}
                     className="md:col-span-2"
                   />
@@ -1380,13 +1393,13 @@ export default function CelebrityModule() {
                   label="Title"
                   value={form.netWorthDisclaimer.title}
                   onChange={(e) => update("netWorthDisclaimer.title", e.target.value)}
-                  placeholder="Net Worth Disclaimer"
+                  placeholder={isHollywood ? "Hollywood Star Net Worth Disclaimer" : "Net Worth Disclaimer"}
                 />
                 <InputField
                   label="Description"
                   value={form.netWorthDisclaimer.description}
                   onChange={(e) => update("netWorthDisclaimer.description", e.target.value)}
-                  placeholder="All net worth figures are estimates..."
+                  placeholder={isHollywood ? "Estimates based on US tax filings and studio reports..." : "All net worth figures are estimates..."}
                 />
               </div>
             </SectionCard>
@@ -1399,13 +1412,13 @@ export default function CelebrityModule() {
                       label="Title"
                       value={highlight.title}
                       onChange={(e) => update(`netWorthDisclaimer.highlights.${idx}.title`, e.target.value)}
-                      placeholder="Based on public sources"
+                      placeholder={isHollywood ? "Verified by Studio Data" : "Based on public sources"}
                     />
                     <InputField
                       label="Description"
                       value={highlight.description}
                       onChange={(e) => update(`netWorthDisclaimer.highlights.${idx}.description`, e.target.value)}
-                      placeholder="Detailed explanation"
+                      placeholder={isHollywood ? "We cross-reference with Forbes and industry insiders." : "Detailed explanation"}
                       className="md:col-span-2"
                     />
                   </ArrayCard>
@@ -1442,17 +1455,35 @@ export default function CelebrityModule() {
               </h1>
               <p className="text-sm text-gray-400 mt-1">Create and update celebrity profiles with detailed information</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 relative" ref={createMenuRef}>
               <button
-                onClick={handleCreateNew}
+                onClick={() => setShowCreateMenu(!showCreateMenu)}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 text-white font-medium hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-600/20"
               >
                 <Plus className="h-5 w-5" />
                 <span>Create Celebrity</span>
               </button>
-              {/* <div className="h-10 w-10 rounded-xl bg-red-600/20 flex items-center justify-center"> */}
-                {/* <Star className="h-5 w-5 text-red-500" /> */}
-              {/* </div> */}
+
+              {showCreateMenu && (
+                <div className="absolute top-full right-0 mt-2 w-48 rounded-xl bg-gray-900 border border-gray-800 shadow-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                  <div className="p-1.5 space-y-1">
+                    <button
+                      onClick={() => handleCreateNew("Bollywood")}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-red-500/10 hover:text-red-500 transition-all text-left"
+                    >
+                      <div className="h-2 w-2 rounded-full bg-red-500" />
+                      Bollywood Celebrity
+                    </button>
+                    <button
+                      onClick={() => handleCreateNew("Hollywood")}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-300 hover:bg-blue-500/10 hover:text-blue-500 transition-all text-left"
+                    >
+                      <div className="h-2 w-2 rounded-full bg-blue-500" />
+                      Hollywood Celebrity
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -1556,20 +1587,6 @@ export default function CelebrityModule() {
               </div>
             </div>
           </div>
-
-          {/* Notifications */}
-          {success && (
-            <div className="rounded-xl border border-green-600 bg-green-600/10 p-4 flex items-center gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-              <p className="text-sm text-green-400">{success}</p>
-            </div>
-          )}
-          {error && (
-            <div className="rounded-xl border border-red-600 bg-red-600/10 p-4 flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
-              <p className="text-sm text-red-400">{error}</p>
-            </div>
-          )}
         </div>
 
         {/* Modal */}
@@ -1584,7 +1601,9 @@ export default function CelebrityModule() {
                     <Crown className="h-5 w-5 text-red-500" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-200">{editingId ? 'Update' : 'Create New'} Celebrity Profile</h3>
+                    <h3 className="text-lg font-semibold text-gray-200 capitalize">
+                      {editingId ? 'Update' : 'Create'} {form.heroSection.industry || ''} celebrity profile
+                    </h3>
                     <p className="text-xs text-gray-500">Step {activeTab + 1} of {tabs.length}: {tabs[activeTab].label}</p>
                   </div>
                 </div>

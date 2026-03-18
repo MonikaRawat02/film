@@ -4,7 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import { Users, TrendingUp, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import Link from "next/link";
 
-export default function CelebrityIntelligenceHub() {
+export default function CelebrityIntelligenceHub({ industry = "" }) {
   const [celebrities, setCelebrities] = useState([]);
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef(null);
@@ -12,7 +12,10 @@ export default function CelebrityIntelligenceHub() {
   useEffect(() => {
     const fetchCelebrities = async () => {
       try {
-        const res = await fetch("/api/admin/celebrity/celebrityIntelligence?page=1&limit=8");
+        const url = industry 
+          ? `/api/admin/celebrity/celebrityIntelligence?industry=${industry}&page=1&limit=8`
+          : "/api/admin/celebrity/celebrityIntelligence?page=1&limit=8";
+        const res = await fetch(url);
         const data = await res.json();
         if (data.data) {
           setCelebrities(data.data.map(c => ({
@@ -31,7 +34,7 @@ export default function CelebrityIntelligenceHub() {
       }
     };
     fetchCelebrities();
-  }, []);
+  }, [industry]);
 
   const scroll = (direction) => {
     if (scrollRef.current) {
