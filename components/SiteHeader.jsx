@@ -18,38 +18,34 @@
  
    return (
      <>
-       <header className="fixed inset-x-0 top-0 z-50 border-b border-gray-800 bg-black/30 backdrop-blur supports-[backdrop-filter]:bg-black/40">
-        <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-10">
+       <header className="sticky top-0 z-50 border-b border-gray-800/50 bg-black/80 backdrop-blur">
+        <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
            <div className="flex h-16 items-center justify-between">
              <div className="flex items-center gap-3">
-               <button
-                 aria-label="Open menu"
-                 className="inline-flex md:hidden items-center justify-center rounded-lg p-2.5 hover:bg-gray-900"
-                 onClick={() => setOpenMobile(true)}
-               >
-                 <Menu className="h-5 w-5 text-gray-300" />
-               </button>
-               <Link href="/" className="group inline-flex items-center gap-2">
-                 <span className="grid h-9 w-9 place-items-center rounded-xl bg-red-600 text-white shadow-sm transition group-hover:bg-red-500">
-                   <Flame className="h-5 w-5" />
-                 </span>
-                <div className="leading-tight">
-                  <span className="block text-base md:text-lg font-semibold text-gray-100">FilmyFire</span>
-                   <span className="block text-[10px] tracking-wider text-gray-400">
-                     INTELLIGENCE PLATFORM
-                   </span>
+
+               <Link href="/" className="group inline-flex items-center gap-3">
+                 <div className="relative">
+                   <Flame className="h-8 w-8 text-red-600" strokeWidth={2.5} />
+                   <div className="absolute inset-0 -z-10 bg-red-600/30 blur-lg" />
+                 </div>
+                 <div className="flex flex-col">
+                   <span className="text-2xl font-bold tracking-tight text-white">FilmyFire</span>
+                   <div className="text-[10px] font-medium uppercase tracking-wider text-gray-500 -mt-1">
+                     Intelligence Platform
+                   </div>
                  </div>
                </Link>
              </div>
  
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden lg:flex items-center gap-10">
                {nav.map((item) => (
                  <Link
                    key={item.href}
                    href={item.href}
-                  className="text-sm md:text-base text-gray-300 transition hover:text-red-500"
+                  className="relative text-[15px] text-gray-400 hover:text-white transition-colors font-medium group"
                  >
-                   {item.name}
+                  {item.name}
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
                  </Link>
                ))}
              </nav>
@@ -57,45 +53,46 @@
              <div className="flex items-center gap-2">
                <button
                  aria-label="Search"
-                 className="inline-flex items-center justify-center rounded-lg p-2.5 hover:bg-gray-900"
+                 className="hidden lg:inline-flex items-center justify-center rounded-lg p-2.5 hover:bg-gray-900"
                  onClick={() => setOpenSearch((v) => !v)}
                >
                  <Search className="h-5 w-5 text-gray-300" />
                </button>
+
+              <button
+                aria-label="Open menu"
+                className="inline-flex lg:hidden items-center justify-center rounded-lg p-2.5 hover:bg-gray-900"
+                onClick={() => setOpenMobile(true)}
+              >
+                <Menu className="h-5 w-5 text-gray-300" />
+              </button>
              </div>
            </div>
          </div>
  
-         {openSearch && (
-           <div className="border-t border-gray-800 bg-black/30">
-            <div className="mx-auto max-w-screen-2xl px-4 sm:px-6 lg:px-10 py-3">
-               <div className="relative">
-                 <input
-                   value={query}
-                   onChange={(e) => setQuery(e.target.value)}
-                   placeholder="Search movies, box office, celebrities…"
-                  className="w-full rounded-xl bg-black/40 border border-gray-800 px-4 py-3 text-base text-gray-200 placeholder-gray-400 outline-none transition focus:border-red-600"
-                 />
-               </div>
-             </div>
-           </div>
-         )}
+
        </header>
  
        {openMobile && (
-         <div className="md:hidden fixed inset-0 z-50">
+         <div className="lg:hidden fixed inset-0 z-50">
            <div
              className="absolute inset-0 bg-black/60"
              onClick={() => setOpenMobile(false)}
            />
            <div className="absolute left-0 top-0 bottom-0 w-80 bg-gray-950 border-r border-gray-800">
              <div className="flex h-16 items-center justify-between px-4">
-               <div className="inline-flex items-center gap-2">
-                 <span className="grid h-9 w-9 place-items-center rounded-xl bg-red-600 text-white">
-                   <Flame className="h-5 w-5" />
-                 </span>
-                 <span className="font-semibold">FilmyFire</span>
-               </div>
+              <Link href="/" className="group inline-flex items-center gap-3">
+                 <div className="relative">
+                   <Flame className="h-8 w-8 text-red-600" strokeWidth={2.5} />
+                   <div className="absolute inset-0 -z-10 bg-red-600/30 blur-lg" />
+                 </div>
+                 <div className="flex flex-col">
+                   <span className="text-2xl font-bold tracking-tight text-white">FilmyFire</span>
+                   <div className="text-[10px] font-medium uppercase tracking-wider text-gray-500 -mt-1">
+                     Intelligence Platform
+                   </div>
+                 </div>
+               </Link>
                <button
                  aria-label="Close menu"
                  className="rounded-lg p-2.5 hover:bg-gray-900"
@@ -107,12 +104,12 @@
  
              <div className="px-4 py-3 border-t border-gray-800">
                <div className="relative">
-                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                 <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
                  <input
                    value={query}
                    onChange={(e) => setQuery(e.target.value)}
-                   placeholder="Search…"
-                   className="w-full rounded-lg bg-black/40 border border-gray-800 pl-9 pr-3 py-2.5 text-sm text-gray-200 placeholder-gray-400 outline-none transition focus:border-red-600"
+                   placeholder="Search..."
+                   className="w-full rounded-lg bg-black/40 border border-gray-800 pl-10 pr-3 py-3 text-base text-gray-200 placeholder-gray-400 outline-none transition focus:border-red-600"
                  />
                </div>
              </div>
@@ -122,7 +119,7 @@
                  <Link
                    key={item.href}
                    href={item.href}
-                   className="block rounded-lg px-3 py-2 text-sm text-gray-300 transition hover:bg-gray-900 hover:text-white"
+                   className="block rounded-lg px-3 py-2 text-base text-gray-300 transition hover:bg-gray-900 hover:text-white"
                    onClick={() => setOpenMobile(false)}
                  >
                    {item.name}
