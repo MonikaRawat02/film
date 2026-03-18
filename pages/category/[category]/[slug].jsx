@@ -2,33 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { 
-  FileText, 
-  Clock, 
-  User, 
-  ChevronRight, 
-  Share2, 
-  ThumbsUp, 
-  Eye, 
-  ArrowLeft,
-  Quote,
-  CheckCircle,
-  Clapperboard,
-  Film,
-  Tv,
-  PlaySquare,
-  TrendingUp,
-  Users,
-  Zap,
-  Target,
-  BookOpen,
-  Award,
-  BarChart3,
-  ShieldCheck,
-  Heart,
-  MessageSquare,
-  Bookmark,
-  Check
+import { FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft,Quote,CheckCircle,Clapperboard,Film,Tv,PlaySquare,TrendingUp,Users, Zap,Target,BookOpen,Award,BarChart3,ShieldCheck,Heart,MessageSquare,Bookmark, Check
 } from "lucide-react";
 
 export async function getServerSideProps(context) {
@@ -44,7 +18,6 @@ export async function getServerSideProps(context) {
     if (!res.ok || !data.data) {
       return { notFound: true };
     }
-
     return {
       props: {
         article: data.data,
