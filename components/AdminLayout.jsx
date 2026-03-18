@@ -3,6 +3,8 @@
  import { useRouter } from "next/router";
  import Link from "next/link";
  import { Menu, LogOut, LayoutDashboard, Star, BarChart, Tv, FileText, Lightbulb } from "lucide-react";
+ import { ToastContainer } from "react-toastify";
+ import "react-toastify/dist/ReactToastify.css";
  
  export default function AdminLayout({ children }) {
    const router = useRouter();
@@ -151,6 +153,7 @@
            background: #444;
          }
        `}</style>
+       <ToastContainer position="top-right" autoClose={3000} theme="dark" />
      </div>
    );
  }

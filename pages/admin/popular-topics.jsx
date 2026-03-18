@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
+import { toast } from "react-toastify";
 import { 
   Plus, PencilLine, Trash2, X, Save, Loader2, 
   Lightbulb, TrendingUp, Eye, Clock, 
@@ -14,7 +15,6 @@ export default function PopularTopicsAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
 
   const INITIAL_FORM = {
     title: "",
@@ -54,8 +54,12 @@ export default function PopularTopicsAdmin() {
       const res = await fetch(`/api/admin/popular-topics/${id}`, { method: "DELETE" });
       if (res.ok) {
         setItems(items.filter((i) => i._id !== id));
+        toast.success("Topic deleted successfully!");
+      } else {
+        toast.error("Failed to delete topic");
       }
     } catch (e) {
+      toast.error("Delete failed");
       console.error("Delete failed", e);
     }
   };
@@ -63,7 +67,6 @@ export default function PopularTopicsAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    setError("");
 
     const url = editingId 
       ? `/api/admin/popular-topics/${editingId}` 
@@ -82,11 +85,12 @@ export default function PopularTopicsAdmin() {
         setEditingId(null);
         setForm(INITIAL_FORM);
         fetchItems();
+        toast.success(`Topic ${editingId ? "updated" : "added"} successfully!`);
       } else {
-        setError(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong");
       }
     } catch (e) {
-      setError("Failed to save topic");
+      toast.error("Failed to save topic");
     } finally {
       setSubmitting(false);
     }
@@ -170,8 +174,6 @@ export default function PopularTopicsAdmin() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-8 space-y-6 max-h-[75vh] overflow-y-auto custom-scrollbar">
-                {error && <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm">{error}</div>}
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Title</label>

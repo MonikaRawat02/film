@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
+import { toast } from "react-toastify";
 import { Plus, Trash2, Edit, Save, X, Tv, TrendingUp, Search as SearchIcon, Loader2, Film, DollarSign, PieChart, Activity } from "lucide-react";
 
 export default function OTTIntelligenceAdmin() {
@@ -57,8 +58,13 @@ export default function OTTIntelligenceAdmin() {
         setEditingItem(null);
         setFormData({ platformName: "", averageDealValue: "", marketShare: 50, statusLabel: "Growing", detailsLink: "" });
         fetchData();
+        toast.success(`Platform ${editingItem ? "updated" : "added"} successfully!`);
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to save platform");
       }
     } catch (error) {
+      toast.error("Error submitting form");
       console.error("Error submitting form:", error);
     }
   };
@@ -77,8 +83,14 @@ export default function OTTIntelligenceAdmin() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (res.ok) fetchData();
+      if (res.ok) {
+        fetchData();
+        toast.success("Platform deleted successfully!");
+      } else {
+        toast.error("Failed to delete platform");
+      }
     } catch (error) {
+      toast.error("Error deleting item");
       console.error("Error deleting item:", error);
     }
   };

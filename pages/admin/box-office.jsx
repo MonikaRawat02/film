@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
+import { toast } from "react-toastify";
 import { Plus, Trash2, Edit, Save, X, BarChart, Search as SearchIcon, Loader2, Film, DollarSign, TrendingUp, Award, Dna, SlidersHorizontal, Heart, Target, Brain, Users, Sparkles } from "lucide-react";
 
 export default function BoxOfficeAdmin() {
@@ -75,8 +76,13 @@ export default function BoxOfficeAdmin() {
           movieDNA: { ...initialDNA } 
         });
         fetchData();
+        toast.success(`Movie ${editingItem ? "updated" : "added"} successfully!`);
+      } else {
+        const data = await res.json();
+        toast.error(data.message || "Failed to save movie");
       }
     } catch (error) {
+      toast.error("Error submitting form");
       console.error("Error submitting form:", error);
     }
   };
@@ -99,8 +105,14 @@ export default function BoxOfficeAdmin() {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (res.ok) fetchData();
+      if (res.ok) {
+        fetchData();
+        toast.success("Movie deleted successfully!");
+      } else {
+        toast.error("Failed to delete movie");
+      }
     } catch (error) {
+      toast.error("Error deleting item");
       console.error("Error deleting item:", error);
     }
   };

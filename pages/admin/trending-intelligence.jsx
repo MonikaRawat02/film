@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
+import { toast } from "react-toastify";
 import { Plus, PencilLine, Trash2, X, Save, Loader2, Image as ImageIcon, Layout, BarChart, Tv, FileText, Film, Clock, UploadCloud } from "lucide-react";
 
 export default function TrendingIntelligenceAdmin() {
@@ -10,7 +11,6 @@ export default function TrendingIntelligenceAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
   const [imagePreview, setImagePreview] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
 
@@ -56,8 +56,12 @@ export default function TrendingIntelligenceAdmin() {
       const res = await fetch(`/api/trending-intelligence/${id}`, { method: "DELETE" });
       if (res.ok) {
         setItems(items.filter((i) => i._id !== id));
+        toast.success("Item deleted successfully!");
+      } else {
+        toast.error("Failed to delete item");
       }
     } catch (e) {
+      toast.error("Delete failed");
       console.error("Delete failed", e);
     }
   };
@@ -88,12 +92,13 @@ export default function TrendingIntelligenceAdmin() {
         });
         const out = await res.json();
         if (!res.ok) {
-          setError(out.message || "Image upload failed");
+          toast.error(out.message || "Image upload failed");
         } else {
           setForm(prev => ({ ...prev, image: out.url }));
+          toast.success("Image uploaded successfully!");
         }
       } catch (err) {
-        setError("Image upload failed");
+        toast.error("Image upload failed");
         console.error(err);
       } finally {
         setImageUploading(false);
@@ -105,11 +110,10 @@ export default function TrendingIntelligenceAdmin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.image) {
-      setError("Please upload an image");
+      toast.error("Please upload an image");
       return;
     }
     setSubmitting(true);
-    setError("");
 
     const url = editingId ? `/api/trending-intelligence/${editingId}` : "/api/trending-intelligence";
     const method = editingId ? "PUT" : "POST";
@@ -126,11 +130,12 @@ export default function TrendingIntelligenceAdmin() {
         setEditingId(null);
         setForm(INITIAL_FORM);
         fetchItems();
+        toast.success(`Item ${editingId ? "updated" : "published"} successfully!`);
       } else {
-        setError(data.message || "Something went wrong");
+        toast.error(data.message || "Something went wrong");
       }
     } catch (e) {
-      setError("Failed to save item");
+      toast.error("Failed to save item");
     } finally {
       setSubmitting(false);
     }
@@ -208,13 +213,6 @@ export default function TrendingIntelligenceAdmin() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-8 space-y-8 max-h-[75vh] overflow-y-auto custom-scrollbar bg-[#0A0A0F]/50">
-                {error && (
-                  <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm animate-in fade-in slide-in-from-top-2">
-                    <X className="h-5 w-5 flex-shrink-0 cursor-pointer" onClick={() => setError("")} />
-                    <p className="font-medium">{error}</p>
-                  </div>
-                )}
-                
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-medium text-gray-400 uppercase tracking-wider ml-1">Article Title</label>

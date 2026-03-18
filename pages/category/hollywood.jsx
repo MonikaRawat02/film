@@ -38,7 +38,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function HollywoodPage({ initialArticles }) {
+export default function HollywoodPage({ initialArticles = [] }) {
   const [articles, setArticles] = useState(initialArticles);
   const [loading, setLoading] = useState(initialArticles.length === 0);
 
