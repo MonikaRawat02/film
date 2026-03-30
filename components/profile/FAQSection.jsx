@@ -68,11 +68,6 @@ export default function FAQSection({ celebrity }) {
             ))}
           </div>
         </div>
-
-        {/* Schema markup notice */}
-        <p className="text-center text-xs text-gray-600 mt-6">
-          ✓ Schema markup enabled for enhanced search visibility
-        </p>
       </div>
     </section>
   );

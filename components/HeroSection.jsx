@@ -49,7 +49,21 @@ export default function HeroSection() {
     return () => clearTimeout(debounce);
   }, [query]);
 
-  const handleResultClick = (href) => {
+  const handleResultClick = async (href, resultTitle, resultType) => {
+    // Record the search
+    try {
+      await fetch("/api/public/record-search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          query: resultTitle || query, 
+          category: resultType === "Celebrity" ? "Celebrities" : (resultType === "Article" ? "Bollywood" : "BoxOffice")
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to record search:", err);
+    }
+
     router.push(href);
     setShowDropdown(false);
     setQuery("");
@@ -115,7 +129,7 @@ export default function HeroSection() {
                     {results.map((result) => (
                       <button
                         key={result.id}
-                        onClick={() => handleResultClick(result.href)}
+                        onClick={() => handleResultClick(result.href, result.title, result.type)}
                         className="w-full p-4 flex items-center gap-4 hover:bg-white/5 transition-all text-left group border-b border-gray-800/30 last:border-0"
                       >
                         <div className="relative w-12 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-900 border border-gray-800">

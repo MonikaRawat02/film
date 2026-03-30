@@ -38,8 +38,15 @@ industry: String,
 
   slug: {
     type: String,
-    unique: true
+    unique: true,
+    required: true
   },
+
+  tmdbId: Number,
+  biography: String,
+  birthday: String,
+  placeOfBirth: String,
+  isAutomated: { type: Boolean, default: false },
 
   filmsCount: {
     type: Number
@@ -51,7 +58,11 @@ industry: String,
 
   growthPercentage: {
     type: Number // +42%
-  }
+  },
+
+  // --- NEW: Trending Intelligence ---
+  trendingScore: { type: Number, default: 0 },
+  lastTrendingSync: { type: Date }
 
 },
 /* =====================================================

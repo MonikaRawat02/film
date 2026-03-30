@@ -7,7 +7,7 @@ export default function HollywoodCelebritySection() {
   const [showAll, setShowAll] = useState(false);
   const [celebrities, setCelebrities] = useState([]);
 
-  console.log(celebrities);sss
+  console.log(celebrities);
 
   useEffect(() => {
     const fetchCelebrities = async () => {

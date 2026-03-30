@@ -1,10 +1,11 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { DollarSign, TrendingUp, BarChart3, TrendingDown, ChevronRight, Award } from "lucide-react";
 import Link from "next/link";
 
 export default function HollywoodBoxOfficeSection() {
-  const stats = [
+  const [stats, setStats] = useState([
     {
       title: "Top Grossing All-Time",
       value: "$2.9B",
@@ -45,15 +46,61 @@ export default function HollywoodBoxOfficeSection() {
       badgeBg: "bg-red-500/10",
       textColor: "text-red-400",
     },
-  ];
+  ]);
 
-  const topMovies = [
+  const [topMovies, setTopMovies] = useState([
     { rank: "#1", movie: "Avatar", year: 2009, gross: "$2.923B", isTop: true },
     { rank: "#2", movie: "Avengers: Endgame", year: 2019, gross: "$2.799B" },
     { rank: "#3", movie: "Avatar: The Way of Water", year: 2022, gross: "$2.320B" },
     { rank: "#4", movie: "Titanic", year: 1997, gross: "$2.264B" },
     { rank: "#5", movie: "Star Wars: The Force Awakens", year: 2015, gross: "$2.071B" },
-  ];
+  ]);
+
+  useEffect(() => {
+     const fetchBoxOfficeData = async () => {
+       try {
+         const res = await fetch("/api/public/box-office");
+         const data = await res.json();
+         if (data.success && data.data.length > 0) {
+           // Sorting by collection (assuming worldwide gross is stored here)
+           // Note: In a real app, you'd want to parse these strings into numbers for sorting
+           const sorted = [...data.data].sort((a, b) => {
+             const valA = parseFloat(a.collection.replace(/[^0-9.]/g, ''));
+             const valB = parseFloat(b.collection.replace(/[^0-9.]/g, ''));
+             return valB - valA;
+           });
+
+          // Update Top 5 Table
+          const top5 = sorted.slice(0, 5).map((item, idx) => ({
+            rank: `#${idx + 1}`,
+            movie: item.movieName,
+            year: new Date(item.createdAt).getFullYear(), // Fallback to year if not in model
+            gross: item.collection,
+            isTop: idx === 0
+          }));
+          setTopMovies(top5);
+
+          // Update Stats Cards with dynamic values
+          setStats(prev => {
+            const newStats = [...prev];
+            newStats[0].movie = sorted[0].movieName;
+            newStats[0].value = sorted[0].collection;
+            
+            // Find a flop (negative ROI or low collection)
+            const flop = sorted.find(m => m.verdict.toLowerCase().includes('flop'));
+            if (flop) {
+              newStats[3].movie = flop.movieName;
+              newStats[3].value = flop.collection;
+            }
+            return newStats;
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching box office data:", error);
+      }
+    };
+    fetchBoxOfficeData();
+  }, []);
 
   return (
     <section className="bg-[#0A0E17] text-white py-16 md:py-24 border-t border-white/5">

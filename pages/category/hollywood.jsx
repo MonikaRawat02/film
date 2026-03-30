@@ -39,29 +39,6 @@ export async function getServerSideProps(context) {
 }
 
 export default function HollywoodPage({ initialArticles = [] }) {
-  const [articles, setArticles] = useState(initialArticles);
-  const [loading, setLoading] = useState(initialArticles.length === 0);
-
-  useEffect(() => {
-    if (initialArticles.length === 0) {
-      const fetchArticles = async () => {
-        setLoading(true);
-        try {
-          const res = await fetch("/api/articles/list?category=Hollywood&limit=6");
-          const data = await res.json();
-          if (data.data) {
-            setArticles(data.data);
-          }
-        } catch (error) {
-          console.error("Error fetching articles on client-side:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
-      fetchArticles();
-    }
-  }, [initialArticles]);
-
   return (
     <>
       <Head>
@@ -71,7 +48,7 @@ export default function HollywoodPage({ initialArticles = [] }) {
 
       <div className="min-h-screen bg-[#0B0F1A] text-zinc-100">
         <HollywoodHeroSection />
-        <HollywoodArticlesGrid articles={articles} loading={loading} />
+        <HollywoodArticlesGrid initialArticles={initialArticles} />
         <HollywoodDatabaseSection />
         <HollywoodCelebritySection />
         <HollywoodOTTSection />

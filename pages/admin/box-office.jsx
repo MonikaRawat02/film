@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
 import { toast } from "react-toastify";
-import { Plus, Trash2, Edit, Save, X, BarChart, Search as SearchIcon, Loader2, Film, DollarSign, TrendingUp, Award, Dna, SlidersHorizontal, Heart, Target, Brain, Users, Sparkles } from "lucide-react";
+import { Plus, Trash2, Edit, Save, X, BarChart, Search as SearchIcon, Loader2, Film, DollarSign, TrendingUp, Award, Dna, SlidersHorizontal, Heart, Target, Brain, Users, Sparkles, RefreshCw } from "lucide-react";
 
 export default function BoxOfficeAdmin() {
   const [items, setItems] = useState([]);
@@ -21,8 +21,10 @@ export default function BoxOfficeAdmin() {
   const [formData, setFormData] = useState({
     movieName: "",
     budget: "",
+    openingWeekend: "",
     collection: "",
     roi: "",
+    profit: "",
     verdict: "HIT",
     analysisLink: "",
     movieDNA: { ...initialDNA },
@@ -69,8 +71,10 @@ export default function BoxOfficeAdmin() {
         setFormData({ 
           movieName: "", 
           budget: "", 
+          openingWeekend: "",
           collection: "", 
           roi: "", 
+          profit: "",
           verdict: "HIT", 
           analysisLink: "", 
           movieDNA: { ...initialDNA } 
@@ -95,6 +99,26 @@ export default function BoxOfficeAdmin() {
       movieDNA: item.movieDNA ? { ...item.movieDNA } : { ...initialDNA }
     });
     setIsModalOpen(true);
+  };
+
+  const handleSync = async (id) => {
+    try {
+      toast.info("Syncing Box Office Intelligence...");
+      const res = await fetch("/api/admin/automation/sync-box-office", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success(`Synced: ${data.data.movieName} is now marked as ${data.data.verdict}!`);
+        fetchData();
+      } else {
+        toast.error("Sync Failed: " + data.message);
+      }
+    } catch (err) {
+      toast.error("Sync Error: " + err.message);
+    }
   };
 
   const handleDelete = async (id) => {
@@ -127,24 +151,10 @@ export default function BoxOfficeAdmin() {
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <BarChart className="text-red-600" /> Box Office Truth
           </h1>
-          <button
-            onClick={() => {
-              setEditingItem(null);
-              setFormData({ 
-                movieName: "", 
-                budget: "", 
-                collection: "", 
-                roi: "", 
-                verdict: "HIT", 
-                analysisLink: "",
-                movieDNA: { ...initialDNA }
-              });
-              setIsModalOpen(true);
-            }}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
-          >
-            <Plus size={18} /> Add Movie
-          </button>
+          <div className="flex items-center gap-2 text-xs text-zinc-500 bg-zinc-900/50 px-3 py-1.5 rounded-lg border border-white/5">
+            <Sparkles className="w-3 h-3 text-yellow-500" />
+            <span>Syncing from Articles Database</span>
+          </div>
         </div>
 
         <div className="bg-gray-900/20 rounded-xl border border-gray-800 p-5">
@@ -181,7 +191,9 @@ export default function BoxOfficeAdmin() {
                     <h3 className="font-bold text-lg mb-2">{item.movieName}</h3>
                     <div className="flex flex-wrap gap-3 text-sm text-gray-400">
                       <span className="bg-gray-800/50 px-2 py-1 rounded">Budget: <span className="text-white font-medium">{item.budget}</span></span>
+                      <span className="bg-gray-800/50 px-2 py-1 rounded">Opening: <span className="text-white font-medium">{item.openingWeekend}</span></span>
                       <span className="bg-gray-800/50 px-2 py-1 rounded">Collection: <span className="text-white font-medium">{item.collection}</span></span>
+                      <span className="bg-gray-800/50 px-2 py-1 rounded">Profit: <span className="text-blue-500 font-medium">{item.profit}</span></span>
                       <span className="bg-gray-800/50 px-2 py-1 rounded">ROI: <span className="text-green-500 font-medium">{item.roi}</span></span>
                       <span className={`px-3 py-1 rounded text-xs font-bold ${
                         item.verdict === "BLOCKBUSTER" ? "bg-purple-900/50 text-purple-400" :
@@ -195,6 +207,13 @@ export default function BoxOfficeAdmin() {
                     </div>
                   </div>
                   <div className="flex gap-2 self-end sm:self-center">
+                    <button 
+                      onClick={() => handleSync(item._id)} 
+                      title="Sync AI Intelligence"
+                      className="p-2 hover:bg-gray-800 rounded-lg text-yellow-400 transition-all hover:scale-110"
+                    >
+                      <RefreshCw size={18} />
+                    </button>
                     <button onClick={() => handleEdit(item)} className="p-2 hover:bg-gray-800 rounded-lg text-blue-400 transition-all hover:scale-110">
                       <Edit size={18} />
                     </button>
@@ -282,8 +301,25 @@ export default function BoxOfficeAdmin() {
                       </div>
                       <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 text-orange-500" />
+                          Opening Weekend
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="$50M"
+                          className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
+                          value={formData.openingWeekend}
+                          onChange={(e) => setFormData({ ...formData, openingWeekend: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
                           <DollarSign className="h-4 w-4 text-green-500" />
-                          Collection
+                          Worldwide Collection
                         </label>
                         <input
                           type="text"
@@ -292,6 +328,20 @@ export default function BoxOfficeAdmin() {
                           className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
                           value={formData.collection}
                           onChange={(e) => setFormData({ ...formData, collection: e.target.value })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 text-blue-500" />
+                          Profit
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="$500M"
+                          className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
+                          value={formData.profit}
+                          onChange={(e) => setFormData({ ...formData, profit: e.target.value })}
                         />
                       </div>
                     </div>

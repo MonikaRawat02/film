@@ -56,7 +56,25 @@ export default async function handler(req, res) {
 
     const filter = {};
     if (q) {
-      filter["heroSection.name"] = { $regex: q, $options: "i" };
+      const words = q.trim().split(/\s+/).filter(w => w.length > 0);
+      const escapedWords = words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      
+      // All words present regex
+      const allWordsRegex = new RegExp(escapedWords.map(w => `(?=.*${w})`).join(''), 'i');
+      
+      // Super flex regex (handles "shahru" for "Shah Rukh")
+      const rawQueryNoSpace = words.join('');
+      const superFlexQuery = rawQueryNoSpace
+        .split('')
+        .map(char => char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*')
+        .join('');
+      const superFlexRegex = new RegExp(superFlexQuery, 'i');
+
+      filter["$or"] = [
+        { "heroSection.name": allWordsRegex },
+        { "heroSection.name": superFlexRegex },
+        { "heroSection.slug": { $regex: q, $options: "i" } }
+      ];
     }
     if (industry) {
       filter["heroSection.industry"] = industry;

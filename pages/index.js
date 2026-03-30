@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import WhyFilmyFire from "@/components/WhyFilmyFire";
 import CelebritySection from "@/components/CelebritySection";
-import TrendingSection from "@/components/TrendingSection";
 import CategoryHubSection from "@/components/CategoryHubSection";
 import GuidesSection from "@/components/GuidesSection";
 import OurCommitment from "@/components/OurCommitment";
@@ -20,7 +19,6 @@ export default function Home() {
     <>
       <HeroSection />
       <WhyFilmyFire />
-      <TrendingSection />
       <CategoryHubSection />
       <GuidesSection />
       <InsightsDuoSection />

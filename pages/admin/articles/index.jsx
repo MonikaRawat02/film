@@ -1,5 +1,5 @@
 "use client";
-import { useState, useId, useCallback, useEffect } from "react";
+import { useState, useId, useCallback, useEffect, useRef } from "react";
 import Head from "next/head";
 import AdminLayout from "@/components/AdminLayout";
 import { toast } from 'react-toastify';
@@ -53,27 +53,111 @@ export default function ArticleModule() {
   // List management
   const [articles, setArticles] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const LIMIT = 12;
+
+  const observer = useRef();
+  const lastElementRef = useCallback(node => {
+    if (loadingList || loadingMore) return;
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prev => prev + 1);
+      }
+    });
+    
+    if (node) observer.current.observe(node);
+  }, [loadingList, loadingMore, hasMore]);
 
   const [form, setForm] = useState(INITIAL_FORM);
+  const [backfilling, setBackfilling] = useState(false);
 
   const tabs = [
     { id: "basic", label: "Basic Info", icon: User },
     { id: "content", label: "Content Sections", icon: FileText },
   ];
 
-  const fetchArticles = useCallback(async () => {
-    setLoadingList(true);
+  const handleBackfillImages = async () => {
+    if (!confirm("Are you sure you want to backfill missing images? This will process articles without a cover image using TMDB.")) return;
+    
+    setBackfilling(true);
+    let totalUpdated = 0;
+    let hasMoreToProcess = true;
+    let batchCount = 0;
+
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
-      const res = await fetch(`/api/admin/articles/list?q=${searchQuery}`, {
+      
+      while (hasMoreToProcess) {
+        batchCount++;
+        const res = await fetch("/api/admin/automation/backfill-images", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token ? `Bearer ${token}` : ""
+          }
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          totalUpdated += data.updated || 0;
+          
+          // If the API says it processed 0 articles, or fewer than the limit (20), we are done
+          if (!data.processed || data.processed === 0) {
+            hasMoreToProcess = false;
+            if (totalUpdated > 0) {
+              toast.success(`Successfully completed! Updated ${totalUpdated} articles total.`);
+            } else {
+              toast.info("No articles needed backfilling.");
+            }
+          } else {
+            // Provide a small progress update every batch
+            console.log(`Batch ${batchCount} complete. Updated ${totalUpdated} so far...`);
+            // Continue the loop
+          }
+        } else {
+          toast.error(data.message || "Failed during backfill process");
+          hasMoreToProcess = false;
+        }
+      }
+      
+      fetchArticles(1, false);
+    } catch (e) {
+      toast.error("Error connecting to backfill API");
+    } finally {
+      setBackfilling(false);
+    }
+  };
+
+  const fetchArticles = useCallback(async (pageNum = 1, isLoadMore = false) => {
+    if (isLoadMore) setLoadingMore(true);
+    else setLoadingList(true);
+
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+      const res = await fetch(`/api/admin/articles/list?q=${searchQuery}&page=${pageNum}&limit=${LIMIT}`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
       const data = await res.json();
       if (res.ok) {
-        setArticles(data.data || []);
+        const fetchedItems = data.data || [];
+        if (isLoadMore) {
+          setArticles(prev => {
+            const existingIds = new Set(prev.map(a => a._id));
+            const uniqueNew = fetchedItems.filter(a => !existingIds.has(a._id));
+            return [...prev, ...uniqueNew];
+          });
+        } else {
+          setArticles(fetchedItems);
+        }
+        setHasMore(fetchedItems.length === LIMIT);
       } else {
         const msg = data.error ? `${data.message} (${data.error})` : (data.message || "Failed to fetch articles");
         toast.error(msg);
@@ -83,11 +167,20 @@ export default function ArticleModule() {
       toast.error("Failed to fetch articles");
     } finally {
       setLoadingList(false);
+      setLoadingMore(false);
     }
   }, [searchQuery]);
 
   useEffect(() => {
-    const timer = setTimeout(() => fetchArticles(), 300);
+    if (page > 1) {
+      fetchArticles(page, true);
+    }
+  }, [page, fetchArticles]);
+
+  useEffect(() => {
+    setPage(1);
+    setHasMore(true);
+    const timer = setTimeout(() => fetchArticles(1), 300);
     return () => clearTimeout(timer);
   }, [fetchArticles]);
 
@@ -540,6 +633,27 @@ export default function ArticleModule() {
               />
             </div>
             <button
+              onClick={handleBackfillImages}
+              disabled={backfilling}
+              className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg border ${
+                backfilling 
+                  ? "bg-zinc-800 border-zinc-700 text-zinc-500 cursor-not-allowed" 
+                  : "bg-blue-600/10 border-blue-500/30 text-blue-400 hover:bg-blue-600/20 shadow-blue-600/10"
+              }`}
+            >
+              {backfilling ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <UploadCloud className="h-4 w-4" />
+                  Backfill Data
+                </>
+              )}
+            </button>
+            <button
               onClick={handleCreateNew}
               className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-lg shadow-red-600/20"
             >
@@ -563,10 +677,11 @@ export default function ArticleModule() {
               <button onClick={handleCreateNew} className="text-red-500 text-sm hover:underline">Create your first article</button>
             </div>
           ) : (
-            articles.map((article) => (
+            articles.map((article, i) => (
               <div
-                key={article._id}
-                className="bg-gray-900/30 border border-gray-800 rounded-2xl overflow-hidden hover:border-gray-700 transition-all group"
+                key={article._id || i}
+                ref={articles.length === i + 1 ? lastElementRef : null}
+                className="group bg-slate-900/40 border border-slate-800 rounded-[2rem] overflow-hidden hover:border-red-500/30 transition-all duration-500 flex flex-col shadow-2xl"
               >
                 <div className="aspect-video bg-gray-800 relative">
                   {article.coverImage ? (
@@ -616,6 +731,14 @@ export default function ArticleModule() {
             ))
           )}
         </div>
+
+        {/* Loading More Indicator */}
+        {loadingMore && (
+          <div className="mt-12 flex flex-col items-center justify-center gap-3">
+            <Loader2 className="h-8 w-8 animate-spin text-red-500" />
+            <p className="text-gray-500 text-sm font-medium animate-pulse uppercase tracking-[0.2em]">Analyzing More Intel...</p>
+          </div>
+        )}
 
         {/* Modal Overlay */}
         {open && (

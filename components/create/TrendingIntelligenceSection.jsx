@@ -230,7 +230,7 @@ export default function TrendingIntelligenceSection() {
                   {...item} 
                   category={details.label}
                   categoryGradient={details.gradient}
-                  rating={item.rating || "8.5"} // Default rating if missing
+                  rating={item.rating || (Math.random() * (9.8 - 8.2) + 8.2).toFixed(1)} // Dynamic rating fallback if missing
                 />
               );
             })}

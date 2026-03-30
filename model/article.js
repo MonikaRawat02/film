@@ -23,6 +23,10 @@ const ArticleSchema = new mongoose.Schema(
       enum: ["movie", "webseries"],
     },
     movieTitle: String,
+    tagline: String,
+    certification: String,
+    runtime: String,
+    releaseDate: String,
     releaseYear: Number,
     author: {
       name: String,
@@ -30,6 +34,7 @@ const ArticleSchema = new mongoose.Schema(
     },
     summary: String,
     coverImage: String,
+    backdropImage: String,
     sections: [
       {
         heading: String,
@@ -39,6 +44,112 @@ const ArticleSchema = new mongoose.Schema(
     highlights: [String],
     verdict: String,
     tags: [String],
+
+    // Scraped Data
+    genres: [String],
+    genreAnalysis: String,
+    director: [String],
+    producer: [String],
+    writer: [String],
+    criticalResponse: String,
+    rating: String,
+
+    // pSEO Fields
+    budget: String,
+    boxOffice: {
+      openingWeekend: String,
+      worldwide: String,
+      india: String,
+      roi: String, // e.g., "+562%"
+      profit: String, // e.g., "+₹100 Crore"
+      analysisLink: String,
+      movieDNA: {
+        emotionalIntensity: { type: Number, default: 0 },
+        violenceLevel: { type: Number, default: 0 },
+        psychologicalDepth: { type: Number, default: 0 },
+        familyFriendliness: { type: Number, default: 0 },
+        complexityLevel: { type: Number, default: 0 },
+      },
+    },
+    cast: [
+      {
+        name: String,
+        role: String,
+        profileImage: String,
+        slug: String,
+      }
+    ],
+    crew: [
+      {
+        name: String,
+        job: String,
+        department: String,
+        profileImage: String,
+        slug: String,
+      }
+    ],
+    recommendations: [
+      {
+        tmdbId: Number,
+        title: String,
+        releaseYear: Number,
+        rating: String,
+        coverImage: String,
+        backdropImage: String,
+        slug: String,
+      }
+    ],
+    ott: {
+      platform: String,
+      releaseDate: Date,
+      link: String,
+    },
+    subPages: {
+      endingExplained: { type: Boolean, default: false },
+      boxOffice: { type: Boolean, default: false },
+      budget: { type: Boolean, default: false },
+      ottRelease: { type: Boolean, default: false },
+      cast: { type: Boolean, default: false },
+      reviewAnalysis: { type: Boolean, default: false },
+      hitOrFlop: { type: Boolean, default: false },
+    },
+
+    // Content for pSEO sub-pages
+    pSEO_Content_ending_explained: [{ heading: String, content: String }],
+    pSEO_Content_box_office: [{ heading: String, content: String }],
+    pSEO_Content_budget: [{ heading: String, content: String }],
+    pSEO_Content_ott_release: [{ heading: String, content: String }],
+    pSEO_Content_cast: [{ heading: String, content: String }],
+    pSEO_Content_review_analysis: [{ heading: String, content: String }],
+    pSEO_Content_hit_or_flop: [{ heading: String, content: String }],
+    pSEO_Content_overview: [{ heading: String, content: String }], // Added for 1200-2000 word main page
+
+    // --- NEW: Trending Intelligence ---
+    trendingScore: { type: Number, default: 0 },
+    lastTrendingSync: { type: Date },
+
+    // Detailed SEO fields per sub-page
+    subPagesSEO: {
+      endingExplained: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      boxOffice: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      budget: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      ottRelease: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      cast: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      reviewAnalysis: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      hitOrFlop: { title: String, description: String, faq: [{ question: String, answer: String }] },
+    },
+
+    meta: {
+      title: String,
+      description: String,
+      canonical: String,
+      faq: [
+        {
+          question: String,
+          answer: String,
+        }
+      ],
+    },
     stats: {
       views: { type: Number, default: 0 },
       likes: { type: Number, default: 0 },
@@ -51,6 +162,11 @@ const ArticleSchema = new mongoose.Schema(
       enum: ["draft", "published"],
       default: "draft",
     },
+    isAIContent: {
+      type: Boolean,
+      default: false,
+    },
+    lastBackfillAttempt: Date,
     publishedAt: Date,
   },
   {

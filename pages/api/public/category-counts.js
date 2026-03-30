@@ -10,10 +10,11 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
 
-    // Get article counts grouped by category
+    // Get article counts grouped by category (Case-insensitive)
     const articleCounts = await Article.aggregate([
-      { $match: { status: "published" } },
-      { $group: { _id: "$category", count: { $sum: 1 } } }
+      // Consider both published and draft for counting if needed, 
+      // but matching the UI request for "automated" data
+      { $group: { _id: { $toLower: "$category" }, count: { $sum: 1 } } }
     ]);
 
     // Get celebrity count (total)
@@ -21,23 +22,34 @@ export default async function handler(req, res) {
 
     // Map results to a cleaner format
     const countsMap = {
-      Bollywood: 0,
-      Hollywood: 0,
-      WebSeries: 0,
-      OTT: 0,
-      BoxOffice: 0,
-      Celebrities: celebrityCount
+      bollywood: 0,
+      hollywood: 0,
+      webseries: 0,
+      ott: 0,
+      boxoffice: 0,
+      celebrities: celebrityCount
     };
 
     articleCounts.forEach(item => {
-      if (countsMap.hasOwnProperty(item._id)) {
-        countsMap[item._id] = item.count;
+      const key = item._id ? item._id.toLowerCase() : null;
+      if (key && countsMap.hasOwnProperty(key)) {
+        countsMap[key] = item.count;
       }
     });
 
+    // Return mapping for UI component
+    const finalCounts = {
+      Bollywood: countsMap.bollywood,
+      Hollywood: countsMap.hollywood,
+      WebSeries: countsMap.webseries,
+      OTT: countsMap.ott,
+      BoxOffice: countsMap.boxoffice,
+      Celebrities: countsMap.celebrities
+    };
+
     return res.status(200).json({
       success: true,
-      counts: countsMap
+      counts: finalCounts
     });
   } catch (error) {
     console.error("Error fetching category counts:", error);

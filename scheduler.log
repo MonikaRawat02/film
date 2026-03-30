@@ -1,0 +1,1568 @@
+[2026-03-20T10:22:55.491Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-20T10:22:55.495Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-20T10:22:55.732Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-20T10:22:55.734Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-20T10:22:55.784Z] [INFO] All cron schedules active. Automation interval: */2 * * * *
+[2026-03-20T10:22:55.804Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-20T10:23:00.040Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:23:02.575Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-20T10:23:02.578Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:23:02.584Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:23:02.586Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:23:17.850Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T10:23:20.511Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 celebrities for Bollywood
+[2026-03-20T10:23:20.513Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:23:26.059Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 2 celebrities for Hollywood
+[2026-03-20T10:24:00.115Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:24:00.118Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:24:00.128Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:24:00.129Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:24:00.136Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:24:02.238Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T10:24:02.632Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 celebrities for Bollywood
+[2026-03-20T10:24:02.633Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:24:04.120Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 2 celebrities for Hollywood
+[2026-03-20T10:24:04.123Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:25:00.043Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:26:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:26:00.049Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:26:00.050Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:26:00.055Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:26:00.057Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:26:01.604Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T10:26:03.947Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 celebrities for Bollywood
+[2026-03-20T10:26:03.948Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:26:05.355Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 2 celebrities for Hollywood
+[2026-03-20T10:26:05.356Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:27:00.036Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:28:00.047Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:28:00.048Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:28:00.055Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:28:00.056Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:28:00.061Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:28:01.528Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T10:28:03.761Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 celebrities for Bollywood
+[2026-03-20T10:28:03.762Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:28:05.241Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 2 celebrities for Hollywood
+[2026-03-20T10:28:05.242Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:29:00.062Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:30:00.090Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:30:00.099Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:30:00.117Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:30:00.119Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:30:00.130Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:30:02.602Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T10:30:03.598Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 celebrities for Bollywood
+[2026-03-20T10:30:03.600Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:30:05.359Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 2 celebrities for Hollywood
+[2026-03-20T10:30:05.361Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:31:00.037Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:32:00.056Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:32:00.059Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:32:00.067Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:32:00.068Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:32:00.081Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:32:03.583Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 celebrities for Bollywood
+[2026-03-20T10:32:03.585Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:32:05.185Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 2 celebrities for Hollywood
+[2026-03-20T10:32:40.343Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:32:40.346Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:33:00.105Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:34:00.136Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:34:00.170Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:34:00.272Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:34:00.290Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:34:00.319Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:34:09.033Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:34:09.035Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:34:35.079Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:34:39.410Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:34:39.413Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:35:00.183Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:36:00.077Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:36:00.080Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:36:00.114Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:36:00.116Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:36:00.128Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:36:05.737Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:36:05.739Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:36:24.689Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:36:26.093Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:36:26.095Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:37:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:38:00.078Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:38:00.082Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:38:00.084Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:38:00.088Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:38:00.090Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:38:05.579Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:38:05.582Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:38:18.391Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:38:27.371Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:38:27.374Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:39:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:40:00.125Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:40:00.157Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:40:00.238Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:40:00.242Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:40:00.276Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:40:10.047Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:40:10.051Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:40:31.182Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:40:33.262Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:40:33.265Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:41:00.097Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:42:00.211Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:42:00.223Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:42:00.226Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:42:00.247Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:42:00.251Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:42:10.587Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:42:10.596Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:42:31.471Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:42:34.113Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:42:34.116Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:43:00.096Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:44:00.090Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:44:00.097Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:44:00.100Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:44:00.118Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:44:00.123Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:44:05.902Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:44:05.904Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:44:18.792Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:44:29.365Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:44:29.367Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:45:00.060Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:46:00.072Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:46:00.077Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:46:00.080Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:46:00.085Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:46:00.087Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:46:05.677Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:46:05.679Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:46:18.533Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:46:29.547Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:46:29.553Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:47:00.064Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:48:00.056Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:48:00.058Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:48:00.062Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:48:00.065Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:48:00.075Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:48:05.801Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:48:05.803Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:48:19.487Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:48:27.698Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:48:27.700Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:49:00.050Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:50:00.070Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:50:00.072Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:50:00.075Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:50:00.077Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:50:00.084Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:50:05.432Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:50:05.434Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:50:19.532Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:50:30.232Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:50:30.234Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:51:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:52:00.073Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:52:00.076Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:52:00.079Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:52:00.082Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:52:00.089Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:52:05.420Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:52:05.422Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:52:17.206Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:52:28.179Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:52:28.181Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:53:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:54:00.064Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:54:00.066Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:54:00.069Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:54:00.071Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:54:00.087Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:54:05.320Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:54:05.322Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:54:17.331Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:54:29.347Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:54:29.349Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:55:00.056Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:56:00.063Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:56:00.065Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:56:00.103Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:56:00.105Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:56:00.113Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:56:06.328Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:56:06.338Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:56:20.944Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:56:36.157Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:56:36.159Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:57:00.046Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:58:00.078Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T10:58:00.081Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T10:58:00.087Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T10:58:00.089Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T10:58:00.098Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T10:58:06.193Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T10:58:06.198Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T10:58:20.409Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T10:58:32.374Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T10:58:32.378Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T10:59:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:00:00.050Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:00:00.053Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:00:00.056Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:00:00.058Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:00:00.065Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:00:05.122Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:00:05.124Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:00:17.836Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:00:27.375Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T11:00:27.377Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:01:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:02:00.063Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:02:00.065Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:02:00.069Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:02:00.071Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:02:00.078Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:02:05.242Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:02:05.245Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:02:18.093Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:02:31.258Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T11:02:31.260Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:03:00.040Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:04:00.049Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:04:00.052Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:04:00.055Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:04:00.057Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:04:00.063Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:04:05.221Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:04:05.225Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:04:17.211Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:04:28.852Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T11:04:28.855Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:05:00.033Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:06:00.048Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:06:00.050Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:06:00.057Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:06:00.061Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:06:00.077Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:06:05.906Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:06:05.908Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:06:18.399Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:06:31.001Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-20T11:06:31.004Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:07:00.042Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:08:00.055Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:08:00.061Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:08:00.064Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:08:00.065Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:08:00.071Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:08:05.199Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:08:05.201Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:08:17.103Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:08:24.904Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 4
+[2026-03-20T11:08:24.906Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:09:00.025Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:10:00.070Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:10:00.076Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:10:00.096Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:10:00.099Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:10:00.104Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:10:05.568Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:10:05.570Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:10:09.224Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:10:18.354Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:10:18.357Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:11:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:12:00.061Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:12:00.065Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:12:00.068Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:12:00.070Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:12:00.074Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:12:05.304Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:12:05.306Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:12:08.801Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:12:16.340Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:12:16.341Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:13:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:14:00.092Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:14:00.100Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:14:00.109Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:14:00.123Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:14:00.139Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:14:05.743Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:14:05.746Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:14:09.736Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:14:18.310Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:14:18.312Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:15:00.046Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:16:00.217Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:16:00.226Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:16:00.279Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:16:00.282Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:16:00.338Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:16:07.020Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:16:07.029Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:16:12.396Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:16:20.185Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:16:20.186Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:17:00.063Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:18:00.079Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:18:00.081Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:18:00.089Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:18:00.090Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:18:00.100Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:18:06.650Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:18:06.652Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:18:11.504Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:18:19.942Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:18:19.944Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:19:00.051Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:20:00.066Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:20:00.073Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:20:00.078Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:20:00.103Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:20:00.108Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:20:05.718Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:20:05.721Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:20:09.293Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:20:17.744Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:20:17.746Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:21:00.043Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:22:00.061Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:22:00.064Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:22:00.068Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:22:00.069Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:22:00.075Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:22:05.116Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:22:05.118Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:22:09.829Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:22:17.471Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:22:17.473Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:23:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:24:00.059Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:24:00.061Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:24:00.065Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:24:00.067Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:24:00.073Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:24:05.515Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:24:05.518Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:24:09.435Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:24:16.184Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:24:16.187Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:25:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:26:00.049Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:26:00.053Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:26:00.055Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:26:00.060Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:26:00.062Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:26:05.228Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:26:05.230Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:26:10.011Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:26:17.320Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:26:17.323Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:27:00.028Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:28:00.051Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:28:00.056Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:28:00.058Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:28:00.061Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:28:00.063Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:28:05.741Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:28:05.743Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:28:09.098Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:28:23.350Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:28:23.352Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:29:00.033Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:30:00.050Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:30:00.052Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:30:00.055Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:30:00.056Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:30:00.063Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:30:06.123Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:30:06.126Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:30:09.831Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:30:18.445Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:30:18.448Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:31:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:32:00.046Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:32:00.051Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:32:00.053Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:32:00.057Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:32:00.058Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:32:05.620Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:32:05.621Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:32:09.829Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 0
+[2026-03-20T11:32:20.536Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:32:20.538Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:33:00.180Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:34:00.204Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:34:00.217Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:34:00.307Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:34:00.310Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:34:00.350Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:34:08.135Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:34:08.138Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:34:14.815Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:34:24.841Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:34:24.850Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:35:00.065Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:36:00.070Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:36:00.073Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:36:00.078Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:36:00.081Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:36:00.114Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:36:05.458Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:36:05.463Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:36:10.976Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:36:21.659Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:36:21.675Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:37:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:38:00.114Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:38:00.117Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:38:00.121Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:38:00.124Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:38:00.138Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:38:06.487Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:38:06.489Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:38:14.628Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:38:23.718Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:38:23.720Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:39:00.108Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:40:00.160Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:40:00.180Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:40:00.235Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:40:00.238Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:40:00.254Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:40:08.352Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:40:08.354Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:40:13.918Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:40:21.336Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:40:21.338Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:41:00.055Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:42:00.066Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:42:00.072Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:42:00.074Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:42:00.077Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:42:00.078Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:42:04.816Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:42:04.817Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:42:17.409Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:42:18.905Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:42:18.907Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:43:00.031Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:44:00.053Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:44:00.062Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:44:00.101Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:44:00.103Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:44:00.109Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:44:04.884Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:44:04.891Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:44:10.266Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:44:18.455Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:44:18.457Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:45:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:46:00.042Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:46:00.047Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:46:00.049Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:46:00.057Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:46:00.062Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:46:06.983Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:46:06.986Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:46:11.781Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:46:22.652Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:46:22.654Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:47:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:48:00.077Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:48:00.079Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:48:00.083Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:48:00.086Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:48:00.116Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:48:04.921Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:48:04.922Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:48:10.632Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:48:21.715Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:48:21.719Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:49:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:50:00.061Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:50:00.066Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:50:00.067Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:50:00.070Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:50:00.072Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:50:05.477Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:50:05.478Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:50:11.599Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:50:18.942Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:50:18.944Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:51:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:52:00.092Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:52:00.098Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:52:00.100Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:52:00.105Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:52:00.109Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:52:07.098Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:52:07.100Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:52:15.894Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:52:20.360Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:52:20.364Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:53:00.049Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:54:00.175Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:54:00.269Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:54:00.288Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:54:00.392Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:54:00.402Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:54:08.221Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:54:08.236Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:54:16.991Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:54:25.841Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:54:25.851Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:55:00.088Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:56:00.050Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:56:00.053Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:56:00.083Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:56:00.086Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:56:00.104Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:56:05.863Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:56:05.866Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:56:11.055Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:56:19.929Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:56:19.931Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:57:00.057Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:58:00.053Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T11:58:00.057Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T11:58:00.059Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T11:58:00.064Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T11:58:00.066Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T11:58:05.230Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T11:58:05.232Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T11:58:10.178Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T11:58:21.660Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T11:58:21.665Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T11:59:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:00:00.080Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:00:00.082Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:00:00.086Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:00:00.088Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:00:00.096Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:00:05.038Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:00:05.040Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:00:11.200Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:00:20.816Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:00:20.818Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:01:00.049Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:02:00.052Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:02:00.055Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:02:00.058Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:02:00.060Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:02:00.067Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:02:05.216Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:02:05.220Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:02:10.693Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:02:20.772Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:02:20.773Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:03:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:04:00.070Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:04:00.075Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:04:00.077Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:04:00.082Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:04:00.083Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:04:05.085Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:04:05.087Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:04:10.547Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:04:20.997Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:04:20.999Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:05:00.030Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:06:00.067Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:06:00.069Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:06:00.073Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:06:00.075Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:06:00.092Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:06:05.532Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:06:05.534Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:06:11.556Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:06:18.757Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:06:18.758Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:07:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:08:00.060Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:08:00.062Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:08:00.066Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:08:00.068Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:08:00.075Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:08:05.109Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:08:05.111Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:08:12.516Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:08:20.371Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:08:20.374Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:09:00.040Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:10:00.057Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:10:00.060Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:10:00.064Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:10:00.065Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:10:00.080Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:10:05.487Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:10:05.490Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:10:11.624Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:10:19.025Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:10:19.026Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:11:00.031Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:12:00.051Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:12:00.056Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:12:00.058Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:12:00.066Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:12:00.071Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:12:05.241Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:12:05.244Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:12:10.110Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:12:20.801Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:12:20.803Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:13:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:14:00.066Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:14:00.068Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:14:00.071Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:14:00.073Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:14:00.080Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:14:04.744Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:14:04.746Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:14:09.397Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:14:21.066Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:14:21.067Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:15:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:16:00.064Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:16:00.069Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:16:00.071Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:16:00.074Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:16:00.077Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:16:05.188Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:16:05.189Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:16:10.350Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:16:22.952Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:16:22.954Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:17:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:18:00.075Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:18:00.078Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:18:00.082Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:18:00.087Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:18:00.102Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:18:06.258Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:18:06.259Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:18:13.455Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:18:18.020Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:18:18.022Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:19:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:20:00.057Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:20:00.059Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:20:00.062Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:20:00.064Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:20:00.075Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:20:05.464Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:20:05.465Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:20:10.724Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:20:20.002Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:20:20.004Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:21:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:22:00.053Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:22:00.058Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:22:00.062Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:22:00.065Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:22:00.083Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:22:05.384Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:22:05.385Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:22:12.650Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:22:19.666Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:22:19.668Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:23:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:24:00.070Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:24:00.072Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:24:00.076Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:24:00.077Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:24:00.085Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:24:05.228Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:24:05.229Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:24:10.785Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:24:21.856Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:24:21.858Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:25:00.030Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:26:00.059Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:26:00.061Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:26:00.065Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:26:00.068Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:26:00.081Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:26:05.382Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:26:05.384Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:26:12.984Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:26:19.785Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:26:19.787Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:27:00.037Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:28:00.077Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:28:00.079Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:28:00.082Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:28:00.084Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:28:00.099Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:28:05.413Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:28:05.414Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:28:10.849Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:28:18.961Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:28:18.963Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:29:00.061Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:30:00.062Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:30:00.064Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:30:00.067Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:30:00.068Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:30:00.074Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:30:05.108Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:30:05.110Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:30:10.854Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:30:20.097Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:30:20.098Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:31:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:32:00.083Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:32:00.086Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:32:00.089Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:32:00.091Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:32:00.098Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:32:05.628Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:32:05.630Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:32:12.527Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:32:19.527Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:32:19.529Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:33:00.055Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:34:00.064Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:34:00.067Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:34:00.070Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:34:00.073Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:34:00.087Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:34:05.962Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:34:05.963Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:34:12.091Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:34:22.595Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:34:22.597Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:35:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:36:00.062Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:36:00.065Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:36:00.068Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:36:00.072Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:36:00.087Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:36:05.184Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:36:05.186Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:36:11.017Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:36:21.257Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:36:21.259Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:37:00.033Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:38:00.043Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:38:00.045Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:38:00.049Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:38:00.050Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:38:00.060Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:38:06.264Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:38:06.266Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:38:11.231Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:38:18.661Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:38:18.663Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:39:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:40:00.036Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:40:00.038Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:40:00.041Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:40:00.042Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:40:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:40:05.383Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:40:05.385Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:40:11.582Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:40:19.355Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:40:19.357Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:41:00.032Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:42:00.077Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:42:00.080Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:42:00.083Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:42:00.085Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:42:00.091Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:42:05.396Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:42:05.398Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:42:10.625Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:42:18.215Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:42:18.217Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:43:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:44:00.105Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:44:00.110Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:44:00.154Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:44:00.156Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:44:00.167Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:44:05.287Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:44:05.289Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:44:11.727Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:44:19.730Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:44:19.731Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:45:00.033Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:46:00.061Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-20T12:46:00.066Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/2 * * * *)...
+[2026-03-20T12:46:00.068Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-20T12:46:00.073Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-20T12:46:00.075Z] [INFO] Processing Bollywood celebrities...
+[2026-03-20T12:46:05.425Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-20T12:46:05.428Z] [INFO] Processing Hollywood celebrities...
+[2026-03-20T12:46:10.482Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-20T12:46:21.676Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-20T12:46:21.677Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-20T12:46:24.398Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T04:45:56.540Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T04:45:56.545Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T04:45:56.772Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T04:45:56.775Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T04:45:56.850Z] [INFO] All cron schedules active. Automation interval: */30 * * * *
+[2026-03-25T04:45:56.865Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T04:46:03.841Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T04:46:03.843Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T04:46:03.847Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T04:46:03.849Z] [INFO] Processing Bollywood celebrities...
+[2026-03-25T04:46:16.991Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T04:46:16.994Z] [INFO] Processing Hollywood celebrities...
+[2026-03-25T04:46:32.264Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T04:46:42.435Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-25T04:50:00.105Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T05:00:00.171Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T05:00:00.194Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/30 * * * *)...
+[2026-03-25T05:00:00.195Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T05:00:00.241Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T05:00:00.242Z] [INFO] Processing Bollywood celebrities...
+[2026-03-25T05:00:06.023Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T05:00:06.024Z] [INFO] Processing Hollywood celebrities...
+[2026-03-25T05:00:12.369Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T05:00:28.894Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-25T05:00:28.895Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T05:10:00.224Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T05:20:00.159Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T05:30:00.451Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/30 * * * *)...
+[2026-03-25T05:30:00.481Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T05:30:00.608Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T05:30:00.618Z] [INFO] Processing Bollywood celebrities...
+[2026-03-25T05:30:00.667Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T05:30:10.632Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T05:30:10.640Z] [INFO] Processing Hollywood celebrities...
+[2026-03-25T05:30:16.968Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T05:30:39.099Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 5
+[2026-03-25T05:30:39.148Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T05:39:04.485Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T05:39:16.151Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T05:39:16.155Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T05:39:16.442Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T05:39:16.445Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T05:39:16.528Z] [INFO] All cron schedules active. Automation interval: */30 * * * *
+[2026-03-25T05:39:16.564Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T05:39:23.602Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T05:39:28.843Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T05:39:28.846Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T05:39:28.855Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T05:39:28.858Z] [INFO] Processing Bollywood celebrities...
+[2026-03-25T05:39:44.303Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T05:39:44.306Z] [INFO] Processing Hollywood celebrities...
+[2026-03-25T05:40:00.462Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T05:40:00.477Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T05:40:04.210Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T05:50:00.166Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T06:00:00.231Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T06:00:00.289Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (*/30 * * * *)...
+[2026-03-25T06:00:00.294Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T06:00:00.378Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T06:00:00.382Z] [INFO] Processing Bollywood celebrities...
+[2026-03-25T06:00:10.595Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Bollywood) - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T06:00:10.608Z] [INFO] Processing Hollywood celebrities...
+[2026-03-25T06:00:17.755Z] [INFO] ✅ CRON SUCCESS: Celebrity Scraper (Hollywood) - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T06:00:22.138Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T06:00:22.140Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T06:01:41.450Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T06:01:54.070Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T06:01:54.075Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T06:01:54.352Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T06:01:54.354Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T06:01:54.448Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T06:01:54.496Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T06:02:01.531Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T06:02:06.928Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T06:02:06.930Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T06:02:06.935Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T06:02:48.710Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T06:04:06.971Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-25T06:15:00.358Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T06:17:26.759Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T06:17:37.758Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T06:17:37.763Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T06:17:38.034Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T06:17:38.037Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T06:17:38.125Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T06:17:38.163Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T06:17:45.200Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T06:17:50.841Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T06:17:50.847Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T06:17:50.857Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T06:18:11.838Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T06:18:18.953Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T06:18:22.688Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T06:30:00.553Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T06:30:00.649Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-25T06:30:00.652Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T06:30:00.782Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T06:30:10.610Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T06:30:25.863Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T06:30:31.610Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T06:30:31.615Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T06:45:00.241Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T07:00:00.319Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T07:15:00.214Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T07:30:00.211Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-25T07:30:00.229Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T07:30:00.269Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T07:30:00.286Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T07:30:05.637Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 5 new celebrities for Bollywood
+[2026-03-25T07:30:12.219Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 5 new celebrities for Hollywood
+[2026-03-25T07:30:49.692Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T07:30:49.694Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T07:45:00.182Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T08:00:00.203Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T08:15:00.207Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T08:24:57.464Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T08:25:05.877Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T08:25:05.880Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T08:25:06.051Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T08:25:06.053Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T08:25:06.102Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T08:25:06.122Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T08:25:13.165Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T08:25:18.413Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T08:25:18.417Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T08:25:18.424Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T08:25:42.828Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T08:27:18.492Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-25T08:30:00.245Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-25T08:30:00.259Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T08:30:00.309Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T08:30:00.328Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T08:30:10.194Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T09:30:49.304Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-25T09:30:49.499Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T09:45:00.212Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T10:00:00.177Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T10:15:00.168Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T10:30:00.256Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-25T10:30:00.273Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T10:30:00.375Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T10:30:00.415Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T10:30:10.228Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T10:32:00.447Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-25T10:32:00.469Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T10:45:00.307Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T11:00:00.237Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T11:03:43.525Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T11:03:53.741Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T11:03:53.746Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T11:03:54.125Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T11:03:54.128Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T11:03:54.225Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T11:03:54.267Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T11:04:01.340Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T11:04:06.695Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T11:04:06.705Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T11:04:06.724Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T11:04:29.818Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T11:06:06.776Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-25T11:15:00.218Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T11:16:02.624Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T11:16:10.178Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T11:16:10.181Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T11:16:10.415Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T11:16:10.418Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T11:16:10.504Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T11:16:10.531Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T11:16:17.568Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T11:16:22.734Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T11:16:22.737Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T11:16:22.742Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T11:16:46.679Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T11:16:51.332Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-25T11:17:18.508Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-25T11:18:24.535Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T11:18:35.685Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T11:18:35.690Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T11:18:35.929Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T11:18:35.931Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T11:18:36.007Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T11:18:36.036Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T11:18:43.067Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T11:18:48.502Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T11:18:48.507Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T11:18:48.514Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T11:19:12.985Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T11:19:17.756Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-25T11:19:41.832Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-25T11:23:27.059Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-25T11:23:33.870Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-25T11:23:33.874Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-25T11:23:34.098Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-25T11:23:34.101Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-25T11:23:34.165Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-25T11:23:34.193Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-25T11:23:41.206Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-25T11:23:46.493Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-25T11:23:46.495Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T11:23:46.500Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T11:24:13.755Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T11:24:15.860Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-25T11:24:34.451Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-25T11:30:00.148Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T11:30:00.156Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-25T11:30:00.159Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T11:30:00.178Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T11:30:11.198Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-25T11:30:15.419Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-25T11:30:42.280Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-25T11:30:42.289Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T11:45:00.247Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T12:00:00.279Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T12:15:00.226Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T12:30:00.233Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-25T12:30:00.257Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-25T12:30:00.369Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-25T12:30:00.423Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T12:30:43.733Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-25T12:30:47.035Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-25T12:31:06.328Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-25T12:31:06.330Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-25T12:45:00.158Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T13:00:00.137Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-25T13:15:00.277Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T04:34:28.230Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-26T04:34:40.271Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-26T04:34:40.273Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-26T04:34:40.438Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-26T04:34:40.440Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-26T04:34:40.483Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-26T04:34:40.498Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-26T04:34:47.325Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-26T04:34:47.327Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T04:34:47.334Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T04:35:07.819Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T04:35:24.647Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T04:36:02.481Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T04:45:00.163Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T05:00:00.124Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T05:15:00.148Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T05:30:00.162Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T05:30:00.176Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T05:30:00.240Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T05:30:00.255Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T05:30:08.946Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T05:30:26.154Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T05:31:15.722Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T05:31:15.728Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T05:45:00.165Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T06:00:00.160Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T06:15:00.320Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T06:30:00.260Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T06:30:00.294Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T06:30:00.372Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T06:30:00.391Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T06:30:14.995Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T06:30:23.612Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T06:31:05.057Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T06:31:05.096Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T06:45:00.355Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T07:00:01.331Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T07:15:00.772Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T07:30:00.232Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T07:30:00.260Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T07:30:00.322Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T07:30:00.353Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T07:30:12.905Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-26T07:30:18.878Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T07:30:45.523Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T07:30:45.529Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T07:45:00.198Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T08:00:00.213Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T08:15:00.305Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T08:30:00.335Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T08:30:00.373Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T08:30:00.440Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T08:30:00.494Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T08:30:10.089Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T08:30:16.897Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T08:30:34.946Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T08:30:34.949Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T09:45:00.137Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T10:00:00.271Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T10:15:00.287Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T10:30:00.366Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T10:30:00.407Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T10:30:00.494Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T10:30:00.515Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T10:30:13.147Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-26T10:30:21.850Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T10:30:44.141Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T10:30:44.146Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T10:45:00.198Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T11:00:00.221Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T11:15:00.247Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T11:30:00.388Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T11:30:00.427Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T11:30:00.517Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T11:30:00.538Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T11:30:15.938Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T11:30:21.070Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T11:30:53.722Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T11:30:53.735Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T11:45:00.306Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-26T11:52:32.344Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-26T11:53:05.975Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-26T11:53:05.978Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-26T11:53:06.233Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-26T11:53:06.236Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-26T11:53:06.305Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-26T11:53:06.336Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-26T11:53:13.356Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-26T11:53:19.272Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-26T11:53:19.274Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T11:53:19.279Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T11:53:39.926Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T11:53:46.382Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T11:54:09.530Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T12:30:00.319Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T12:30:00.332Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T12:30:00.365Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T12:30:13.190Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-26T12:30:20.491Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T12:30:40.895Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-26T12:30:40.899Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-26T13:30:00.206Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-26T13:30:00.215Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-26T13:30:00.256Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-26T13:30:18.192Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-26T13:30:23.334Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-26T13:30:39.332Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-27T05:01:46.993Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-27T05:01:46.997Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-27T05:01:47.159Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-27T05:01:47.161Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-27T05:01:47.210Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-27T05:01:47.230Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-27T05:01:54.119Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-27T05:01:54.121Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T05:01:54.127Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T05:02:08.834Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-03-27T05:02:23.357Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T05:03:26.489Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T05:30:00.277Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T05:30:00.295Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T05:30:00.333Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T05:30:00.356Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:30:09.081Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T05:30:15.577Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T05:30:32.719Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T05:30:32.720Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T05:31:00.055Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:32:00.027Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:33:00.397Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:34:00.868Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:35:02.382Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:36:00.593Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:37:00.863Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:38:00.318Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:39:00.186Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:40:00.065Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:41:00.051Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:42:00.072Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:43:00.058Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:44:00.061Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:45:00.070Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:46:00.050Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:47:00.062Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:48:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:49:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:50:00.043Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:51:00.039Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:52:00.031Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:53:00.040Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:54:00.031Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:55:00.057Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:56:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:57:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:58:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T05:59:00.378Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:00:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:01:00.032Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:02:00.019Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:03:00.043Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:04:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:05:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:06:00.024Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:07:00.309Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:08:00.066Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:09:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:10:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:11:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:12:00.039Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:13:00.042Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:14:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:15:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:16:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:17:00.046Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:18:00.033Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:19:00.023Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:20:00.043Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:21:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:22:00.032Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:23:00.039Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:24:00.048Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:25:00.045Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:26:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:27:00.051Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:28:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:29:00.070Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-27T06:30:00.048Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T06:30:00.052Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T06:30:00.171Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T06:30:12.602Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T06:30:23.293Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T06:30:42.518Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T06:30:42.521Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T07:30:00.261Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T07:30:00.293Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T07:30:00.364Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T07:30:12.831Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T07:30:19.377Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T07:30:36.447Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T07:30:36.450Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T08:30:00.243Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T08:30:00.268Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T08:30:00.312Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T08:30:15.329Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T08:30:23.951Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T08:30:40.492Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T08:30:40.494Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T10:00:48.236Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-27T10:00:57.720Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-27T10:00:57.722Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-27T10:00:57.879Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-27T10:00:57.881Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-27T10:00:57.923Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-27T10:00:57.942Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-27T10:01:04.979Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-27T10:01:10.143Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-27T10:01:10.145Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T10:01:10.150Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T10:01:29.694Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T10:01:37.419Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T10:01:57.452Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T10:30:00.227Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T10:30:00.245Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T10:30:00.278Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T10:30:16.316Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T10:30:22.991Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T10:30:39.698Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T10:30:39.700Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T11:30:00.209Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T11:30:00.222Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T11:30:00.248Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T11:30:12.253Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T11:30:22.040Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T11:30:42.236Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T11:30:42.239Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T12:13:21.930Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-27T12:13:38.350Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-27T12:13:38.356Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-27T12:13:38.582Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-27T12:13:38.585Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-27T12:13:38.665Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-27T12:13:38.701Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-27T12:13:45.715Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-27T12:13:51.011Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-27T12:13:51.014Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T12:13:51.019Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T12:14:13.280Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T12:14:22.183Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T12:14:41.312Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T12:30:00.244Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-27T12:30:00.263Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T12:30:00.290Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T12:30:11.424Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T12:30:22.231Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T12:30:39.264Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T12:30:39.266Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-27T13:17:15.518Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-27T13:17:35.783Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-27T13:17:35.801Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-27T13:17:36.510Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-27T13:17:36.537Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-27T13:17:36.690Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-27T13:17:36.857Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-27T13:17:43.894Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-27T13:17:50.029Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-27T13:17:50.039Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-27T13:17:50.048Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-27T13:18:29.959Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-03-27T13:18:35.198Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-27T13:19:02.150Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-27T13:23:44.093Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-28T04:33:22.856Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-28T04:33:22.861Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-28T04:33:23.092Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-28T04:33:23.095Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-28T04:33:23.179Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-28T04:33:23.208Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-28T04:33:30.230Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-28T04:33:35.451Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-28T04:33:35.454Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T04:33:35.459Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T04:33:57.745Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 3. Background enrichment triggered.
+[2026-03-28T04:34:15.159Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-28T04:34:53.449Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-28T05:30:00.282Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T05:30:00.301Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T05:30:00.339Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T05:30:00.350Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:30:12.480Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T05:30:27.004Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-28T05:30:46.441Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-28T05:30:46.448Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T05:31:00.055Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:32:00.108Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:33:02.360Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:34:00.331Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:35:00.120Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:36:00.280Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:37:00.073Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:38:01.029Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:39:00.216Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:40:00.070Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:41:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:42:00.227Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:43:00.629Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:44:00.213Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:45:00.270Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:46:00.172Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:47:00.208Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:48:00.156Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:49:00.058Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:50:00.053Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:51:00.023Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:52:00.024Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:53:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:54:00.022Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:55:00.054Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:56:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:57:00.044Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:58:00.042Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T05:59:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:00:00.032Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:01:00.022Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:02:00.023Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:03:00.092Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:04:00.117Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:05:00.017Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:06:00.021Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:07:00.033Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:08:00.052Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:09:00.035Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:10:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:11:00.037Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:12:00.024Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:13:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:14:00.049Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:15:00.037Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:16:01.543Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:17:00.175Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:18:00.121Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:19:00.217Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:20:00.139Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:21:00.040Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:22:00.026Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:23:00.055Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:24:00.037Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:25:00.034Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:26:00.022Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:27:00.021Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:28:00.058Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:29:00.039Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-28T06:30:00.063Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T06:30:00.066Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T06:30:00.168Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T06:30:10.288Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T06:30:26.302Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-28T06:30:44.692Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-28T06:30:44.694Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T07:30:00.236Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T07:30:00.268Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T07:30:00.346Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T07:30:12.347Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T07:32:00.477Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-28T07:32:00.535Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T08:30:00.588Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T08:30:00.632Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T08:30:00.736Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T08:30:17.343Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T08:30:32.981Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-28T08:30:54.382Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-28T08:30:54.385Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T10:30:00.072Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T10:30:00.105Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T10:30:00.156Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T10:30:10.686Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T10:31:04.545Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-28T10:31:23.808Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-28T10:31:23.812Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T11:30:00.225Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T11:30:00.256Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T11:30:00.312Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T11:30:12.071Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T11:30:31.505Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-28T11:30:54.242Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-28T11:30:54.244Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T12:30:00.311Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T12:30:00.338Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T12:30:00.393Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T12:30:12.058Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T12:32:00.479Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-28T12:32:00.520Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-28T13:30:00.251Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-28T13:30:00.276Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-28T13:30:00.349Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-28T13:30:15.429Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-28T13:31:13.408Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-30T04:31:59.690Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-30T04:31:59.694Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-30T04:31:59.856Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-30T04:31:59.857Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-30T04:31:59.909Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-30T04:31:59.930Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-30T04:32:06.973Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-30T04:32:12.126Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-30T04:32:12.128Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T04:32:12.133Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T04:32:28.367Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 6. Background enrichment triggered.
+[2026-03-30T04:34:12.176Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-30T04:54:15.221Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-30T04:54:26.246Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-30T04:54:26.249Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-30T04:54:26.455Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-30T04:54:26.457Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-30T04:54:26.516Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-30T04:54:26.561Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-30T04:54:33.599Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-30T04:54:33.602Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T04:54:33.606Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T04:54:49.678Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T04:56:33.625Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-30T05:30:00.285Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:30:00.323Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-30T05:30:00.326Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T05:30:00.366Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T05:30:12.016Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T05:31:00.146Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:32:00.069Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:32:00.401Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-30T05:32:00.405Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-30T05:33:00.051Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:34:00.071Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:35:00.042Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:36:00.043Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:37:00.050Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:38:00.038Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:39:00.049Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:40:00.041Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:41:00.061Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:42:00.054Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:43:00.046Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:44:00.085Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:45:00.062Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:46:00.067Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:47:00.042Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:48:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:49:00.618Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:50:00.416Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:51:00.207Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:52:00.191Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:53:00.306Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:54:00.263Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:55:00.065Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:56:00.036Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:57:00.047Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:58:00.129Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T05:59:00.324Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:00:00.291Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:01:00.217Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:02:00.244Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:03:00.104Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:04:00.082Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:05:00.120Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:06:00.189Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:07:00.054Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:08:00.049Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:09:00.110Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:10:00.302Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:11:00.059Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:12:00.221Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:13:00.072Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:14:00.050Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:15:00.054Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:16:00.194Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:17:00.067Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:18:00.086Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:19:00.434Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:20:00.076Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:21:00.108Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:22:00.261Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:23:00.344Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:24:00.504Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:25:00.313Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:26:00.078Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:27:00.071Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:28:00.071Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:29:00.115Z] [INFO] 💓 Heartbeat: Scheduler is active.
+[2026-03-30T06:30:00.085Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-30T06:30:00.089Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T06:30:00.204Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T06:30:18.510Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T06:32:00.251Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-30T06:32:00.258Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-30T07:30:00.955Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-30T07:30:01.154Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T07:30:01.620Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T07:30:18.960Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T07:32:01.919Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-30T07:32:02.001Z] [INFO] 🏁 [SCHEDULED RUN] Automation cycle completed.
+[2026-03-30T08:30:00.294Z] [INFO] 🕒 [SCHEDULED RUN] Starting automation cycle (0 * * * *)...
+[2026-03-30T08:30:00.351Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T08:30:00.411Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T08:30:12.987Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T08:30:24.320Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-30T09:46:54.686Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-30T09:46:54.690Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-30T09:46:54.890Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-30T09:46:54.892Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-30T09:46:54.958Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-30T09:46:55.003Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-30T09:47:02.041Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-03-30T09:47:07.277Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-30T09:47:07.280Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T09:47:07.287Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T09:47:24.757Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T09:49:07.351Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-03-30T10:17:39.800Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-30T10:18:07.512Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-30T10:18:07.515Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-03-30T10:18:07.709Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-30T10:18:07.711Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-30T10:18:07.761Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-30T10:18:07.797Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-30T10:18:14.048Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-30T10:18:14.050Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T10:18:14.056Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-30T10:18:29.136Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T10:18:40.831Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-30T10:18:56.474Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-30T10:30:00.158Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T10:30:00.199Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-03-30T10:30:03.730Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-03-30T10:30:09.716Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-30T11:30:00.504Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-30T11:30:00.638Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-03-30T11:30:03.882Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-03-30T11:30:15.724Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.

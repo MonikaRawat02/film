@@ -182,6 +182,12 @@ export default function IntelligenceDetailPage() {
 
               {/* Related/Action Items could go here */}
             </div>
+            {/* Intelligence Disclaimer Banner */}
+            <div className="mt-16 p-4 rounded-xl border border-dashed border-red-500/30 bg-red-500/5 text-center max-w-4xl mx-auto">
+              <p className="text-[10px] font-bold text-red-400/80 uppercase tracking-widest leading-relaxed">
+                Automated Updates: This section updates daily via API integration - SEO URL: /intelligence/{item.slug}
+              </p>
+            </div>
           </div>
         </div>
       </div>

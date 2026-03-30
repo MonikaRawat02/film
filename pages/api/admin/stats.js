@@ -4,7 +4,7 @@ import Celebrity from "../../../model/celebrity";
 import Visitor from "../../../model/visitor";
 import BoxOffice from "../../../model/boxOffice";
 import OTTIntelligence from "../../../model/ottIntelligence";
-import TrendingIntelligence from "../../../model/trendingIntelligence";
+import SearchAnalytics from "../../../model/searchAnalytics";
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -19,7 +19,10 @@ export default async function handler(req, res) {
     const activeUsers = await Visitor.countDocuments();
     const boxOfficeCount = await BoxOffice.countDocuments();
     const ottCount = await OTTIntelligence.countDocuments();
-    const trendingCount = await TrendingIntelligence.countDocuments();
+
+    // Search analytics for trending status
+    const topSearches = await SearchAnalytics.find({}).sort({ count: -1 }).limit(10).lean();
+    const trendingCount = topSearches.length;
 
     // You can add more stats here as needed
     // For example, total views across all articles
@@ -27,10 +30,18 @@ export default async function handler(req, res) {
       { $group: { _id: null, total: { $sum: "$stats.views" } } }
     ]);
 
-    // Fetch recent activity from trending intelligence
-    const recentTrending = await TrendingIntelligence.find({})
-      .sort({ createdAt: -1 })
-      .limit(5);
+    // Fetch recent activity from search analytics (this replaces manual trending activity)
+    const recentSearches = await SearchAnalytics.find({})
+      .sort({ updatedAt: -1 })
+      .limit(10)
+      .lean();
+
+    const combinedActivity = recentSearches.map(s => ({
+      type: "Trending Search",
+      title: s.query,
+      count: s.count,
+      time: s.updatedAt || s.createdAt
+    }));
 
     res.status(200).json({
       success: true,
@@ -42,11 +53,7 @@ export default async function handler(req, res) {
         ott: ottCount,
         trending: trendingCount,
         totalViews: totalViewsData[0]?.total || 0,
-        recentActivity: recentTrending.map(item => ({
-          type: "Trending",
-          title: item.title,
-          time: item.createdAt
-        }))
+        recentActivity: combinedActivity
       },
     });
   } catch (error) {

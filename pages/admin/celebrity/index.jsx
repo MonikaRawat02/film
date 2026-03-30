@@ -211,10 +211,29 @@ export default function CelebrityModule() {
   // List management
   const [celebrities, setCelebrities] = useState([]);
   const [loadingList, setLoadingList] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [showCreateMenu, setShowCreateMenu] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const LIMIT = 12;
+
+  const observer = useRef();
+  const lastElementRef = useCallback(node => {
+    if (loadingList || loadingMore) return;
+    if (observer.current) observer.current.disconnect();
+    
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && hasMore) {
+        setPage(prev => prev + 1);
+      }
+    });
+    
+    if (node) observer.current.observe(node);
+  }, [loadingList, loadingMore, hasMore]);
+
   const createMenuRef = useRef(null);
 
   const [form, setForm] = useState(INITIAL_FORM);
@@ -245,26 +264,47 @@ export default function CelebrityModule() {
   ];
 
   // Fetch list of celebrities
-  const fetchCelebrities = useCallback(async () => {
-    setLoadingList(true);
+  const fetchCelebrities = useCallback(async (pageNum = 1, isLoadMore = false) => {
+    if (isLoadMore) setLoadingMore(true);
+    else setLoadingList(true);
+
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
-      const res = await fetch(`/api/admin/celebrity/getCelebrity?q=${searchQuery}`, {
+      const res = await fetch(`/api/admin/celebrity/getCelebrity?q=${searchQuery}&page=${pageNum}&limit=${LIMIT}`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
       const data = await res.json();
       if (res.ok) {
-        setCelebrities(data.data || []);
+        const fetchedItems = data.data || [];
+        if (isLoadMore) {
+          setCelebrities(prev => {
+            const existingIds = new Set(prev.map(c => c._id));
+            const uniqueNew = fetchedItems.filter(c => !existingIds.has(c._id));
+            return [...prev, ...uniqueNew];
+          });
+        } else {
+          setCelebrities(fetchedItems);
+        }
+        setHasMore(fetchedItems.length === LIMIT);
       }
     } catch (e) {
       console.error("Failed to fetch celebrities", e);
     } finally {
       setLoadingList(false);
+      setLoadingMore(false);
     }
   }, [searchQuery]);
 
   useEffect(() => {
-    const timer = setTimeout(() => fetchCelebrities(), 300);
+    if (page > 1) {
+      fetchCelebrities(page, true);
+    }
+  }, [page, fetchCelebrities]);
+
+  useEffect(() => {
+    setPage(1);
+    setHasMore(true);
+    const timer = setTimeout(() => fetchCelebrities(1), 300);
     return () => clearTimeout(timer);
   }, [fetchCelebrities]);
 
@@ -1513,8 +1553,12 @@ export default function CelebrityModule() {
                     <p>Loading celebrities...</p>
                   </div>
                 ) : celebrities.length > 0 ? (
-                  celebrities.map((celeb) => (
-                    <div key={celeb._id} className="relative group">
+                  celebrities.map((celeb, i) => (
+                    <div 
+                      key={celeb._id || i} 
+                      ref={celebrities.length === i + 1 ? lastElementRef : null}
+                      className="relative group"
+                    >
                       <button
                         onClick={() => loadCelebrityForEdit(celeb)}
                         className="w-full flex items-center gap-4 p-4 rounded-xl bg-gray-900/50 border border-gray-800 hover:border-red-500/50 hover:bg-gray-900 transition-all text-left"
@@ -1585,6 +1629,14 @@ export default function CelebrityModule() {
                   </div>
                 )}
               </div>
+
+              {/* Loading More Indicator */}
+              {loadingMore && (
+                <div className="mt-8 flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="h-6 w-6 animate-spin text-red-500" />
+                  <p className="text-gray-500 text-xs font-medium animate-pulse uppercase tracking-[0.2em]">Loading More Profiles...</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

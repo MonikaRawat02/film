@@ -108,7 +108,7 @@ export default function CelebritySection() {
                 {/* Content */}
                 <div className="absolute bottom-0 left-0 right-0 flex flex-col justify-end p-6">
                   {/* Name */}
-                  <h3 className="mb-4 text-3xl font-bold text-white leading-tight">{name}</h3>
+                  <h3 className="mb-4 text-3xl font-bold text-white leading-tight truncate">{name}</h3>
                   
                   {/* Net Worth Card */}
                   <div className="mb-3 rounded-lg bg-black/40 p-3 backdrop-blur-sm border border-white/10">

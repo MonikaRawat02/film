@@ -213,10 +213,17 @@ export default function Dashboard() {
                   <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-zinc-900/50">
                     <div className="flex items-center gap-3">
                       <div className="p-2 rounded-lg bg-red-500/10">
-                        <TrendingUp className="h-4 w-4 text-red-400" />
+                        {activity.type === "Trending Search" ? <Activity className="h-4 w-4 text-orange-400" /> : <TrendingUp className="h-4 w-4 text-red-400" />}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">{activity.title}</p>
+                        <p className="text-sm font-medium text-white">
+                          {activity.title}
+                          {activity.count > 0 && (
+                            <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-orange-500/20 text-orange-400">
+                              {activity.count} searches
+                            </span>
+                          )}
+                        </p>
                         <p className="text-xs text-gray-500">{activity.type}</p>
                       </div>
                     </div>

@@ -101,9 +101,9 @@ export default function CelebritiesPage() {
                       {celeb.name}
                     </h3>
                     
-                    <p className="text-zinc-400 text-xs font-medium uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <Star className="w-3 h-3 text-fuchsia-500" />
-                      {celeb.profession}
+                    <p className="text-zinc-400 text-xs font-medium uppercase tracking-widest mb-4 flex items-center gap-2 truncate">
+                      <Star className="w-3 h-3 text-fuchsia-500 flex-shrink-0" />
+                      <span className="truncate">{celeb.profession}</span>
                     </p>
 
                     {/* Quick Stats Grid */}

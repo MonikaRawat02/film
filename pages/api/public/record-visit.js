@@ -1,5 +1,5 @@
-import dbConnect from "@/lib/mongodb";
-import Visitor from "@/model/visitor";
+import dbConnect from "../../../lib/mongodb";
+import Visitor from "../../../model/visitor";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,11 +12,12 @@ export default async function handler(req, res) {
     // Get IP address from request
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
 
-    // Create a new record for every single visit (not unique)
-    await Visitor.create({ 
-      ip, 
-      lastVisit: new Date() 
-    });
+    // Find a visitor by IP and update their last visit, or create a new one
+    await Visitor.findOneAndUpdate(
+      { ip }, // find a document with this filter
+      { $set: { lastVisit: new Date() } }, // document to insert when nothing was found
+      { upsert: true, new: true, setDefaultsOnInsert: true } // options
+    );
 
     res.status(200).json({ success: true });
   } catch (error) {

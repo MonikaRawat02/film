@@ -8,11 +8,16 @@ export default async function handler(req, res) {
 
   try {
     await dbConnect();
-    const { category, limit = 20, page = 1 } = req.query;
+    const { category, limit = 20, page = 1, includeDrafts = "false" } = req.query;
     
-    const filter = { status: "published" };
+    const filter = {};
+    if (includeDrafts !== "true") {
+      filter.status = "published";
+    }
+
     if (category) {
-      filter.category = category;
+      // Case-insensitive category match
+      filter.category = { $regex: new RegExp(`^${category}$`, 'i') };
     }
 
     const lim = Math.min(Number(limit) || 20, 50);

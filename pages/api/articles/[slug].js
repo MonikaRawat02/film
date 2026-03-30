@@ -14,7 +14,31 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Slug is required" });
     }
 
-    const item = await Article.findOne({ slug, status: "published" });
+    // List of common pSEO suffixes
+    const suffixes = [
+      "-explained", "-ending-explained", "-box-office", "-budget", 
+      "-ott", "-ott-release", "-analysis", "-reviews", "-review-analysis", 
+      "-critics", "-cast", "-hit-or-flop"
+    ];
+
+    let item = await Article.findOne({ slug });
+
+    if (!item) {
+      // If not found, try to find the base movie article by stripping suffixes
+      for (const suffix of suffixes) {
+        if (slug.endsWith(suffix)) {
+          const baseSlug = slug.substring(0, slug.length - suffix.length);
+          item = await Article.findOne({ slug: baseSlug });
+          if (item) break;
+        }
+      }
+    }
+
+    if (!item) {
+      // Final attempt: search for articles that start with the slug
+      const allArticles = await Article.find({ contentType: "movie" });
+      item = allArticles.find(a => slug.startsWith(a.slug));
+    }
 
     if (!item) {
       return res.status(404).json({ message: "Article not found" });

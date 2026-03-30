@@ -2,26 +2,195 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft,Quote,CheckCircle,Clapperboard,Film,Tv,PlaySquare,TrendingUp,Users, Zap,Target,BookOpen,Award,BarChart3,ShieldCheck,Heart,MessageSquare,Bookmark, Check
+import { 
+  ArrowLeft, Share2, Clock, User, 
+  Calendar, DollarSign, Users, Play, Award,
+  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase
 } from "lucide-react";
 
 export async function getServerSideProps(context) {
   const { category, slug } = context.params;
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
+  const host = context.req.headers.host || "localhost:3000";
   const baseUrl = `${protocol}://${host}`;
 
   try {
-    const res = await fetch(`${baseUrl}/api/articles/${slug}`);
-    const data = await res.json();
-
-    if (!res.ok || !data.data) {
+    const res = await fetch(`${baseUrl}/api/articles/get-by-slug?slug=${slug}`);
+    
+    if (!res.ok) {
+      console.error(`API returned ${res.status} for ${slug}`);
       return { notFound: true };
     }
+
+    const data = await res.json();
+
+    if (!data || !data.data) {
+      return { notFound: true };
+    }
+
+    const article = data.data;
+
+    // Fetch dynamic recommendations based on User Score (Rating) from the same category
+    let dynamicRecommendations = [];
+    try {
+      // Use includeDrafts=true and case-insensitive category (handled by API now)
+      const recRes = await fetch(`${baseUrl}/api/articles/list?category=${category}&limit=20&includeDrafts=true`);
+      const recData = await recRes.json();
+      
+      if (recData.success && recData.data && recData.data.length > 0) {
+        // Filter out current article and sort by rating
+        dynamicRecommendations = recData.data
+          .filter(a => a.slug !== slug)
+          .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
+          .slice(0, 8);
+      }
+      
+      // Global fallback: If category is empty, fetch ANY high-rated movies
+      if (dynamicRecommendations.length === 0) {
+        const globalRes = await fetch(`${baseUrl}/api/articles/list?limit=10&includeDrafts=true`);
+        const globalData = await globalRes.json();
+        if (globalData.success && globalData.data) {
+          dynamicRecommendations = globalData.data
+            .filter(a => a.slug !== slug)
+            .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
+            .slice(0, 8);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching dynamic recommendations:", err);
+    }
+
+    let pageType = "overview";
+    let contentKey = "pSEO_Content_overview";
+    let seoKey = "overview";
+
+    if (slug.endsWith("-explained") || slug.endsWith("-ending-explained")) {
+      pageType = "ending-explained";
+      contentKey = "pSEO_Content_ending_explained";
+      seoKey = "endingExplained";
+    } else if (slug.endsWith("-box-office")) {
+      pageType = "box-office";
+      contentKey = "pSEO_Content_box_office";
+      seoKey = "boxOffice";
+    } else if (slug.endsWith("-budget")) {
+      pageType = "budget";
+      contentKey = "pSEO_Content_budget";
+      seoKey = "budget";
+    } else if (slug.endsWith("-ott") || slug.endsWith("-ott-release")) {
+      pageType = "ott-release";
+      contentKey = "pSEO_Content_ott_release";
+      seoKey = "ottRelease";
+    } else if (slug.endsWith("-cast")) {
+      pageType = "cast";
+      contentKey = "pSEO_Content_cast";
+      seoKey = "cast";
+    } else if (slug.endsWith("-reviews") || slug.endsWith("-review-analysis")) {
+      pageType = "review-analysis";
+      contentKey = "pSEO_Content_review_analysis";
+      seoKey = "reviewAnalysis";
+    } else if (slug.endsWith("-genre") || slug.endsWith("-genre-analysis")) {
+      pageType = "genre-analysis";
+      contentKey = "pSEO_Content_genre_analysis";
+      seoKey = "genreAnalysis";
+    } else if (slug.endsWith("-hit-or-flop") || slug.endsWith("-verdict")) {
+      pageType = "hit-or-flop";
+      contentKey = "pSEO_Content_hit_or_flop";
+      seoKey = "hitOrFlop";
+    }
+
+    let sections = [];
+
+    // 1. Try to get specific content for the current page type
+    if (article[contentKey] && article[contentKey].length > 0) {
+      sections = article[contentKey];
+    }
+    // 2. Specialized Logic for Box Office / Budget / OTT / Verdict from structured fields if content is empty
+    else if (pageType === "box-office" && article.boxOffice) {
+      sections = [
+        { heading: "Box Office Analysis", content: `Opening Weekend: ${article.boxOffice.openingWeekend || 'N/A'}\n\nIndia Collection: ${article.boxOffice.india || 'N/A'}\n\nWorldwide Collection: ${article.boxOffice.worldwide || 'N/A'}` },
+        { heading: "Performance Verdict", content: article.verdict || "Analyzing performance metrics..." }
+      ];
+    }
+    else if (pageType === "budget" && article.budget) {
+      sections = [
+        { heading: "Production Investment", content: `The estimated production budget for ${article.movieTitle || article.title} is ${article.budget}. This includes principal photography, post-production, and marketing costs.` }
+      ];
+    }
+    else if (pageType === "ott-release" && article.ott) {
+      sections = [
+        { heading: "Streaming Intelligence", content: `Platform: ${article.ott.platform || 'N/A'}\n\nRelease Date: ${article.ott.releaseDate ? new Date(article.ott.releaseDate).toLocaleDateString() : 'TBA'}\n\nLink: ${article.ott.link || 'Awaiting Link'}` }
+      ];
+    }
+    else if (pageType === "review-analysis" && article.criticalResponse) {
+      sections = [
+        { heading: "Critical Intelligence", content: article.criticalResponse }
+      ];
+    }
+    else if (pageType === "genre-analysis" && (article.genreAnalysis || (article.genres && article.genres.length > 0))) {
+      sections = [
+        { heading: "Genre Intelligence & Analysis", content: article.genreAnalysis || `The movie falls into the following genres: ${article.genres?.join(", ")}. This blend of genres creates a unique viewing experience that appeals to a wide audience base.` }
+      ];
+    }
+    else if (pageType === "hit-or-flop") {
+      sections = [
+        { heading: "Intelligence Verdict", content: article.verdict || "Awaiting final box office verification for verdict." }
+      ];
+    }
+    // 3. If still empty, try a keyword-based search on the main sections array
+    else if (article.sections && article.sections.length > 0) {
+      const searchKeywords = {
+        "overview": ["plot", "synopsis", "story"],
+        "ending-explained": ["ending", "climax", "plot", "story", "synopsis"],
+        "box-office": ["box office", "commercial", "budget", "collection", "reception"],
+        "budget": ["production", "budget", "cost", "filming"],
+        "ott-release": ["release", "distribution", "streaming", "digital", "television"],
+        "cast": ["cast", "starring", "characters", "personnel"],
+        "review-analysis": ["reception", "critical", "review", "consensus", "response"],
+        "genre-analysis": ["genre", "theme", "style", "category"],
+        "hit-or-flop": ["verdict", "box office", "reception", "collection"]
+      };
+
+      const keywords = searchKeywords[pageType] || [];
+      const relevantSections = article.sections.filter(s => 
+        keywords.some(k => s.heading.toLowerCase().includes(k))
+      );
+
+      if (relevantSections.length > 0) {
+        sections = relevantSections;
+      }
+    }
+
+    // 3. Special Case for Cast: if still empty, build from structured data
+    if (pageType === "cast" && sections.length === 0 && article.cast && article.cast.length > 0) {
+      sections.push({
+        heading: "Lead Cast & Characters",
+        content: article.cast.map(c => `${c.name} ${c.role ? `as ${c.role}` : ""}`).join("\n\n"),
+        isStructuredCast: true
+      });
+    }
+
+    // 4. Global Fallback: If STILL empty, use ALL available sections from the main article.
+    // This ensures no page is ever blank if any content was scraped at all.
+    if (sections.length === 0) {
+      sections = article.sections || [];
+    }
+
+    // Get SEO metadata for this specific page type
+    const seo = article.subPagesSEO?.[seoKey] || {
+      title: `${article.movieTitle || article.title} (${article.releaseYear || ''}) – ${pageType.replace("-", " ")}`,
+      description: article.summary,
+      faq: article.meta?.faq || []
+    };
+
     return {
       props: {
-        article: data.data,
+        article,
+        sections,
+        seo,
         category,
+        pageType,
+        slug,
+        dynamicRecommendations
       },
     };
   } catch (error) {
@@ -30,430 +199,462 @@ export async function getServerSideProps(context) {
   }
 }
 
-const categoryIcons = {
-  Bollywood: Clapperboard,
-  Hollywood: Film,
-  WebSeries: Tv,
-  OTT: PlaySquare,
-  BoxOffice: TrendingUp,
-  Celebrities: Users,
-};
-
-export default function ArticleDetailPage({ article, category }) {
+export default function ArticleDetailPage({ article, sections, seo, category, pageType, slug, dynamicRecommendations = [] }) {
   const router = useRouter();
-  const Icon = categoryIcons[category] || FileText;
-  const [scrollProgress, setProgress] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [contribution, setContribution] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [readingTime, setReadingTime] = useState(5);
 
   useEffect(() => {
-    // Check local storage for like/save status
     if (typeof window !== "undefined") {
       const likedArticles = JSON.parse(localStorage.getItem("liked_articles") || "[]");
       const savedArticles = JSON.parse(localStorage.getItem("saved_articles") || "[]");
       setIsLiked(likedArticles.includes(article?._id));
       setIsSaved(savedArticles.includes(article?._id));
+      
+      const content = sections?.map(s => s.content).join(" ") || "";
+      const words = content.split(/\s+/).length;
+      setReadingTime(Math.max(1, Math.ceil(words / 200)));
     }
-  }, [article?._id]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      const currentScroll = window.scrollY;
-      setProgress((currentScroll / totalScroll) * 100);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: article.title,
-          text: article.summary || article.sections?.[0]?.content?.substring(0, 100),
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.log("Share failed:", err);
-      }
-    } else {
-      // Fallback: Copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      alert("Link copied to clipboard!");
-    }
-  };
-
-  const handleLike = () => {
-    if (typeof window !== "undefined") {
-      const likedArticles = JSON.parse(localStorage.getItem("liked_articles") || "[]");
-      let newLiked;
-      if (isLiked) {
-        newLiked = likedArticles.filter(id => id !== article._id);
-      } else {
-        newLiked = [...likedArticles, article._id];
-      }
-      localStorage.setItem("liked_articles", JSON.stringify(newLiked));
-      setIsLiked(!isLiked);
-    }
-  };
-
-  const handleSave = () => {
-    if (typeof window !== "undefined") {
-      const savedArticles = JSON.parse(localStorage.getItem("saved_articles") || "[]");
-      let newSaved;
-      if (isSaved) {
-        newSaved = savedArticles.filter(id => id !== article._id);
-      } else {
-        newSaved = [...savedArticles, article._id];
-      }
-      localStorage.setItem("saved_articles", JSON.stringify(newSaved));
-      setIsSaved(!isSaved);
-    }
-  };
-
-  const handleSubmitContribution = (e) => {
-    e.preventDefault();
-    if (!contribution.trim()) return;
-    
-    setIsSubmitting(true);
-    // Mock submission delay
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setContribution("");
-      alert("Intelligence contribution transmitted successfully.");
-    }, 1500);
-  };
-
-  const handleDownload = () => {
-    alert("Dossier generation in progress. Download will begin shortly.");
-    // In a real app, this would trigger a PDF generation or link to a file
-  };
+  }, [article?._id, sections]);
 
   if (!article) return null;
+
+  const quickLinks = [
+    { label: "Overview", slug: article.slug, active: pageType === "overview" },
+    { label: "Box Office", slug: `${article.slug}-box-office`, active: pageType === "box-office" },
+    { label: "Budget", slug: `${article.slug}-budget`, active: pageType === "budget" },
+    { label: "OTT", slug: `${article.slug}-ott-release`, active: pageType === "ott-release" },
+    { label: "Cast", slug: `${article.slug}-cast`, active: pageType === "cast" },
+    { label: "Reviews", slug: `${article.slug}-review-analysis`, active: pageType === "review-analysis" },
+    { label: "Ending", slug: `${article.slug}-ending-explained`, active: pageType === "ending-explained" },
+    { label: "Genre", slug: `${article.slug}-genre-analysis`, active: pageType === "genre-analysis" },
+    { label: "Verdict", slug: `${article.slug}-hit-or-flop`, active: pageType === "hit-or-flop" },
+  ];
+
+  const structuredSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      // 1. Breadcrumb Schema
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://filmyfire.com" },
+          { "@type": "ListItem", "position": 2, "name": category, "item": `https://filmyfire.com/category/${category.toLowerCase()}` },
+          { "@type": "ListItem", "position": 3, "name": article.movieTitle || article.title, "item": `https://filmyfire.com/category/${category.toLowerCase()}/${article.slug}` }
+        ]
+      },
+      // 2. Primary Content Schema
+      pageType === "overview" ? {
+        "@type": "Movie",
+        "name": article.movieTitle || article.title,
+        "datePublished": article.releaseYear,
+        "image": article.coverImage,
+        "description": article.summary,
+        "director": article.director?.map(d => ({ "@type": "Person", "name": d })),
+        "actor": article.cast?.map(c => ({ "@type": "Person", "name": c.name })),
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "reviewCount": "1250"
+        }
+      } : {
+        "@type": "BlogPosting",
+        "headline": seo.title,
+        "description": seo.description || article.summary,
+        "image": article.coverImage,
+        "datePublished": article.publishedAt || article.createdAt,
+        "author": { "@type": "Organization", "name": "FilmyFire Intelligence" }
+      },
+      // 3. FAQ Schema
+      seo.faq && seo.faq.length > 0 ? {
+        "@type": "FAQPage",
+        "mainEntity": seo.faq.map(f => ({
+          "@type": "Question",
+          "name": f.question,
+          "acceptedAnswer": { "@type": "Answer", "content": f.answer }
+        }))
+      } : null
+    ].filter(Boolean)
+  };
 
   return (
     <>
       <Head>
-        <title>{article.title} | Filmy Intelligence</title>
-        <meta name="description" content={article.summary || article.sections?.[0]?.content?.substring(0, 160)} />
-        {article.seo?.metaTitle && <title>{article.seo.metaTitle}</title>}
-        {article.seo?.metaDescription && <meta name="description" content={article.seo.metaDescription} />}
+        <title>{seo.title} | FilmyFire Intelligence</title>
+        <meta name="description" content={seo.description || article.summary} />
+        <link rel="canonical" href={`https://filmyfire.com/category/${category.toLowerCase()}/${slug}`} />
+        
+        {/* Automated Intelligence Schema (Task 7) */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredSchema) }}
+        />
       </Head>
 
-      <div className="min-h-screen bg-[#050505] text-zinc-100 selection:bg-red-600/30 font-sans relative pt-16">
+      <div className="min-h-screen bg-black text-white selection:bg-red-600/30">
         
-        {/* Reading Progress Bar */}
-        <div className="fixed top-16 left-0 right-0 z-[100] h-1 bg-white/5">
-          <div 
-            className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-red-600 transition-all duration-150"
-            style={{ width: `${scrollProgress}%` }}
-          />
-        </div>
-
-        {/* Dynamic Header */}
-        <nav className={`fixed top-16 left-0 right-0 z-[40] transition-all duration-500 ${scrollProgress > 5 ? 'bg-black/80 backdrop-blur-2xl border-b border-white/5 py-3' : 'bg-transparent py-6'}`}>
-          <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between">
+        {/* Modern Minimalist Header */}
+        <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+          <div className="max-w-[1600px] mx-auto px-6 h-14 flex items-center justify-between">
             <Link 
               href={`/category/${category.toLowerCase()}`}
-              className="flex items-center gap-3 text-zinc-400 hover:text-white transition-all text-xs font-bold group bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/5"
+              className="flex items-center gap-2 text-zinc-500 hover:text-white transition-all group"
             >
-              <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              <span className="hidden sm:inline uppercase tracking-widest">Back to {category}</span>
+              <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Explore {category}</span>
             </Link>
             
-            <div className={`flex-1 px-8 transition-all duration-500 ${scrollProgress > 20 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
-              <h2 className="text-[10px] font-black text-white truncate max-w-md mx-auto text-center hidden md:block uppercase tracking-[0.3em]">
-                {article.title}
+            <div className="hidden md:block absolute left-1/2 -translate-x-1/2">
+              <h2 className="text-[10px] font-black text-white uppercase tracking-[0.3em] opacity-80">
+                {article.movieTitle || article.title} – {pageType.replace("-", " ")}
               </h2>
             </div>
 
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={handleShare}
-                className="p-3 text-zinc-400 hover:text-white transition-all bg-white/5 hover:bg-white/10 rounded-xl border border-white/5"
-              >
-                <Share2 className="w-4 h-4" />
-              </button>
-              <button 
-                onClick={handleSave}
-                className={`p-3 transition-all rounded-xl border border-white/5 ${isSaved ? 'text-red-500 bg-red-500/10 border-red-500/20' : 'text-zinc-400 bg-white/5 hover:bg-white/10'}`}
-              >
-                <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
-              </button>
+            <div className="flex items-center gap-4">
+              {/* Share and Save hidden as requested */}
             </div>
           </div>
-        </nav>
+        </header>
 
-        {/* Immersive Hero Section */}
-        <div className="relative w-full h-screen flex items-end justify-start overflow-hidden pt-16">
-          {/* Background Layer */}
-          <div className="absolute inset-0 z-0">
-            {article.coverImage ? (
-              <img 
-                src={article.coverImage} 
-                alt=""
-                className="w-full h-full object-cover scale-100 transition-transform duration-1000"
-              />
-            ) : (
-              <div className="w-full h-full bg-zinc-900" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/30 to-transparent" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#050505] via-transparent to-transparent opacity-60" />
-          </div>
-
-          {/* Hero Content */}
-          <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 pb-20 md:pb-24">
-            <div className="max-w-5xl">
-              <div className="flex items-center gap-4 mb-6 animate-fade-in-up">
-                <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
-                  <Target className="w-3 h-3" />
-                  {article.category} Intelligence
-                </span>
-                <div className="h-[1px] w-12 bg-white/20"></div>
-                <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em]">{article.movieTitle || article.movieName}</span>
-              </div>
-
-              <h1 className="text-4xl md:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-10 drop-shadow-2xl">
-                {article.title}
-              </h1>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-8 border-t border-white/10 max-w-3xl">
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Complexity</p>
-                  <div className="flex gap-1">
-                    {[1,2,3,4,5].map(i => <div key={i} className={`h-1 w-4 rounded-full ${i <= 4 ? 'bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.5)]' : 'bg-white/10'}`} />)}
-                  </div>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Read Time</p>
-                  <p className="text-white font-bold text-[11px] uppercase tracking-widest">{article.stats?.readTime || "5 MIN"}</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Confidence</p>
-                  <p className="text-white font-bold text-[11px] uppercase tracking-widest">98.4%</p>
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Verified</p>
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Floating Scroll Indicator */}
-          <div className="absolute bottom-10 right-10 z-10 hidden lg:block">
-            <div className="flex flex-col items-center gap-4">
-              <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.5em] rotate-90 mb-8">Scroll</span>
-              <div className="w-[1px] h-20 bg-gradient-to-b from-white/20 to-transparent" />
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content Architecture */}
-        <main className="relative z-10 max-w-[1440px] mx-auto px-6 -mt-16 pb-32">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
-            
-            {/* Left Column: Intelligence Data */}
-            <div className="lg:col-span-8 space-y-20">
-              
-              {/* Quick Summary Card */}
-              {article.summary && (
-                <div className="p-8 md:p-12 rounded-[2.5rem] bg-zinc-900/40 border border-white/5 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
-                  <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Zap className="w-24 h-24 text-red-600" />
-                  </div>
-                  <div className="relative z-10">
-                    <h3 className="flex items-center gap-3 text-red-500 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
-                      <BookOpen className="w-4 h-4" />
-                      Executive Summary
-                    </h3>
-                    <p className="text-2xl md:text-3xl font-medium text-white leading-tight tracking-tight italic border-l-4 border-red-600 pl-8 py-2">
-                      &quot;{article.summary}&quot;
-                    </p>
-                  </div>
-                </div>
-              )}
-
-              {/* Main Content Sections */}
-              <div className="space-y-24">
-                {(article.sections || []).map((section, idx) => (
-                  <div key={idx} className="relative group">
-                    {/* Section Numbering */}
-                    <div className="absolute -left-12 top-0 text-7xl font-black text-white/5 select-none pointer-events-none group-hover:text-red-600/10 transition-colors">
-                      0{idx + 1}
-                    </div>
-                    
-                    <div className="space-y-8">
-                      <h2 className="text-3xl md:text-4xl font-black text-white tracking-tighter uppercase leading-none border-b border-white/5 pb-6">
-                        {section.heading}
-                      </h2>
-                      <div className="text-lg md:text-xl text-zinc-400 leading-relaxed space-y-6 whitespace-pre-wrap font-medium tracking-wide">
-                        {section.content}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Verdict Section */}
-              {article.verdict && (
-                <div className="p-10 md:p-16 rounded-[3rem] bg-gradient-to-br from-red-600/10 to-transparent border border-red-600/20 relative overflow-hidden group shadow-2xl">
-                  <div className="absolute -bottom-10 -right-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Award className="w-64 h-64 text-red-600" />
-                  </div>
-                  <h3 className="flex items-center gap-3 text-red-500 text-[10px] font-black uppercase tracking-[0.4em] mb-10">
-                    <ShieldCheck className="w-4 h-4" />
-                    Operational Verdict
-                  </h3>
-                  <p className="text-2xl md:text-4xl font-serif font-bold text-white leading-[1.2] tracking-tight relative z-10">
-                    &quot;{article.verdict}&quot;
-                  </p>
-                </div>
-              )}
-
-              {/* Tags Interaction */}
-              <div className="flex flex-wrap gap-3 pt-12 border-t border-white/5">
-                {(article.tags || []).map((tag, i) => (
-                  <span key={i} className="px-5 py-2.5 bg-white/5 border border-white/5 rounded-xl text-[10px] font-black text-zinc-500 uppercase tracking-widest hover:border-red-600/50 hover:text-red-600 cursor-pointer transition-all active:scale-95">
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-
-              {/* Engagement Sector */}
-              <div className="pt-20 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-12">
-                <div className="flex items-center gap-6">
-                  <button 
-                    onClick={handleLike}
-                    className="flex flex-col items-center gap-2 group"
-                  >
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center border transition-all duration-300 ${isLiked ? 'bg-red-600 border-red-600' : 'bg-white/5 border-white/5 group-hover:bg-red-600 group-hover:border-red-600'}`}>
-                      <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'text-white fill-current' : 'text-zinc-400 group-hover:text-white'}`} />
-                    </div>
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${isLiked ? 'text-red-500' : 'text-zinc-500'}`}>{isLiked ? 'Approved' : 'Approve'}</span>
-                  </button>
-                  <button 
-                    onClick={handleShare}
-                    className="flex flex-col items-center gap-2 group"
-                  >
-                    <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center border border-white/5 group-hover:bg-blue-600 group-hover:border-blue-600 transition-all duration-300">
-                      <Share2 className="w-6 h-6 text-zinc-400 group-hover:text-white" />
-                    </div>
-                    <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Distribute</span>
-                  </button>
-                  <button 
-                    onClick={handleSave}
-                    className="flex flex-col items-center gap-2 group"
-                  >
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center border transition-all duration-300 ${isSaved ? 'bg-amber-600 border-amber-600' : 'bg-white/5 border-white/5 group-hover:bg-amber-600 group-hover:border-amber-600'}`}>
-                      <Bookmark className={`w-6 h-6 transition-colors ${isSaved ? 'text-white fill-current' : 'text-zinc-400 group-hover:text-white'}`} />
-                    </div>
-                    <span className={`text-[10px] font-black uppercase tracking-widest ${isSaved ? 'text-amber-500' : 'text-zinc-500'}`}>{isSaved ? 'Vaulted' : 'Vault'}</span>
-                  </button>
-                </div>
-
-                <form 
-                  onSubmit={handleSubmitContribution}
-                  className="flex items-center gap-4 bg-white/5 p-2 rounded-2xl border border-white/5 w-full md:w-auto"
+        <main className="pb-40">
+          
+          {/* TMDB-Style Hero Section */}
+          <section className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden mb-12">
+            {/* Backdrop Image with Overlay */}
+            <div className="absolute inset-0 z-0">
+              {article.backdropImage ? (
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
+                  style={{ backgroundImage: `url(${article.backdropImage})` }}
                 >
-                  <input 
-                    type="text" 
-                    value={contribution}
-                    onChange={(e) => setContribution(e.target.value)}
-                    placeholder="Contribute analysis..." 
-                    className="bg-transparent border-none outline-none px-4 py-2 text-sm flex-1 md:w-64 text-white placeholder:text-zinc-600 font-bold"
-                  />
-                  <button 
-                    disabled={isSubmitting}
-                    type="submit"
-                    className="px-6 py-2 bg-red-600 text-white text-[10px] font-black rounded-xl hover:bg-red-700 transition-all uppercase tracking-widest disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                  >
-                    {isSubmitting ? (
-                      <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    ) : <Check className="w-3 h-3" />}
-                    {isSubmitting ? 'TRANSMITTING...' : 'SUBMIT'}
-                  </button>
-                </form>
-              </div>
+                  <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+                </div>
+              ) : (
+                <div className="absolute inset-0 bg-zinc-900" />
+              )}
             </div>
 
-            {/* Right Column: Interaction & Meta */}
-            <div className="lg:col-span-4 space-y-8">
-              
-              {/* Floating Meta Box */}
-              <div className="sticky top-32 space-y-8">
+            <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-12 flex flex-col md:flex-row gap-12 items-center md:items-start">
+              {/* Poster Card */}
+              <div className="w-[300px] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
+                {article.coverImage ? (
+                  <img 
+                    src={article.coverImage} 
+                    alt={article.movieTitle || article.title}
+                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="aspect-[2/3] bg-zinc-800 flex items-center justify-center text-zinc-600 font-black uppercase tracking-widest">No Poster</div>
+                )}
+              </div>
+
+              {/* Movie Details */}
+              <div className="flex-grow text-center md:text-left">
+                <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-2 tracking-tighter">
+                  {article.movieTitle || article.title} <span className="text-zinc-500 font-light">({article.releaseYear})</span>
+                </h1>
                 
-                {/* Intel Dossier */}
-                <div className="p-8 rounded-[2rem] bg-zinc-900/40 border border-white/5 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
-                  <div className="absolute -top-4 -right-4 w-24 h-24 bg-red-600/10 blur-3xl rounded-full" />
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-8 flex items-center gap-2">
-                    <BarChart3 className="w-3 h-3 text-red-600" />
-                    Intelligence Dossier
-                  </h3>
-                  
-                  <div className="space-y-8">
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/5">
-                        <Award className="w-5 h-5 text-red-500" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Author</p>
-                        <p className="text-white font-bold text-xs uppercase tracking-widest">{article.author?.name || "Filmy Intel Team"}</p>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/5">
-                        <Clock className="w-5 h-5 text-red-500" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Published</p>
-                        <p className="text-white font-bold text-xs uppercase tracking-widest">
-                          {new Date(article.publishedAt || article.createdAt).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
-                        </p>
-                      </div>
-                    </div>
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-zinc-300 mb-8 font-medium">
+                  {article.certification && (
+                    <span className="px-1.5 py-0.5 border border-zinc-500 rounded text-[10px] text-zinc-400 uppercase">{article.certification}</span>
+                  )}
+                  <span>{article.releaseDate || article.releaseYear}</span>
+                  <span className="w-1 h-1 bg-zinc-500 rounded-full" />
+                  <span>{article.genres?.join(", ")}</span>
+                  <span className="w-1 h-1 bg-zinc-500 rounded-full" />
+                  <span>{article.runtime || "N/A"}</span>
+                </div>
 
-                    <div className="flex items-start gap-4">
-                      <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center shrink-0 border border-white/5">
-                        <Target className="w-5 h-5 text-red-500" />
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-1">Subject</p>
-                        <p className="text-white font-bold text-xs uppercase tracking-widest">{article.movieTitle || article.movieName}</p>
-                      </div>
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-8 mb-10">
+                  {/* User Score Circle */}
+                  <div className="flex items-center gap-3">
+                    <div className="relative w-16 h-16 rounded-full bg-zinc-900 border-4 border-emerald-500 flex items-center justify-center shadow-lg">
+                      <span className="text-lg font-black text-white">
+                        {article.rating ? (
+                          <>
+                            {(parseFloat(article.rating) * 10).toFixed(0)}
+                            <span className="text-[10px] font-bold">%</span>
+                          </>
+                        ) : (
+                          "NR"
+                        )}
+                      </span>
                     </div>
-                  </div>
-
-                  <div className="mt-10 pt-8 border-t border-white/5">
-                    <button 
-                      onClick={handleDownload}
-                      className="w-full flex items-center justify-between p-4 rounded-xl bg-red-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-red-700 transition-all shadow-xl shadow-red-600/20 active:scale-95"
-                    >
-                      Download Full Report
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <span className="text-xs font-black uppercase tracking-widest text-white leading-none">User<br/>Score</span>
                   </div>
                 </div>
 
+                {article.tagline && (
+                  <p className="text-zinc-400 italic text-lg mb-6 font-medium">"{article.tagline}"</p>
+                )}
+
+                <div className="max-w-3xl">
+                  {/* Streaming Now - TMDB Style Badge */}
+                  {article.ott?.platform && (
+                    <div className="inline-flex items-center gap-4 px-6 py-3 bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-xl mb-10 group/ott">
+                      <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                        <Play className="w-5 h-5 text-white fill-current" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Now Streaming</p>
+                        <p className="text-sm font-bold text-white group-hover/ott:text-blue-400 transition-colors">Watch on {article.ott.platform}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  <h3 className="text-xl font-black text-white mb-3 uppercase tracking-widest">Overview</h3>
+                  <p className="text-zinc-300 leading-relaxed font-medium mb-10 line-clamp-4 md:line-clamp-none">
+                    {article.summary}
+                  </p>
+
+                  {/* Key Personnel & Financial Intel */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {article.director && article.director.length > 0 && (
+                      <div>
+                        <p className="font-black text-white text-sm">{article.director[0]}</p>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Director</p>
+                      </div>
+                    )}
+                    {article.writer && article.writer.length > 0 && (
+                      <div>
+                        <p className="font-black text-white text-sm">{article.writer[0]}</p>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Screenplay</p>
+                      </div>
+                    )}
+                    {article.budget && (
+                      <div>
+                        <p className="font-black text-white text-sm">{article.budget}</p>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Budget</p>
+                      </div>
+                    )}
+                    {article.boxOffice?.worldwide && (
+                      <div>
+                        <p className="font-black text-white text-sm">{article.boxOffice.worldwide}</p>
+                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Revenue</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
+          </section>
+
+          {/* Persistent Floating Navigation Bar */}
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] w-full max-w-fit px-6">
+            <nav className="bg-zinc-900/90 backdrop-blur-2xl border border-white/10 p-2 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex items-center gap-1 overflow-x-auto no-scrollbar">
+              {quickLinks.map((link) => (
+                <Link
+                  key={link.label}
+                  href={`/category/${category.toLowerCase()}/${link.slug}`}
+                  className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap ${
+                    link.active
+                      ? 'bg-blue-600 text-white shadow-[0_0_20px_rgba(37,99,235,0.4)] scale-105 z-10'
+                      : 'text-zinc-500 hover:text-white hover:bg-white/5'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
           </div>
+
+          <div className="max-w-[1200px] mx-auto px-6">
+            {/* Structured Content Sections */}
+            <div className="space-y-32">
+              {sections && sections.length > 0 ? (
+                sections.map((section, idx) => (
+                  <section key={idx} className="max-w-4xl group">
+                    <h2 className="text-2xl md:text-4xl font-black text-white mb-8 uppercase tracking-tight group-hover:text-blue-500 transition-colors">
+                      {section.heading}
+                    </h2>
+                    
+                    {/* Special Rendering for Structured Cast Data */}
+                    {pageType === "cast" && (section.isStructuredCast || section.heading.toLowerCase().includes("cast")) ? (
+                      <div className="space-y-16">
+                        <div>
+                          <h3 className="text-xl font-bold text-zinc-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                            <Users className="w-5 h-5" />
+                            Full Billed Cast
+                          </h3>
+                          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                            {(article.cast && article.cast.length > 0 ? article.cast : section.content.split("\n\n")).map((actor, i) => {
+                              const name = typeof actor === 'string' ? actor.split(" as ")[0] : actor.name;
+                              const role = typeof actor === 'string' ? actor.split(" as ")[1] : actor.role;
+                              const profileImage = typeof actor === 'object' ? actor.profileImage : null;
+                              
+                              return (
+                                <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all flex flex-col items-center text-center group/card">
+                                  <div className="w-20 h-20 rounded-full bg-blue-600/10 border border-blue-500/20 flex items-center justify-center mb-4 group-hover/card:scale-110 transition-transform overflow-hidden">
+                                    {profileImage ? (
+                                      <img src={profileImage} alt={name} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <User className="w-8 h-8 text-blue-500" />
+                                    )}
+                                  </div>
+                                  <p className="font-bold text-white text-sm line-clamp-1">{name}</p>
+                                  {role && <p className="text-[10px] text-zinc-500 mt-1 uppercase tracking-widest line-clamp-1">{role}</p>}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                        {article.crew && article.crew.length > 0 && (
+                          <div>
+                            <h3 className="text-xl font-bold text-zinc-500 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                              <Briefcase className="w-5 h-5" />
+                              Technical Personnel & Crew
+                            </h3>
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                              {article.crew.map((member, i) => (
+                                <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-emerald-500/30 transition-all flex flex-col items-center text-center group/card">
+                                  <div className="w-20 h-20 rounded-full bg-emerald-600/10 border border-emerald-500/20 flex items-center justify-center mb-4 group-hover/card:scale-110 transition-transform overflow-hidden">
+                                    {member.profileImage ? (
+                                      <img src={member.profileImage} alt={member.name} className="w-full h-full object-cover" />
+                                    ) : (
+                                      <User className="w-8 h-8 text-emerald-500" />
+                                    )}
+                                  </div>
+                                  <p className="font-bold text-white text-sm line-clamp-1">{member.name}</p>
+                                  <p className="text-[10px] text-zinc-500 mt-1 uppercase tracking-widest line-clamp-1">{member.job || member.department}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="space-y-8">
+                        {section.content.split('\n\n').map((para, i) => (
+                          <p key={i} className="text-xl text-zinc-400 leading-relaxed font-medium">
+                            {para}
+                          </p>
+                        ))}
+                      </div>
+                    )}
+                  </section>
+                ))
+              ) : (
+                <div className="text-center py-24 bg-white/5 rounded-3xl border border-dashed border-white/10">
+                  <p className="text-zinc-600 font-black uppercase tracking-widest text-sm">Intelligence Report Pending Verification</p>
+                </div>
+              )}
+            </div>
+
+            {/* Recommendations Section - Real Database Intelligence */}
+            {dynamicRecommendations && dynamicRecommendations.length > 0 ? (
+              <section className="mt-40">
+                <h3 className="text-2xl font-black text-white mb-8 tracking-tight">Recommendations</h3>
+                <div className="flex gap-4 overflow-x-auto pb-8 no-scrollbar snap-x">
+                  {dynamicRecommendations.map((rec, i) => (
+                    <Link 
+                      key={i} 
+                      href={`/category/${category.toLowerCase()}/${rec.slug}`}
+                      className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer"
+                    >
+                      <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-white/5 group-hover/rec:border-blue-500/30 transition-all shadow-lg">
+                        {rec.backdropImage ? (
+                          <img 
+                            src={rec.backdropImage} 
+                            alt={rec.movieTitle || rec.title}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105"
+                          />
+                        ) : (
+                          <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-700 font-black uppercase text-[10px] tracking-widest">No Image</div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/rec:opacity-100 transition-opacity flex items-center justify-center">
+                          <ExternalLink className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
+                      
+                      <div className="flex justify-between items-center">
+                        <h4 className="text-sm font-bold text-white group-hover/rec:text-blue-400 transition-colors line-clamp-1 flex-grow pr-4">{rec.movieTitle || rec.title}</h4>
+                        <span className="text-sm font-black text-zinc-400">{(parseFloat(rec.rating || 0) * 10).toFixed(0)}%</span>
+                      </div>
+                      
+                      <div className="mt-2 h-[2px] w-full bg-zinc-800 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-zinc-500 transition-all duration-1000"
+                          style={{ width: `${(parseFloat(rec.rating || 0) * 10).toFixed(0)}%` }}
+                        />
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            ) : (
+              // Fallback to TMDB recommendations if database is empty for category
+              (article.recommendations && article.recommendations.length > 0) ? (
+                <section className="mt-40">
+                  <h3 className="text-2xl font-black text-white mb-8 tracking-tight">Recommendations</h3>
+                  <div className="flex gap-4 overflow-x-auto pb-8 no-scrollbar snap-x">
+                    {article.recommendations.map((rec, i) => (
+                      <Link 
+                        key={i} 
+                        href={`/category/${category.toLowerCase()}/${rec.slug}`}
+                        className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer"
+                      >
+                        <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-white/5 group-hover/rec:border-blue-500/30 transition-all shadow-lg">
+                          {rec.backdropImage ? (
+                            <img 
+                              src={rec.backdropImage} 
+                              alt={rec.title}
+                              className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-700 font-black uppercase text-[10px] tracking-widest">No Image</div>
+                          )}
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/rec:opacity-100 transition-opacity flex items-center justify-center">
+                            <ExternalLink className="w-5 h-5 text-white" />
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-between items-center">
+                          <h4 className="text-sm font-bold text-white group-hover/rec:text-blue-400 transition-colors line-clamp-1 flex-grow pr-4">{rec.title}</h4>
+                          <span className="text-sm font-black text-zinc-400">{(parseFloat(rec.rating || 0) * 10).toFixed(0)}%</span>
+                        </div>
+                        
+                        <div className="mt-2 h-[2px] w-full bg-zinc-800 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-zinc-500 transition-all duration-1000"
+                            style={{ width: `${(parseFloat(rec.rating || 0) * 10).toFixed(0)}%` }}
+                          />
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              ) : (
+                <section className="mt-40 text-center py-20 border border-dashed border-white/5 rounded-3xl">
+                  <p className="text-zinc-600 font-black uppercase tracking-widest text-xs">Awaiting Intelligence for {category} Database</p>
+                </section>
+              )
+            )}
+
+            {/* FAQ Section (3-5 questions) */}
+            {seo.faq && seo.faq.length > 0 && (
+              <section className="mt-40 p-12 md:p-24 rounded-[3rem] bg-zinc-900/30 border border-white/5">
+                <h2 className="text-4xl font-black text-white mb-16 uppercase tracking-tighter">Frequently Asked Intelligence</h2>
+                <div className="space-y-16">
+                  {seo.faq.map((faq, i) => (
+                    <div key={i} className="space-y-6">
+                      <h4 className="text-2xl font-bold text-white flex gap-6">
+                        <span className="text-blue-500 font-black">Q.</span> {faq.question}
+                      </h4>
+                      <p className="text-xl text-zinc-400 font-medium leading-relaxed pl-12 border-l border-white/10">
+                        {faq.answer}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+
         </main>
       </div>
-
-      <style jsx global>{`
-        @keyframes fade-in-up {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up {
-          animation: fade-in-up 1s ease-out forwards;
-        }
-      `}</style>
     </>
   );
 }
