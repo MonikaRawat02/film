@@ -260,7 +260,7 @@ export default function NetWorthSection({ celebrity }) {
   return (
     <section className="min-h-screen bg-[#0a0a0f]" style={{ overflowX: 'clip' }}>
       {/* Breadcrumb */}
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-6">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-4">
         <nav className="flex items-center gap-2 text-sm text-[var(--ff-text-muted)]">
           <Link href="/" className="ff-hover-text-primary transition-colors cursor-pointer">
             Home
@@ -274,7 +274,7 @@ export default function NetWorthSection({ celebrity }) {
         </nav>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pb-20 mt-8">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pb-20 mt-6">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Main Content */}
           <div className="flex-1 space-y-8">
@@ -305,7 +305,7 @@ export default function NetWorthSection({ celebrity }) {
                 </div>
                 <span
                   data-slot="badge"
-                  className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none transition-[color,box-shadow] overflow-hidden ff-hover-bg-amber-muted ff-text-amber ff-border-amber text-xs font-normal"
+                  className="inline-flex items-center justify-center rounded-md border px-2 py-0.5 w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive transition-[color,box-shadow] overflow-hidden [a&]:hover:bg-accent [a&]:hover:text-accent-foreground bg-[var(--ff-amber-muted)] text-[var(--ff-amber)] border-[var(--ff-amber)] text-xs font-normal"
                 >
                   <TrendingUp className="w-3 h-3 mr-1" />
                   Career: {processedCelebrity?.careerStatus || "Active"}
@@ -316,14 +316,14 @@ export default function NetWorthSection({ celebrity }) {
             {/* Net Worth Section */}
             <div
               id="net-worth-estimate"
-              className="relative overflow-hidden rounded-3xl border border-[var(--ff-border)] bg-[var(--ff-dark-elevated)] shadow-[0_10px_40px_rgba(0,0,0,0.35)] p-8 md:p-10"
+              className="relative overflow-hidden rounded-3xl border border-[var(--ff-border)] bg-[var(--ff-dark-elevated)] shadow-[0_10px_40px_rgba(0,0,0,0.35)] p-8 md:p-10 scroll-mt-24"
             >
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-transparent" />
               <div className="relative flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-3xl md:text-4xl font-semibold text-[var(--ff-text-primary)]">
+                  <h1 className="text-2xl md:text-3xl text-[var(--ff-text-primary)]">
                     {processedCelebrity?.name || "Celebrity"} Net Worth
-                  </h2>
+                  </h1>
                   <span className="inline-flex items-center justify-center rounded-md px-2 py-0.5 text-xs font-medium text-[var(--ff-electric-blue)] bg-[rgba(0,217,255,0.12)]">
                     2025
                   </span>
@@ -397,7 +397,7 @@ export default function NetWorthSection({ celebrity }) {
             {/* How Net Worth is Calculated */}
             <div
               id="calculation-breakdown"
-              className="bg-[var(--ff-dark-elevated)] rounded-2xl border border-[var(--ff-border)] overflow-hidden mb-10 mt-10"
+              className="bg-[var(--ff-dark-elevated)] rounded-2xl border border-[var(--ff-border)] overflow-hidden mb-10 mt-10 scroll-mt-24"
             >
               <button
                 onClick={() => setExpandedCalculation(!expandedCalculation)}
@@ -472,7 +472,7 @@ export default function NetWorthSection({ celebrity }) {
             {/* Net Worth Timeline */}
             <div
               id="timeline"
-              className="mb-10"
+              className="mb-10 scroll-mt-24"
             >
               <div className="bg-[var(--ff-dark-elevated)] border border-[var(--ff-border)] rounded-xl p-6">
                 <h3 className="text-lg font-bold text-[var(--ff-text-primary)] mb-2">Net Worth Timeline</h3>
@@ -746,7 +746,7 @@ export default function NetWorthSection({ celebrity }) {
             </div>
 
             {/* Celebrity Comparisons */}
-            <div id="comparison">
+            <div id="comparison" className="scroll-mt-24">
               <h3 className="text-xl font-bold text-white mb-2">
                 How {celebrity.name} Compares
               </h3>
@@ -856,7 +856,7 @@ export default function NetWorthSection({ celebrity }) {
             </div>
 
             {/* Related Intelligence */}
-            <div id="related-intelligence" className="py-10 border-t border-[var(--ff-border)] mt-10">
+            <div id="related-intelligence" className="py-10 border-t border-[var(--ff-border)] mt-10 scroll-mt-24">
               <h3 className="text-2xl font-bold text-white mb-2">Related Intelligence</h3>
               <p className="text-[var(--ff-text-muted)] text-base mb-8">
                 Deep dive into {processedCelebrity.name}&apos;s career, business, and impact
@@ -889,7 +889,7 @@ export default function NetWorthSection({ celebrity }) {
             </div>
 
             {/* FAQs */}
-            <div id="faqs">
+            <div id="faqs" className="scroll-mt-24">
               <div className="flex items-center gap-3 mb-6">
                 <span className="text-xl">❓</span>
                 <h3 className="text-xl font-bold text-white">
@@ -992,7 +992,7 @@ export default function NetWorthSection({ celebrity }) {
 
           {/* Sidebar */}
           <aside className="w-80 flex-shrink-0">
-            <div className="hidden lg:block sticky top-10 space-y-6">
+            <div className="hidden lg:block sticky top-20 space-y-6">
               {/* Quick Facts */}
               <div className="bg-[var(--ff-dark-elevated)] border border-[var(--ff-border)] rounded-xl p-5">
                 <h3 className="text-sm mb-4 text-[var(--ff-text-primary)]">Quick Facts</h3>
@@ -1032,9 +1032,13 @@ export default function NetWorthSection({ celebrity }) {
                       onClick={() => {
                         setActiveSection(section.id);
                         const el = typeof window !== "undefined" ? document.getElementById(section.id) : null;
-                        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+                        if (el) {
+                          const yOffset = -80;
+                          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                          window.scrollTo({ top: y, behavior: "smooth" });
+                        }
                       }}
-                      className="w-full text-left text-sm ff-text-secondary ff-hover-text-red ff-hover-bg-surface transition-colors py-1.5 px-2 rounded"
+                      className="w-full text-left text-sm text-[var(--ff-text-secondary)] hover:text-[var(--ff-cinema-red)] transition-colors py-1.5 px-2 rounded hover:bg-[var(--ff-dark-surface)]"
                     >
                       {section.label}
                     </button>
