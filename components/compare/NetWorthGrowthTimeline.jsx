@@ -72,8 +72,7 @@ export default function NetWorthGrowthTimeline({
             <svg
               className="w-full h-[350px]"
               viewBox={`0 0 ${width} ${height}`}
-              preserveAspectRatio="none"
-            >
+              preserveAspectRatio="none">
               <rect
                 x="0"
                 y="0"
@@ -100,8 +99,7 @@ export default function NetWorthGrowthTimeline({
                     y2={yScale(t)}
                     stroke="#334155"
                     strokeDasharray="3 3"
-                    opacity="0.5"
-                  />
+                    opacity="0.5" />
                   <text
                     x={margin.left - 12}
                     y={yScale(t)}
@@ -145,9 +143,7 @@ export default function NetWorthGrowthTimeline({
                 stroke="#475569"
                 strokeWidth="1.5"
               />
-
-
-
+              
               {/* Year labels below X-axis */}
               {years.map((y) => (
                 <text
