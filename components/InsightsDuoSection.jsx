@@ -79,8 +79,8 @@ export default function InsightsDuoSection() {
                 boxOfficeData.map((m, i) => (
                   <div key={m._id || i} className="group p-6 bg-gradient-to-br from-white/5 to-transparent border border-gray-800 rounded-2xl transition-all duration-500 hover:border-gray-700">
                     <div className="flex items-start justify-between">
-                      <h3 className="text-white font-bold text-lg flex-1">{m.movieName}</h3>
-                      <span className={`px-4 py-1.5 text-xs font-bold uppercase tracking-wide rounded-lg border ${statusClasses(m.verdict)}`}>
+                      <h3 className="text-white font-serif font-bold text-xl flex-1 group-hover:text-green-400 transition-colors">{m.movieName}</h3>
+                      <span className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-lg border ${statusClasses(m.verdict)}`}>
                         {m.verdict}
                       </span>
                     </div>

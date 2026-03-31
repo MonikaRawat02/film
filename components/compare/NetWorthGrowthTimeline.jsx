@@ -20,20 +20,22 @@ export default function NetWorthGrowthTimeline({
   const margin = { top: 24, right: 40, bottom: 40, left: 60 };
   const width = 1000; // viewBox width; container is responsive
 
-  const years = (seriesA.points || []).map((p) => p.year);
+  const years = (seriesA.points || []).map((p) => p.year).filter(y => y != null && !isNaN(y));
   const xScale = (year) => {
     const idx = years.indexOf(year);
     const step = (width - margin.left - margin.right) / Math.max(years.length - 1, 1);
     return margin.left + idx * step;
   };
   const yScale = (v) => {
-    const clamped = Math.max(0, Math.min(maxY, v));
+    const value = Number(v) || 0; // Ensure value is a number
+    const clamped = Math.max(0, Math.min(maxY, value));
     const h = height - margin.top - margin.bottom;
     return margin.top + (h - (clamped / maxY) * h);
   };
 
   const toPath = (pts) =>
     pts
+      .filter(p => p.year != null && p.value != null && !isNaN(Number(p.value))) // Filter out invalid data points
       .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p.year)} ${yScale(p.value)}`)
       .join(" ");
 
@@ -78,7 +80,7 @@ export default function NetWorthGrowthTimeline({
                 width={width}
                 height={height}
                 rx="12"
-                fill="rgba(2,6,23,0.4)"
+                fill="#0f172a"
               />
               <rect
                 x={margin.left}
@@ -86,20 +88,31 @@ export default function NetWorthGrowthTimeline({
                 width={width - margin.left - margin.right}
                 height={height - margin.top - margin.bottom}
                 rx="6"
-                fill="rgba(59,130,246,0.08)"
+                fill="#1e293b"
               />
 
               {gridYTicks.map((t) => (
-                <line
-                  key={`gy-${t}`}
-                  x1={margin.left}
-                  x2={width - margin.right}
-                  y1={yScale(t)}
-                  y2={yScale(t)}
-                  stroke="#374151"
-                  strokeDasharray="3 3"
-                  opacity="0.6"
-                />
+                <g key={`gy-${t}`}>
+                  <line
+                    x1={margin.left}
+                    x2={width - margin.right}
+                    y1={yScale(t)}
+                    y2={yScale(t)}
+                    stroke="#334155"
+                    strokeDasharray="3 3"
+                    opacity="0.5"
+                  />
+                  <text
+                    x={margin.left - 12}
+                    y={yScale(t)}
+                    fill="#94a3b8"
+                    fontSize="11"
+                    textAnchor="end"
+                    dominantBaseline="middle"
+                  >
+                    {formatMoneyM(t, currency)}
+                  </text>
+                </g>
               ))}
               {years.map((y, i) => (
                 <line
@@ -108,51 +121,41 @@ export default function NetWorthGrowthTimeline({
                   x2={xScale(y)}
                   y1={margin.top}
                   y2={height - margin.bottom}
-                  stroke="#374151"
+                  stroke="#334155"
                   strokeDasharray="3 3"
-                  opacity="0.6"
+                  opacity="0.5"
                 />
               ))}
               {/* Static highlight line removed */}
 
+              {/* Axes */}
               <line
                 x1={margin.left}
                 y1={yScale(0)}
                 x2={width - margin.right}
                 y2={yScale(0)}
-                stroke="#9ca3af"
-                opacity="0.5"
+                stroke="#475569"
+                strokeWidth="1.5"
               />
               <line
                 x1={margin.left}
                 y1={margin.top}
                 x2={margin.left}
                 y2={height - margin.bottom}
-                stroke="#9ca3af"
-                opacity="0.5"
+                stroke="#475569"
+                strokeWidth="1.5"
               />
 
-              {gridYTicks.map((t) => (
-                <text
-                  key={`yl-${t}`}
-                  x={margin.left - 10}
-                  y={yScale(t)}
-                  fill="#9ca3af"
-                  fontSize="12"
-                  textAnchor="end"
-                  dominantBaseline="middle"
-                >
-                  {formatMoneyM(t, currency)}
-                </text>
-              ))}
 
+
+              {/* Year labels below X-axis */}
               {years.map((y) => (
                 <text
                   key={`xl-${y}`}
                   x={xScale(y)}
-                  y={height - margin.bottom + 18}
-                  fill="#9ca3af"
-                  fontSize="12"
+                  y={height - margin.bottom + 20}
+                  fill="#94a3b8"
+                  fontSize="11"
                   textAnchor="middle"
                 >
                   {y}
@@ -166,28 +169,31 @@ export default function NetWorthGrowthTimeline({
                   x2={xScale(years[hover])}
                   y1={margin.top}
                   y2={height - margin.bottom}
-                  stroke="#9ca3af"
-                  opacity="0.8"
+                  stroke="#64748b"
+                  strokeWidth="1.5"
+                  strokeDasharray="3 3"
                 />
               )}
 
-              <path d={toPath(seriesA.points)} fill="none" stroke={seriesA.color} strokeWidth="2.5" />
-              {seriesA.points.map((p, i) => (
+              {/* Series A line */}
+              <path d={toPath(seriesA.points)} fill="none" stroke={seriesA.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+              {(seriesA.points || []).filter(p => p.year != null && p.value != null && !isNaN(Number(p.value))).map((p, i) => (
                 <g key={`a-${i}`}>
                   {hover != null && years[hover] === p.year ? (
-                    <circle cx={xScale(p.year)} cy={yScale(p.value)} r="6" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                    <circle cx={xScale(p.year)} cy={yScale(Number(p.value))} r="6" fill="none" stroke="#e5e7eb" strokeWidth="2" />
                   ) : null}
-                  <circle cx={xScale(p.year)} cy={yScale(p.value)} r="4" fill={seriesA.color} />
+                  <circle cx={xScale(p.year)} cy={yScale(Number(p.value))} r="4" fill={seriesA.color} stroke={seriesA.color} strokeWidth="2" />
                 </g>
               ))}
 
-              <path d={toPath(seriesB.points)} fill="none" stroke={seriesB.color} strokeWidth="2.5" />
-              {seriesB.points.map((p, i) => (
+              {/* Series B line */}
+              <path d={toPath(seriesB.points)} fill="none" stroke={seriesB.color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+              {(seriesB.points || []).filter(p => p.year != null && p.value != null && !isNaN(Number(p.value))).map((p, i) => (
                 <g key={`b-${i}`}>
                   {hover != null && years[hover] === p.year ? (
-                    <circle cx={xScale(p.year)} cy={yScale(p.value)} r="6" fill="none" stroke="#e5e7eb" strokeWidth="2" />
+                    <circle cx={xScale(p.year)} cy={yScale(Number(p.value))} r="6" fill="none" stroke="#e5e7eb" strokeWidth="2" />
                   ) : null}
-                  <circle cx={xScale(p.year)} cy={yScale(p.value)} r="4" fill={seriesB.color} />
+                  <circle cx={xScale(p.year)} cy={yScale(Number(p.value))} r="4" fill={seriesB.color} stroke={seriesB.color} strokeWidth="2" />
                 </g>
               ))}
             </svg>
@@ -215,11 +221,11 @@ export default function NetWorthGrowthTimeline({
                   <div className="mt-1 text-xs">
                     <div className="flex items-center gap-2">
                       <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: seriesA.color }} />
-                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesA.points, years[hover]), currency)}</span>
+                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesA.points, years[hover]) || 0, currency)}</span>
                     </div>
                     <div className="flex items-center gap-2 mt-1">
                       <span className="inline-block w-2 h-2 rounded-full" style={{ backgroundColor: seriesB.color }} />
-                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesB.points, years[hover]), currency)}</span>
+                      <span className="opacity-80">{formatMoneyM(getValueForYear(seriesB.points, years[hover]) || 0, currency)}</span>
                     </div>
                   </div>
                 </div>
