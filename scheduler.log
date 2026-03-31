@@ -1723,3 +1723,16 @@
 [2026-03-31T10:30:00.637Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-03-31T10:30:06.993Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
 [2026-03-31T11:29:30.694Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-03-31T11:30:20.760Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-03-31T11:30:20.760Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-03-31T11:30:20.776Z] [INFO] 🚀 Executing initial automation run...
+[2026-03-31T11:30:20.777Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-03-31T11:30:20.787Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-03-31T11:30:20.789Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-03-31T11:30:25.926Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-03-31T11:30:25.926Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-03-31T11:30:25.927Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-03-31T11:30:35.053Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-03-31T11:30:45.562Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-03-31T11:30:57.219Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-03-31T12:12:08.106Z] [INFO] Received kill signal, shutting down gracefully...

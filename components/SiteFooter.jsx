@@ -44,7 +44,7 @@
                    INTELLIGENCE PLATFORM
                  </span>
                </div>
-             </div>
+             </div>                                                   
             <p className="mt-5 text-sm md:text-base text-gray-400">
                Movie & Web Series Intelligence Platform. Deep analysis beyond breaking news.
              </p>
