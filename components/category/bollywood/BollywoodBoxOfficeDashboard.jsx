@@ -190,8 +190,8 @@ export default function BollywoodBoxOfficeDashboard() {
                     <div className="flex items-center gap-4">
                       <span className="text-zinc-600 font-bold text-lg">{item.rank}</span>
                       <div>
-                        <p className="text-sm font-medium text-white group-hover:text-amber-500 transition-colors">{item.name}</p>
-                        <p className="text-xs text-zinc-500">{item.collection}</p>
+                        <p className="text-sm font-serif font-bold text-white group-hover:text-amber-500 transition-colors leading-tight">{item.name}</p>
+                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">{item.collection}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1 text-emerald-500 text-xs font-bold">

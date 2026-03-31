@@ -65,10 +65,20 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
 
   const formatTimelineData = (celeb) => {
     if (!celeb?.netWorthTimeline?.timeline) return [];
-    return celeb.netWorthTimeline.timeline.map(item => ({
-      year: item.year,
-      value: currency === "USD" ? item.netWorth : Math.round(item.netWorth * 83) // Approx conversion if INR not stored
-    })).sort((a, b) => a.year - b.year);
+    return celeb.netWorthTimeline.timeline.map(item => {
+      // Parse netWorth string to extract numeric value (e.g., "$200M" -> 200, "₹500Cr" -> 500)
+      let numericValue = 0;
+      if (item.netWorth) {
+        const match = String(item.netWorth).match(/[\d.]+/);
+        if (match) {
+          numericValue = parseFloat(match[0]);
+        }
+      }
+      return {
+        year: item.year,
+        value: currency === "USD" ? numericValue : Math.round(numericValue * 83) // Approx conversion if INR not stored
+      };
+    }).sort((a, b) => a.year - b.year);
   };
 
   const formatIncomeData = (celeb) => {
