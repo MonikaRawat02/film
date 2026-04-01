@@ -17,8 +17,8 @@
      { name: "Hollywood", href: "/category/hollywood" },
      { name: "Web Series", href: "/category/webseries" },
      { name: "OTT Platforms", href: "/category/ott" },
-     { name: "Box Office", href: "/category/boxoffice" },
-     { name: "Celebrities", href: "/category/celebrities" },
+     { name: "Box Office", href: "/category/box-office" },
+     { name: "Celebrities", href: "/category/celebrity" },
    ];
  
    const legal = [
@@ -44,7 +44,7 @@
                    INTELLIGENCE PLATFORM
                  </span>
                </div>
-             </div>
+             </div>                                                   
             <p className="mt-5 text-sm md:text-base text-gray-400">
                Movie & Web Series Intelligence Platform. Deep analysis beyond breaking news.
              </p>

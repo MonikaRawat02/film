@@ -514,8 +514,7 @@ export default function NetWorthSection({ celebrity }) {
                   
                   setHoveredPoint(nearestIdx);
                 }}
-                onMouseLeave={() => setHoveredPoint(null)}
-              >
+                onMouseLeave={() => setHoveredPoint(null)} >
                 {mounted ? (() => {
                   const maxVal = Math.max(...timelineData.map(d => d.value), 800);
                   const minYear = Math.min(...timelineData.map(d => d.year));
