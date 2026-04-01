@@ -214,6 +214,115 @@ const runTrendingSync = async () => {
   }
 };
 
+/**
+ * Task 5: Weekly Recommendation Engine Update
+ * Calculates similar movies for all movies in database
+ */
+const runRecommendationUpdate = async () => {
+  log('🕒 CRON START: Weekly Recommendation Engine Update');
+  try {
+    // First, get all movie slugs
+    const articlesResponse = await fetch(`${NEXTJS_URL}/api/articles/list?limit=10000&includeDrafts=true`, {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 30000,
+    });
+
+    if (!articlesResponse.ok) {
+      errorLog(`Failed to fetch article list: ${articlesResponse.status}`);
+      return;
+    }
+
+    const articlesData = await articlesResponse.json();
+    if (!articlesData.success || !articlesData.data) {
+      errorLog('No articles found in database');
+      return;
+    }
+
+    const allSlugs = articlesData.data.map(article => article.slug);
+    log(`📊 Found ${allSlugs.length} movies to process`);
+
+    // Process in batches of 50
+    const BATCH_SIZE = 50;
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (let i = 0; i < allSlugs.length; i += BATCH_SIZE) {
+      const batch = allSlugs.slice(i, i + BATCH_SIZE);
+      
+      try {
+        const response = await fetch(`${NEXTJS_URL}/api/admin/batch-calculate-recommendations`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-cron-secret': CRON_SECRET
+          },
+          body: JSON.stringify({
+            slugs: batch,
+            limitPerMovie: 8
+          }),
+          timeout: 120000,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          successCount += result.count;
+          log(`✅ Batch ${Math.floor(i/BATCH_SIZE) + 1}: Updated ${result.count} movies`);
+        } else {
+          errorCount++;
+          errorLog(`Batch ${Math.floor(i/BATCH_SIZE) + 1} failed:`, new Error(result.message));
+        }
+      } catch (error) {
+        errorCount++;
+        errorLog(`Batch ${Math.floor(i/BATCH_SIZE) + 1} error:`, error);
+      }
+
+      // Add delay between batches
+      if (i < allSlugs.length - BATCH_SIZE) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+    }
+
+    log(`✅ CRON COMPLETE: Recommendation Update - ${successCount}/${allSlugs.length} movies updated successfully`);
+    if (errorCount > 0) {
+      log(`⚠️ Failed batches: ${errorCount}`, 'WARN');
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (Recommendation Update):', error);
+  }
+};
+
+/**
+ * Task 6: Weekly Discovery Page Generation
+ * Auto-generates discovery pages like /best-thriller-movies, /top-netflix-movies
+ */
+const runDiscoveryPageGeneration = async () => {
+  log('🕒 CRON START: Weekly Discovery Page Generation');
+  try {
+    const response = await fetch(`${NEXTJS_URL}/api/admin/automation/generate-discovery-pages?type=all`, {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 300000, // 5 minutes timeout for heavy generation
+    });
+
+    if (!response.ok) {
+      errorLog(`Discovery Page Generation returned status ${response.status}`);
+    } else {
+      const data = await response.json();
+      log(`✅ CRON SUCCESS: Discovery Page Generation - ${data.message}`);
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (Discovery Pages):', error);
+  }
+};
+
 // --- Schedule Jobs ---
 
 // 1. Daily Sync (11:00 AM)
@@ -224,6 +333,12 @@ cron.schedule('5 11 * * *', runMovieScraper);
 
 // 3. Trending Sync (Every 1 hour)
 cron.schedule('0 * * * *', runTrendingSync);
+
+// 4. Weekly Recommendation Update (Every Sunday at 2:00 AM)
+cron.schedule('0 2 * * 0', runRecommendationUpdate);
+
+// 5. Weekly Discovery Page Generation (Every Sunday at 3:00 AM)
+cron.schedule('0 3 * * 0', runDiscoveryPageGeneration);
 
 // Heartbeat (Daily 11:00 AM)
 cron.schedule(HEARTBEAT_INTERVAL, () => {

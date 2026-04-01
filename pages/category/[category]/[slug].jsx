@@ -5,8 +5,51 @@ import { useRouter } from "next/router";
 import { 
   ArrowLeft, Share2, Clock, User, 
   Calendar, DollarSign, Users, Play, Award,
-  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase
+  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase,
+  ChevronDown
 } from "lucide-react";
+
+// FAQ Accordion Item Component
+function FAQItem({ question, answer, index }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden transition-all duration-300 hover:border-blue-500/30">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-8 py-6 flex items-center justify-between gap-4 text-left group"
+      >
+        <span className="flex items-center gap-4 flex-grow">
+          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-sm">
+            Q{index + 1}
+          </span>
+          <span className="text-lg md:text-xl font-bold text-white group-hover:text-blue-400 transition-colors leading-relaxed">
+            {question}
+          </span>
+        </span>
+        <ChevronDown
+          className={`w-6 h-6 text-zinc-500 transition-transform duration-300 flex-shrink-0 ${
+            isOpen ? 'rotate-180 text-blue-400' : ''
+          }`}
+        />
+      </button>
+      
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-8 pb-8 pt-2">
+          <div className="pl-12 border-l-2 border-blue-500/30">
+            <p className="text-base md:text-lg text-zinc-400 leading-relaxed">
+              {answer}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export async function getServerSideProps(context) {
   const { category, slug } = context.params;
@@ -235,13 +278,34 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
   const structuredSchema = {
     "@context": "https://schema.org",
     "@graph": [
-      // 1. Breadcrumb Schema
+      // 1. Breadcrumb Schema (Enhanced for sub-pages)
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
-          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://filmyfire.com" },
-          { "@type": "ListItem", "position": 2, "name": category, "item": `https://filmyfire.com/category/${category.toLowerCase()}` },
-          { "@type": "ListItem", "position": 3, "name": article.movieTitle || article.title, "item": `https://filmyfire.com/category/${category.toLowerCase()}/${article.slug}` }
+          { 
+            "@type": "ListItem", 
+            "position": 1, 
+            "name": "Home", 
+            "item": "https://filmyfire.com" 
+          },
+          { 
+            "@type": "ListItem", 
+            "position": 2, 
+            "name": category, 
+            "item": `https://filmyfire.com/category/${category.toLowerCase()}` 
+          },
+          { 
+            "@type": "ListItem", 
+            "position": 3, 
+            "name": article.movieTitle || article.title, 
+            "item": `https://filmyfire.com/category/${category.toLowerCase()}/${article.slug}` 
+          },
+          ...(pageType !== "overview" ? [{
+            "@type": "ListItem",
+            "position": 4,
+            "name": pageType.replace(/-/g, " "),
+            "item": `https://filmyfire.com/category/${category.toLowerCase()}/${article.slug}-${pageType}`
+          }] : [])
         ]
       },
       // 2. Primary Content Schema
@@ -281,7 +345,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
   return (
     <>
       <Head>
-        <title>{seo.title} | FilmyFire Intelligence</title>
+        <title>{`${seo.title || 'Untitled'} | FilmyFire Intelligence`}</title>
         <meta name="description" content={seo.description || article.summary} />
         <link rel="canonical" href={`https://filmyfire.com/category/${category.toLowerCase()}/${slug}`} />
         
@@ -319,127 +383,204 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
 
         <main className="pb-40">
           
-          {/* TMDB-Style Hero Section */}
-          <section className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden mb-12">
-            {/* Backdrop Image with Overlay */}
-            <div className="absolute inset-0 z-0">
-              {article.backdropImage ? (
-                <div 
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
-                  style={{ backgroundImage: `url(${article.backdropImage})` }}
-                >
-                  <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
-                </div>
-              ) : (
-                <div className="absolute inset-0 bg-zinc-900" />
-              )}
-            </div>
-
-            <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-12 flex flex-col md:flex-row gap-12 items-center md:items-start">
-              {/* Poster Card */}
-              <div className="w-[300px] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
-                {article.coverImage ? (
-                  <img 
-                    src={article.coverImage} 
-                    alt={article.movieTitle || article.title}
-                    className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+          {/* ────────────────────────────────────────────────────────
+               OVERVIEW PAGE: Full TMDB-style hero banner
+          ──────────────────────────────────────────────────────── */}
+          {pageType === "overview" && (
+            <section className="relative w-full min-h-[500px] md:min-h-[600px] flex items-center overflow-hidden mb-12">
+              {/* Backdrop Image with Overlay */}
+              <div className="absolute inset-0 z-0">
+                {article.backdropImage ? (
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
+                    style={{ backgroundImage: `url(${article.backdropImage})` }}
+                  >
+                    <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black via-black/60 to-transparent" />
+                  </div>
                 ) : (
-                  <div className="aspect-[2/3] bg-zinc-800 flex items-center justify-center text-zinc-600 font-black uppercase tracking-widest">No Poster</div>
+                  <div className="absolute inset-0 bg-zinc-900" />
                 )}
               </div>
 
-              {/* Movie Details */}
-              <div className="flex-grow text-center md:text-left">
-                <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-2 tracking-tighter">
-                  {article.movieTitle || article.title} <span className="text-zinc-500 font-light">({article.releaseYear})</span>
-                </h1>
-                
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-zinc-300 mb-8 font-medium">
-                  {article.certification && (
-                    <span className="px-1.5 py-0.5 border border-zinc-500 rounded text-[10px] text-zinc-400 uppercase">{article.certification}</span>
+              <div className="relative z-10 max-w-[1400px] mx-auto px-6 py-12 flex flex-col md:flex-row gap-12 items-center md:items-start">
+                {/* Poster Card */}
+                <div className="w-[300px] flex-shrink-0 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group">
+                  {article.coverImage ? (
+                    <img 
+                      src={article.coverImage} 
+                      alt={article.movieTitle || article.title}
+                      className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="aspect-[2/3] bg-zinc-800 flex items-center justify-center text-zinc-600 font-black uppercase tracking-widest">No Poster</div>
                   )}
-                  <span>{article.releaseDate || article.releaseYear}</span>
-                  <span className="w-1 h-1 bg-zinc-500 rounded-full" />
-                  <span>{article.genres?.join(", ")}</span>
-                  <span className="w-1 h-1 bg-zinc-500 rounded-full" />
-                  <span>{article.runtime || "N/A"}</span>
                 </div>
 
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-8 mb-10">
-                  {/* User Score Circle */}
-                  <div className="flex items-center gap-3">
-                    <div className="relative w-16 h-16 rounded-full bg-zinc-900 border-4 border-emerald-500 flex items-center justify-center shadow-lg">
-                      <span className="text-lg font-black text-white">
-                        {article.rating ? (
-                          <>
-                            {(parseFloat(article.rating) * 10).toFixed(0)}
-                            <span className="text-[10px] font-bold">%</span>
-                          </>
-                        ) : (
-                          "NR"
-                        )}
+                {/* Movie Details */}
+                <div className="flex-grow text-center md:text-left">
+                  <h1 className="text-4xl md:text-6xl font-black text-white leading-tight mb-2 tracking-tighter">
+                    {article.movieTitle || article.title} <span className="text-zinc-500 font-light">({article.releaseYear})</span>
+                  </h1>
+                  
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 text-sm text-zinc-300 mb-8 font-medium">
+                    {article.certification && (
+                      <span className="px-1.5 py-0.5 border border-zinc-500 rounded text-[10px] text-zinc-400 uppercase">{article.certification}</span>
+                    )}
+                    <span>{article.releaseDate || article.releaseYear}</span>
+                    <span className="w-1 h-1 bg-zinc-500 rounded-full" />
+                    <span>{article.genres?.join(", ")}</span>
+                    <span className="w-1 h-1 bg-zinc-500 rounded-full" />
+                    <span>{article.runtime || "N/A"}</span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center md:justify-start gap-8 mb-10">
+                    {/* User Score Circle */}
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-16 h-16 rounded-full bg-zinc-900 border-4 border-emerald-500 flex items-center justify-center shadow-lg">
+                        <span className="text-lg font-black text-white">
+                          {article.rating ? (
+                            <>
+                              {(parseFloat(article.rating) * 10).toFixed(0)}
+                              <span className="text-[10px] font-bold">%</span>
+                            </>
+                          ) : (
+                            "NR"
+                          )}
+                        </span>
+                      </div>
+                      <span className="text-xs font-black uppercase tracking-widest text-white leading-none">User<br/>Score</span>
+                    </div>
+                  </div>
+
+                  {article.tagline && (
+                    <p className="text-zinc-400 italic text-lg mb-6 font-medium">"{article.tagline}"</p>
+                  )}
+
+                  <div className="max-w-3xl">
+                    {/* Streaming Now - TMDB Style Badge */}
+                    {article.ott?.platform && (
+                      <div className="inline-flex items-center gap-4 px-6 py-3 bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-xl mb-10 group/ott">
+                        <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
+                          <Play className="w-5 h-5 text-white fill-current" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Now Streaming</p>
+                          <p className="text-sm font-bold text-white group-hover/ott:text-blue-400 transition-colors">Watch on {article.ott.platform}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <h3 className="text-xl font-black text-white mb-3 uppercase tracking-widest">Overview</h3>
+                    <p className="text-zinc-300 leading-relaxed font-medium mb-10 line-clamp-4 md:line-clamp-none">
+                      {article.summary}
+                    </p>
+
+                    {/* Key Personnel & Financial Intel */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                      {article.director && article.director.length > 0 && (
+                        <div>
+                          <p className="font-black text-white text-sm">{article.director[0]}</p>
+                          <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Director</p>
+                        </div>
+                      )}
+                      {article.writer && article.writer.length > 0 && (
+                        <div>
+                          <p className="font-black text-white text-sm">{article.writer[0]}</p>
+                          <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Screenplay</p>
+                        </div>
+                      )}
+                      {article.budget && (
+                        <div>
+                          <p className="font-black text-white text-sm">{article.budget}</p>
+                          <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Budget</p>
+                        </div>
+                      )}
+                      {article.boxOffice?.worldwide && (
+                        <div>
+                          <p className="font-black text-white text-sm">{article.boxOffice.worldwide}</p>
+                          <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Revenue</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* ────────────────────────────────────────────────────────
+               SUB-PAGES: Compact movie strip (no big hero banner)
+          ──────────────────────────────────────────────────────── */}
+          {pageType !== "overview" && (
+            <div className="pt-20 pb-8 border-b border-white/5 mb-12">
+              <div className="max-w-[1200px] mx-auto px-6">
+                <div className="flex items-center gap-6">
+                  {/* Small Poster Thumbnail */}
+                  <Link href={`/category/${category.toLowerCase()}/${article.slug}`}>
+                    <div className="w-16 h-24 flex-shrink-0 rounded-xl overflow-hidden border border-white/10 shadow-lg group">
+                      {article.coverImage ? (
+                        <img 
+                          src={article.coverImage} 
+                          alt={article.movieTitle || article.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
+                          <Eye className="w-5 h-5 text-zinc-600" />
+                        </div>
+                      )}
+                    </div>
+                  </Link>
+
+                  {/* Movie Info */}
+                  <div className="flex-grow min-w-0">
+                    {/* Breadcrumb */}
+                    <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 mb-2">
+                      <Link href={`/category/${category.toLowerCase()}`} className="hover:text-zinc-400 transition-colors">{category}</Link>
+                      <ChevronRight className="w-3 h-3" />
+                      <Link href={`/category/${category.toLowerCase()}/${article.slug}`} className="hover:text-zinc-400 transition-colors truncate max-w-[200px]">
+                        {article.movieTitle || article.title}
+                      </Link>
+                      <ChevronRight className="w-3 h-3" />
+                      <span className="text-blue-500">{pageType.replace(/-/g, " ")}</span>
+                    </div>
+
+                    {/* Title */}
+                    <h1 className="text-xl md:text-3xl font-black text-white tracking-tight leading-tight truncate">
+                      {article.movieTitle || article.title}
+                      <span className="text-zinc-600 font-light text-lg ml-2">({article.releaseYear})</span>
+                    </h1>
+
+                    {/* Meta Chips */}
+                    <div className="flex flex-wrap items-center gap-3 mt-2">
+                      <span className="px-2 py-0.5 rounded-md bg-blue-600/20 text-blue-400 text-[10px] font-black uppercase tracking-[0.15em]">
+                        {pageType.replace(/-/g, " ")}
                       </span>
+                      {article.genres?.slice(0, 2).map((g, i) => (
+                        <span key={i} className="px-2 py-0.5 rounded-md bg-white/5 text-zinc-500 text-[10px] font-bold uppercase tracking-widest">{g}</span>
+                      ))}
+                      {article.releaseYear && (
+                        <span className="text-zinc-600 text-[10px] font-bold uppercase tracking-widest">{article.releaseYear}</span>
+                      )}
                     </div>
-                    <span className="text-xs font-black uppercase tracking-widest text-white leading-none">User<br/>Score</span>
                   </div>
-                </div>
 
-                {article.tagline && (
-                  <p className="text-zinc-400 italic text-lg mb-6 font-medium">"{article.tagline}"</p>
-                )}
-
-                <div className="max-w-3xl">
-                  {/* Streaming Now - TMDB Style Badge */}
-                  {article.ott?.platform && (
-                    <div className="inline-flex items-center gap-4 px-6 py-3 bg-zinc-900/80 backdrop-blur-md border border-white/10 rounded-xl mb-10 group/ott">
-                      <div className="w-10 h-10 rounded-lg bg-blue-600 flex items-center justify-center">
-                        <Play className="w-5 h-5 text-white fill-current" />
+                  {/* Rating Badge */}
+                  {article.rating && (
+                    <div className="hidden md:flex flex-col items-center flex-shrink-0">
+                      <div className="w-14 h-14 rounded-full bg-zinc-900 border-2 border-emerald-500 flex items-center justify-center">
+                        <span className="text-sm font-black text-white">
+                          {(parseFloat(article.rating) * 10).toFixed(0)}<span className="text-[8px]">%</span>
+                        </span>
                       </div>
-                      <div>
-                        <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest">Now Streaming</p>
-                        <p className="text-sm font-bold text-white group-hover/ott:text-blue-400 transition-colors">Watch on {article.ott.platform}</p>
-                      </div>
+                      <span className="text-[9px] font-black uppercase tracking-widest text-zinc-600 mt-1">Score</span>
                     </div>
                   )}
-
-                  <h3 className="text-xl font-black text-white mb-3 uppercase tracking-widest">Overview</h3>
-                  <p className="text-zinc-300 leading-relaxed font-medium mb-10 line-clamp-4 md:line-clamp-none">
-                    {article.summary}
-                  </p>
-
-                  {/* Key Personnel & Financial Intel */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                    {article.director && article.director.length > 0 && (
-                      <div>
-                        <p className="font-black text-white text-sm">{article.director[0]}</p>
-                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Director</p>
-                      </div>
-                    )}
-                    {article.writer && article.writer.length > 0 && (
-                      <div>
-                        <p className="font-black text-white text-sm">{article.writer[0]}</p>
-                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Screenplay</p>
-                      </div>
-                    )}
-                    {article.budget && (
-                      <div>
-                        <p className="font-black text-white text-sm">{article.budget}</p>
-                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Budget</p>
-                      </div>
-                    )}
-                    {article.boxOffice?.worldwide && (
-                      <div>
-                        <p className="font-black text-white text-sm">{article.boxOffice.worldwide}</p>
-                        <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest mt-1">Revenue</p>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
-          </section>
+          )}
 
           {/* Persistent Floating Navigation Bar */}
           <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[60] w-full max-w-fit px-6">
@@ -462,7 +603,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
 
           <div className="max-w-[1200px] mx-auto px-6">
             {/* Structured Content Sections */}
-            <div className="space-y-32">
+            <div className={pageType === "overview" ? "space-y-32" : "space-y-16"}>
               {sections && sections.length > 0 ? (
                 sections.map((section, idx) => (
                   <section key={idx} className="max-w-4xl group">
@@ -633,20 +774,13 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               )
             )}
 
-            {/* FAQ Section (3-5 questions) */}
+            {/* FAQ Section - Accordion Style */}
             {seo.faq && seo.faq.length > 0 && (
-              <section className="mt-40 p-12 md:p-24 rounded-[3rem] bg-zinc-900/30 border border-white/5">
+              <section className="mt-40 max-w-4xl">
                 <h2 className="text-4xl font-black text-white mb-16 uppercase tracking-tighter">Frequently Asked Intelligence</h2>
-                <div className="space-y-16">
+                <div className="space-y-4">
                   {seo.faq.map((faq, i) => (
-                    <div key={i} className="space-y-6">
-                      <h4 className="text-2xl font-bold text-white flex gap-6">
-                        <span className="text-blue-500 font-black">Q.</span> {faq.question}
-                      </h4>
-                      <p className="text-xl text-zinc-400 font-medium leading-relaxed pl-12 border-l border-white/10">
-                        {faq.answer}
-                      </p>
-                    </div>
+                    <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
                   ))}
                 </div>
               </section>

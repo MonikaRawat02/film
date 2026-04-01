@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { slugify } from "../../lib/slugify";
 import { 
   FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft, 
   Quote, CheckCircle, Clapperboard, Film, Tv, PlaySquare, TrendingUp, 
@@ -378,25 +379,74 @@ export default function MovieDetailPage({ article, pageType, slug }) {
           {/* Sidebar */}
           <aside className="lg:col-span-4 space-y-8">
             <div className="sticky top-32 space-y-8">
-              {/* Internal Linking Engine */}
-              <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
-                <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-red-600" /> Related Intelligence
-                </h3>
-                <div className="space-y-3">
-                  <Link href={`/discover/similar-to/${article.slug}`}>
-                    <a className="block text-sm font-bold text-zinc-400 hover:text-white transition-colors">Movies Like {article.movieTitle}</a>
-                  </Link>
-                  {article.genres?.map(genre => (
-                    <Link key={genre} href={`/discover/genre/${slugify(genre)}`}>
-                      <a className="block text-sm font-bold text-zinc-400 hover:text-white transition-colors">Best {genre} Movies</a>
-                    </Link>
-                  ))}
-                  <Link href={`/discover/year/${article.releaseYear}`}>
-                    <a className="block text-sm font-bold text-zinc-400 hover:text-white transition-colors">Top Movies of {article.releaseYear}</a>
-                  </Link>
+              {/* Related Movies - Powered by Recommendation Engine */}
+              {article.relatedMovies && article.relatedMovies.length > 0 && (
+                <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
+                  <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-red-600" /> Related Intelligence
+                  </h3>
+                  <div className="space-y-4">
+                    {article.relatedMovies.map((movie, idx) => (
+                      <Link 
+                        key={idx}
+                        href={`/movie/${movie.slug}`}
+                        className="group block"
+                      >
+                        <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all">
+                          {movie.coverImage ? (
+                            <img 
+                              src={movie.coverImage} 
+                              alt={movie.movieTitle}
+                              className="w-16 h-24 object-cover rounded-lg flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-16 h-24 bg-zinc-800 rounded-lg flex items-center justify-center flex-shrink-0">
+                              <Film className="w-6 h-6 text-zinc-700" />
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-bold text-white group-hover:text-red-500 transition-colors truncate mb-1">
+                              {movie.movieTitle}
+                            </h4>
+                            <p className="text-[10px] text-zinc-500 mb-2">{movie.releaseYear}</p>
+                            {movie.similarityScore && (
+                              <span className={`inline-block px-2 py-1 rounded text-[9px] font-bold uppercase tracking-wider ${
+                                movie.similarityScore >= 80 ? 'bg-green-500/20 text-green-400' :
+                                movie.similarityScore >= 60 ? 'bg-blue-500/20 text-blue-400' :
+                                'bg-zinc-700 text-zinc-400'
+                              }`}>
+                                {movie.matchLevel || `${movie.similarityScore}% Match`}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
+              
+              {/* Fallback: Basic Internal Linking (if no related movies yet) */}
+              {(!article.relatedMovies || article.relatedMovies.length === 0) && (
+                <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
+                  <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-red-600" /> Related Intelligence
+                  </h3>
+                  <div className="space-y-3">
+                    <Link href={`/discover/similar-to/${article.slug}`} className="block text-sm font-bold text-zinc-400 hover:text-white transition-colors">
+                      Movies Like {article.movieTitle}
+                    </Link>
+                    {article.genres?.map(genre => (
+                      <Link key={genre} href={`/discover/genre/${slugify(genre)}`} className="block text-sm font-bold text-zinc-400 hover:text-white transition-colors">
+                        Best {genre} Movies
+                      </Link>
+                    ))}
+                    <Link href={`/discover/year/${article.releaseYear}`} className="block text-sm font-bold text-zinc-400 hover:text-white transition-colors">
+                      Top Movies of {article.releaseYear}
+                    </Link>
+                  </div>
+                </div>
+              )}
 
               {/* Intelligence Summary */}
               <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
@@ -417,6 +467,35 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                   ))}
                 </div>
               </div>
+              
+              {/* OTT Platform Badge - Clickable Link */}
+              {article.ott?.platform && (
+                <div className="p-6 rounded-3xl bg-gradient-to-br from-red-600/10 to-orange-600/10 border border-red-500/20">
+                  <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                    <Tv className="w-4 h-4 text-red-600" /> Stream Now
+                  </h3>
+                  <Link href={`/ott/${slugify(article.ott.platform)}`} className="block group">
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all border border-white/5">
+                        <div>
+                          <p className="text-[10px] text-zinc-400 uppercase tracking-widest mb-1">Available On</p>
+                          <p className="text-lg font-black text-white group-hover:text-red-500 transition-colors">
+                            {article.ott.platform}
+                          </p>
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-red-600/20 flex items-center justify-center group-hover:bg-red-600/30 transition-all">
+                          <svg className="w-5 h-5 text-red-600 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </div>
+                      </div>
+                  </Link>
+                  {article.ott?.releaseDate && (
+                    <p className="text-[10px] text-zinc-500 mt-3 uppercase tracking-wider">
+                      Streaming since {new Date(article.ott.releaseDate).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </aside>
         </main>
