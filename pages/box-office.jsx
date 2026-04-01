@@ -93,8 +93,8 @@ export default function BoxOfficePage() {
       <Head>
         <title>Box Office Truth Database | FilmyFire</title>
       </Head>
-      
-      <div className="mx-auto max-w-[1500px] px-4 lg:px-10 pb-20 pt-12 overflow-x-hidden">
+  
+      <div className="mx-auto max-w-[1500px] px-4 lg:px-10 pb-20 overflow-x-hidden">
         {/* Header Section with Glass Effect */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
@@ -104,8 +104,7 @@ export default function BoxOfficePage() {
           <div className="space-y-4">
             <button 
               onClick={() => router.back()}
-              className="group inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-[0.3em] cursor-pointer"
-            >
+              className="group inline-flex items-center gap-2 text-zinc-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-[0.3em] cursor-pointer" >
               <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" /> 
               Back
             </button>
@@ -160,8 +159,7 @@ export default function BoxOfficePage() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16"
-          >
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-16" >
             {[
               { label: 'Total Database', value: stats.total, icon: Film, color: 'text-blue-400', bg: 'bg-blue-500/10' },
               { label: 'Blockbusters', value: stats.blockbusters, icon: Award, color: 'text-green-400', bg: 'bg-green-500/10' },

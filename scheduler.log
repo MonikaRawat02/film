@@ -1765,3 +1765,86 @@
 [2026-04-01T04:45:06.078Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
 [2026-04-01T04:45:23.723Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
 [2026-04-01T04:47:55.516Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-01T04:48:22.205Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-01T04:48:22.206Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-01T04:48:22.221Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-01T04:48:22.221Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-01T04:48:22.231Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-01T04:48:22.234Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-01T04:48:27.262Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-01T04:48:27.263Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-04-01T04:48:27.263Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-01T04:48:35.358Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-04-01T04:48:46.045Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-04-01T04:48:59.302Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-04-01T05:30:00.030Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-04-01T05:30:00.031Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-01T05:30:00.032Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:30:00.677Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-01T05:30:07.494Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-04-01T05:31:00.024Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:32:00.023Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:33:00.036Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:34:00.013Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:35:00.018Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:35:00.020Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-04-01T05:36:00.031Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:36:00.032Z] [ERROR] ❌ CRON FATAL (Movie): network timeout at: http://localhost:3000/api/admin/automation/scrape-wikipedia
+[2026-04-01T05:37:00.020Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:38:00.018Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:39:00.027Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:40:00.028Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:41:00.015Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:42:00.031Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:43:00.018Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:44:00.021Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:45:00.036Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:46:00.029Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:47:00.023Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:48:00.036Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:49:00.016Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:50:00.021Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:51:00.015Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:52:00.027Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:53:00.031Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:54:00.043Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:55:00.027Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:56:00.019Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:57:00.022Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:58:00.006Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T05:59:00.027Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:00:00.043Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:01:00.044Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:02:00.022Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:03:00.022Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:04:00.010Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:05:00.025Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:06:00.019Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:07:00.043Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:08:00.030Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:09:00.029Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:10:00.027Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:11:00.025Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:12:00.018Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:13:00.016Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:14:00.030Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:15:00.019Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:16:00.027Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:17:00.023Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:18:00.031Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:19:00.028Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:20:00.004Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:21:00.028Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:22:00.028Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:23:00.018Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:24:00.016Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:25:00.032Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:26:00.038Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:27:00.028Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:28:00.017Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:29:00.021Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-01T06:30:00.032Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-04-01T06:30:00.033Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-01T06:30:00.563Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-01T06:30:08.526Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-04-01T07:13:48.566Z] [INFO] Received kill signal, shutting down gracefully...

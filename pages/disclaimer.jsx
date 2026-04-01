@@ -55,7 +55,7 @@ export default function DisclaimerPage() {
                 <circle cx="30" cy="35" r="8" fill="#fbbf24" />
               </pattern>
             </defs>
-            <rect width="100%" height="100%" fill="url(#warning-pattern)" />
+            <rect width="100%" height="100%" fill="url(#warning-pattern)"/>
           </svg>
         </div>
 

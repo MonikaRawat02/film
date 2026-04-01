@@ -1,4 +1,4 @@
- "use client";
+"use client";
  import { useState } from "react";
  import Link from "next/link";
  import { Flame, Menu, X } from "lucide-react";
@@ -13,6 +13,25 @@
     { name: "Celebrities", href: "/#celebrities" },
     { name: "Categories", href: "/#categories" },
   ];
+
+  const scrollToSection = (href) => {
+    setOpenMobile(false);
+    if (typeof window !== 'undefined') {
+      const sectionId = href.split('#')[1];
+      if (sectionId) {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          const headerOffset = 80;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }
+    }
+  };
  
    return (
      <>
@@ -62,13 +81,13 @@
        </header>
  
        {openMobile && (
-         <div className="lg:hidden fixed inset-0 z-50">
+         <div className="lg:hidden fixed inset-0 z-[9999]">
            <div
-             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+             className="absolute inset-0 bg-black/95 backdrop-blur-md"
              onClick={() => setOpenMobile(false)}
            />
-           <div className="absolute left-0 top-0 bottom-0 w-80 bg-gray-950 border-r border-gray-800 shadow-2xl">
-             <div className="flex h-16 items-center justify-between px-4 border-b border-gray-800">
+           <div className="relative w-[85%] max-w-[320px] h-full bg-gray-950 shadow-2xl overflow-y-auto border-r border-gray-800">
+             <div className="sticky top-0 z-10 flex h-16 items-center justify-between px-4 border-b border-gray-800 bg-gray-950">
               <Link href="/" className="group inline-flex items-center gap-3">
                  <div className="relative">
                    <Flame className="h-8 w-8 text-red-600" strokeWidth={2.5} />
@@ -90,16 +109,15 @@
                </button>
              </div>
            
-             <nav className="px-2 py-4 space-y-1">
+             <nav className="px-4 py-2 space-y-2">
                {nav.map((item) => (
-                 <Link
+                 <button
                    key={item.href}
-                   href={item.href}
-                   className="block rounded-lg px-3 py-2 text-base text-gray-300 transition hover:bg-gray-900 hover:text-white"
-                   onClick={() => setOpenMobile(false)}
+                   onClick={() => scrollToSection(item.href)}
+                   className="block w-full text-left rounded-lg px-4 py-3 text-base font-medium text-gray-300 transition-all duration-200 hover:bg-gray-900 hover:text-white"
                  >
                    {item.name}
-                 </Link>
+                 </button>
                ))}
              </nav>
            </div>
