@@ -7,7 +7,7 @@
    const [openMobile, setOpenMobile] = useState(false);
  
    const nav = [
-    { name: "Explained", href: "/#hero" },
+    { name: "Explained", href: "/" },
     { name: "Box Office", href: "/#ott-intelligence" },
     { name: "OTT Analysis", href: "/#ott-intelligence" },
     { name: "Celebrities", href: "/#celebrities" },
@@ -34,7 +34,7 @@
                  </div>
                </Link>
              </div>
- 
+  
             <nav className="hidden lg:flex items-center gap-10">
                {nav.map((item) => (
                  <Link
@@ -59,8 +59,6 @@
              </div>
            </div>
          </div>
- 
-
        </header>
  
        {openMobile && (
