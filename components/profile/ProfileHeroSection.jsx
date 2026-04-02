@@ -91,9 +91,9 @@ export default function ProfileHeroSection({ celebrity }) {
               </div>
 
               <div className="mt-4 border-t border-white/5 pt-3">
-                <p className="text-xs text-slate-500 italic">
+                {/* <p className="text-xs text-slate-500 italic">
                   * AI-generated summary based on public data. Figures are estimates and may vary.
-                </p>
+                </p> */}
               </div>
             </div>
 

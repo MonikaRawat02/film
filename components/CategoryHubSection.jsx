@@ -111,7 +111,7 @@ export default function CategoryHubSection() {
   ];
 
   return (
-    <section id="categories" className="relative py-28">
+    <section id="categories" className="relative py-16">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#050505] via-gray-950/20 to-transparent" />
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">

@@ -60,7 +60,7 @@ export default function InsightsDuoSection() {
   };
 
   return (
-    <section id="box-office" className="relative py-32 bg-[#050505]">
+    <section id="box-office" className="relative py-16 bg-[#050505]">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Box Office Section */}

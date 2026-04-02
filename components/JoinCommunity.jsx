@@ -43,7 +43,7 @@ export default function JoinCommunity() {
   };
 
   return (
-    <section className="py-32 bg-[#050505] relative">
+    <section className="py-16 bg-[#050505] relative">
       <div className="absolute inset-0 -z-10">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-gradient-to-r from-red-600/5 to-purple-600/5 rounded-full blur-3xl" />
       </div>

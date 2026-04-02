@@ -34,7 +34,7 @@ export default function GuidesSection() {
   };
 
   return (
-    <section className="py-32 bg-gradient-to-b from-[#050505] via-red-950/5 to-[#050505] relative">
+    <section className="py-16 bg-gradient-to-b from-[#050505] via-red-950/5 to-[#050505] relative">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 relative">
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-red-600/20 to-orange-600/10 border border-red-600/30 rounded-full">
