@@ -285,8 +285,7 @@ export default function NetWorthSection({ celebrity }) {
                   <img
                     src={processedCelebrity?.image || "/placeholder.jpg"}
                     alt={processedCelebrity?.name || "Celebrity"}
-                    className="w-full h-full object-cover"
-                  />
+                    className="w-full h-full object-cover"/>
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-[#0a0a0f]" />
               </div>
@@ -1045,6 +1044,7 @@ export default function NetWorthSection({ celebrity }) {
                 </nav>
               </div>
 
+
               {/* View Full Profile CTA */}
               <Link
                 href={processedCelebrity?.slug ? `/celebrity/${processedCelebrity.slug}/profile` : "#"}
@@ -1155,5 +1155,4 @@ export default function NetWorthSection({ celebrity }) {
       )}
     </section>
   );
-  
 }

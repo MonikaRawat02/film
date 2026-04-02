@@ -1,16 +1,17 @@
-import { Youtube, Twitter, Instagram, Mail, MailOpen, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { Mail, Send, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import Image from "next/image";
 
 export default function JoinCommunity() {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
   const socials = [
-    { name: "YouTube", icon: Youtube, bg: "bg-white/10 hover:bg-white/20" },
-    { name: "Twitter", icon: Twitter, bg: "bg-white/10 hover:bg-white/20" },
-    { name: "Instagram", icon: Instagram, bg: "bg-white/10 hover:bg-white/20" },
-    { name: "Email", icon: Mail, bg: "bg-white/10 hover:bg-white/20" },
+    { name: "YouTube", icon: "/uploads/yt.png", bg: "bg-white/10 hover:bg-white/20" },
+    { name: "Twitter", icon: "/uploads/tw.png", bg: "bg-white/10 hover:bg-white/20" },
+    { name: "Instagram", icon: "/uploads/ig.png", bg: "bg-white/10 hover:bg-white/20" },
+    { name: "Email", icon: "/uploads/gg.png", bg: "bg-white/10 hover:bg-white/20" },
   ];
 
   const handleSubscribe = async (e) => {
@@ -70,8 +71,7 @@ export default function JoinCommunity() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email for weekly intelligence"
               className="w-full pl-14 pr-6 py-5 bg-white/5 border-2 border-gray-800 rounded-xl text-white placeholder:text-gray-500 focus:outline-none focus:border-red-600/50 focus:bg-white/10 transition-all"
-              disabled={loading}
-            />
+              disabled={loading} />
           </div>
           <button
             type="submit"
@@ -98,22 +98,26 @@ export default function JoinCommunity() {
             No spam. Only quality film intelligence. 50,000+ subscribers
           </span>
         </p>
-
+             
         <div className="mt-10 text-center">
           <p className="text-sm text-gray-400 mb-4">Follow FilmyFire Across Platforms</p>
           <div className="flex items-center justify-center gap-6">
-            {socials.map((s, i) => {
-              const Icon = s.icon;
-              return (
-                <button
-                  key={i}
-                  className={`h-12 w-12 rounded-xl border border-gray-800 grid place-items-center text-gray-200 transition ${s.bg}`}
-                  aria-label={s.name}
-                >
-                  <Icon className="w-5 h-5" />
-                </button>
-              );
-            })}
+            {socials.map((s, i) => (
+              <a
+                key={i}
+                href="#"
+                aria-label={s.name}
+                className="transition hover:opacity-70"
+              >
+                <Image
+                  src={s.icon}
+                  alt={s.name}
+                  width={32}
+                  height={32}
+                  className="w-8 h-8 object-contain"
+                />
+              </a>
+            ))}
           </div>
         </div>
       </div>

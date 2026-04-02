@@ -274,8 +274,7 @@ export default function BoxOfficePage() {
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="py-32 flex flex-col items-center justify-center text-center"
-              >
+                className="py-32 flex flex-col items-center justify-center text-center">
                 <div className="h-20 w-20 rounded-full bg-zinc-950 flex items-center justify-center mb-6 border border-white/10 shadow-2xl">
                   <Search className="w-8 h-8 text-zinc-800" />
                 </div>
@@ -283,8 +282,7 @@ export default function BoxOfficePage() {
                 <p className="text-zinc-600 text-[11px] font-medium max-w-xs mx-auto opacity-70">We couldn't find any movies matching your criteria.</p>
                 <button 
                   onClick={() => setSearchQuery("")}
-                  className="mt-8 px-8 py-3 bg-green-500/10 text-green-500 font-black text-[10px] uppercase tracking-[0.3em] rounded-xl hover:bg-green-500/20 transition-all border border-green-500/20 shadow-lg"
-                >
+                  className="mt-8 px-8 py-3 bg-green-500/10 text-green-500 font-black text-[10px] uppercase tracking-[0.3em] rounded-xl hover:bg-green-500/20 transition-all border border-green-500/20 shadow-lg">
                   Clear Filters
                 </button>
               </motion.div>
@@ -319,4 +317,3 @@ export default function BoxOfficePage() {
 }
 
 BoxOfficePage.noPadding = true;
-
