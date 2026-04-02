@@ -37,7 +37,7 @@ export default function HollywoodCelebritySection() {
   const visibleCelebrities = showAll ? celebrities : celebrities.slice(0, 4);
 
   return (
-    <section className="bg-[#0B0F1A] text-white py-16 md:py-24 border-t border-white/5">
+    <section className="bg-[#0B0F1A] text-white py-8 md:py-10 border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-6">
         
         <div className="flex items-center gap-3 mb-12">
@@ -46,7 +46,7 @@ export default function HollywoodCelebritySection() {
             Hollywood Actors & Celebrity Profiles
           </h2>
         </div>
-
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {visibleCelebrities.map((celeb, i) => (
             <div

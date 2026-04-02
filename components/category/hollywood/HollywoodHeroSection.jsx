@@ -8,7 +8,7 @@ export default function HollywoodHeroSection() {
       {/* Background Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/10 to-orange-900/20 pointer-events-none" />
       
-      <div className="relative max-w-[1440px] mx-auto px-6 py-20 md:py-32 w-full">
+      <div className="relative max-w-[1440px] mx-auto px-6 py-16 md:py-24 w-full">
         <div className="text-center max-w-4xl mx-auto flex flex-col items-center">
           
           {/* 1. Quick Tags at Top */}

@@ -107,7 +107,7 @@ export default function HollywoodThemesSection() {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-[#0A0E17] text-white border-t border-white/5">
+    <section className="py-8 md:py-10 bg-[#0A0E17] text-white border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-6">
         {/* Header */}
         <div className="mb-12">

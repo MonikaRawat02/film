@@ -103,7 +103,7 @@ export default function HollywoodBoxOfficeSection() {
   }, []);
 
   return (
-    <section className="bg-[#0A0E17] text-white py-16 md:py-24 border-t border-white/5">
+    <section className="bg-[#0A0E17] text-white py-8 md:py-10 border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-6">
         
         {/* Heading */}
