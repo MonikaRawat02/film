@@ -99,6 +99,21 @@ const ArticleSchema = new mongoose.Schema(
         slug: String,
       }
     ],
+    
+    // NEW: Related Movies (Calculated by our recommendation engine)
+    relatedMovies: [
+      {
+        _id: String,
+        slug: String,
+        movieTitle: String,
+        releaseYear: Number,
+        coverImage: String,
+        similarityScore: Number,
+        matchLevel: String
+      }
+    ],
+    lastRecommendationUpdate: Date,
+    
     ott: {
       platform: String,
       releaseDate: Date,

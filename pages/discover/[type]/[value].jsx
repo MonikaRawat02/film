@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { 
   Clapperboard, Film, ArrowLeft, Target, 
-  ChevronRight, List, Info, TrendingUp, Users, Tv, PlaySquare
+  ChevronRight, Tv, PlaySquare
 } from "lucide-react";
 
 export async function getServerSideProps(context) {
@@ -101,15 +101,14 @@ export default function DiscoveryPage({ movies, meta, discoveryType, discoveryVa
         {/* Discovery Grid */}
         <main className="max-w-[1440px] mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {movies.map((movie, idx) => (
+            {movies.filter(movie => movie.slug).map((movie, idx) => (
               <div 
                 key={idx}
                 className="group relative bg-zinc-900/50 rounded-3xl border border-white/5 overflow-hidden hover:border-red-600/50 transition-all duration-500 hover:-translate-y-2"
               >
-                <Link href={`/movie/${movie.slug}`}>
-                  <a className="block">
-                    {/* Cover Image */}
-                    <div className="aspect-[2/3] overflow-hidden relative">
+                <Link href={`/movie/${movie.slug}`} className="block">
+                  {/* Cover Image */}
+                  <div className="aspect-[2/3] overflow-hidden relative">
                       {movie.coverImage ? (
                         <img 
                           src={movie.coverImage} 
@@ -152,7 +151,6 @@ export default function DiscoveryPage({ movies, meta, discoveryType, discoveryVa
                         <ChevronRight className="w-4 h-4 text-red-600 transform transition-transform group-hover:translate-x-1" />
                       </div>
                     </div>
-                  </a>
                 </Link>
               </div>
             ))}
