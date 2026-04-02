@@ -196,3 +196,5 @@ export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
     </div>
   );
 }
+
+ComparePage.noPadding = true;

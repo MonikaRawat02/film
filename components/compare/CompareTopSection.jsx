@@ -164,9 +164,9 @@ export default function CompareTopSection({ celebrityA, celebrityB, onSelectA, o
   return (
     <div className="bg-[#0a0a0a]">
       <div className="border-b border-gray-800 bg-gradient-to-b from-gray-900/50 to-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 pt-0">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
+          <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
             <Link href="/" className="hover:text-white transition-colors cursor-pointer">Home</Link>
             <span>/</span>
             <Link href="/celebrities" className="hover:text-white transition-colors cursor-pointer">Celebrities</Link>
@@ -181,11 +181,11 @@ export default function CompareTopSection({ celebrityA, celebrityB, onSelectA, o
           </div>
 
           {/* Title */}
-          <div className="mb-6">
-            <h1 className="text-5xl mb-3 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+          <div className="mb-3">
+            <h1 className="text-5xl mb-2 bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
               Compare Celebrity Net Worths: {selectedA?.name}{selectedB ? ` vs ${selectedB.name}` : ""}
             </h1>
-            <p className="text-gray-400 text-lg">
+            <p className="text-gray-400 text-lg mb-3">
               Instant comparison of estimated net worth, career, and earnings.
             </p>
           </div>

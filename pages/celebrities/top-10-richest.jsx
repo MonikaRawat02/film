@@ -33,7 +33,7 @@ export default function Top10RichestPage({ celebrities }) {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-0 md:py-2">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2 pt-0">
       <div className="mb-6 md:mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
           Top 10 Richest Celebrities
@@ -94,3 +94,5 @@ export default function Top10RichestPage({ celebrities }) {
     </div>
   );
 }
+
+Top10RichestPage.noPadding = true;

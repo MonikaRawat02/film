@@ -262,11 +262,11 @@ export default function NetWorthSection({ celebrity }) {
       {/* Breadcrumb */}
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-4">
         <nav className="flex items-center gap-2 text-sm text-[var(--ff-text-muted)]">
-          <Link href="/" className="ff-hover-text-primary transition-colors cursor-pointer">
+          <Link href="/" className="ff-hover-text-primary transition-colors cursor-pointer hover:text-white font-medium">
             Home
           </Link>
           <span className="text-gray-600">&gt;</span>
-          <Link href="/celebrities" className="ff-hover-text-primary transition-colors cursor-pointer">
+          <Link href="/celebrities" className="ff-hover-text-primary transition-colors cursor-pointer hover:text-white ">
             Celebrities
           </Link>
           <span className="text-gray-600">&gt;</span>

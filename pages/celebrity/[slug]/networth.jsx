@@ -32,3 +32,5 @@ export default function CelebrityNetWorth({ celebrity }) {
     <NetWorthSection celebrity={celebrity} />
   );
 }
+
+CelebrityNetWorth.noPadding = true;

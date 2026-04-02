@@ -65,7 +65,7 @@ export default function OTTInsightsPage() {
       <Head>
         <title>OTT Platform Insights | FilmyFire</title>
       </Head>
-      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-12 pt-16">
+      <div className="mx-auto max-w-[1400px] px-6 lg:px-12 pb-12">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <button 
