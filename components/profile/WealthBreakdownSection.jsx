@@ -1,22 +1,60 @@
 "use client";
-import { Film, Megaphone, Trophy, House } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Film, Megaphone, Trophy, House, RefreshCw, Loader2 } from "lucide-react";
 
 export default function WealthBreakdownSection({ celebrity }) {
   if (!celebrity) return null;
 
   const name = celebrity.heroSection?.name || "Unknown";
-  const incomeSources = celebrity.netWorthCalculation?.incomeSources || [];
+  const slug = celebrity.heroSection?.slug;
   const totalNetWorth = celebrity.netWorth?.netWorthUSD?.max || celebrity.netWorth?.netWorthUSD?.min || 0;
 
   const icons = [Film, Megaphone, Trophy, House];
   const colors = ["from-blue-500 to-blue-600", "from-purple-500 to-purple-600", "from-green-500 to-green-600", "from-orange-500 to-orange-600"];
   const barColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-orange-500"];
 
+  const [incomeSources, setIncomeSources] = useState(celebrity.netWorthCalculation?.incomeSources || []);
+  const [loading, setLoading] = useState(false);
+  const [source, setSource] = useState("static");
+  const [netWorthTotal, setNetWorthTotal] = useState(totalNetWorth);
+
+  useEffect(() => {
+    if (!slug) return;
+    setLoading(true);
+    fetch(`/api/celebrity/wealth-breakdown?slug=${encodeURIComponent(slug)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.incomeSources?.length > 0) {
+          setIncomeSources(data.data.incomeSources);
+          setSource(data.source);
+          if (data.data.totalNetWorth) setNetWorthTotal(data.data.totalNetWorth);
+        }
+      })
+      .catch((err) => console.error("Wealth breakdown fetch error:", err))
+      .finally(() => setLoading(false));
+  }, [slug]);
+
+  const handleRefresh = () => {
+    if (!slug) return;
+    setLoading(true);
+    fetch(`/api/celebrity/wealth-breakdown?slug=${encodeURIComponent(slug)}&refresh=true`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data?.incomeSources?.length > 0) {
+          setIncomeSources(data.data.incomeSources);
+          setSource(data.source);
+          if (data.data.totalNetWorth) setNetWorthTotal(data.data.totalNetWorth);
+        }
+      })
+      .catch((err) => console.error("Refresh error:", err))
+      .finally(() => setLoading(false));
+  };
+
   const breakdownItems = incomeSources.map((source, index) => {
-    const amountVal = totalNetWorth ? (totalNetWorth * (source.percentage / 100)) : 0;
-    const amountDisplay = amountVal >= 1000000 
-      ? `$${(amountVal / 1000000).toFixed(1)}M` 
-      : amountVal >= 1000 
+    const amountVal = netWorthTotal ? (netWorthTotal * (source.percentage / 100)) : 0;
+    const amountDisplay = amountVal >= 1000000
+      ? `$${(amountVal / 1000000).toFixed(1)}M`
+      : amountVal >= 1000
         ? `$${(amountVal / 1000).toFixed(1)}K`
         : `$${amountVal}`;
 
@@ -35,20 +73,55 @@ export default function WealthBreakdownSection({ celebrity }) {
     <section className="bg-[#0a0c14] py-12 sm:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8 sm:mb-10">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
-            <span className="text-white">{name} </span>
-            <span className="text-transparent bg-gradient-to-r from-blue-400 to-amber-400 bg-clip-text">
-              Wealth Breakdown
-            </span>
-          </h2>
-          <p className="text-slate-400">
-            Comprehensive analysis of income sources and asset distribution
-          </p>
+        <div className="mb-8 sm:mb-10 flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3">
+              <span className="text-white">{name} </span>
+              <span className="text-transparent bg-gradient-to-r from-blue-400 to-amber-400 bg-clip-text">
+                Wealth Breakdown
+              </span>
+            </h2>
+            <p className="text-slate-400">
+              Comprehensive analysis of income sources and asset distribution
+            </p>
+            {source === "ai-generated" && (
+              <span className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold">
+                ✦ AI-Generated from Wikipedia data
+              </span>
+            )}
+            {source === "database" && (
+              <span className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold">
+                ✦ Verified Intelligence
+              </span>
+            )}
+          </div>
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            title="Re-generate with AI"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:border-blue-500/40 transition-all text-xs font-bold uppercase tracking-widest disabled:opacity-50 mt-2"
+          >
+            {loading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <RefreshCw className="w-4 h-4" />
+            )}
+            {loading ? "Generating..." : "Refresh"}
+          </button>
         </div>
 
+        {/* Loading Skeleton */}
+        {loading && incomeSources.length === 0 && (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-24 rounded-2xl bg-white/5 animate-pulse border border-white/5" />
+            ))}
+          </div>
+        )}
+
         {/* Breakdown Items */}
-        <div className="space-y-4">
+        {!loading || incomeSources.length > 0 ? (
+        <div className={`space-y-4 transition-opacity duration-500 ${loading ? "opacity-50" : "opacity-100"}`}>
           {breakdownItems.map((item, index) => (
             <div
               key={index}
@@ -94,6 +167,7 @@ export default function WealthBreakdownSection({ celebrity }) {
             </div>
           ))}
         </div>
+        ) : null}
       </div>
     </section>
   );

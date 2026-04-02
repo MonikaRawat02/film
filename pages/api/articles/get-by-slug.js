@@ -3,10 +3,20 @@ import Article from "../../../model/article";
 import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
-  const { slug } = req.query;
+  let { slug } = req.query;
 
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  // Decode URL-encoded characters and convert spaces to hyphens
+  if (slug) {
+    try {
+      slug = decodeURIComponent(slug);
+      slug = slug.toLowerCase().trim().replace(/\s+/g, '-');
+    } catch (e) {
+      console.error("Slug decode error:", e);
+    }
   }
 
   const cacheKey = `article:${slug}`;
@@ -23,7 +33,7 @@ export default async function handler(req, res) {
         const suffixes = [
           "-explained", "-ending-explained", "-box-office", "-budget", 
           "-ott", "-ott-release", "-analysis", "-reviews", "-review-analysis", 
-          "-critics", "-cast", "-hit-or-flop"
+          "-critics", "-cast", "-hit-or-flop", "hit", "flop"
         ];
         for (const suffix of suffixes) {
           if (slug.endsWith(suffix)) {
@@ -35,10 +45,25 @@ export default async function handler(req, res) {
       }
 
       if (!foundArticle) {
-        // 3. Fallback: search for articles that start with the slug
-        const allArticles = await Article.find({ contentType: "movie" });
-        foundArticle = allArticles.find(a => slug.startsWith(a.slug));
+        // 3. Fallback: Try removing numbered suffixes (e.g., "-2", "-3")
+        const numberedSuffixMatch = slug.match(/^(.+?)-\d+(-.*)?$/);
+        if (numberedSuffixMatch) {
+          const baseSlug = numberedSuffixMatch[1];
+          foundArticle = await Article.findOne({ slug: baseSlug });
+        }
       }
+
+      if (!foundArticle) {
+        // 4. Last resort: Find by movie title match (not slug)
+        // Extract potential movie title from slug
+        const possibleTitle = slug.replace(/-/g, ' ').replace(/\d+$/, '').trim();
+        if (possibleTitle.length > 3) {
+          foundArticle = await Article.findOne({
+            movieTitle: new RegExp(possibleTitle, 'i')
+          });
+        }
+      }
+
       return foundArticle;
     });
 
