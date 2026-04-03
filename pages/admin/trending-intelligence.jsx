@@ -182,13 +182,11 @@ export default function TrendingIntelligenceAdmin() {
                         <span className="text-orange-400 font-bold">{item.searchCount} searches</span>
                       )}
                     </div>
-                 
                   </div>
                 </div>
               ))}
             </div>
           )}
-
           {!loading && items.length === 0 && (
             <div className="text-center py-20 border border-dashed border-gray-800 rounded-2xl bg-black/20">
               <TrendingUp className="h-12 w-12 text-gray-700 mx-auto mb-4" />

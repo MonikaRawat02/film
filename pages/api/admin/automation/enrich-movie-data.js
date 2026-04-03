@@ -75,7 +75,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: `Successfully enriched ${movie.movieTitle} and verified lead personnel profiles.`,
+      message: `Successfully enriched ${movie.movieTitle} and verified lead personel profiles.`,
     });
 
   } catch (error) {
