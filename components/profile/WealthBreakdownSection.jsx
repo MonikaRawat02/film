@@ -10,13 +10,14 @@ export default function WealthBreakdownSection({ celebrity }) {
   const totalNetWorth = celebrity.netWorth?.netWorthUSD?.max || celebrity.netWorth?.netWorthUSD?.min || 0;
 
   const icons = [Film, Megaphone, Trophy, House];
-  const colors = ["from-blue-500 to-blue-600", "from-purple-500 to-purple-600", "from-green-500 to-green-600", "from-orange-500 to-orange-600"];
+  const colors = ["#3b82f6", "#8b5cf6", "#10b981", "#f97316"]; // Blue, Purple, Green, Orange
   const barColors = ["bg-blue-500", "bg-purple-500", "bg-green-500", "bg-orange-500"];
 
   const [incomeSources, setIncomeSources] = useState(celebrity.netWorthCalculation?.incomeSources || []);
   const [loading, setLoading] = useState(false);
   const [source, setSource] = useState("static");
   const [netWorthTotal, setNetWorthTotal] = useState(totalNetWorth);
+  const [hoverIndex, setHoverIndex] = useState(-1);
 
   useEffect(() => {
     if (!slug) return;
@@ -60,7 +61,7 @@ export default function WealthBreakdownSection({ celebrity }) {
 
     return {
       Icon: icons[index % icons.length],
-      iconBg: colors[index % colors.length],
+      color: colors[index % colors.length],
       title: source.sourceName,
       percentage: source.percentage,
       amount: amountDisplay !== "$0" ? amountDisplay : `${source.percentage}%`,
@@ -125,12 +126,22 @@ export default function WealthBreakdownSection({ celebrity }) {
           {breakdownItems.map((item, index) => (
             <div
               key={index}
-              className="relative bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-2xl border border-white/10 p-6 lg:p-8 shadow-lg hover:border-white/20 transition-all duration-300 cursor-pointer"
+              onMouseEnter={() => setHoverIndex(index)}
+              onMouseLeave={() => setHoverIndex(-1)}
+              style={{
+                borderColor: hoverIndex === index ? item.color : "rgba(255,255,255,0.05)",
+                boxShadow: hoverIndex === index ? `0 0 30px ${item.color}44` : "none",
+                transform: hoverIndex === index ? "translateY(-2px)" : "none",
+              }}
+              className="relative bg-[#0d111c] rounded-2xl border p-6 lg:p-8 transition-all duration-300 cursor-pointer group"
             >
               <div className="flex flex-col md:flex-row md:items-center gap-5">
                 {/* Icon & Title */}
                 <div className="flex items-start md:items-center gap-4 flex-1 min-w-0">
-                  <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-gradient-to-br ${item.iconBg} flex items-center justify-center flex-shrink-0 ring-1 ring-white/10 group-hover:scale-110 transition-transform`}>
+                  <div 
+                    style={{ backgroundColor: item.color }}
+                    className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/20 group-hover:scale-110 transition-transform`}
+                  >
                     {(() => {
                       const Icon = item.Icon;
                       return <Icon className="h-7 w-7 text-white" />;

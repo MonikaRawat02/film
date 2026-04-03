@@ -47,13 +47,15 @@ export default function BiographyTimelineSection({ celebrity }) {
                   <div className="p-5 sm:p-6 lg:p-8">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <span className="inline-block px-3 py-1 text-xs font-medium rounded-full mb-3 bg-gradient-to-r from-blue-500/20 to-purple-400/20 text-purple-300">
+                        <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 text-blue-300 text-sm mb-3">
                           {item.period}
                         </span>
                         <h3 className="text-xl font-bold text-white mb-2">
                           {item.title}
                         </h3>
-                        <p className="text-base text-slate-400">{item.subtitle}</p>
+                        <p className="text-slate-400 text-base">
+                          {item.subtitle}
+                        </p>
                       </div>
                       <button className="text-gray-400 hover:text-white transition-colors p-1 cursor-pointer">
                         <svg
@@ -62,8 +64,7 @@ export default function BiographyTimelineSection({ celebrity }) {
                           }`}
                           fill="none"
                           viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
+                          stroke="currentColor"  >
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -76,7 +77,7 @@ export default function BiographyTimelineSection({ celebrity }) {
 
                     {expandedIndex === index && (
                       <div className="mt-4 pt-4 border-t border-white/10">
-                        <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
+                        <p className="text-slate-300 text-base leading-relaxed">
                           {item.content}
                         </p>
                         {item.hasFullStory && (

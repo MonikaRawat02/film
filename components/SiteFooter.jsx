@@ -63,7 +63,7 @@
  
           <div>
             <h4 className="font-semibold text-gray-100 text-base md:text-lg">About</h4>
-            <ul className="mt-4 space-y-3 md:space-y-4 text-sm md:text-base text-gray-400">
+            <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:gap-y-2 md:space-y-3 md:grid-cols-1 text-sm md:text-base text-gray-400">
                {about.map((a) => (
                  <li key={a.name}>
                    <Link href={a.href} className="hover:text-white">
@@ -76,7 +76,7 @@
  
            <div>
             <h4 className="font-semibold text-gray-100 text-base md:text-lg">Categories</h4>
-            <ul className="mt-4 space-y-3 md:space-y-4 text-sm md:text-base text-gray-400">
+            <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:gap-y-2 md:space-y-3 md:grid-cols-1 text-sm md:text-base text-gray-400">
                {categories.map((c) => (
                  <li key={c.name}>
                    <Link href={c.href} className="hover:text-white">
@@ -89,7 +89,7 @@
  
            <div>
             <h4 className="font-semibold text-gray-100 text-base md:text-lg">Legal & Policies</h4>
-            <ul className="mt-4 space-y-3 md:space-y-4 text-sm md:text-base text-gray-400">
+            <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 sm:gap-y-2 md:space-y-3 md:grid-cols-1 text-sm md:text-base text-gray-400">
                {legal.map((l) => (
                  <li key={l.name}>
                    <Link href={l.href} className="hover:text-white">
@@ -122,3 +122,4 @@
      </footer>
    );
  }
+ 

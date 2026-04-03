@@ -60,40 +60,43 @@ export default function ProfileHeroSection({ celebrity }) {
             </div>
 
             {/* AI Quick Summary Card */}
-            <div className="relative w-full bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-2xl border border-white/10 ring-1 ring-amber-500/20 p-5 sm:p-6 lg:p-8 shadow-lg">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4 text-white" />
+            <div className="relative group">
+              {/* Glow Background Effect */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-amber-500 rounded-2xl opacity-50 group-hover:opacity-75 blur transition duration-300"></div>
+              
+              <div className="relative bg-gradient-to-br from-slate-900/95 to-slate-800/95 backdrop-blur-xl rounded-2xl p-6 border border-white/10">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-8 w-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                    <TrendingUp className="h-4 w-4 text-white" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white">AI Quick Summary</h3>
                 </div>
-                <span className="font-semibold text-slate-100"> Quick Summary</span>
-              </div>
 
-              <div className="grid grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start">
-                <div>
-                  <p className="text-sm text-slate-400 mb-1">Net Worth</p>
-                  <p className="text-xl sm:text-2xl font-bold text-transparent bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text">
-                    {data.netWorth}
-                  </p>
-                  <p className="text-xs text-slate-500">(Estimated)</p>
+                <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                  <div>
+                    <p className="text-sm text-slate-400 mb-1">Net Worth</p>
+                    <p className="text-xl font-bold text-transparent bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text">
+                      {data.netWorth}
+                    </p>
+                    <p className="text-xs text-slate-500">(Estimated)</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400 mb-1">Profession</p>
+                    <p className="text-white text-base font-semibold">{data.profession}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400 mb-1">Primary Income</p>
+                    <p className="text-white text-base font-semibold">{data.primaryIncome}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-slate-400 mb-1">Active Since</p>
+                    <p className="text-white text-base font-semibold">{data.activeSince}</p>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-slate-400 mb-1">Profession</p>
-                  <p className="text-lg font-semibold text-white">{data.profession}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400 mb-1">Primary Income</p>
-                  <p className="text-base font-semibold text-white">{data.primaryIncome}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-slate-400 mb-1">Active Since</p>
-                  <p className="text-lg font-semibold text-white">{data.activeSince}</p>
-                </div>
-              </div>
 
-              <div className="mt-4 border-t border-white/5 pt-3">
-                {/* <p className="text-xs text-slate-500 italic">
+                <p className="text-xs text-slate-500 italic border-t border-white/5 pt-3">
                   * AI-generated summary based on public data. Figures are estimates and may vary.
-                </p> */}
+                </p>
               </div>
             </div>
 
