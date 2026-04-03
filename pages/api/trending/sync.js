@@ -1,194 +1,113 @@
+// Trend Validation & Mapping System Orchestrator
+// pages/api/trending/sync.js
 import dbConnect from "../../../lib/mongodb";
-import { TrendingTopic, TrendingMovie, TrendingActor } from "../../../model/trending";
-import Article from "../../../model/article";
-import Celebrity from "../../../model/celebrity";
-import axios from "axios";
+import Trending, { calculateTrendScore } from "../../../model/trending";
+import { fetchAllTrends } from "../../../lib/trending/data-ingestion";
+import { preprocessTrend } from "../../../lib/trending/preprocessing";
+import { validateTrend } from "../../../lib/trending/validation";
 
 export default async function handler(req, res) {
   const cronSecret = process.env.CRON_SECRET || 'filmyfire_automation_secret_2026';
-  if (req.headers['x-cron-secret'] !== cronSecret) {
-    return res.status(401).json({ message: "Unauthorized" });
+  
+  // Security check
+  if (req.headers['x-cron-secret'] !== cronSecret && req.query.secret !== cronSecret) {
+    return res.status(401).json({ success: false, message: "Unauthorized" });
   }
 
-  if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+  if (req.method !== "POST" && req.method !== "GET") {
+    return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
   try {
     await dbConnect();
-    console.log("🚀 Starting Trending Data Sync...");
+    console.log("🚀 Starting Trend Validation & Mapping System Sync...");
 
-    // 0. Decay existing trending scores (reduce by 20% every sync to let old trends fade)
-    await Article.updateMany({ trendingScore: { $gt: 0 } }, { $mul: { trendingScore: 0.8 } });
-    await Celebrity.updateMany({ trendingScore: { $gt: 0 } }, { $mul: { trendingScore: 0.8 } });
+    // 1. Data Ingestion Layer (User's requirement #1)
+    const rawTrends = await fetchAllTrends("IN");
+    console.log(`📡 Ingested ${rawTrends.length} raw trends from Google & YouTube`);
 
-    const trends = [];
+    const results = {
+      total: rawTrends.length,
+      processed: 0,
+      validated: 0,
+      stored: 0,
+      errors: []
+    };
 
-    // 1. Fetch Google Trends (Daily Trends RSS - India)
-    try {
-      const googleTrendsRes = await axios.get("https://trends.google.com/trends/trendingsearches/daily/rss?geo=IN");
-      const rssText = googleTrendsRes.data;
-      
-      const titles = rssText.match(/<title>(.*?)<\/title>/g) || [];
-      const traffic = rssText.match(/<ht:approx_traffic>(.*?)<\/ht:approx_traffic>/g) || [];
-      
-      titles.slice(1).forEach((tag, i) => { 
-        const title = tag.replace(/<\/?title>/g, '');
-        const volumeStr = traffic[i] ? traffic[i].replace(/<\/?ht:approx_traffic>/g, '').replace(/,/g, '').replace('+', '') : "1000";
-        trends.push({
-          title,
-          score: parseInt(volumeStr),
-          source: 'google'
-        });
-      });
-    } catch (err) {
-      console.error("❌ Google Trends Sync Failed:", err.message);
-    }
-
-    // 2. Fetch YouTube Trending (Movies/Entertainment)
-    const YT_API_KEY = process.env.YOUTUBE_API_KEY;
-    if (YT_API_KEY) {
+    // 2. Process, Validate & Map each trend
+    for (const rawTrend of rawTrends) {
       try {
-        const ytRes = await axios.get(`https://www.googleapis.com/youtube/v3/videos`, {
-          params: {
-            part: 'snippet,statistics',
-            chart: 'mostPopular',
-            regionCode: 'IN',
-            videoCategoryId: '24', // Entertainment
-            maxResults: 10,
-            key: YT_API_KEY
-          }
-        });
+        // Step 2 & 3: Preprocessing & Entity Recognition (User's requirements #2, #3)
+        const processedTrend = await preprocessTrend(rawTrend);
+        results.processed++;
 
-        ytRes.data.items.forEach(item => {
-          trends.push({
-            title: item.snippet.title,
-            score: parseInt(item.statistics.viewCount) / 1000, // Normalize score
-            source: 'youtube'
-          });
-        });
-      } catch (err) {
-        console.error("❌ YouTube Trends Sync Failed:", err.message);
-      }
-    }
+        // Step 4 & 5: Database Validation & Mapping (User's requirements #4, #5)
+        const validationResult = await validateTrend(processedTrend);
 
-    // 3. Process & Classify Trends with TMDB
-    console.log(`🧹 Processing ${trends.length} raw trend signals...`);
-    const TMDB_API_KEY = process.env.TMDB_API_KEY;
+        if (validationResult.isValid) {
+          results.validated++;
 
-    for (const trend of trends) {
-      const cleanTitle = trend.title
-        .replace(/Official Trailer|Teaser|Full Movie|HD|202[0-9]/gi, '')
-        .trim();
+          // Step 6 & 7: Ranking & Storage Layer (User's requirements #6, #7)
+          const trendData = {
+            title: validationResult.title || processedTrend.title,
+            type: validationResult.type, // trending_movies | trending_actors | viral_topics
+            entityType: validationResult.entityType, // movie | actor | topic
+            entityId: validationResult.entityId,
+            referenceId: validationResult.referenceId,
+            referenceModel: validationResult.entityType === "movie" ? "Article" : (validationResult.entityType === "actor" ? "Celebrity" : null),
+            slug: validationResult.slug,
+            source: processedTrend.source,
+            traffic: processedTrend.traffic,
+            viewCount: processedTrend.viewCount,
+            keywords: processedTrend.keywords,
+            classificationConfidence: processedTrend.classificationConfidence,
+            metadata: {
+              ...processedTrend.metadata,
+              ...validationResult.metadata
+            },
+            status: "active",
+            trendTimestamp: processedTrend.timestamp
+          };
 
-      if (cleanTitle.length < 2) continue;
+          // Step 6: Ranking Engine (User's requirement #6)
+          trendData.score = calculateTrendScore(trendData);
 
-      // STORE Topic
-      await TrendingTopic.findOneAndUpdate(
-        { title: cleanTitle },
-        { 
-          $set: { source: trend.source, region: 'IN' },
-          $inc: { score: trend.score }
-        },
-        { upsert: true }
-      );
+          // Step 7: Storage Layer (User's requirement #7)
+          await Trending.findOneAndUpdate(
+            { 
+              title: trendData.title,
+              type: trendData.type
+            },
+            trendData,
+            { upsert: true, new: true }
+          );
 
-      // CLASSIFY & ENRICH with TMDB
-      if (TMDB_API_KEY) {
-        try {
-          // Search Movie
-          const movieSearch = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
-            params: { api_key: TMDB_API_KEY, query: cleanTitle }
-          });
-
-          if (movieSearch.data.results?.length > 0) {
-            const movie = movieSearch.data.results[0];
-            if (movie.popularity > 10) { 
-              // Update TrendingMovie Collection
-              await TrendingMovie.findOneAndUpdate(
-                { tmdbId: movie.id },
-                {
-                  $set: {
-                    title: movie.title,
-                    poster: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-                    backdrop: `https://image.tmdb.org/t/p/original${movie.backdrop_path}`,
-                    releaseDate: movie.release_date,
-                    rating: movie.vote_average
-                  },
-                  $inc: { trendingScore: trend.score }
-                },
-                { upsert: true }
-              );
-              
-              // --- NEW: Update Main Article Database ---
-              // Try to find the movie in our main database by title or TMDB ID
-              await Article.findOneAndUpdate(
-                { 
-                  $or: [
-                    { tmdbId: movie.id },
-                    { movieTitle: { $regex: new RegExp(`^${movie.title}$`, 'i') } }
-                  ]
-                },
-                { 
-                  $inc: { trendingScore: trend.score },
-                  $set: { lastTrendingSync: new Date() }
-                }
-              );
-
-              await TrendingTopic.updateOne({ title: cleanTitle }, { type: 'movie' });
-            }
-          }
-
-          // Search Actor/Person
-          const personSearch = await axios.get(`https://api.themoviedb.org/3/search/person`, {
-            params: { api_key: TMDB_API_KEY, query: cleanTitle }
-          });
-
-          if (personSearch.data.results?.length > 0) {
-            const person = personSearch.data.results[0];
-            if (person.popularity > 5) {
-              // Update TrendingActor Collection
-              await TrendingActor.findOneAndUpdate(
-                { tmdbId: person.id },
-                {
-                  $set: {
-                    name: person.name,
-                    image: `https://image.tmdb.org/t/p/w185${person.profile_path}`,
-                    profession: [person.known_for_department]
-                  },
-                  $inc: { trendingScore: trend.score }
-                },
-                { upsert: true }
-              );
-
-              // --- NEW: Update Main Celebrity Database ---
-              await Celebrity.findOneAndUpdate(
-                { 
-                  $or: [
-                    { 'heroSection.tmdbId': person.id },
-                    { 'heroSection.name': { $regex: new RegExp(`^${person.name}$`, 'i') } }
-                  ]
-                },
-                { 
-                  $inc: { trendingScore: trend.score },
-                  $set: { lastTrendingSync: new Date() }
-                }
-              );
-
-              await TrendingTopic.updateOne({ title: cleanTitle }, { type: 'actor' });
-            }
-          }
-        } catch (enrichErr) {
-          // console.warn(`Enrichment failed for ${cleanTitle}`);
+          results.stored++;
         }
+      } catch (err) {
+        console.error(`❌ Error processing trend "${rawTrend.title}":`, err.message);
+        results.errors.push({ title: rawTrend.title, error: err.message });
       }
     }
 
-    console.log("✅ Trending Data Sync Completed!");
-    return res.status(200).json({ success: true, message: "Trending data synced and enriched." });
+    // Cleanup: Expire old trends (older than 48 hours)
+    const expirationDate = new Date();
+    expirationDate.setHours(expirationDate.getHours() - 48);
+    await Trending.updateMany(
+      { trendTimestamp: { $lt: expirationDate }, status: "active" },
+      { status: "expired" }
+    );
+
+    console.log(`✅ Sync Completed: Stored ${results.stored}/${results.total} valid trends.`);
+
+    return res.status(200).json({
+      success: true,
+      message: "Trend Validation & Mapping System Sync completed successfully",
+      results
+    });
 
   } catch (error) {
-    console.error("CRITICAL Trending Sync Error:", error.message);
+    console.error("CRITICAL Trend Sync Error:", error.message);
     return res.status(500).json({ success: false, message: error.message });
   }
 }

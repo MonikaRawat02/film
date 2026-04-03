@@ -331,8 +331,8 @@ cron.schedule(SCRAPE_INTERVAL, runDailySync);
 // 2. Wikipedia Scraper (11:05 AM)
 cron.schedule('5 11 * * *', runMovieScraper);
 
-// 3. Trending Sync (Every 1 hour)
-cron.schedule('0 * * * *', runTrendingSync);
+// 3. Trending Sync (Every 30 minutes)
+cron.schedule('*/30 * * * *', runTrendingSync);
 
 // 4. Weekly Recommendation Update (Every Sunday at 2:00 AM)
 cron.schedule('0 2 * * 0', runRecommendationUpdate);

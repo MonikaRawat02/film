@@ -831,3 +831,623 @@ export default function MovieDetailPage({ article, pageType, slug }) {
     </>
   );
 }
+// import { useState, useEffect, useRef } from "react";
+// import Head from "next/head";
+// import Link from "next/link";
+// import { useRouter } from "next/router";
+// import { slugify } from "../../lib/slugify";
+// import { 
+//   FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft, 
+//   Quote, CheckCircle, Clapperboard, Film, Tv, PlaySquare, TrendingUp, 
+//   Users, Zap, Target, BookOpen, Award, BarChart3, ShieldCheck, Heart, 
+//   MessageSquare, Bookmark, Check, DollarSign, List, Info, HelpCircle, Calendar, Globe,
+//   ChevronDown, Star, ExternalLink, Sparkles
+// } from "lucide-react";
+
+// export async function getServerSideProps(context) {
+//   const { slug } = context.params;
+//   const protocol = context.req.headers["x-forwarded-proto"] || "http";
+//   const host = context.req.headers.host;
+//   const baseUrl = `${protocol}://${host}`;
+
+//   try {
+//     const res = await fetch(`${baseUrl}/api/articles/get-by-slug?slug=${slug}`);
+//     const data = await res.json();
+
+//     if (!res.ok || !data.data) {
+//       return { notFound: true };
+//     }
+
+//     const article = data.data;
+//     let pageType = "overview";
+
+//     if (slug.endsWith("-ending-explained")) pageType = "ending-explained";
+//     else if (slug.endsWith("-box-office")) pageType = "box-office";
+//     else if (slug.endsWith("-budget")) pageType = "budget";
+//     else if (slug.endsWith("-ott-release")) pageType = "ott-release";
+//     else if (slug.endsWith("-cast")) pageType = "cast";
+//     else if (slug.endsWith("-review-analysis")) pageType = "review-analysis";
+//     else if (slug.endsWith("-hit-or-flop")) pageType = "hit-or-flop";
+
+//     return {
+//       props: {
+//         article,
+//         pageType,
+//         slug,
+//       },
+//     };
+//   } catch (error) {
+//     console.error("Error fetching article for pSEO:", error);
+//     return { notFound: true };
+//   }
+// }
+
+// const pageTitles = {
+//   overview: "Full Analysis, Box Office & OTT Details",
+//   "ending-explained": "Ending Explained & Hidden Meanings",
+//   "box-office": "Box Office Collection & Financial Report",
+//   budget: "Budget, Production Costs & Profit Analysis",
+//   "ott-release": "OTT Release Date & Streaming Platform Details",
+//   cast: "Cast, Characters & Performance Analysis",
+//   "review-analysis": "Critical Review & Audience Reaction Analysis",
+//   "hit-or-flop": "Hit or Flop? Verdict & Performance Analysis",
+// };
+
+// // Enhanced FAQ Generator with dropdown structure
+// function generateFAQs(article, pageType) {
+//   const movieTitle = article.movieTitle;
+//   const releaseYear = article.releaseYear;
+//   const director = article.director?.[0] || "the director";
+//   const cast = article.cast?.slice(0, 3).map(c => c.name).join(", ") || "the cast";
+//   const genres = article.genres?.join(", ") || "action";
+//   const budget = article.budget || "N/A";
+//   const boxOffice = article.stats?.worldwide || article.boxOffice?.worldwide || "N/A";
+//   const ottPlatform = article.ott?.platform || "streaming platforms";
+//   const rating = article.rating || "N/A";
+
+//   const baseFAQs = [
+//     {
+//       question: `When was ${movieTitle} released?`,
+//       answer: `${movieTitle} was officially released in ${releaseYear}. The film premiered in theaters worldwide and later became available on ${ottPlatform}.`
+//     },
+//     {
+//       question: `Who directed ${movieTitle}?`,
+//       answer: `${movieTitle} was directed by ${director}, who brought their unique vision to this ${genres} film. The director is known for their distinctive storytelling style and visual approach.`
+//     },
+//     {
+//       question: `What is the story of ${movieTitle} about?`,
+//       answer: article.summary || `Without revealing spoilers, ${movieTitle} explores themes common to the ${genres} genre. The film follows a compelling narrative that keeps audiences engaged throughout.`
+//     }
+//   ];
+
+//   const pageSpecificFAQs = {
+//     "overview": [
+//       {
+//         question: `Where can I watch ${movieTitle}?`,
+//         answer: `${movieTitle} is available for streaming on ${ottPlatform}. You can also catch it in select theaters depending on your location. Check local listings for showtimes.`
+//       },
+//       {
+//         question: `What is the IMDb rating of ${movieTitle}?`,
+//         answer: `${movieTitle} currently holds an IMDb rating of ${rating}/10. Audience reception has been ${parseFloat(rating) >= 7 ? 'positive' : 'mixed'}, with critics praising various aspects of the production.`
+//       },
+//       {
+//         question: `Is ${movieTitle} worth watching?`,
+//         answer: `${movieTitle} offers ${parseFloat(rating) >= 7 ? 'a compelling cinematic experience with strong performances and engaging storytelling' : 'entertainment value, though it may not meet all expectations'}. Fans of the ${genres} genre will find plenty to appreciate.`
+//       }
+//     ],
+//     "box-office": [
+//       {
+//         question: `How much did ${movieTitle} collect at the box office?`,
+//         answer: `${movieTitle} grossed approximately ${boxOffice} worldwide. The film's commercial performance varied across different markets, with particularly strong showing in domestic circuits.`
+//       },
+//       {
+//         question: `Was ${movieTitle} a hit or flop?`,
+//         answer: `Based on its box office collection of ${boxOffice} against a budget of ${budget}, ${movieTitle} can be considered ${parseInt(boxOffice) > parseInt(budget) * 2 ? 'a commercial success' : 'an average performer'}. The film's profitability also includes revenue from digital and satellite rights.`
+//       },
+//       {
+//         question: `Which regions contributed most to ${movieTitle}'s box office?`,
+//         answer: `${movieTitle} performed exceptionally well in key markets including Mumbai, Delhi-NCR, and overseas territories like UAE and USA. The film showed strong occupancy in multiplexes and single-screen theaters alike.`
+//       }
+//     ],
+//     "budget": [
+//       {
+//         question: `What was the budget of ${movieTitle}?`,
+//         answer: `${movieTitle} was made on an estimated budget of ${budget}. This includes production costs, marketing expenses, and distribution charges. The budget reflects the film's scale and ambition.`
+//       },
+//       {
+//         question: `Did ${movieTitle} recover its budget?`,
+//         answer: `Yes, ${movieTitle} successfully recovered its budget through a combination of theatrical collections, digital streaming rights, satellite rights, and music sales. The film's OTT deal with ${ottPlatform} was particularly lucrative.`
+//       }
+//     ],
+//     "ending-explained": [
+//       {
+//         question: `Does ${movieTitle} have a sequel or prequel?`,
+//         answer: `As of now, there's no official announcement regarding a sequel or prequel to ${movieTitle}. However, given the film's ${boxOffice !== 'N/A' ? 'commercial performance' : 'reception'}, future installments remain a possibility.`
+//       },
+//       {
+//         question: `What is the main message of ${movieTitle}?`,
+//         answer: `${movieTitle} explores deeper themes beneath its ${genres} exterior. The film delivers commentary on human nature, relationships, and societal expectations, leaving audiences with thought-provoking takeaways.`
+//       }
+//     ],
+//     "ott-release": [
+//       {
+//         question: `Is ${movieTitle} available on Netflix/Prime/other platforms?`,
+//         answer: `${movieTitle} is exclusively available on ${ottPlatform}. The digital streaming rights were acquired as part of a strategic distribution deal.`
+//       },
+//       {
+//         question: `When did ${movieTitle} start streaming on OTT?`,
+//         answer: `${movieTitle} began streaming on ${ottPlatform} shortly after its theatrical run. The exact OTT release date typically falls 4-8 weeks after the cinema premiere.`
+//       }
+//     ],
+//     "cast": [
+//       {
+//         question: `Who are the main actors in ${movieTitle}?`,
+//         answer: `${movieTitle} stars ${cast}. The ensemble cast brings depth to their characters, with each actor contributing to the film's overall impact.`
+//       },
+//       {
+//         question: `Are there any cameo appearances in ${movieTitle}?`,
+//         answer: `${movieTitle} features several surprise cameo appearances that enhance the viewing experience. These special appearances add layers to the narrative.`
+//       }
+//     ],
+//     "review-analysis": [
+//       {
+//         question: `What are critics saying about ${movieTitle}?`,
+//         answer: `Critics have given ${movieTitle} ${parseFloat(rating) >= 7 ? 'largely positive' : 'mixed'} reviews, with praise for ${parseFloat(rating) >= 7 ? 'its direction, performances, and technical brilliance' : 'certain aspects while noting areas that could have been stronger'}. The film holds a rating of ${rating}/10.`
+//       },
+//       {
+//         question: `Is ${movieTitle} worth watching?`,
+//         answer: `${movieTitle} offers ${parseFloat(rating) >= 7 ? 'a compelling cinematic experience' : 'entertainment value'}. ${parseFloat(rating) >= 7 ? 'Highly recommended for genre enthusiasts.' : 'Give it a watch if you are a fan of the cast or director.'}`
+//       }
+//     ]
+//   };
+
+//   const specificFAQs = pageSpecificFAQs[pageType] || pageSpecificFAQs.overview;
+//   return [...baseFAQs.slice(0, 2), ...specificFAQs.slice(0, 4)].slice(0, 6);
+// }
+
+// const categoryIcons = {
+//   Bollywood: Clapperboard,
+//   Hollywood: Film,
+//   WebSeries: Tv,
+//   OTT: PlaySquare,
+//   BoxOffice: TrendingUp,
+//   Celebrities: Users,
+// };
+
+// // Dropdown FAQ Component
+// function FAQDropdown({ faqs, loading }) {
+//   const [openIndex, setOpenIndex] = useState(null);
+
+//   const toggleFAQ = (index) => {
+//     setOpenIndex(openIndex === index ? null : index);
+//   };
+
+//   if (loading) {
+//     return (
+//       <div className="space-y-4">
+//         {[1, 2, 3, 4, 5].map((i) => (
+//           <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
+//             <div className="h-5 bg-white/10 rounded w-3/4 mb-3"></div>
+//             <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
+//             <div className="h-4 bg-white/10 rounded w-2/3"></div>
+//           </div>
+//         ))}
+//       </div>
+//     );
+//   }
+
+//   if (!faqs.length) return null;
+
+//   return (
+//     <div className="space-y-3">
+//       {faqs.map((faq, idx) => (
+//         <div 
+//           key={idx} 
+//           className="faq-item rounded-2xl bg-gradient-to-br from-white/5 to-white/3 border border-white/10 hover:border-red-500/30 transition-all duration-300 overflow-hidden"
+//         >
+//           <button
+//             onClick={() => toggleFAQ(idx)}
+//             className="w-full px-6 py-5 flex items-center justify-between text-left group"
+//           >
+//             <div className="flex items-start gap-4 pr-4">
+//               <div className="flex-shrink-0 mt-1">
+//                 <HelpCircle className="w-5 h-5 text-red-500/70 group-hover:text-red-500 transition-colors" />
+//               </div>
+//               <h4 className="text-base md:text-lg font-bold text-white leading-relaxed group-hover:text-red-400 transition-colors">
+//                 {faq.question}
+//               </h4>
+//             </div>
+//             <div className={`flex-shrink-0 transition-transform duration-300 ${openIndex === idx ? 'rotate-180' : ''}`}>
+//               <ChevronDown className="w-5 h-5 text-zinc-400 group-hover:text-red-400" />
+//             </div>
+//           </button>
+          
+//           <div className={`faq-answer ${openIndex === idx ? 'open' : ''}`}>
+//             <div className="px-6 pb-6 pt-0 pl-14 md:pl-16">
+//               <div className="h-px bg-gradient-to-r from-red-500/20 via-red-500/50 to-red-500/20 mb-4"></div>
+//               <p className="text-zinc-300 text-sm leading-relaxed">
+//                 {faq.answer}
+//               </p>
+//               {faq.additional && (
+//                 <p className="text-zinc-500 text-xs mt-3 italic">{faq.additional}</p>
+//               )}
+//             </div>
+//           </div>
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
+
+// export default function MovieDetailPage({ article, pageType, slug }) {
+//   const router = useRouter();
+//   const Icon = categoryIcons[article.category] || FileText;
+//   const [scrollProgress, setProgress] = useState(0);
+//   const [isLiked, setIsLiked] = useState(false);
+//   const [isSaved, setIsSaved] = useState(false);
+//   const [faqs, setFaqs] = useState([]);
+//   const [loadingFAQs, setLoadingFAQs] = useState(true);
+//   const heroRef = useRef(null);
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       const likedArticles = JSON.parse(localStorage.getItem("liked_articles") || "[]");
+//       const savedArticles = JSON.parse(localStorage.getItem("saved_articles") || "[]");
+//       setIsLiked(likedArticles.includes(article?._id));
+//       setIsSaved(savedArticles.includes(article?._id));
+//     }
+//   }, [article?._id]);
+
+//   // Generate FAQs dynamically based on article and pageType
+//   useEffect(() => {
+//     // Simulate async generation or fetch from AI endpoint
+//     const loadFAQs = async () => {
+//       setLoadingFAQs(true);
+//       // Simulate network delay
+//       await new Promise(resolve => setTimeout(resolve, 300));
+//       const generatedFaqs = generateFAQs(article, pageType);
+//       setFaqs(generatedFaqs);
+//       setLoadingFAQs(false);
+//     };
+//     loadFAQs();
+//   }, [article, pageType]);
+
+//   useEffect(() => {
+//     const handleScroll = () => {
+//       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+//       const currentScroll = window.scrollY;
+//       setProgress((currentScroll / totalScroll) * 100);
+//     };
+//     window.addEventListener("scroll", handleScroll);
+//     return () => window.removeEventListener("scroll", handleScroll);
+//   }, []);
+
+//   const handleShare = async () => {
+//     if (navigator.share) {
+//       try {
+//         await navigator.share({
+//           title: article.title,
+//           text: article.summary,
+//           url: window.location.href,
+//         });
+//       } catch (err) {
+//         console.log("Share failed:", err);
+//       }
+//     } else {
+//       navigator.clipboard.writeText(window.location.href);
+//       alert("Link copied to clipboard!");
+//     }
+//   };
+
+//   const handleLike = () => {
+//     if (typeof window !== "undefined") {
+//       const likedArticles = JSON.parse(localStorage.getItem("liked_articles") || "[]");
+//       let newLiked;
+//       if (isLiked) {
+//         newLiked = likedArticles.filter(id => id !== article._id);
+//       } else {
+//         newLiked = [...likedArticles, article._id];
+//       }
+//       localStorage.setItem("liked_articles", JSON.stringify(newLiked));
+//       setIsLiked(!isLiked);
+//     }
+//   };
+
+//   const handleSave = () => {
+//     if (typeof window !== "undefined") {
+//       const savedArticles = JSON.parse(localStorage.getItem("saved_articles") || "[]");
+//       let newSaved;
+//       if (isSaved) {
+//         newSaved = savedArticles.filter(id => id !== article._id);
+//       } else {
+//         newSaved = [...savedArticles, article._id];
+//       }
+//       localStorage.setItem("saved_articles", JSON.stringify(newSaved));
+//       setIsSaved(!isSaved);
+//     }
+//   };
+
+//   if (!article) return null;
+
+//   const pageTitleSuffix = pageTitles[pageType] || pageTitles.overview;
+//   const fullTitle = `${article.movieTitle || article.title} (${article.releaseYear}) – ${pageTitleSuffix}`;
+
+//   return (
+//     <>
+//       <Head>
+//         <title>{fullTitle} | FilmyFire Intelligence</title>
+//         <meta name="description" content={article.meta?.description || article.summary?.substring(0, 160)} />
+//         <link rel="canonical" href={`https://filmyfire.com/movie/${slug}`} />
+//       </Head>
+
+//       <div className="min-h-screen bg-[#050505] text-zinc-100 selection:bg-red-600/30 font-sans relative pt-16 top-0">
+        
+//         {/* Reading Progress Bar */}
+//         <div className="fixed top-16 left-0 right-0 z-[100] h-1 bg-white/5">
+//           <div 
+//             className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-red-600 transition-all duration-150 progress-bar-fill"
+//             style={{ width: `${scrollProgress}%` }}
+//           />
+//         </div>
+
+//         {/* Dynamic Header */}
+//         <nav className={`fixed top-16 left-0 right-0 z-[40] transition-all duration-500 ${scrollProgress > 5 ? 'bg-black/80 backdrop-blur-2xl border-b border-white/5 py-3' : 'bg-transparent py-6'}`}>
+//           <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between">
+//             <Link 
+//               href={`/category/${article.category.toLowerCase()}`}
+//               className="flex items-center gap-3 text-zinc-400 hover:text-white transition-all text-xs font-bold group bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/5"
+//             >
+//               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+//               <span className="hidden sm:inline uppercase tracking-widest">Back to {article.category}</span>
+//             </Link>
+            
+//             <div className={`flex-1 px-8 transition-all duration-500 ${scrollProgress > 20 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+//               <h2 className="text-[10px] font-black text-white truncate max-w-md mx-auto text-center hidden md:block uppercase tracking-[0.3em]">
+//                 {article.movieTitle} – {pageType.replace("-", " ")}
+//               </h2>
+//             </div>
+
+//             <div className="flex items-center gap-3">
+//               <button 
+//                 onClick={handleShare}
+//                 className="p-3 text-zinc-400 hover:text-white transition-all bg-white/5 hover:bg-white/10 rounded-xl border border-white/5"
+//               >
+//                 <Share2 className="w-4 h-4" />
+//               </button>
+//               <button 
+//                 onClick={handleSave}
+//                 className={`p-3 transition-all rounded-xl border border-white/5 ${isSaved ? 'text-red-500 bg-red-500/10 border-red-500/20' : 'text-zinc-400 bg-white/5 hover:bg-white/10'}`}
+//               >
+//                 <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-current' : ''}`} />
+//               </button>
+//             </div>
+//           </div>
+//         </nav>
+
+//         {/* Immersive Hero Section */}
+//         <div className="relative w-full h-[60vh] flex items-end justify-start overflow-hidden pt-16">
+//           <div className="absolute inset-0 z-0">
+//             {article.coverImage ? (
+//               <img 
+//                 src={article.coverImage} 
+//                 alt=""
+//                 className="w-full h-full object-cover"
+//               />
+//             ) : (
+//               <div className="w-full h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-black" />
+//             )}
+//             <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent" />
+//             <div className="absolute inset-0 hero-glow opacity-30"></div>
+//           </div>
+
+//           <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 pb-12">
+//             <div className="max-w-5xl">
+//               <div className="flex items-center gap-4 mb-6 flex-wrap">
+//                 <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
+//                   <Target className="w-3 h-3" />
+//                   {article.category} Intelligence
+//                 </span>
+//                 <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em] bg-white/5 px-3 py-1 rounded-full backdrop-blur-sm">
+//                   {pageType.replace("-", " ")}
+//                 </span>
+//                 {article.stats?.rating && (
+//                   <span className="flex items-center gap-1 text-yellow-400 text-[10px] font-bold bg-yellow-500/10 px-3 py-1 rounded-full">
+//                     <Star className="w-3 h-3 fill-yellow-400" />
+//                     {article.stats.rating}/10
+//                   </span>
+//                 )}
+//               </div>
+
+//               <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+//                 {fullTitle}
+//               </h1>
+//               <div className="flex items-center gap-4 text-sm text-zinc-400">
+//                 <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> {article.releaseYear}</span>
+//                 <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {article.duration || "2h 45m"}</span>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Content Section */}
+//         <main className="max-w-[1440px] mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-12 gap-16">
+//           <div className="lg:col-span-8 space-y-12">
+            
+//             {/* Quick Links with active state */}
+//             <div className="p-6 rounded-2xl glass-panel">
+//               <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
+//                 <List className="w-4 h-4" /> Jump to Intel
+//               </h3>
+//               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+//                 {[
+//                   { label: "Overview", suffix: "" },
+//                   { label: "Ending Explained", suffix: "-ending-explained" },
+//                   { label: "Box Office", suffix: "-box-office" },
+//                   { label: "Budget", suffix: "-budget" },
+//                   { label: "OTT Release", suffix: "-ott-release" },
+//                   { label: "Cast", suffix: "-cast" },
+//                 ].map((link, idx) => (
+//                   <Link 
+//                     key={idx}
+//                     href={`/movie/${article.slug}${link.suffix}`}
+//                     className={`jump-link px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all text-center ${
+//                       (pageType === "overview" && link.suffix === "") || (pageType !== "overview" && link.suffix === `-${pageType}`)
+//                         ? "active bg-red-600 text-white shadow-lg shadow-red-600/20" 
+//                         : "bg-white/5 text-zinc-400 hover:bg-white/10 border border-white/5"
+//                     }`}
+//                   >
+//                     {link.label}
+//                   </Link>
+//                 ))}
+//               </div>
+//             </div>
+
+//             {/* Dynamic Content */}
+//             <div className="prose prose-invert prose-zinc max-w-none">
+//               {pageType === "box-office" && (
+//                 <>
+//                   <section className="mb-12">
+//                     <div className="flex items-center gap-3 mb-8">
+//                       <div className="p-2 rounded-xl bg-red-600/20">
+//                         <TrendingUp className="w-6 h-6 text-red-500" />
+//                       </div>
+//                       <h2 className="text-3xl font-bold text-white">Box Office Performance</h2>
+//                     </div>
+                    
+//                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+//                       <div className="stat-card p-6 rounded-2xl bg-gradient-to-br from-green-600/20 to-emerald-600/20 border border-green-500/30">
+//                         <div className="flex items-center gap-3 mb-3">
+//                           <DollarSign className="w-5 h-5 text-green-400" />
+//                           <span className="text-xs font-bold text-green-400 uppercase tracking-widest">Worldwide</span>
+//                         </div>
+//                         <div className="text-3xl font-black text-white">{article.stats?.worldwide || "₹600 Cr"}</div>
+//                       </div>
+//                       <div className="stat-card p-6 rounded-2xl bg-gradient-to-br from-blue-600/20 to-cyan-600/20 border border-blue-500/30">
+//                         <div className="flex items-center gap-3 mb-3">
+//                           <Target className="w-5 h-5 text-blue-400" />
+//                           <span className="text-xs font-bold text-blue-400 uppercase tracking-widest">India Net</span>
+//                         </div>
+//                         <div className="text-3xl font-black text-white">{article.stats?.indiaNet || "₹350 Cr"}</div>
+//                       </div>
+//                       <div className="stat-card p-6 rounded-2xl bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30">
+//                         <div className="flex items-center gap-3 mb-3">
+//                           <Zap className="w-5 h-5 text-purple-400" />
+//                           <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">Opening Day</span>
+//                         </div>
+//                         <div className="text-3xl font-black text-white">{article.stats?.openingDay || "₹95 Cr"}</div>
+//                       </div>
+//                     </div>
+//                   </section>
+//                 </>
+//               )}
+
+//               {pageType === "overview" && (
+//                 <section>
+//                   <div className="flex items-center gap-3 mb-6">
+//                     <Sparkles className="w-6 h-6 text-red-500" />
+//                     <h2 className="text-2xl font-bold text-white">Movie Overview</h2>
+//                   </div>
+//                   <div className="p-6 rounded-2xl glass-panel">
+//                     <p className="text-zinc-300 leading-relaxed text-lg">
+//                       {article.summary || "Kalki 2898 AD is a landmark epic science fiction film that blends mythology with futuristic storytelling. Set in a post-apocalyptic world, the film follows the journey of warriors fighting for humanity's survival."}
+//                     </p>
+//                   </div>
+//                 </section>
+//               )}
+
+//               {pageType === "cast" && (
+//                 <section>
+//                   <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+//                     <Users className="w-6 h-6 text-red-600" /> Stellar Cast
+//                   </h2>
+//                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+//                     {article.cast?.map((actor, idx) => (
+//                       <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/5 hover:border-red-500/30 transition-all">
+//                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-600/30 to-orange-600/30 flex items-center justify-center">
+//                           <User className="w-6 h-6 text-red-400" />
+//                         </div>
+//                         <div>
+//                           <p className="text-white font-bold">{actor.name}</p>
+//                           <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{actor.role || "Lead Role"}</p>
+//                         </div>
+//                       </div>
+//                     ))}
+//                   </div>
+//                 </section>
+//               )}
+//             </div>
+
+//             {/* FAQ Section with Dropdown */}
+//             <div className="pt-12 border-t border-white/10">
+//               <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+//                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+//                   <HelpCircle className="w-6 h-6 text-red-600" /> 
+//                   Frequently Asked Questions
+//                 </h2>
+//                 <span className="text-[10px] text-zinc-500 bg-white/5 px-3 py-1 rounded-full">
+//                   {faqs.length} questions
+//                 </span>
+//               </div>
+              
+//               <FAQDropdown faqs={faqs} loading={loadingFAQs} />
+              
+//               <div className="mt-8 text-center">
+//                 <p className="text-[10px] text-zinc-600 uppercase tracking-wider">
+//                   Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400">Contact our film experts</Link>
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+
+//           {/* Sidebar - Enhanced */}
+//           <aside className="lg:col-span-4 space-y-8">
+//             <div className="sticky top-32 space-y-8">
+//               <div className="p-6 rounded-3xl glass-panel">
+//                 <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
+//                   <BarChart3 className="w-4 h-4 text-red-600" /> Core Intelligence
+//                 </h3>
+//                 <div className="space-y-4">
+//                   {[
+//                     { label: "Director", value: article.director?.join(", ") || "Nag Ashwin", icon: User },
+//                     { label: "Budget", value: article.budget || "₹600 Cr", icon: DollarSign },
+//                     { label: "Genre", value: article.genres?.join(", ") || "Sci-Fi, Epic", icon: Film },
+//                   ].map((stat, idx) => {
+//                     const IconComp = stat.icon;
+//                     return (
+//                       <div key={idx} className="flex items-center justify-between py-3 border-b border-white/5 last:border-0">
+//                         <div className="flex items-center gap-2">
+//                           <IconComp className="w-3 h-3 text-zinc-500" />
+//                           <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">{stat.label}</span>
+//                         </div>
+//                         <span className="text-[11px] font-bold text-white uppercase text-right">{stat.value}</span>
+//                       </div>
+//                     );
+//                   })}
+//                 </div>
+//               </div>
+              
+//               {article.ott?.platform && (
+//                 <div className="p-6 rounded-3xl bg-gradient-to-br from-red-600/10 to-orange-600/10 border border-red-500/20">
+//                   <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+//                     <Tv className="w-4 h-4 text-red-600" /> Stream Now
+//                   </h3>
+//                   <Link href={`/ott/${slugify(article.ott.platform)}`} className="block group">
+//                     <div className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all">
+//                       <div>
+//                         <p className="text-[10px] text-zinc-400 uppercase tracking-widest mb-1">Available On</p>
+//                         <p className="text-lg font-black text-white group-hover:text-red-500 transition-colors">
+//                           {article.ott.platform}
+//                         </p>
+//                       </div>
+//                       <ExternalLink className="w-5 h-5 text-red-500 opacity-70 group-hover:opacity-100" />
+//                     </div>
+//                   </Link>
+//                 </div>
+//               )}
+//             </div>
+//           </aside>
+//         </main>
+//       </div>
+//     </>
+//   );
+// }
