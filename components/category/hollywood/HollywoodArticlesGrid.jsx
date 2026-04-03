@@ -69,11 +69,11 @@ export default function HollywoodArticlesGrid({ initialArticles = [] }) {
   };
 
   return (
-    <section className="bg-[#0B0F1A] text-white py-16 sm:py-24 border-t border-white/5">
+    <section className="bg-[#0B0F1A] text-white py-8 sm:py-10 border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header & Search */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-3">
             <TrendingUp className="w-7 h-7 text-blue-500" />
             <h2 className="text-3xl font-bold tracking-tight">Hollywood Intelligence Hub</h2>
@@ -163,7 +163,7 @@ export default function HollywoodArticlesGrid({ initialArticles = [] }) {
 
         {/* Load More */}
         {hasMore && (
-          <div className="mt-16 text-center">
+          <div className="mt-12 text-center">
             <button
               onClick={loadMore}
               disabled={loading}
@@ -182,7 +182,7 @@ export default function HollywoodArticlesGrid({ initialArticles = [] }) {
           </div>
         )}
 
-        <div className="mt-16 text-center">
+        <div className="mt-12 text-center">
           <div className="inline-block w-full max-w-4xl p-3 rounded-lg border border-dashed border-blue-500/30 bg-blue-500/5">
             <p className="text-[10px] font-black text-blue-300/80 uppercase tracking-widest">
               Automated Updates: Scanning {articles.length} verified intelligence reports

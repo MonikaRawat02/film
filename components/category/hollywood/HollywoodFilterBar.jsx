@@ -27,8 +27,7 @@ export default function HollywoodFilterBar({ activeFilter, setActiveFilter }) {
                   isActive
                     ? "text-white bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 shadow-lg shadow-purple-500/30"
                     : "text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-900/50"
-                }`}
-              >
+                }`} >
                 <Icon className="w-4 h-4" />
                 <span className="relative z-10">{filter.label}</span>
                 {isActive && (

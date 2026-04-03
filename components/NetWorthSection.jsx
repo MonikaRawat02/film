@@ -344,8 +344,7 @@ export default function NetWorthSection({ celebrity }) {
                       currency === "INR"
                         ? "bg-[#00d9ff] text-[#0A0A0F]"
                         : "bg-transparent text-[var(--ff-text-muted)] ff-hover-text-primary"
-                    }`}
-                  >
+                    }`}>
                     INR
                   </button>
                 </div>
@@ -353,7 +352,7 @@ export default function NetWorthSection({ celebrity }) {
               <p className="relative text-[var(--ff-text-muted)] text-sm mb-6">
                 Real-time estimated wealth analysis
               </p>
-            
+         
               <div className="relative mb-6">
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl md:text-6xl leading-none font-semibold tracking-tight bg-gradient-to-r from-[var(--ff-electric-blue)] to-[#1AD1FF] bg-clip-text text-transparent">
@@ -1043,7 +1042,6 @@ export default function NetWorthSection({ celebrity }) {
                   ))}
                 </nav>
               </div>
-
 
               {/* View Full Profile CTA */}
               <Link

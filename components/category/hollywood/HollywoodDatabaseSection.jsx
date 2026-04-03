@@ -49,11 +49,11 @@ export default function HollywoodDatabaseSection() {
   }, []);
 
   return (
-    <section className="bg-[#0B0F1A] text-white py-16 md:py-24 border-t border-white/5">
+    <section className="bg-[#0B0F1A] text-white py-8 md:py-10 border-t border-white/5">
       <div className="max-w-[1440px] mx-auto px-6">
         
         {/* Heading */}
-        <div className="flex items-center gap-3 mb-12">
+        <div className="flex items-center gap-3 mb-8">
           <Database className="w-8 h-8 text-purple-400" />
           <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
             Explore Hollywood Movie Database
@@ -61,13 +61,13 @@ export default function HollywoodDatabaseSection() {
         </div>
 
         {/* Filter Box */}
-        <div className="p-8 rounded-2xl border border-white/10 bg-[#121826] backdrop-blur-[10px] mb-8">
+        <div className="p-6 rounded-2xl border border-white/10 bg-[#121826] backdrop-blur-[10px] mb-8">
           <div className="flex items-center gap-2 mb-6 text-pink-400 font-medium text-sm">
             <Filter className="w-4 h-4" />
             <span>Filter Movies</span>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6">
             {[
               { label: "Year", options: ["All Years", "2024", "2023", "2022"] },
               { label: "Genre", options: ["All Genres", "Action", "Drama", "Sci-Fi"] },
@@ -112,7 +112,7 @@ export default function HollywoodDatabaseSection() {
         </div>
 
         {/* Programmatic SEO Footer */}
-        <div className="mt-12 p-4 rounded-xl border border-purple-500/20 bg-purple-500/5 text-center">
+        <div className="mt-8 p-4 rounded-xl border border-purple-500/20 bg-purple-500/5 text-center">
           <p className="text-xs text-purple-300/60 font-medium tracking-wide">
             Programmatic SEO: Each category auto-generates dedicated landing pages • 10,000+ indexed pages
           </p>

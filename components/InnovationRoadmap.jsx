@@ -47,7 +47,7 @@ export default function InnovationRoadmap() {
   ];
 
   return (
-    <section className="relative py-28">
+    <section className="relative py-16">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black via-gray-900/20 to-transparent" />
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">
