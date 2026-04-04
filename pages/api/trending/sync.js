@@ -1,7 +1,8 @@
 // Trend Validation & Mapping System Orchestrator
 // pages/api/trending/sync.js
 import dbConnect from "../../../lib/mongodb";
-import Trending, { calculateTrendScore } from "../../../model/trending";
+import Trending from "../../../model/trending";
+import { calculateTrendScore } from "../../../lib/trending/utils";
 import { fetchAllTrends } from "../../../lib/trending/data-ingestion";
 import { preprocessTrend } from "../../../lib/trending/preprocessing";
 import { validateTrend } from "../../../lib/trending/validation";
@@ -45,6 +46,7 @@ export default async function handler(req, res) {
         const validationResult = await validateTrend(processedTrend);
 
         if (validationResult.isValid) {
+          console.log(`✅ Valid Trend Found: "${processedTrend.title}" -> Type: ${validationResult.type}`);
           results.validated++;
 
           // Step 6 & 7: Ranking & Storage Layer (User's requirements #6, #7)
