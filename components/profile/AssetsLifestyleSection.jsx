@@ -23,7 +23,7 @@ export default function AssetsLifestyleSection({ celebrity }) {
   }));
 
   return (
-    <section className="bg-[#0a0c14] py-16 sm:py-24">
+    <section className="bg-[#0a0c14] py-14 sm:py-20">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-10 text-left">
