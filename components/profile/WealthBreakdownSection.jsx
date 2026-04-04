@@ -140,8 +140,7 @@ export default function WealthBreakdownSection({ celebrity }) {
                 <div className="flex items-start md:items-center gap-4 flex-1 min-w-0">
                   <div 
                     style={{ backgroundColor: item.color }}
-                    className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/20 group-hover:scale-110 transition-transform`}
-                  >
+                    className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/20 group-hover:scale-110 transition-transform`} >
                     {(() => {
                       const Icon = item.Icon;
                       return <Icon className="h-7 w-7 text-white" />;

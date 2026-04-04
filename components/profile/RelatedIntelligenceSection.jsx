@@ -37,7 +37,7 @@ export default function RelatedIntelligenceSection({ celebrity }) {
       <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
         {/* Header */}
         <div className="mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-3">
             Related Intelligence
           </h2>
           <p className="text-gray-500 text-lg font-light">
