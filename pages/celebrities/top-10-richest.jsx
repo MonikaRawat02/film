@@ -1,5 +1,6 @@
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowLeft } from "lucide-react";
 import PublicLayout from "@/components/PublicLayout";
+import Link from "next/link";
 import { useState } from "react";
 
 export async function getServerSideProps(context) {
@@ -33,7 +34,31 @@ export default function Top10RichestPage({ celebrities }) {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2 pt-0">
+    <div className="min-h-screen bg-[#050505] text-zinc-100 selection:bg-red-600/30 font-sans pt-32 pb-24">
+      {/* Navigation Header */}
+      <nav className="fixed top-[64px] left-0 right-0 z-[50] bg-black/80 backdrop-blur-2xl border-b border-white/5 py-4">
+        <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between">
+          <Link 
+            href="/celebrities"
+            className="flex items-center gap-3 text-zinc-400 hover:text-white transition-all text-xs font-bold group bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl border border-white/5"
+          >
+            <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+            <span className="hidden sm:inline uppercase tracking-widest">Back to Celebrities</span>
+          </Link>
+          
+          <h2 className="text-[10px] font-black text-white uppercase tracking-[0.3em] hidden md:block">
+            Top 10 Richest Celebrities
+          </h2>
+
+          <div className="flex items-center gap-2">
+            <span className="px-3 py-1 rounded-lg bg-red-600/10 text-red-500 text-[10px] font-bold uppercase tracking-widest border border-red-500/20">
+              {filteredCelebrities.length} Celebrities
+            </span>
+          </div>
+        </div>
+      </nav>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2 pt-0">
       <div className="mb-6 md:mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
           Top 10 Richest Celebrities
@@ -52,7 +77,7 @@ export default function Top10RichestPage({ celebrities }) {
           className="w-full bg-[#1A1A24] border border-gray-800 text-white placeholder-gray-500 rounded-xl px-5 py-4 text-base focus:outline-none focus:ring-1 focus:ring-[#DC2626] focus:border-[#DC2626] transition-all"
         />
       </div>
-
+      
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
         {filteredCelebrities.map((celebrity, index) => (
           <a
@@ -91,6 +116,7 @@ export default function Top10RichestPage({ celebrities }) {
           <p className="text-gray-400">No celebrities match your search.</p>
         </div>
       )}
+      </div>
     </div>
   );
 }

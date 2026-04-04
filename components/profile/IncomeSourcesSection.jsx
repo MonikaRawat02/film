@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { Film, Megaphone, IndianRupee, Building2 } from "lucide-react";
 
 export default function IncomeSourcesSection({ celebrity }) {
@@ -6,18 +7,20 @@ export default function IncomeSourcesSection({ celebrity }) {
 
   const incomeSourcesData = celebrity.netWorthCalculation?.incomeSources || [];
   const icons = [Film, Megaphone, IndianRupee, Building2];
-  const colors = ["from-blue-500 to-blue-600", "from-violet-500 to-violet-600", "from-emerald-500 to-emerald-600", "from-cyan-500 to-cyan-600"];
+  const colors = ["#3b82f6", "#8b5cf6", "#10b981", "#06b6d4"]; // Blue, Purple, Green, Cyan
 
   const incomeSources = incomeSourcesData.map((source, index) => ({
     Icon: icons[index % icons.length],
-    iconBg: colors[index % colors.length],
+    color: colors[index % colors.length],
     title: source.sourceName,
     amount: `${source.percentage}% contribution`,
     description: source.description
   }));
 
+  const [hoverIndex, setHoverIndex] = useState(-1);
+
   return (
-    <section className="bg-[#0a0c14] py-12 sm:py-16 bg-gradient-to-b from-slate-950/0 to-slate-900/10">
+    <section className="bg-[#0a0c14] py-12 sm:py-16">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8 sm:mb-10">
@@ -35,10 +38,20 @@ export default function IncomeSourcesSection({ celebrity }) {
           {incomeSources.map((source, index) => (
             <div
               key={index}
-              className={`relative h-full min-h-[220px] bg-gradient-to-br from-slate-900/90 to-slate-800/90 backdrop-blur-xl rounded-2xl border border-white/10 p-6 lg:p-8 shadow-lg hover:border-white/20 transition-all duration-300 cursor-pointer group`}
+              onMouseEnter={() => setHoverIndex(index)}
+              onMouseLeave={() => setHoverIndex(-1)}
+              style={{
+                borderColor: hoverIndex === index ? source.color : "rgba(255,255,255,0.05)",
+                boxShadow: hoverIndex === index ? `0 0 30px ${source.color}44` : "none",
+                transform: hoverIndex === index ? "translateY(-2px)" : "none",
+              }}
+              className={`relative h-full min-h-[220px] bg-[#0d111c] rounded-2xl border p-6 lg:p-8 transition-all duration-300 cursor-pointer group`}
             >
-              <div className="flex items-start gap-4">
-                <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-gradient-to-br ${source.iconBg} flex items-center justify-center flex-shrink-0 ring-1 ring-white/10 group-hover:scale-110 transition-transform`}>
+              <div className="flex items-start gap-4 mb-4">
+                <div 
+                  style={{ backgroundColor: source.color }}
+                  className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg shadow-black/20 group-hover:scale-110 transition-transform`}
+                >
                   {(() => {
                     const Icon = source.Icon;
                     return <Icon className="h-6 w-6 text-white" />;
@@ -53,7 +66,7 @@ export default function IncomeSourcesSection({ celebrity }) {
                   </p>
                 </div>
               </div>
-              <p className="text-slate-400 mb-10 leading-relaxed">
+              <p className="text-slate-400 mb-10 leading-relaxed text-sm sm:text-base">
                 {source.description}
               </p>
               <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 group-hover:gap-2 transition-all text-sm text-blue-400 hover:text-blue-300 cursor-pointer">
