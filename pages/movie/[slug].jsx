@@ -173,6 +173,7 @@ function generateFAQs(article, pageType) {
     ]
   };
 
+
   // Combine base FAQs with page-specific ones
   const specificFAQs = pageSpecificFAQs[pageType] || pageSpecificFAQs.overview;
   
@@ -701,7 +702,6 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 </div>
               )}
             </div>
-
           </div>
 
           {/* Sidebar */}

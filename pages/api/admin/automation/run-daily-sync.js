@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { limit = 20 } = req.body; // Increased default from 10 to 20 per sync run
+  const { limit = 20, forceRefresh = false } = req.body; // Added forceRefresh option
 
   try {
     await dbConnect();
@@ -40,8 +40,19 @@ export default async function handler(req, res) {
         try {
           const movieSlug = slugify(movieInfo.title);
           const existing = await Article.findOne({ slug: movieSlug });
-          if (existing) {
+          
+          // If not forcing refresh and movie exists, skip
+          if (existing && !forceRefresh) {
             continue; 
+          }
+
+          // If movie exists but we are refreshing, check age (Requirement: 24h)
+          if (existing && forceRefresh) {
+            const lastUpdated = new Date(existing.updatedAt || existing.createdAt);
+            const hoursSinceUpdate = (new Date() - lastUpdated) / (1000 * 60 * 60);
+            if (hoursSinceUpdate < 24) {
+              continue; // Skip if updated in the last 24 hours
+            }
           }
 
           console.log(`🔍 Scraping new movie: ${movieInfo.title}...`);
@@ -112,11 +123,13 @@ export default async function handler(req, res) {
         const headers = { 'x-cron-secret': cronSecret };
         
         // Find movies that were just added or are missing enrichment
+        // Or if forceRefresh is true, find any movies that haven't been refreshed in 24 hours
         const pendingMovies = await Article.find({
           contentType: "movie",
           $or: [
             { tmdbId: { $exists: false } },
-            { genreAnalysis: { $exists: false } }
+            { genreAnalysis: { $exists: false } },
+            { updatedAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) } }
           ]
         }).limit(20);
 

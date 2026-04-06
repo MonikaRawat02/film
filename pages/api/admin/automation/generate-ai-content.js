@@ -1,3 +1,5 @@
+
+//pages/api/admin/automation/generate-ai-content.js
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import { generateMovieContent } from "../../../../lib/ai-generator";

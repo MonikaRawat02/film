@@ -1,53 +1,62 @@
-import dbConnect from "@/lib/mongodb";
-import Subscriber from "@/model/subscriber";
-import { sendWelcomeEmail } from "@/lib/mail";
+import dbConnect from "../../lib/mongodb";
+import Subscriber from "../../model/subscriber";
+import { sendWelcomeEmail } from "../../lib/mail";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
   const { email } = req.body;
 
-  if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
-    return res.status(400).json({ message: "Please provide a valid email address." });
+  // Validate email
+  if (!email || !email.trim()) {
+    return res.status(400).json({ success: false, message: "Email is required." });
   }
 
-  await dbConnect();
+  const trimmedEmail = email.trim().toLowerCase();
+  
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(trimmedEmail)) {
+    return res.status(400).json({ success: false, message: "Please provide a valid email address." });
+  }
 
   try {
-    const existingSubscriber = await Subscriber.findOne({ email });
+    await dbConnect();
+
+    const existingSubscriber = await Subscriber.findOne({ email: trimmedEmail });
 
     if (existingSubscriber) {
       if (existingSubscriber.active) {
-        return res.status(400).json({ message: "You are already subscribed!" });
+        return res.status(400).json({ success: false, message: "You are already subscribed!" });
       } else {
         existingSubscriber.active = true;
         await existingSubscriber.save();
         
         // Trigger welcome email (non-blocking)
         try {
-          await sendWelcomeEmail(email);
+          await sendWelcomeEmail(trimmedEmail);
         } catch (e) {
           console.error("Failed to send welcome email:", e);
         }
         
-        return res.status(200).json({ message: "Subscription reactivated successfully!" });
+        return res.status(200).json({ success: true, message: "Subscription reactivated successfully!" });
       }
     }
 
-    const newSubscriber = await Subscriber.create({ email });
+    const newSubscriber = await Subscriber.create({ email: trimmedEmail });
     
     // Trigger welcome email (non-blocking)
     try {
-      await sendWelcomeEmail(email);
+      await sendWelcomeEmail(trimmedEmail);
     } catch (e) {
       console.error("Failed to send welcome email:", e);
     }
     
-    return res.status(201).json({ message: "Subscribed successfully!" });
+    return res.status(201).json({ success: true, message: "Subscribed successfully!" });
   } catch (error) {
     console.error("Subscription error:", error);
-    return res.status(500).json({ message: "Internal server error. Please try again later." });
+    return res.status(500).json({ success: false, message: "Internal server error. Please try again later." });
   }
 }

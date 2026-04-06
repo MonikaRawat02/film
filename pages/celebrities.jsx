@@ -15,17 +15,23 @@ export default function AllCelebrities() {
   
   const observer = useRef();
   const lastElementRef = useCallback(node => {
-    if (loading || loadingMore) return;
+    // Only skip if currently loading the first page
+    if (loading && page === 1) return;
+    
     if (observer.current) observer.current.disconnect();
     
-    observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting && hasMore) {
-        setPage(prev => prev + 1);
-      }
-    });
+    observer.current = new IntersectionObserver(
+      entries => {
+        // Trigger only if element is visible AND we have more data AND not already loading
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          setPage(prev => prev + 1);
+        }
+      },
+      { threshold: 0.1 } // Trigger when 10% of element is visible
+    );
     
     if (node) observer.current.observe(node);
-  }, [loading, loadingMore, hasMore]);
+  }, [hasMore, loadingMore, page]);
 
   const fetchCelebrities = async (pageNum, isLoadMore = false) => {
     if (isLoadMore) setLoadingMore(true);
@@ -79,7 +85,9 @@ export default function AllCelebrities() {
 
   useEffect(() => {
     setPage(1);
+    setFilteredItems([]);
     setHasMore(true);
+    
     const timer = setTimeout(() => {
       fetchCelebrities(1);
     }, searchQuery.trim() !== "" ? 300 : 0);

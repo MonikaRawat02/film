@@ -1,10 +1,8 @@
-// POST /api/trending/sync
-// Fetches trends from all sources, validates against database, enriches, and stores
+// GET /api/trending/google-trends
+// Fetch ONLY Google Trends data (no YouTube)
 import dbConnect from "../../../lib/mongodb";
 import Trending from "../../../model/trending";
-import Article from "../../../model/article";
-import Celebrity from "../../../model/celebrity";
-import { fetchAllTrends } from "../../../lib/trending/data-ingestion";
+import { fetchGoogleTrends } from "../../../lib/trending/data-ingestion";
 import { preprocessTrend } from "../../../lib/trending/preprocessing";
 import { validateTrend } from "../../../lib/trending/validation";
 
@@ -18,44 +16,13 @@ async function enrichTrendData(trend, validation) {
     let enrichedData = {
       ...trend,
       referenceId: validation.referenceId,
-      referenceModel: validation.type === "trending_movies" ? "Article" : validation.type === "trending_actors" ? "Celebrity" : null,
+      referenceModel:
+        validation.type === "trending_movies"
+          ? "Article"
+          : validation.type === "trending_actors"
+          ? "Celebrity"
+          : null,
     };
-
-    // Fetch full details from database
-    if (validation.type === "trending_movies" && validation.referenceId) {
-      const movie = await Article.findById(validation.referenceId).select(
-        "movieTitle slug coverImage releaseYear director genres stats"
-      );
-
-      if (movie) {
-        enrichedData.metadata = {
-          ...enrichedData.metadata,
-          movieTitle: movie.movieTitle,
-          releaseYear: movie.releaseYear,
-          director: movie.director?.[0] || "N/A",
-          genres: movie.genres?.join(", ") || "N/A",
-          coverImage: movie.coverImage,
-          boxOffice: movie.stats?.worldwide || "N/A",
-        };
-      }
-    }
-
-    if (validation.type === "trending_actors" && validation.referenceId) {
-      const celebrity = await Celebrity.findById(validation.referenceId).select(
-        "heroSection.name heroSection.industry heroSection.profileImage quickFacts.age netWorth"
-      );
-
-      if (celebrity) {
-        enrichedData.metadata = {
-          ...enrichedData.metadata,
-          actorName: celebrity.heroSection?.name,
-          industry: celebrity.heroSection?.industry,
-          age: celebrity.quickFacts?.age,
-          profileImage: celebrity.heroSection?.profileImage,
-          netWorth: celebrity.netWorth?.netWorthUSD?.display,
-        };
-      }
-    }
 
     return enrichedData;
   } catch (error) {
@@ -70,25 +37,18 @@ async function enrichTrendData(trend, validation) {
 function calculateScore(trend) {
   let score = 0;
 
-  // Traffic contribution (40%)
-  if (trend.traffic > 1000000) score += 40;
-  else if (trend.traffic > 500000) score += 30;
-  else if (trend.traffic > 100000) score += 20;
-  else if (trend.traffic > 50000) score += 10;
+  // Traffic contribution (60% for Google Trends since it measures search volume)
+  if (trend.traffic > 1000000) score += 60;
+  else if (trend.traffic > 500000) score += 45;
+  else if (trend.traffic > 100000) score += 30;
+  else if (trend.traffic > 50000) score += 15;
 
-  // View count contribution (30%)
-  if (trend.viewCount > 10000000) score += 30;
-  else if (trend.viewCount > 5000000) score += 20;
-  else if (trend.viewCount > 1000000) score += 10;
-  else if (trend.viewCount > 500000) score += 5;
-
-  // Recency contribution (20%)
+  // Recency contribution (30%)
   const hoursSinceTrend =
     (Date.now() - new Date(trend.timestamp).getTime()) / (1000 * 60 * 60);
-  if (hoursSinceTrend < 6) score += 20;
-  else if (hoursSinceTrend < 24) score += 15;
+  if (hoursSinceTrend < 6) score += 30;
+  else if (hoursSinceTrend < 24) score += 20;
   else if (hoursSinceTrend < 48) score += 10;
-  else if (hoursSinceTrend < 72) score += 5;
 
   // Classification confidence (10%)
   score += Math.round((trend.classificationConfidence || 0.5) * 10);
@@ -97,7 +57,7 @@ function calculateScore(trend) {
 }
 
 export default async function handler(req, res) {
-  // Verify CRON secret
+  // Verify CRON secret for POST requests
   if (req.method === "POST") {
     const secret = req.headers["x-cron-secret"];
     if (secret !== CRON_SECRET && req.headers.authorization !== `Bearer ${CRON_SECRET}`) {
@@ -111,19 +71,27 @@ export default async function handler(req, res) {
     await dbConnect();
 
     console.log("\n" + "=".repeat(70));
-    console.log("🚀 Starting Trend Sync & Enrichment Pipeline");
+    console.log("🚀 Starting Google Trends Sync Pipeline");
     console.log("=".repeat(70));
 
-    // Step 1: Fetch raw trends from all sources
-    console.log("\n📊 Step 1: Fetching trends from Google & YouTube...");
-    const rawTrends = await fetchAllTrends("IN");
-    console.log(`   ✅ Fetched ${rawTrends.length} raw trends`);
+    // Step 1: Fetch ONLY Google Trends (no YouTube)
+    console.log("\n📊 Step 1: Fetching Google Trends data...");
+    const rawTrends = await fetchGoogleTrends("IN");
+    console.log(`   ✅ Fetched ${rawTrends.length} Google Trends`);
 
     if (rawTrends.length === 0) {
       return res.status(200).json({
         success: true,
-        message: "No trends found",
-        stats: { processed: 0, validated: 0, rejected: 0, movies: 0, actors: 0, topics: 0 }
+        message: "No Google Trends found",
+        stats: {
+          processed: 0,
+          validated: 0,
+          rejected: 0,
+          movies: 0,
+          actors: 0,
+          topics: 0,
+          source: "google",
+        },
       });
     }
 
@@ -152,13 +120,13 @@ export default async function handler(req, res) {
           continue;
         }
 
-        // Enrich with database content
+        // Enrich
         const enriched = await enrichTrendData(preprocessed, validation);
 
         // Calculate score
         const score = calculateScore(enriched);
 
-        // Create record for database
+        // Create record
         const trendRecord = {
           title: enriched.title,
           type: validation.type,
@@ -166,9 +134,9 @@ export default async function handler(req, res) {
           referenceId: enriched.referenceId,
           referenceModel: enriched.referenceModel,
           slug: validation.slug,
-          source: enriched.source,
+          source: "google", // Mark as Google Trends
           traffic: enriched.traffic || 0,
-          viewCount: enriched.viewCount || 0,
+          viewCount: 0, // Google Trends doesn't have view counts
           keywords: enriched.keywords || [],
           classificationConfidence: enriched.classificationConfidence || 0.5,
           status: "active",
@@ -180,7 +148,12 @@ export default async function handler(req, res) {
 
         trendingRecords.push(trendRecord);
 
-        const typeLabel = validation.type === "trending_movies" ? "🎬" : validation.type === "trending_actors" ? "👤" : "📊";
+        const typeLabel =
+          validation.type === "trending_movies"
+            ? "🎬"
+            : validation.type === "trending_actors"
+            ? "👤"
+            : "📊";
         console.log(
           `   ${typeLabel} Validated & enriched: "${enriched.title.substring(0, 30)}..." (Score: ${score})`
         );
@@ -206,35 +179,37 @@ export default async function handler(req, res) {
     console.log(`   Rejected: ${rejected}`);
     console.log(`   Breakdown: ${movies} movies, ${actors} actors, ${topics} topics`);
 
+
     // Step 3: Save to database
     if (trendingRecords.length > 0) {
       console.log(`\n💾 Step 3: Saving to database...`);
 
-      // Delete expired trends
+      // Delete expired Google Trends
       const expiredCount = await Trending.deleteMany({
-        expiresAt: { $lt: new Date() }
+        source: "google",
+        expiresAt: { $lt: new Date() },
       });
-      console.log(`   🗑️  Cleaned up ${expiredCount.deletedCount} expired trends`);
+      console.log(`   🗑️  Cleaned up ${expiredCount.deletedCount} expired Google Trends`);
 
       // Upsert new trends
       for (const record of trendingRecords) {
         await Trending.findOneAndUpdate(
-          { title: record.title, source: record.source },
+          { title: record.title, source: "google" },
           record,
           { upsert: true, returnDocument: 'after' }
         );
       }
 
-      console.log(`   ✅ Saved ${trendingRecords.length} trends to database`);
+      console.log(`   ✅ Saved ${trendingRecords.length} Google Trends to database`);
     }
 
     console.log("\n" + "=".repeat(70));
-    console.log("✅ Sync & Enrichment Pipeline Complete!");
+    console.log("✅ Google Trends Sync Complete!");
     console.log("=".repeat(70) + "\n");
 
     return res.status(200).json({
       success: true,
-      message: "Trends synced and enriched successfully",
+      message: "Google Trends synced successfully",
       stats: {
         processed: rawTrends.length,
         validated,
@@ -243,14 +218,16 @@ export default async function handler(req, res) {
         actors,
         topics,
         saved: trendingRecords.length,
-      }
+        source: "google",
+      },
     });
   } catch (error) {
-    console.error("❌ Sync Pipeline Error:", error.message);
+    console.error("❌ Google Trends Sync Error:", error.message);
     return res.status(500).json({
       success: false,
-      message: "Sync failed",
-      error: error.message
+      message: "Google Trends sync failed",
+      error: error.message,
+      source: "google",
     });
   }
 }
