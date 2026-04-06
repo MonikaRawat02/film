@@ -38,8 +38,10 @@ export default async function handler(req, res) {
       const c = await Celebrity.findOne({ "heroSection.slug": slug });
       if (!c) return res.status(404).json({ message: "Not found" });
       return res.status(200).json({
+        success: true,
         data: {
           name: c?.heroSection?.name || null,
+          _id: c._id.toString(),
           netWorth: getDisplayNetWorth(c),
           filmsCount: c?.heroSection?.filmsCount ?? null,
           awardsCount: c?.heroSection?.awardsCount ?? null,
@@ -87,6 +89,7 @@ export default async function handler(req, res) {
       .sort({ createdAt: -1 });
 
     const data = docs.map((c) => ({
+      _id: c._id.toString(),
       name: c?.heroSection?.name || null,
       netWorth: getDisplayNetWorth(c),
       filmsCount: c?.heroSection?.filmsCount ?? null,
@@ -101,15 +104,21 @@ export default async function handler(req, res) {
     }));
 
     return res.status(200).json({
+      success: true,
       data,
       pagination: {
         page: pg,
         limit: lim,
         total,
-        pages: Math.ceil(total / lim) || 1
+        pages: Math.ceil(total / lim) || 1,
+        hasMore: pg < Math.ceil(total / lim)
       }
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Celebrity API error:", error);
+    return res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 }

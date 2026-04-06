@@ -6,8 +6,8 @@ const path = require('path');
 
 // --- Configuration ---
 const NEXTJS_URL = process.env.NEXTJS_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-const SCRAPE_INTERVAL = process.env.SCRAPE_INTERVAL || '* 11 * * *'; // Default: running daily at 11:00 AM
-const HEARTBEAT_INTERVAL = '* 11 * * *'; // Running daily at 11:00 AM
+const SCRAPE_INTERVAL = process.env.SCRAPE_INTERVAL || '0 0 * * *'; // Run daily at midnight
+const HEARTBEAT_INTERVAL = '0 * * * *'; // Hourly heartbeat
 const BATCH_LIMIT = parseInt(process.env.BATCH_LIMIT || '10');
 const CRON_SECRET = process.env.CRON_SECRET || 'filmyfire_automation_secret_2026';
 const LOG_FILE = path.join(__dirname, 'scheduler.log');
