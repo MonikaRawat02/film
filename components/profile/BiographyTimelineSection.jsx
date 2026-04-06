@@ -36,7 +36,7 @@ export default function BiographyTimelineSection({ celebrity }) {
           <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-blue-500/20 to-purple-500/20" />
 
           {/* Timeline Items */}
-          <div className="space-y-6 md:space-y-8">
+          <div className="space-y-6 md:space-y-12 max-w-5xl mx-auto">
             {timelineItems.map((item, index) => {
               const isHovered = hoverIndex === index;
               return (
@@ -53,7 +53,9 @@ export default function BiographyTimelineSection({ celebrity }) {
                       boxShadow: isHovered ? `0 0 30px ${purpleTheme}44` : "none",
                       transform: isHovered ? "translateY(-4px)" : "none",
                     }}
-                    className="relative bg-[#0d111c] rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden"
+                    className={`relative bg-[#0d111c] rounded-2xl border transition-all duration-300 cursor-pointer overflow-hidden ${
+                      index % 2 === 0 ? "md:translate-x-10" : "md:-translate-x-10"
+                    }`}
                     onClick={() => setExpandedIndex(expandedIndex === index ? -1 : index)}
                   >
                     {/* High Bright Glow Background */}
@@ -70,8 +72,7 @@ export default function BiographyTimelineSection({ celebrity }) {
                           </span>
                           <h3 
                             className="text-xl font-bold text-white mb-2 transition-colors duration-300"
-                            style={{ color: isHovered ? purpleTheme : 'white' }}
-                          >
+                            style={{ color: isHovered ? purpleTheme : 'white' }} >
                             {item.title}
                           </h3>
                           <p className="text-slate-400 text-base transition-colors duration-300 group-hover:text-slate-300">

@@ -18,7 +18,7 @@ export default function FAQSection({ celebrity }) {
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl font-bold text-white mb-3">
+          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-3">
             Frequently Asked <span className="text-transparent bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text">Questions</span>
           </h2>
           <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto">
@@ -37,8 +37,7 @@ export default function FAQSection({ celebrity }) {
               {faqs.map((faq, index) => (
                 <div
                   key={index}
-                  className="rounded-xl border border-white/5 bg-slate-900/50 overflow-hidden transition-all duration-300 hover:bg-slate-800/50"
-                >
+                  className="rounded-xl border border-white/5 bg-slate-900/50 overflow-hidden transition-all duration-300 hover:bg-slate-800/50">
                   <button
                     onClick={() => setExpandedIndex(expandedIndex === index ? -1 : index)}
                     className="w-full flex items-center justify-between p-4 sm:p-5 text-left cursor-pointer transition-colors"
