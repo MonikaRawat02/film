@@ -52,12 +52,19 @@ export default async function handler(req, res) {
       });
     }
 
-    const { sections: aiSections, isAI } = aiResponse;
+    const { sections: aiSections, isAI, extraData } = aiResponse;
 
     // 3. Update the article with AI-generated sections
     const updateData = {
       isAIContent: isAI
     };
+
+    // --- Handle Box Office Extra Data ---
+    if (pageType === "box-office" && extraData) {
+      updateData["boxOffice.verdict"] = extraData.verdict;
+      updateData["boxOffice.territorialBreakdown"] = extraData.territorialBreakdown;
+      updateData["boxOffice.overseasMarkets"] = extraData.overseasMarkets;
+    }
     
     // Map pageType to specific pSEO content field
     const contentFieldMap = {

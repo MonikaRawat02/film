@@ -151,6 +151,23 @@ const pSEOPageSchema = new mongoose.Schema(
     wordCount: {
       type: Number,
       default: 0,
+      validate: {
+        validator: function (v) {
+          // Main pages (overview): 1200-2000 words
+          // Sub pages: 800-1500 words
+          if (this.pageType === "overview") {
+            return v === 0 || (v >= 1200 && v <= 2000);
+          }
+          // Sub pages
+          return v === 0 || (v >= 800 && v <= 1500);
+        },
+        message: function () {
+          if (this.pageType === "overview") {
+            return "Main pages must be 1200-2000 words";
+          }
+          return "Sub pages must be 800-1500 words";
+        },
+      },
     },
     readTime: {
       type: String,

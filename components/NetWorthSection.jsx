@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp, Film, Building2, BarChart3, Users } from "lucide-react";
+import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp, Film, Building2, BarChart3, Users, ArrowRight } from "lucide-react";
 
 export default function NetWorthSection({ celebrity }) {
   const [currency, setCurrency] = useState("USD");
@@ -281,11 +281,16 @@ export default function NetWorthSection({ celebrity }) {
             {/* Profile Header */}
             <div className="flex items-start gap-6 mb-10">
               <div className="relative">
-                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-[var(--ff-border)]">
-                  <img
-                    src={processedCelebrity?.image || "/placeholder.jpg"}
-                    alt={processedCelebrity?.name || "Celebrity"}
-                    className="w-full h-full object-cover"/>
+                <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-[var(--ff-border)] bg-slate-900 flex items-center justify-center">
+                  {processedCelebrity?.image && processedCelebrity.image !== "/placeholder.jpg" ? (
+                    <img
+                      src={processedCelebrity.image}
+                      alt={processedCelebrity.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User className="w-10 h-10 text-slate-600" />
+                  )}
                 </div>
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-[#0a0a0f]" />
               </div>
@@ -1019,9 +1024,9 @@ export default function NetWorthSection({ celebrity }) {
               </div>
 
               {/* Jump to Section */}
-              <div className="bg-[var(--ff-dark-elevated)] border border-[var(--ff-border)] rounded-xl p-5">
-                <h3 className="text-sm text-[var(--ff-text-primary)] mb-4">Jump to Section</h3>
-                <nav className="space-y-2">
+              <div className="bg-[var(--ff-dark-elevated)] border border-[var(--ff-border)] rounded-xl p-5 shadow-lg">
+                <h3 className="text-sm font-bold text-[var(--ff-text-primary)] uppercase tracking-widest mb-4">Jump to Section</h3>
+                <nav className="space-y-1">
                   {sections.map((section) => (
                     <button
                       key={section.id}
@@ -1030,14 +1035,21 @@ export default function NetWorthSection({ celebrity }) {
                         setActiveSection(section.id);
                         const el = typeof window !== "undefined" ? document.getElementById(section.id) : null;
                         if (el) {
-                          const yOffset = -80;
+                          const yOffset = -100;
                           const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
                           window.scrollTo({ top: y, behavior: "smooth" });
                         }
                       }}
-                      className="w-full text-left text-sm text-[var(--ff-text-secondary)] hover:text-[var(--ff-cinema-red)] transition-colors py-1.5 px-2 rounded hover:bg-[var(--ff-dark-surface)]"
+                      className={`w-full text-left text-sm py-2.5 px-3 rounded-lg transition-all flex items-center justify-between group cursor-pointer ${
+                        activeSection === section.id
+                          ? "bg-[var(--ff-electric-blue)]/10 text-[var(--ff-electric-blue)] font-bold shadow-inner"
+                          : "text-[var(--ff-text-secondary)] hover:bg-white/5 hover:text-[var(--ff-text-primary)]"
+                      }`}
                     >
                       {section.label}
+                      <ArrowRight className={`w-3.5 h-3.5 transition-all duration-300 ${
+                        activeSection === section.id ? "translate-x-0 opacity-100" : "-translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                      }`} />
                     </button>
                   ))}
                 </nav>
