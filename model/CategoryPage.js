@@ -1,11 +1,11 @@
-// Discovery Pages Schema - /best-thriller-movies, /movies-like-inception, etc.
-// model/DiscoveryPage.js
+// Category Pages Schema - /hollywood/movies, /bollywood/action-movies, etc.
+// model/CategoryPage.js
 
 import mongoose from "mongoose";
 
-const DiscoveryPageSchema = new mongoose.Schema(
+const CategoryPageSchema = new mongoose.Schema(
   {
-    // Page slug (e.g., "best-thriller-movies", "movies-like-inception")
+    // URL slug (e.g., "hollywood", "bollywood-action-movies", "movies-2024")
     slug: {
       type: String,
       required: true,
@@ -15,23 +15,27 @@ const DiscoveryPageSchema = new mongoose.Schema(
       maxlength: 60,
     },
 
-    // Page type for categorization
-    pageType: {
+    // Parent category (base structure)
+    parentCategory: {
       type: String,
       enum: [
-        "best-movies",
-        "top-10",
-        "movies-like",
-        "underrated",
-        "most-watched",
-        "trending",
-        "coming-soon",
-        "custom-list",
+        "hollywood",
+        "bollywood",
+        "web-series",
+        "ott",
+        "box-office",
+        "celebrities",
       ],
       required: true,
     },
 
-    // SEO Title and Description
+    // Sub-category (e.g., "action-movies", "movies-2024", "top-rated")
+    subCategory: {
+      type: String,
+      trim: true,
+    },
+
+    // SEO Information
     title: {
       type: String,
       required: true,
@@ -58,16 +62,15 @@ const DiscoveryPageSchema = new mongoose.Schema(
       },
     ],
 
-    // Related Movies (IDs from Article collection)
-    relatedMovies: [
+    // Movies/Items in this category
+    items: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Article",
       },
     ],
 
-    // Movie count on page
-    movieCount: {
+    itemCount: {
       type: Number,
       default: 0,
     },
@@ -85,7 +88,7 @@ const DiscoveryPageSchema = new mongoose.Schema(
       ],
     },
 
-    // Schema Markup (JSON-LD)
+    // Schema Markup
     schemaMarkup: {
       type: mongoose.Schema.Types.Mixed,
       default: null,
@@ -107,14 +110,7 @@ const DiscoveryPageSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Category (which section it belongs to)
-    category: {
-      type: String,
-      enum: ["bollywood", "hollywood", "web-series", "ott", "box-office"],
-      required: true,
-    },
-
-    // Filter criteria (for "best-thriller-movies", etc.)
+    // Filter criteria
     filterCriteria: {
       genres: [String],
       ratings: {
@@ -125,17 +121,24 @@ const DiscoveryPageSchema = new mongoose.Schema(
         min: Number,
         max: Number,
       },
-      status: {
+      language: [String],
+      type: {
         type: String,
-        enum: ["hit", "flop", "average", "blockbuster"],
+        enum: ["movie", "web-series", "all"],
       },
     },
 
-    // Sorting method
+    // Sorting
     sortBy: {
       type: String,
-      enum: ["rating", "popularity", "release-date", "box-office", "views"],
+      enum: ["rating", "release-date", "views", "popularity"],
       default: "rating",
+    },
+
+    // Pagination
+    itemsPerPage: {
+      type: Number,
+      default: 12,
     },
 
     // Status
@@ -182,8 +185,7 @@ const DiscoveryPageSchema = new mongoose.Schema(
     timestamps: true,
     indexes: [
       { slug: 1 },
-      { pageType: 1 },
-      { category: 1 },
+      { parentCategory: 1 },
       { status: 1 },
       { publishedAt: -1 },
       { "stats.views": -1 },
@@ -191,16 +193,14 @@ const DiscoveryPageSchema = new mongoose.Schema(
   }
 );
 
-// Calculate read time and word count
-DiscoveryPageSchema.methods.calculateWordCount = function () {
+// Calculate word count and read time
+CategoryPageSchema.methods.calculateWordCount = function () {
   let totalWords = 0;
 
-  // Count intro words
   if (this.intro) {
     totalWords += this.intro.split(/\s+/).length;
   }
 
-  // Count content words
   if (this.content && Array.isArray(this.content)) {
     this.content.forEach((section) => {
       if (section.content) {
@@ -210,8 +210,6 @@ DiscoveryPageSchema.methods.calculateWordCount = function () {
   }
 
   this.wordCount = totalWords;
-
-  // Calculate read time (200 words per minute)
   const minutes = Math.ceil(totalWords / 200);
   this.readTime = `${minutes} min read`;
 
@@ -219,7 +217,7 @@ DiscoveryPageSchema.methods.calculateWordCount = function () {
 };
 
 // Publish method
-DiscoveryPageSchema.methods.publish = function () {
+CategoryPageSchema.methods.publish = function () {
   this.status = "published";
   this.publishedAt = new Date();
   this.version += 1;
@@ -227,33 +225,37 @@ DiscoveryPageSchema.methods.publish = function () {
 };
 
 // Pre-save hook
-DiscoveryPageSchema.pre("save", function (next) {
+CategoryPageSchema.pre("save", function (next) {
   this.calculateWordCount();
+  this.itemCount = this.items ? this.items.length : 0;
   next();
 });
 
-// Static method to get by slug
-DiscoveryPageSchema.statics.getBySlug = async function (slug) {
-  return await this.findOne({ slug, status: "published" })
-    .populate("relatedMovies", "movieTitle slug coverImage releaseYear");
+// Static methods
+CategoryPageSchema.statics.getBySlug = async function (slug) {
+  return await this.findOne({ slug, status: "published" }).populate(
+    "items",
+    "movieTitle slug coverImage releaseYear rating stats"
+  );
 };
 
-// Static method to get by category
-DiscoveryPageSchema.statics.getByCategory = async function (
-  category,
+CategoryPageSchema.statics.getByParentCategory = async function (
+  parentCategory,
   limit = 20
 ) {
-  return await this.find({ category, status: "published" })
+  return await this.find({ parentCategory, status: "published" })
     .sort({ publishedAt: -1 })
     .limit(limit);
 };
 
-// Static method to get by type
-DiscoveryPageSchema.statics.getByType = async function (pageType, limit = 10) {
-  return await this.find({ pageType, status: "published" })
-    .sort({ publishedAt: -1 })
+CategoryPageSchema.statics.getTopCategories = async function (
+  parentCategory,
+  limit = 5
+) {
+  return await this.find({ parentCategory, status: "published" })
+    .sort({ "stats.views": -1 })
     .limit(limit);
 };
 
-export default mongoose.models.DiscoveryPage ||
-  mongoose.model("DiscoveryPage", DiscoveryPageSchema);
+export default mongoose.models.CategoryPage ||
+  mongoose.model("CategoryPage", CategoryPageSchema);

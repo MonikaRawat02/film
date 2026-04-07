@@ -124,11 +124,14 @@ export default async function handler(req, res) {
         
         // Find movies that were just added or are missing enrichment
         // Or if forceRefresh is true, find any movies that haven't been refreshed in 24 hours
+        // Or if cast members are missing profile images
         const pendingMovies = await Article.find({
           contentType: "movie",
           $or: [
             { tmdbId: { $exists: false } },
             { genreAnalysis: { $exists: false } },
+            { "cast.profileImage": "" },
+            { "cast.profileImage": { $exists: false } },
             { updatedAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) } }
           ]
         }).limit(20);

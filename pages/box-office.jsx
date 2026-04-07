@@ -12,12 +12,25 @@ export default function BoxOfficePage() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [initialSearchApplied, setInitialSearchApplied] = useState(false);
 
   useEffect(() => {
-    if (search) {
-      setSearchQuery(search);
+    if (search && data.length > 0 && !initialSearchApplied) {
+      // Only apply search if it returns results, otherwise show all movies
+      const hasMatches = data.some(m => 
+        m.movieName.toLowerCase().includes(search.toLowerCase()) ||
+        m.verdict.toLowerCase().includes(search.toLowerCase())
+      );
+      
+      if (hasMatches) {
+        setSearchQuery(search);
+      } else {
+        // No matches - show all movies instead of empty list
+        setSearchQuery("");
+      }
+      setInitialSearchApplied(true);
     }
-  }, [search]);
+  }, [search, data.length, initialSearchApplied]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +68,7 @@ export default function BoxOfficePage() {
   }, [data]);
 
   const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) return data;
     return data.filter(m => 
       m.movieName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       m.verdict.toLowerCase().includes(searchQuery.toLowerCase())

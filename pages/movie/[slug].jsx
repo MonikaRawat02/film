@@ -375,8 +375,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               <img 
                 src={article.coverImage} 
                 alt=""
-                className="w-full h-full object-cover"
-              />
+                className="w-full h-full object-cover"/>
             ) : (
               <div className="w-full h-full bg-zinc-900" />
             )}

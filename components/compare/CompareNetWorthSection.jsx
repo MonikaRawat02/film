@@ -1,5 +1,5 @@
 "use client";
-import { DollarSign } from "lucide-react";
+import { DollarSign, User } from "lucide-react";
 
 function NetWorthCard({ celebrity, netWorth, currency = "USD" }) {
   const name = celebrity?.name || "Unknown";
@@ -13,11 +13,17 @@ function NetWorthCard({ celebrity, netWorth, currency = "USD" }) {
     <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-[#3B82F6] transition-all duration-300 hover:shadow-lg hover:shadow-[#3B82F6]/20">
       {/* Header with image and name */}
       <div className="flex items-center gap-4 mb-6">
-        <img
-          src={image}
-          alt={name}
-          className="w-16 h-16 rounded-full object-cover"
-        />
+        <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-800 flex items-center justify-center flex-shrink-0">
+          {image && image !== "/placeholder.jpg" ? (
+            <img
+              src={image}
+              alt={name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <User className="w-8 h-8 text-gray-600" />
+          )}
+        </div>
         <div>
           <div className="text-white text-xl font-semibold">{name}</div>
           <div className="text-gray-400">{profession}</div>

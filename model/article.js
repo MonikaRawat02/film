@@ -62,7 +62,14 @@ const ArticleSchema = new mongoose.Schema(
       india: String,
       roi: String, // e.g., "+562%"
       profit: String, // e.g., "+₹100 Crore"
+      verdict: String, // e.g., "Blockbuster"
       analysisLink: String,
+      territorialBreakdown: [
+        { region: String, percentage: Number, amount: String }
+      ],
+      overseasMarkets: [
+        { market: String, amount: String }
+      ],
       movieDNA: {
         emotionalIntensity: { type: Number, default: 0 },
         violenceLevel: { type: Number, default: 0 },

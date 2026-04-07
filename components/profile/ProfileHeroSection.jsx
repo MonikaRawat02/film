@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { TrendingUp, CheckCircle } from "lucide-react";
+import { TrendingUp, CheckCircle, User } from "lucide-react";
 
 export default function ProfileHeroSection({ celebrity }) {
   if (!celebrity) return null;
@@ -8,7 +8,7 @@ export default function ProfileHeroSection({ celebrity }) {
   const data = {
     name: celebrity.heroSection?.name || "Unknown",
     slug: celebrity.heroSection?.slug || "",
-    image: celebrity.heroSection?.profileImage || "/placeholder.jpg",
+    image: celebrity.heroSection?.profileImage,
     netWorth: celebrity.netWorth?.netWorthUSD?.display || celebrity.netWorth?.netWorthINR?.display || "N/A",
     profession: Array.isArray(celebrity.heroSection?.profession) 
       ? celebrity.heroSection.profession.join(", ") 
@@ -116,13 +116,22 @@ export default function ProfileHeroSection({ celebrity }) {
 
           {/* Right Image */}
           <div className="lg:col-span-5 w-full">
-            <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden">
-              <img
-                src={data.image}
-                alt={data.name}
-                className="w-full h-full object-cover grayscale"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="relative w-full aspect-[4/5] rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center">
+              {data.image ? (
+                <>
+                  <img
+                    src={data.image}
+                    alt={data.name}
+                    className="w-full h-full object-cover grayscale"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                </>
+              ) : (
+                <div className="flex flex-col items-center justify-center text-slate-700">
+                  <User className="w-32 h-32 opacity-20" />
+                  <span className="text-xs uppercase tracking-widest mt-4 opacity-40">No Profile Image</span>
+                </div>
+              )}
               {data.verified && (
                 <div className="absolute top-4 right-4 flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-full shadow-lg">
                   <CheckCircle className="h-5 w-5" />
