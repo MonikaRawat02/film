@@ -14,7 +14,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Slug is required" });
     }
 
-    // List of common pSEO suffixes
+    // List of common pSEO suffixes (backward compatibility for old suffix-style URLs)
+    // New URLs use path-style: /movie/:slug/:type
     const suffixes = [
       "-explained", "-ending-explained", "-box-office", "-budget", 
       "-ott", "-ott-release", "-analysis", "-reviews", "-review-analysis", 

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import OTTHeroSection from "../../components/category/ott/OTTHeroSection";
 import OTTFilterBar from "../../components/category/ott/OTTFilterBar";
 import OTTArticlesGrid from "../../components/category/ott/OTTArticlesGrid";
 import OTTMovieIntelligence from "../../components/category/ott/OTTMovieIntelligence";
-import { PlaySquare, Smartphone, Globe, ShieldCheck } from "lucide-react";
+import { Smartphone, PlaySquare, Globe, ShieldCheck } from "lucide-react";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -23,7 +23,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    console.error("Error fetching articles:", error);
+    console.error("Error fetching OTT articles:", error);
     return {
       props: {
         initialArticles: [],
@@ -32,13 +32,13 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function OTTPage({ initialArticles }) {
+export default function OTTIndexPage({ initialArticles }) {
   const [activeFilter, setActiveFilter] = useState("All");
 
   return (
     <>
       <Head>
-        <title>OTT Platform Intelligence Hub | FilmyFire</title>
+        <title>OTT Intelligence Hub | FilmyFire</title>
         <meta name="description" content="Streaming platform analytics, content strategy breakdowns, and subscriber growth intelligence across Netflix, Prime, Disney+ and more." />
       </Head>
 
@@ -71,31 +71,9 @@ export default function OTTPage({ initialArticles }) {
         <OTTFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
         <OTTArticlesGrid initialArticles={initialArticles} activeFilter={activeFilter} />
         <OTTMovieIntelligence />
-        
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-zinc-900">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-12 bg-gradient-to-r from-rose-900/20 to-zinc-900/40 p-12 rounded-3xl border border-rose-500/20">
-            <div className="max-w-xl">
-              <h2 className="text-3xl font-bold text-white mb-6">OTT Digital Rights Analysis</h2>
-              <p className="text-zinc-400 text-lg mb-8">
-                Get exclusive intelligence on high-value digital rights deals, satellite distribution, and streaming performance metrics across all major Indian and International platforms.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <div className="px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-300 border border-zinc-700">Netflix Originals</div>
-                <div className="px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-300 border border-zinc-700">Prime Video Deals</div>
-                <div className="px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-300 border border-zinc-700">Disney+ Performance</div>
-              </div>
-            </div>
-            <div className="shrink-0">
-              <div className="w-48 h-48 rounded-full border-8 border-rose-500/10 flex items-center justify-center relative">
-                <div className="absolute inset-0 rounded-full border-2 border-rose-500/30 animate-ping" />
-                <PlaySquare className="w-20 h-20 text-rose-500" />
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </>
   );
 }
 
-OTTPage.noPadding = true;
+OTTIndexPage.noPadding = true;

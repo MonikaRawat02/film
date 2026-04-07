@@ -30,7 +30,8 @@ export default async function handler(req, res) {
       // Overview
       sitemapEntries.push({ url: `/movie/${baseSlug}`, changefreq: "weekly", priority: 0.8 });
       
-      // pSEO Sub-pages (Generated dynamically by the system)
+      // pSEO Sub-pages (suffix-style URLs: /movie/:slug-suffix)
+      // 8 pages per movie for SEO scale
       const subPages = [
         "-ending-explained",
         "-box-office",
