@@ -174,6 +174,7 @@ function generateFAQs(article, pageType) {
     ]
   };
 
+
   // Combine base FAQs with page-specific ones
   const specificFAQs = pageSpecificFAQs[pageType] || pageSpecificFAQs.overview;
   
@@ -439,8 +440,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               <img 
                 src={article.coverImage} 
                 alt=""
-                className="w-full h-full object-cover"
-              />
+                className="w-full h-full object-cover"/>
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-black" />
             )}
@@ -608,45 +608,53 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     </h3>
                     <div className="space-y-6">
                       {/* Territorial Breakdown */}
-                      {article.boxOffice?.territorialBreakdown?.length > 0 && (
-                        <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900/80 to-slate-800/80 border border-white/10">
-                          <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4">Territorial Distribution</h4>
-                          <div className="space-y-4">
-                            {article.boxOffice.territorialBreakdown.map((region, idx) => (
-                              <div key={idx}>
-                                <div className="flex justify-between text-xs mb-2">
-                                  <span className="text-zinc-300 font-medium">{region.region}</span>
-                                  <span className="text-zinc-400">{region.amount || `${region.percentage}%`}</span>
-                                </div>
-                                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                                  <div 
-                                    className="h-full bg-gradient-to-r from-red-600 to-orange-500 rounded-full transition-all duration-1000"
-                                    style={{ width: `${region.percentage}%` }}
-                                  />
-                                </div>
+                      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900/80 to-slate-800/80 border border-white/10">
+                        <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4">Territorial Distribution</h4>
+                        <div className="space-y-4">
+                          {[
+                            { region: "Mumbai Circuit", percentage: 25, amount: article.stats?.mumbai },
+                            { region: "Delhi/UP", percentage: 20, amount: article.stats?.delhiUP },
+                            { region: "East Punjab", percentage: 15, amount: article.stats?.eastPunjab },
+                            { region: "Rajasthan", percentage: 12, amount: article.stats?.rajasthan },
+                            { region: "CP Berar", percentage: 10, amount: article.stats?.cpBerar },
+                            { region: "Nizam/AP", percentage: 18, amount: article.stats?.nizamAP }
+                          ].map((region, idx) => (
+                            <div key={idx}>
+                              <div className="flex justify-between text-xs mb-2">
+                                <span className="text-zinc-300 font-medium">{region.region}</span>
+                                <span className="text-zinc-400">{region.amount || `${region.percentage}%`}</span>
+                              </div>
+                              <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                                <div 
+                                  className="h-full bg-gradient-to-r from-red-600 to-orange-500 rounded-full transition-all duration-1000"
+                                  style={{ width: `${region.percentage}%` }}
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Overseas Breakdown */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+                          <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <Globe className="w-4 h-4 text-cyan-400" /> Overseas Markets
+                          </h4>
+                          <div className="space-y-3">
+                            {[
+                              { market: "UAE/GCC", amount: article.stats?.uaeGcc },
+                              { market: "USA/Canada", amount: article.stats?.usaCanada },
+                              { market: "UK/Europe", amount: article.stats?.ukEurope },
+                              { market: "Australia", amount: article.stats?.australia }
+                            ].map((market, idx) => (
+                              <div key={idx} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                                <span className="text-sm text-zinc-400">{market.market}</span>
+                                <span className="text-sm font-bold text-white">{market.amount || "N/A"}</span>
                               </div>
                             ))}
                           </div>
                         </div>
-                      )}
-
-                      {/* Overseas Breakdown */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {article.boxOffice?.overseasMarkets?.length > 0 && (
-                          <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                            <h4 className="text-sm font-bold text-white uppercase tracking-widest mb-4 flex items-center gap-2">
-                              <Globe className="w-4 h-4 text-cyan-400" /> Overseas Markets
-                            </h4>
-                            <div className="space-y-3">
-                              {article.boxOffice.overseasMarkets.map((market, idx) => (
-                                <div key={idx} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
-                                  <span className="text-sm text-zinc-400">{market.market}</span>
-                                  <span className="text-sm font-bold text-white">{market.amount || "N/A"}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
 
                         {/* Verdict */}
                         <div className="p-6 rounded-2xl bg-gradient-to-br from-red-600/10 to-orange-600/10 border border-red-500/20">
@@ -656,7 +664,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                           <div className="text-center py-8">
                             <div className="inline-block px-6 py-3 rounded-full bg-red-600/20 border border-red-500/30 mb-4">
                               <span className="text-2xl font-black text-red-400 uppercase tracking-widest">
-                                {article.boxOffice?.verdict || article.stats?.verdict || "Average"}
+                                {article.stats?.verdict || "Average"}
                               </span>
                             </div>
                             <p className="text-xs text-zinc-400 leading-relaxed">
@@ -986,7 +994,6 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 </p>
               </div>
             </div>
-
           </div>
 
           {/* Sidebar */}

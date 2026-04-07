@@ -179,6 +179,7 @@ export default async function handler(req, res) {
     console.log(`   Rejected: ${rejected}`);
     console.log(`   Breakdown: ${movies} movies, ${actors} actors, ${topics} topics`);
 
+
     // Step 3: Save to database
     if (trendingRecords.length > 0) {
       console.log(`\n💾 Step 3: Saving to database...`);
