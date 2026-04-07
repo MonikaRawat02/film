@@ -3,24 +3,24 @@
  import Link from "next/link";
  import { Flame, Menu, X } from "lucide-react";
  
- export default function SiteHeader() {
+ const SiteHeader =() =>{
    const [openMobile, setOpenMobile] = useState(false);
  
    const nav = [
-    { name: "Explained", href: "/" },
-    { name: "Box Office", href: "/#ott-intelligence" },
-    { name: "OTT Analysis", href: "/#ott-intelligence" },
+    { name: "Explained", href: "/#categories" },
+    { name: "Box Office", href: "/category/box-office" },
+    { name: "OTT Analysis", href: "/ott" },
     { name: "Celebrities", href: "/#celebrities" },
     { name: "Categories", href: "/#categories" },
   ];
 
-  const scrollToSection = (href) => {
-    setOpenMobile(false);
-    if (typeof window !== 'undefined') {
+  const scrollToSection = (e, href) => {
+    if (href.startsWith('/#')) {
       const sectionId = href.split('#')[1];
-      if (sectionId) {
-        const element = document.getElementById(sectionId);
+                  const element = document.getElementById(sectionId);
         if (element) {
+          e.preventDefault();
+          setOpenMobile(false);
           const headerOffset = 80;
           const elementPosition = element.getBoundingClientRect().top;
           const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -28,12 +28,13 @@
             top: offsetPosition,
             behavior: 'smooth'
           });
+          // Update URL without jump
+          window.history.pushState(null, null, href);
         }
-      }
     }
   };
- 
-   return (
+
+  return (
      <>
        <header className="sticky top-0 z-50 border-b border-gray-800/50 bg-black/80 backdrop-blur">
         <div className="mx-auto max-w-[1400px] px-6 lg:px-12">
@@ -59,7 +60,8 @@
                  <Link
                    key={item.href}
                    href={item.href}
-                  className="relative text-[15px] text-gray-400 hover:text-white transition-colors font-medium group"
+                   onClick={(e) => scrollToSection(e, item.href)}
+                   className="relative text-[15px] text-gray-400 hover:text-white transition-colors font-medium group"
                  >
                   {item.name}
                   <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-red-600 group-hover:w-full transition-all duration-300" />
@@ -111,13 +113,14 @@
            
              <nav className="px-4 py-2 space-y-2">
                {nav.map((item) => (
-                 <button
+                 <Link
                    key={item.href}
-                   onClick={() => scrollToSection(item.href)}
+                   href={item.href}
+                   onClick={(e) => scrollToSection(e, item.href)}
                    className="block w-full text-left rounded-lg px-4 py-3 text-base font-medium text-gray-300 transition-all duration-200 hover:bg-gray-900 hover:text-white"
                  >
                    {item.name}
-                 </button>
+                 </Link>
                ))}
              </nav>
            </div>
@@ -125,4 +128,7 @@
        )}
      </>
    );
- }
+};
+
+export default SiteHeader
+

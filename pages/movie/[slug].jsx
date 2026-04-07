@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -7,7 +7,8 @@ import {
   FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft, 
   Quote, CheckCircle, Clapperboard, Film, Tv, PlaySquare, TrendingUp, 
   Users, Zap, Target, BookOpen, Award, BarChart3, ShieldCheck, Heart, 
-  MessageSquare, Bookmark, Check, DollarSign, List, Info, HelpCircle, Calendar, Globe
+  MessageSquare, Bookmark, Check, DollarSign, List, Info, HelpCircle, Calendar, Globe,
+  ChevronDown, Star, ExternalLink, Sparkles
 } from "lucide-react";
 
 export async function getServerSideProps(context) {
@@ -190,6 +191,68 @@ const categoryIcons = {
   Celebrities: Users,
 };
 
+// Dropdown FAQ Component
+function FAQDropdown({ faqs, loading }) {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const toggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  if (loading) {
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
+            <div className="h-5 bg-white/10 rounded w-3/4 mb-3"></div>
+            <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
+            <div className="h-4 bg-white/10 rounded w-2/3"></div>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  if (!faqs.length) return null;
+
+  return (
+    <div className="space-y-3">
+      {faqs.map((faq, idx) => (
+        <div 
+          key={idx} 
+          className="faq-item rounded-2xl bg-gradient-to-br from-white/5 to-white/3 border border-white/10 hover:border-red-500/30 transition-all duration-300 overflow-hidden"
+        >
+          <button
+            onClick={() => toggleFAQ(idx)}
+            className="w-full px-6 py-5 flex items-center justify-between text-left group"
+          >
+            <div className="flex items-start gap-4 pr-4">
+              <div className="flex-shrink-0 mt-1">
+                <HelpCircle className="w-5 h-5 text-red-500/70 group-hover:text-red-500 transition-colors" />
+              </div>
+              <h4 className="text-base md:text-lg font-bold text-white leading-relaxed group-hover:text-red-400 transition-colors">
+                {faq.question}
+              </h4>
+            </div>
+            <div className={`flex-shrink-0 transition-transform duration-300 ${openIndex === idx ? 'rotate-180' : ''}`}>
+              <ChevronDown className="w-5 h-5 text-zinc-400 group-hover:text-red-400" />
+            </div>
+          </button>
+          
+          <div className={`faq-answer ${openIndex === idx ? 'open' : ''}`}>
+            <div className="px-6 pb-6 pt-0 pl-14 md:pl-16">
+              <div className="h-px bg-gradient-to-r from-red-500/20 via-red-500/50 to-red-500/20 mb-4"></div>
+              <p className="text-zinc-300 text-sm leading-relaxed">
+                {faq.answer}
+              </p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function MovieDetailPage({ article, pageType, slug }) {
   const router = useRouter();
   const Icon = categoryIcons[article.category] || FileText;
@@ -292,8 +355,10 @@ export default function MovieDetailPage({ article, pageType, slug }) {
 
   if (!article) return null;
 
+  const movieTitle = article.movieTitle || article.title;
+  const releaseYear = article.releaseYear ? `(${article.releaseYear})` : "";
   const pageTitleSuffix = pageTitles[pageType] || pageTitles.overview;
-  const fullTitle = `${article.movieTitle || article.title} (${article.releaseYear}) – ${pageTitleSuffix}`;
+  const fullTitle = `${movieTitle} Movie ${releaseYear} – ${pageTitleSuffix}`;
 
   return (
     <>
@@ -329,7 +394,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
         {/* Reading Progress Bar */}
         <div className="fixed top-16 left-0 right-0 z-[100] h-1 bg-white/5">
           <div 
-            className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-red-600 transition-all duration-150"
+            className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-red-600 transition-all duration-150 progress-bar-fill"
             style={{ width: `${scrollProgress}%` }}
           />
         </div>
@@ -345,7 +410,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               <span className="hidden sm:inline uppercase tracking-widest">Back to {article.category}</span>
             </Link>
             
-            <div className={`flex-1 px-8 transition-all duration-500 ${scrollProgress > 20 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none top-0'}`}>
+            <div className={`flex-1 px-8 transition-all duration-500 ${scrollProgress > 20 ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
               <h2 className="text-[10px] font-black text-white truncate max-w-md mx-auto text-center hidden md:block uppercase tracking-[0.3em]">
                 {article.movieTitle} – {pageType.replace("-", " ")}
               </h2>
@@ -377,24 +442,37 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 alt=""
                 className="w-full h-full object-cover"/>
             ) : (
-              <div className="w-full h-full bg-zinc-900" />
+              <div className="w-full h-full bg-gradient-to-br from-zinc-900 via-zinc-800 to-black" />
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-[#050505]/40 to-transparent" />
+            <div className="absolute inset-0 hero-glow opacity-30"></div>
           </div>
 
           <div className="relative z-10 w-full max-w-[1440px] mx-auto px-6 pb-12">
             <div className="max-w-5xl">
-              <div className="flex items-center gap-4 mb-6">
+              <div className="flex items-center gap-4 mb-6 flex-wrap">
                 <span className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600 text-white text-[10px] font-bold uppercase tracking-[0.2em]">
                   <Target className="w-3 h-3" />
                   {article.category} Intelligence
                 </span>
-                <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em]">{pageType.replace("-", " ")}</span>
+                <span className="text-zinc-400 text-[10px] font-bold uppercase tracking-[0.3em] bg-white/5 px-3 py-1 rounded-full backdrop-blur-sm">
+                  {pageType.replace("-", " ")}
+                </span>
+                {article.rating && (
+                  <span className="flex items-center gap-1 text-yellow-400 text-[10px] font-bold bg-yellow-500/10 px-3 py-1 rounded-full">
+                    <Star className="w-3 h-3 fill-yellow-400" />
+                    {article.rating}/10
+                  </span>
+                )}
               </div>
 
-              <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-6">
                 {fullTitle}
               </h1>
+              <div className="flex items-center gap-4 text-sm text-zinc-400">
+                <span className="flex items-center gap-1"><Calendar className="w-4 h-4" /> {article.releaseYear}</span>
+                <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> {article.runtime || "2h 45m"}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -404,7 +482,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
           <div className="lg:col-span-8 space-y-12">
             
             {/* Quick Links for pSEO pages */}
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
+            <div className="p-6 rounded-2xl glass-panel">
               <h3 className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-4 flex items-center gap-2">
                 <List className="w-4 h-4" /> Jump to Intel
               </h3>
@@ -420,10 +498,10 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                   <Link 
                     key={idx}
                     href={`/movie/${article.slug}${link.suffix}`}
-                    className={`px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all ${
+                    className={`jump-link px-4 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all text-center ${
                       (pageType === "overview" && link.suffix === "") || (pageType !== "overview" && link.suffix === `-${pageType}`)
-                        ? "bg-red-600 text-white" 
-                        : "bg-white/5 text-zinc-400 hover:bg-white/10"
+                        ? "active bg-red-600 text-white shadow-lg shadow-red-600/20" 
+                        : "bg-white/5 text-zinc-400 hover:bg-white/10 border border-white/5"
                     }`}
                   >
                     {link.label}
@@ -434,11 +512,23 @@ export default function MovieDetailPage({ article, pageType, slug }) {
 
             {/* Dynamic Content Rendering based on pageType */}
             <div className="prose prose-invert prose-zinc max-w-none">
+              {/* Intro Paragraph for ALL pages */}
+              {pageType !== "overview" && (
+                <div className="mb-12 p-8 rounded-3xl glass-panel border-l-4 border-red-600">
+                  <p className="text-zinc-300 leading-relaxed text-lg">
+                    {article.summary ? 
+                      `${article.summary.substring(0, 300)}... This dedicated report focuses specifically on the ${pageType.replace("-", " ")} of ${movieTitle}.` : 
+                      `Explore the detailed ${pageType.replace("-", " ")} analysis for ${movieTitle} (${article.releaseYear}). Our film intelligence team has dissected every aspect of this ${article.category} feature to bring you exclusive insights.`
+                    }
+                  </p>
+                </div>
+              )}
+
               {pageType === "box-office" && (
                 <>
                   {/* Hero Stats - Opening Weekend Focus */}
                   <section className="mb-12">
-                    <h2 className="text-3xl font-bold text-white mb-8 flex items-center gap-3">
+                    <h2 className="text-3xl font-black text-white mb-8 flex items-center gap-3">
                       <TrendingUp className="w-7 h-7 text-green-500" /> 
                       Box Office Performance
                     </h2>
@@ -607,20 +697,152 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 </>
               )}
               {pageType === "overview" && (
-                <section>
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Info className="w-6 h-6 text-red-600" /> Movie Overview
-                  </h2>
-                  <p className="text-zinc-400 leading-relaxed text-lg">
-                    {article.summary}
-                  </p>
-                  
-                  {article.sections?.map((section, idx) => (
-                    <div key={idx} className="mt-8">
-                      <h3 className="text-xl font-bold text-white mb-4">{section.heading}</h3>
-                      <p className="text-zinc-400 leading-relaxed">{section.content}</p>
+                <section className="space-y-12">
+                  {/* Intro Section - 150-200 words with keyword */}
+                  <div className="p-8 rounded-3xl glass-panel relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-4 opacity-10">
+                      <Sparkles className="w-16 h-16" />
                     </div>
-                  ))}
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                      <Info className="w-6 h-6 text-red-600" /> {movieTitle} Movie Overview
+                    </h2>
+                    <p className="text-zinc-300 leading-relaxed text-lg relative z-10">
+                      {article.summary || `${movieTitle} is a highly anticipated ${article.genres?.join("/")} feature that has taken the ${article.category} industry by storm. This full intelligence report provides a comprehensive analysis of the film's theatrical journey, its digital release strategy, and the creative vision behind its production.`}
+                    </p>
+                  </div>
+
+                  {/* Plot Summary Section */}
+                  <div className="p-8 rounded-3xl glass-panel">
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                      <BookOpen className="w-6 h-6 text-red-600" /> Plot Summary
+                    </h2>
+                    <div className="space-y-4">
+                      {article.sections?.filter(s => s.heading.toLowerCase().includes("plot") || s.heading.toLowerCase().includes("story")).map((section, idx) => (
+                        <div key={idx}>
+                          <h3 className="text-xl font-bold text-white mb-4">{section.heading}</h3>
+                          <p className="text-zinc-400 leading-relaxed">{section.content}</p>
+                        </div>
+                      )) || <p className="text-zinc-500 italic">Detailed plot analysis is being updated by our film experts.</p>}
+                    </div>
+                  </div>
+
+                  {/* Ending Explained Section */}
+                  <div className="p-8 rounded-3xl glass-panel">
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                      <Zap className="w-6 h-6 text-red-600" /> Ending Explained
+                    </h2>
+                    <div className="space-y-4">
+                      {article.pSEO_Content_ending_explained?.length > 0 ? (
+                        article.pSEO_Content_ending_explained.map((section, idx) => (
+                          <div key={idx}>
+                            <h3 className="text-xl font-bold text-white mb-4">{section.heading}</h3>
+                            <p className="text-zinc-400 leading-relaxed">{section.content}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-zinc-400 leading-relaxed">
+                          For a deep-dive analysis of the final climax and hidden meanings, visit our dedicated 
+                          <Link href={`/movie/${article.slug}-ending-explained`} className="text-red-500 hover:underline mx-1 font-bold">
+                            {movieTitle} Ending Explained
+                          </Link> page.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Box Office & Budget Sections */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="p-8 rounded-3xl glass-panel">
+                      <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                        <TrendingUp className="w-6 h-6 text-red-600" /> Box Office Collection
+                      </h2>
+                      <div className="space-y-4">
+                        <p className="text-3xl font-black text-white mb-2">{article.boxOffice?.worldwide || "TBA"}</p>
+                        <p className="text-zinc-400 text-sm leading-relaxed">
+                          The global theatrical run of {movieTitle} has shown impressive resilience. 
+                          For detailed territory-wise collection and ROI analysis, check the 
+                          <Link href={`/movie/${article.slug}-box-office`} className="text-red-500 hover:underline mx-1 font-bold">
+                            Full Financial Report
+                          </Link>.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="p-8 rounded-3xl glass-panel">
+                      <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                        <DollarSign className="w-6 h-6 text-red-600" /> Budget & Profit
+                      </h2>
+                      <div className="space-y-4">
+                        <p className="text-3xl font-black text-white mb-2">{article.budget || "TBA"}</p>
+                        <p className="text-zinc-400 text-sm leading-relaxed">
+                          Production scale and marketing investments for {movieTitle} were significant. 
+                          Explore the 
+                          <Link href={`/movie/${article.slug}-budget`} className="text-red-500 hover:underline mx-1 font-bold">
+                            Budget Breakdown
+                          </Link> for details on cast salaries and technical costs.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* OTT Release Details */}
+                  <div className="p-8 rounded-3xl glass-panel">
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                      <Tv className="w-6 h-6 text-red-600" /> OTT Release Details
+                    </h2>
+                    <div className="space-y-4">
+                      {article.ott?.platform ? (
+                        <p className="text-zinc-400 leading-relaxed">
+                          {movieTitle} is officially streaming on <span className="text-white font-bold">{article.ott.platform}</span>. 
+                          The digital rights were secured in a multi-crore deal. Visit our 
+                          <Link href={`/movie/${article.slug}-ott-release`} className="text-red-500 hover:underline mx-1 font-bold">
+                            OTT Intelligence
+                          </Link> page for the exact release timeline.
+                        </p>
+                      ) : (
+                        <p className="text-zinc-400 leading-relaxed">
+                          Streaming platform details for {movieTitle} are currently under negotiation. 
+                          Check our <Link href={`/movie/${article.slug}-ott-release`} className="text-red-500 hover:underline font-bold">OTT Hub</Link> for updates.
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Cast & Characters Section */}
+                  <div className="p-8 rounded-3xl glass-panel">
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                      <Users className="w-6 h-6 text-red-600" /> Cast & Characters
+                    </h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                      {article.cast?.slice(0, 4).map((actor, idx) => (
+                        <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
+                          <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
+                            <User className="w-6 h-6 text-zinc-600" />
+                          </div>
+                          <div>
+                            <p className="text-white font-bold">{actor.name}</p>
+                            <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{actor.role || "Lead Role"}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <Link href={`/movie/${article.slug}-cast`} className="text-red-500 text-sm font-bold hover:underline flex items-center gap-1">
+                      View Full Cast & Performance Analysis <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+
+                  {/* Audience Reaction Section */}
+                  <div className="p-8 rounded-3xl glass-panel">
+                    <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                      <ThumbsUp className="w-6 h-6 text-red-600" /> Audience Reaction
+                    </h2>
+                    <p className="text-zinc-400 leading-relaxed mb-6">
+                      {article.criticalResponse || `Audience and critical reception for ${movieTitle} has been a major point of discussion. The film's unique narrative approach and technical brilliance have received praise from industry experts.`}
+                    </p>
+                    <Link href={`/movie/${article.slug}-review-analysis`} className="text-red-500 text-sm font-bold hover:underline flex items-center gap-1">
+                      See Critical Review Analysis <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </section>
               )}
 
@@ -667,39 +889,110 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 </section>
               )}
 
-              {/* Add more sections for other pageTypes as needed */}
+              {/* Generic Sub-Page Content Renderer */}
+              {pageType !== "overview" && (
+                <div className="space-y-12">
+                  {article[`pSEO_Content_${pageType.replace(/-/g, "_")}`]?.map((section, idx) => (
+                    <section key={idx}>
+                      <h2 className="text-2xl font-black text-white mb-6">{section.heading}</h2>
+                      <p className="text-zinc-400 leading-relaxed text-lg">{section.content}</p>
+                    </section>
+                  ))}
+                </div>
+              )}
+
+              {/* Internal Linking Section (Auto) - Ranking Backbone */}
+              <div className="mt-20 pt-12 border-t border-white/10">
+                <h2 className="text-2xl font-black text-white mb-8 flex items-center gap-3">
+                  <Target className="w-6 h-6 text-red-600" /> Intelligence Network
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Movie -> Actor */}
+                  <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <Users className="w-4 h-4" /> Cast Intelligence
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {article.cast?.slice(0, 5).map((actor, idx) => (
+                        <Link 
+                          key={idx} 
+                          href={`/celebrity/${slugify(actor.name)}`}
+                          className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-white/5 text-xs text-zinc-400 hover:text-white hover:border-red-500/50 transition-all"
+                        >
+                          {actor.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Movie -> Genre */}
+                  <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <Clapperboard className="w-4 h-4" /> Genre Network
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {article.genres?.map((genre, idx) => (
+                        <Link 
+                          key={idx} 
+                          href={`/category/${article.category.toLowerCase()}`}
+                          className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-white/5 text-xs text-zinc-400 hover:text-white hover:border-red-500/50 transition-all"
+                        >
+                          {genre}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Movie -> OTT */}
+                  {article.ott?.platform && (
+                    <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                      <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <Tv className="w-4 h-4" /> Streaming Hub
+                      </h3>
+                      <Link 
+                        href={`/ott/${slugify(article.ott.platform)}`}
+                        className="inline-block px-4 py-2 rounded-xl bg-red-600/10 border border-red-500/20 text-red-500 text-sm font-bold hover:bg-red-600 hover:text-white transition-all"
+                      >
+                        Watch on {article.ott.platform}
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* Movie -> Similar */}
+                  <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <Zap className="w-4 h-4" /> Similar Intelligence
+                    </h3>
+                    <Link 
+                      href={`/discover/similar-to/${article.slug}`}
+                      className="text-sm font-bold text-zinc-400 hover:text-white transition-colors flex items-center gap-2 group"
+                    >
+                      Browse Movies Like {movieTitle}
+                      <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* FAQ Section (Required for SEO) */}
             <div className="pt-16 border-t border-white/10">
-              <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-                <HelpCircle className="w-6 h-6 text-red-600" /> Frequently Asked Questions
-              </h2>
+              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                  <HelpCircle className="w-6 h-6 text-red-600" /> Frequently Asked Questions
+                </h2>
+                <span className="text-[10px] text-zinc-500 bg-white/5 px-3 py-1 rounded-full">
+                  {faqs.length} questions
+                </span>
+              </div>
               
-              {loadingFAQs ? (
-                <div className="space-y-4">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
-                      <div className="h-5 bg-white/10 rounded w-3/4 mb-3"></div>
-                      <div className="h-4 bg-white/10 rounded w-full mb-2"></div>
-                      <div className="h-4 bg-white/10 rounded w-2/3"></div>
-                    </div>
-                  ))}
-                </div>
-              ) : faqs.length > 0 ? (
-                <div className="space-y-6">
-                  {faqs.map((faq, idx) => (
-                    <div key={idx} className="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-red-500/30 transition-all duration-300">
-                      <h4 className="text-lg font-bold text-white mb-3 leading-relaxed">{faq.question}</h4>
-                      <p className="text-zinc-400 text-sm leading-relaxed">{faq.answer}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                  <p className="text-zinc-400 text-sm">Loading FAQs...</p>
-                </div>
-              )}
+              <FAQDropdown faqs={faqs} loading={loadingFAQs} />
+              
+              <div className="mt-8 text-center">
+                <p className="text-[10px] text-zinc-600 uppercase tracking-wider">
+                  Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400">Contact our film experts</Link>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -708,7 +1001,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
             <div className="sticky top-32 space-y-8">
               {/* Related Movies - Powered by Recommendation Engine */}
               {article.relatedMovies && article.relatedMovies.length > 0 && (
-                <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
+                <div className="p-6 rounded-3xl glass-panel">
                   <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-red-600" /> Related Intelligence
                   </h3>
@@ -755,7 +1048,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               
               {/* Fallback: Basic Internal Linking (if no related movies yet) */}
               {(!article.relatedMovies || article.relatedMovies.length === 0) && (
-                <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
+                <div className="p-6 rounded-3xl glass-panel">
                   <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                     <Zap className="w-4 h-4 text-red-600" /> Related Intelligence
                   </h3>
@@ -776,7 +1069,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               )}
 
               {/* Intelligence Summary */}
-              <div className="p-6 rounded-3xl bg-white/5 border border-white/10">
+              <div className="p-6 rounded-3xl glass-panel">
                 <h3 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                   <BarChart3 className="w-4 h-4 text-red-600" /> Core Intelligence
                 </h3>

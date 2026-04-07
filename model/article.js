@@ -1,5 +1,22 @@
 import mongoose from "mongoose";
 
+/**
+ * Slugify function - converts text to URL-friendly slug
+ */
+function slugify(text) {
+  if (!text) return "";
+  return text
+    .toString()
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")           // Replace spaces with -
+    .replace(/[^\w-]+/g, "")         // Remove all non-word chars
+    .replace(/--+/g, "-")            // Replace multiple - with single -
+    .replace(/^-+/, "")              // Trim - from start of text
+    .replace(/-+$/, "")              // Trim - from end of text
+    .substring(0, 60);               // Limit to 60 characters
+}
+
 const ArticleSchema = new mongoose.Schema(
   {
     title: {
@@ -195,5 +212,22 @@ const ArticleSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+/**
+ * Pre-save hook to auto-generate slug from movieTitle if not provided
+ */
+ArticleSchema.pre("save", function(next) {
+  // Auto-generate slug from movieTitle if slug is not set
+  if (!this.slug && this.movieTitle) {
+    this.slug = slugify(this.movieTitle);
+  }
+  
+  // Ensure slug is lowercase and trimmed
+  if (this.slug) {
+    this.slug = this.slug.toLowerCase().trim();
+  }
+  
+  next();
+});
 
 export default mongoose.models.Article || mongoose.model("Article", ArticleSchema);

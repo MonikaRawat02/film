@@ -37,9 +37,10 @@ export default async function handler(req, res) {
       const validTypes = [
         "overview",
         "ending-explained",
-        "budget-box-office",
-        "cast-analysis",
+        "box-office",
+        "budget",
         "ott-release",
+        "cast",
         "review-analysis",
         "hit-or-flop"
       ];
@@ -120,17 +121,17 @@ function generateContentSections(article, pageType) {
       );
       break;
 
-    case "budget-box-office":
+    case "box-office":
       sections.push(
-        {
-          type: "budget-breakdown",
-          heading: "Production Budget Analysis",
-          content: `${article.movieTitle} was made on an estimated budget of ${article.budget || 'N/A'}. This includes production costs, VFX expenses, marketing, and distribution charges.`
-        },
         {
           type: "box-office-performance",
           heading: "Worldwide Box Office Collection",
           content: `The film collected approximately ${article.stats?.worldwide || article.boxOffice?.worldwide || 'N/A'} globally, with strong performances in key markets.`
+        },
+        {
+          type: "territorial-breakdown",
+          heading: "Territorial Breakdown",
+          content: `${article.movieTitle} performed well across domestic and international markets.`
         },
         {
           type: "verdict",
@@ -140,7 +141,27 @@ function generateContentSections(article, pageType) {
       );
       break;
 
-    case "cast-analysis":
+    case "budget":
+      sections.push(
+        {
+          type: "budget-breakdown",
+          heading: "Production Budget Analysis",
+          content: `${article.movieTitle} was made on an estimated budget of ${article.budget || 'N/A'}. This includes production costs, VFX expenses, marketing, and distribution charges.`
+        },
+        {
+          type: "cost-breakdown",
+          heading: "Cost Distribution",
+          content: "The budget allocation reflects the film's ambitious scale and production quality."
+        },
+        {
+          type: "roi",
+          heading: "Return on Investment",
+          content: `The film's ROI analysis shows ${article.boxOffice?.roi || 'strong commercial performance'}.`
+        }
+      );
+      break;
+
+    case "cast":
       sections.push(
         {
           type: "lead-cast",
@@ -200,9 +221,10 @@ function generateMetaData(article, pageType) {
   const pageTypeTitles = {
     overview: `${title} (${year}) - Full Analysis, Box Office & OTT Details | FilmyFire`,
     "ending-explained": `${title} (${year}) Ending Explained - Hidden Meanings & Conclusion | FilmyFire`,
-    "budget-box-office": `${title} Budget & Box Office Collection Report | FilmyFire`,
-    "cast-analysis": `${title} Cast & Characters - Complete Analysis | FilmyFire`,
+    "box-office": `${title} Box Office Collection Report | FilmyFire`,
+    "budget": `${title} Budget & Production Costs | FilmyFire`,
     "ott-release": `${title} OTT Release Date & Streaming Platform | FilmyFire`,
+    "cast": `${title} Cast & Characters - Complete Analysis | FilmyFire`,
     "review-analysis": `${title} Review - Critics & Audience Reaction | FilmyFire`,
     "hit-or-flop": `${title} Hit or Flop? Box Office Verdict | FilmyFire`
   };
@@ -210,9 +232,10 @@ function generateMetaData(article, pageType) {
   const descriptions = {
     overview: `Complete analysis of ${title} (${year}). Get detailed box office collection, budget breakdown, OTT release info, and expert reviews.`,
     "ending-explained": `Confused about ${title}'s ending? We explain the conclusion, hidden meanings, and what it all means for potential sequels.`,
-    "budget-box-office": `Discover ${title}'s production budget and worldwide box office collection. Was it a hit or flop? Find out the verdict here.`,
-    "cast-analysis": `Meet the cast of ${title}. Complete analysis of actors, characters, performances, and special appearances.`,
+    "box-office": `Discover ${title}'s worldwide box office collection. Was it a hit or flop? Find out the verdict here.`,
+    "budget": `Discover ${title}'s production budget, costs, and profit analysis. Get detailed financial breakdown.`,
     "ott-release": `When and where to watch ${title}? Get OTT release date, streaming platform details, and digital availability info.`,
+    "cast": `Meet the cast of ${title}. Complete analysis of actors, characters, performances, and special appearances.`,
     "review-analysis": `What are critics saying about ${title}? Read comprehensive review analysis and audience reactions.`,
     "hit-or-flop": `Was ${title} a commercial success? Get the definitive hit or flop verdict based on box office performance.`
   };
@@ -228,7 +251,7 @@ function generateMetaData(article, pageType) {
       article.genres?.[0] || 'movie',
       pageType.replace('-', ' ')
     ].filter(Boolean),
-    canonical: `/movie/${article.slug}${pageType !== 'overview' ? `/${pageType}` : ''}`,
+    canonical: `/movie/${article.slug}${pageType !== 'overview' ? `-${pageType}` : ''}`,
     openGraph: {
       title: pageTypeTitles[pageType],
       description: descriptions[pageType],

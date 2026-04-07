@@ -1,13 +1,11 @@
-import dbConnect from "../../../lib/mongodb";
-import Article from "../../../model/article";
-import { slugify } from "../../../lib/slugify";
+import dbConnect from "../../../../lib/mongodb";
+import Article from "../../../../model/article";
+import { slugify } from "../../../../lib/slugify";
 
 /**
- * API Endpoint: Get movies by OTT platform
- * Method: GET
- * Supports: Exact platform name matches OR slugified platform names
+ * GET /api/ott/[platform]
+ * Returns specific OTT platform details
  */
-
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' });
@@ -36,15 +34,13 @@ export default async function handler(req, res) {
     // First try exact mapping
     let displayName = platformNames[platform.toLowerCase()];
     
-    // If not found, treat platform param as a slug and search for any platform containing it
+    // If not found, find platform by slug match
     if (!displayName) {
-      // Query database to find ANY article with a platform that matches this slug pattern
       const sampleArticles = await Article.find(
         { 'ott.platform': { $exists: true, $ne: null } },
         { 'ott.platform': 1 }
       ).limit(1000).lean();
 
-      // Find a platform that when slugified matches the input
       const matchedPlatform = sampleArticles.find(doc => 
         doc.ott?.platform && slugify(doc.ott.platform) === platform.toLowerCase()
       );
@@ -52,27 +48,25 @@ export default async function handler(req, res) {
       if (matchedPlatform) {
         displayName = matchedPlatform.ott.platform;
       } else {
-        // Fallback: use the platform slug as-is and hope for partial matches
         displayName = platform;
       }
     }
 
-    // Find all movies available on this platform (case-insensitive, flexible matching)
-    const movies = await Article.find({
+    // Get movie count for this platform
+    const movieCount = await Article.countDocuments({
       contentType: 'movie',
       status: 'published',
       'ott.platform': { $regex: new RegExp(`^${displayName}$|${displayName.split(':')[0]}`, 'i') }
-    })
-    .select('movieTitle slug releaseYear coverImage summary genres category ott stats rating')
-    .sort({ 'stats.rating': -1, publishedAt: -1 })
-    .lean();
+    });
 
-    // Platform-specific metadata
+    // Platform info
     const platformInfo = {
-      displayName,
+      name: displayName,
       slug: platform.toLowerCase(),
-      metaTitle: `Best Movies on ${displayName} - Watch & Stream | FilmyFire`,
-      metaDescription: `Discover the top-rated movies available on ${displayName}. Complete analysis, box office reports, and streaming intelligence.`,
+      movieCount: movieCount,
+      displayUrl: `/ott/${platform.toLowerCase()}`,
+      metaTitle: `Best Movies on ${displayName} | FilmyFire Intelligence`,
+      metaDescription: `Explore the comprehensive list of movies streaming on ${displayName}. Get deep analysis, box office reports, and ending explanations for all ${displayName} content.`,
       heroTitle: `Movies Streaming on ${displayName}`,
       description: `Explore our comprehensive collection of movies available on ${displayName}. From blockbusters to hidden gems, find detailed analysis and expert reviews.`
     };
@@ -80,14 +74,11 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       data: {
-        movies,
-        platformInfo,
-        count: movies.length
+        platform: platformInfo
       }
     });
-
   } catch (error) {
-    console.error('OTT Platform API Error:', error);
+    console.error("OTT Platform Detail API Error:", error);
     return res.status(500).json({ 
       success: false,
       message: error.message 

@@ -111,7 +111,7 @@ export default function BollywoodArticlesGrid({ initialArticles = [], activeFilt
           filteredArticles.map((article) => (
             <Link
               key={article._id}
-              href={`/category/bollywood/${article.slug}`}
+              href={`/movie/${article.slug}`}
               className="group bg-zinc-900/40 border border-zinc-800 rounded-2xl overflow-hidden hover:border-amber-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-amber-500/10 flex flex-col"
             >
               <div className="aspect-[3/4] relative overflow-hidden">

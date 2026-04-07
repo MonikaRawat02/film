@@ -31,7 +31,7 @@ export default function CategoryArticlesGrid({ category, articles, loading }) {
           {articles.map((article) => (
             <Link
               key={article._id}
-              href={`/category/${category}/${article.slug}`}
+              href={category?.toLowerCase() === 'ott' ? `/ott/${article.slug}` : `/category/${category}/${article.slug}`}
               className="group bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1"
             >
               <div className="aspect-video relative overflow-hidden">

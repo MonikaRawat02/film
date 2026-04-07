@@ -117,7 +117,7 @@ export default function HollywoodArticlesGrid({ initialArticles = [] }) {
             articles.map((article, index) => (
               <Link
                 key={article._id || index}
-                href={`/category/hollywood/${article.slug}`}
+                href={`/movie/${article.slug}`}
                 className="group block bg-[#121826] rounded-2xl border border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 overflow-hidden"
               >
                 <div className="relative aspect-[2/3] overflow-hidden">
