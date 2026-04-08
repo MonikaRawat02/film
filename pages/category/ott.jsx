@@ -66,7 +66,6 @@ export default function OTTPage({ initialArticles }) {
                 </div>
               </div>
             ))}
-            </div>
           </div>
         </div>
 
@@ -87,80 +86,10 @@ export default function OTTPage({ initialArticles }) {
                 <div className="px-4 py-2 bg-zinc-800 rounded-lg text-sm text-zinc-300 border border-zinc-700">Disney+ Performance</div>
               </div>
             </div>
-          </div>
-        </div>
-        
-        <CategoryArticlesGrid category="OTT" articles={filteredArticles} loading={loading} />
-        
-        {/* CTA - Stacked Card Design */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="relative">
-            {/* Background Cards Stack */}
-            <div className="absolute inset-0 flex flex-col gap-2 opacity-30">
-              <div className="h-full bg-zinc-900 rounded-3xl border border-zinc-800 transform -rotate-2" />
-              <div className="h-full bg-zinc-900 rounded-3xl border border-zinc-800 transform rotate-1" />
-            </div>
-            
-            {/* Main Card */}
-            <div className="relative bg-gradient-to-br from-zinc-900 to-zinc-950 border border-zinc-800 rounded-3xl p-12 md:p-16">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                {/* Content - 8 cols */}
-                <div className="lg:col-span-8 space-y-8">
-                  <div>
-                    <span className="inline-block px-4 py-2 bg-rose-500/10 border border-rose-500/20 rounded-lg text-rose-400 text-sm font-semibold mb-6">
-                      Featured Analysis
-                    </span>
-                    <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
-                      OTT Digital Rights
-                      <br />
-                      <span className="text-zinc-600">Analysis Hub</span>
-                    </h2>
-                  </div>
-                  
-                  <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
-                    Get exclusive intelligence on high-value digital rights deals, satellite distribution, and streaming performance metrics across all major Indian and International platforms.
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-4">
-                    <div className="group px-6 py-3 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-rose-500/10 hover:border-rose-500/50 transition-all cursor-pointer">
-                      <span className="text-zinc-300 group-hover:text-rose-400 font-medium">Netflix Originals</span>
-                    </div>
-                    <div className="group px-6 py-3 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-purple-500/10 hover:border-purple-500/50 transition-all cursor-pointer">
-                      <span className="text-zinc-300 group-hover:text-purple-400 font-medium">Prime Video Deals</span>
-                    </div>
-                    <div className="group px-6 py-3 bg-zinc-800 border border-zinc-700 rounded-xl hover:bg-cyan-500/10 hover:border-cyan-500/50 transition-all cursor-pointer">
-                      <span className="text-zinc-300 group-hover:text-cyan-400 font-medium">Disney+ Performance</span>
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Visual - 4 cols */}
-                <div className="lg:col-span-4 flex justify-center">
-                  <div className="relative">
-                    {/* Glowing Background */}
-                    <div className="absolute inset-0 bg-rose-500/20 rounded-full blur-3xl" />
-                    
-                    {/* Rotating Border */}
-                    <div className="relative w-64 h-64">
-                      <div className="absolute inset-0 border-2 border-dashed border-rose-500/30 rounded-full animate-spin" style={{ animationDuration: '20s' }} />
-                      
-                      {/* Inner Content */}
-                      <div className="absolute inset-4 bg-zinc-800/50 backdrop-blur-sm border border-zinc-700 rounded-full flex items-center justify-center">
-                        <button className="group w-24 h-24 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform">
-                          <PlaySquare className="w-12 h-12 text-white ml-1 group-hover:rotate-12 transition-transform" />
-                        </button>
-                      </div>
-                      
-                      {/* Orbiting Dots */}
-                      <div className="absolute inset-0 animate-spin" style={{ animationDuration: '10s' }}>
-                        <div className="absolute top-0 left-1/2 w-3 h-3 bg-purple-500 rounded-full -translate-x-1/2 -translate-y-1/2" />
-                      </div>
-                      <div className="absolute inset-0 animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}>
-                        <div className="absolute bottom-0 left-1/2 w-3 h-3 bg-cyan-500 rounded-full -translate-x-1/2 translate-y-1/2" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <div className="shrink-0">
+              <div className="w-48 h-48 rounded-full border-8 border-rose-500/10 flex items-center justify-center relative">
+                <div className="absolute inset-0 rounded-full border-2 border-rose-500/30 animate-ping" />
+                <PlaySquare className="w-20 h-20 text-rose-500" />
               </div>
             </div>
           </div>
