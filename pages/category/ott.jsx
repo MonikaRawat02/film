@@ -59,9 +59,10 @@ export default function OTTPage({ initialArticles }) {
                     <stat.icon className="w-6 h-6" />
                   </div>
                   <div>
-                    <p className="text-sm text-zinc-400 font-medium">{stat.label}</p>
-                    <p className="text-2xl font-bold text-white">{stat.value}</p>
+                    <p className="text-xl font-semibold text-white">{stat.value}</p>
+                    <p className="text-xs text-zinc-600">{stat.label}</p>
                   </div>
+                  {i < 3 && <div className="w-px h-8 bg-zinc-800 hidden lg:block ml-8" />}
                 </div>
               </div>
             ))}
