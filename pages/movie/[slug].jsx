@@ -10,6 +10,7 @@ import {
   MessageSquare, Bookmark, Check, DollarSign, List, Info, HelpCircle, Calendar, Globe,
   ChevronDown, Star, ExternalLink, Sparkles
 } from "lucide-react";
+import ErrorState from "../../components/common/ErrorState";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
@@ -25,7 +26,12 @@ export async function getServerSideProps(context) {
     const data = await res.json();
 
     if (!res.ok || !data.data) {
-      return { notFound: true };
+      return { 
+        props: { 
+          article: null,
+          slug
+        } 
+      };
     }
 
     const article = data.data;
@@ -255,6 +261,17 @@ function FAQDropdown({ faqs, loading }) {
 
 export default function MovieDetailPage({ article, pageType, slug }) {
   const router = useRouter();
+
+  if (!article) {
+    return (
+      <ErrorState 
+        type="movie" 
+        title="Intelligence Data Unavailable" 
+        description="We couldn't find the requested movie intelligence report in our database. It may be under review or scheduled for automation."
+      />
+    );
+  }
+
   const Icon = categoryIcons[article.category] || FileText;
   const [scrollProgress, setProgress] = useState(0);
   const [isLiked, setIsLiked] = useState(false);

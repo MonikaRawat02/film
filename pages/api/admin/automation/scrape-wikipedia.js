@@ -1,3 +1,4 @@
+import axios from "axios";
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import { getMoviesByYear, scrapeWikipediaMovie } from "../../../../lib/scrapers/wikipedia";
@@ -85,41 +86,45 @@ export default async function handler(req, res) {
           { upsert: true, new: true }
         );
 
-        // --- NEW: Trigger AI Content Generation for the newly synced movie ---
-        try {
-          console.log(`🤖 Triggering AI Content Generation for ${movieSlug}...`);
-          const protocol = req.headers["x-forwarded-proto"] || "http";
-          const host = req.headers.host;
-          const baseUrl = `${protocol}://${host}`;
-          const headers = { 
-            "Content-Type": "application/json",
-            "x-cron-secret": cronSecret
-          };
-          
-          // List of all sub-pages to generate
-          const subPages = [
-            "overview",
-            "ending-explained",
-            "box-office",
-            "budget",
-            "ott-release",
-            "cast",
-            "review-analysis",
-            "hit-or-flop"
-          ];
+        // --- NEW: Trigger AI Content Generation in background ---
+        (async () => {
+          try {
+            console.log(`🤖 Starting background AI Content Generation for ${movieSlug}...`);
+            const protocol = req.headers["x-forwarded-proto"] || "http";
+            const host = req.headers.host;
+            const baseUrl = `${protocol}://${host}`;
+            const headers = { 
+              "Content-Type": "application/json",
+              "x-cron-secret": cronSecret
+            };
+            
+            const subPages = [
+              "overview",
+              "ending-explained",
+              "box-office",
+              "budget",
+              "ott-release",
+              "cast",
+              "review-analysis",
+              "hit-or-flop"
+            ];
 
-          // Generate all pages in sequence to avoid rate limits
-          for (const pageType of subPages) {
-            console.log(`⏳ Generating ${pageType} for ${movieSlug}...`);
-            await fetch(`${baseUrl}/api/admin/automation/generate-ai-content`, {
-              method: "POST",
-              headers,
-              body: JSON.stringify({ slug: movieSlug, pageType })
-            });
+            for (const pageType of subPages) {
+              try {
+                console.log(`⏳ Generating ${pageType} for ${movieSlug}...`);
+                await axios.post(`${baseUrl}/api/admin/automation/generate-ai-content`, {
+                  slug: movieSlug,
+                  pageType
+                }, { headers, timeout: 120000 });
+              } catch (subErr) {
+                console.error(`❌ Failed to generate ${pageType} for ${movieSlug}:`, subErr.message);
+              }
+            }
+            console.log(`✅ Finished AI generation for ${movieSlug}`);
+          } catch (aiTriggerErr) {
+            console.error(`❌ AI Content Background Task Failed for ${movieSlug}:`, aiTriggerErr.message);
           }
-        } catch (aiTriggerErr) {
-          console.error(`❌ AI Content Trigger Failed for ${movieSlug}:`, aiTriggerErr.message);
-        }
+        })();
 
         results.synced++;
         results.movies.push(scrapedData.title);

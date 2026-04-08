@@ -135,6 +135,8 @@ export default async function handler(req, res) {
     let actors = 0;
     let topics = 0;
     const trendingRecords = [];
+    const validatedDetails = [];
+    const rejectedDetails = [];
 
     for (const rawTrend of rawTrends) {
       try {
@@ -148,6 +150,11 @@ export default async function handler(req, res) {
           console.log(
             `   ⏭️  Skipped: "${rawTrend.title.substring(0, 40)}..." (not in DB)`
           );
+          rejectedDetails.push({
+            title: rawTrend.title,
+            source: rawTrend.source,
+            reason: validation.reason || "Not found in database or not entertainment related"
+          });
           rejected++;
           continue;
         }
@@ -179,6 +186,12 @@ export default async function handler(req, res) {
         };
 
         trendingRecords.push(trendRecord);
+        validatedDetails.push({
+          title: enriched.title,
+          type: validation.type,
+          source: enriched.source,
+          score: score
+        });
 
         const typeLabel = validation.type === "trending_movies" ? "🎬" : validation.type === "trending_actors" ? "👤" : "📊";
         console.log(
@@ -193,6 +206,11 @@ export default async function handler(req, res) {
         console.log(
           `   ❌ Error processing "${rawTrend.title.substring(0, 30)}...": ${error.message}`
         );
+        rejectedDetails.push({
+          title: rawTrend.title,
+          source: rawTrend.source,
+          reason: error.message
+        });
         rejected++;
       }
 
@@ -243,7 +261,9 @@ export default async function handler(req, res) {
         actors,
         topics,
         saved: trendingRecords.length,
-      }
+      },
+      validatedData: validatedDetails,
+      rejectedData: rejectedDetails
     });
   } catch (error) {
     console.error("❌ Sync Pipeline Error:", error.message);

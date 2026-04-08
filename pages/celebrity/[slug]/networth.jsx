@@ -1,4 +1,5 @@
 import NetWorthSection from "@/components/NetWorthSection";
+import ErrorState from "@/components/common/ErrorState";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
@@ -13,7 +14,11 @@ export async function getServerSideProps(context) {
     const data = await res.json();
 
     if (!res.ok || !data.data) {
-      return { notFound: true };
+      return { 
+        props: { 
+          celebrity: null 
+        } 
+      };
     }
 
     return {
@@ -23,11 +28,25 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.error("Error fetching celebrity data:", error);
-    return { notFound: true };
+    return { 
+      props: { 
+        celebrity: null 
+      } 
+    };
   }
 }
 
 export default function CelebrityNetWorth({ celebrity }) {
+  if (!celebrity) {
+    return (
+      <ErrorState 
+        type="celebrity" 
+        title="Net Worth Intelligence Unavailable" 
+        description="We are currently auditing the financial assets and income streams for this profile. Detailed net worth analysis will be available soon."
+      />
+    );
+  }
+
   return (
     <NetWorthSection celebrity={celebrity} />
   );

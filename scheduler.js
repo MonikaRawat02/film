@@ -6,8 +6,8 @@ const path = require('path');
 
 // --- Configuration ---
 const NEXTJS_URL = process.env.NEXTJS_URL || process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-const SCRAPE_INTERVAL = process.env.SCRAPE_INTERVAL || '0 0 * * *'; // Run daily at midnight
-const HEARTBEAT_INTERVAL = '0 * * * *'; // Hourly heartbeat
+const SCRAPE_INTERVAL = process.env.SCRAPE_INTERVAL || '0 11 * * *'; // Run daily at 11 AM
+const HEARTBEAT_INTERVAL = '0 11 * * *'; // Daily at 11 AM
 const BATCH_LIMIT = parseInt(process.env.BATCH_LIMIT || '10');
 const CRON_SECRET = process.env.CRON_SECRET || 'filmyfire_automation_secret_2026';
 const LOG_FILE = path.join(__dirname, 'scheduler.log');
@@ -46,7 +46,7 @@ log('Log file location: ' + LOG_FILE);
  * Scrapes new movies, celebrities, and triggers AI content generation
  */
 const runDailySync = async () => {
-  log('🕒 CRON START: Comprehensive Daily Sync');
+  log('🕒 CRON START: Comprehensive Daily Sync (Movies & Content)');
   try {
     const response = await fetch(`${NEXTJS_URL}/api/admin/automation/run-daily-sync`, {
       method: 'POST',
@@ -75,7 +75,61 @@ const runDailySync = async () => {
 };
 
 /**
- * Task 2: Specific Movie Scraper (Fallback/Targeted)
+ * Task 2: Box Office & OTT Data Refresh (Daily)
+ * Refreshes financial and availability data for recent movies
+ */
+const runDataRefresh = async () => {
+  log('🕒 CRON START: Daily Box Office & OTT Refresh');
+  try {
+    // 1. Fetch recent movies to update
+    const articlesResponse = await fetch(`${NEXTJS_URL}/api/articles/list?limit=50&includeDrafts=true`, {
+      method: 'GET',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 30000,
+    });
+
+    if (!articlesResponse.ok) {
+      errorLog(`Failed to fetch article list: ${articlesResponse.status}`);
+      return;
+    }
+
+    const articlesData = await articlesResponse.json();
+    if (!articlesData.success || !articlesData.data) {
+      errorLog('No articles found in database for refresh');
+      return;
+    }
+
+    const recentSlugs = articlesData.data.map(article => article.slug);
+    log(`📊 Refreshing data for ${recentSlugs.length} recent movies`);
+
+    // 2. Trigger enrichment for each movie
+    for (const slug of recentSlugs) {
+      try {
+        await fetch(`${NEXTJS_URL}/api/admin/automation/enrich-movie-data`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-cron-secret': CRON_SECRET
+          },
+          body: JSON.stringify({ slug }),
+          timeout: 120000,
+        });
+        log(`✅ Refreshed data for ${slug}`);
+      } catch (err) {
+        errorLog(`Failed to refresh data for ${slug}:`, err);
+      }
+    }
+    log(`✅ CRON COMPLETE: Daily Data Refresh for ${recentSlugs.length} movies`);
+  } catch (error) {
+    errorLog('❌ CRON FATAL (Data Refresh):', error);
+  }
+};
+
+/**
+ * Task 3: Specific Movie Scraper (Fallback/Targeted)
  */
 const runMovieScraper = async () => {
   log('🕒 CRON START: Wikipedia Movie Scraper');
@@ -91,7 +145,7 @@ const runMovieScraper = async () => {
         category: 'Bollywood',
         limit: BATCH_LIMIT,
       }),
-      timeout: 60000,
+      timeout: 300000, // Increased to 5 min
     });
 
     if (!response.ok) {
@@ -125,7 +179,7 @@ const runCelebrityScraper = async () => {
         industry: 'Bollywood',
         limit: BATCH_LIMIT,
       }),
-      timeout: 120000, // Increased timeout for celebrity scraping
+      timeout: 600000, // Increased to 10 min for heavy celebrity scraping
     });
 
     if (!response.ok) {
@@ -146,7 +200,7 @@ const runCelebrityScraper = async () => {
         industry: 'Hollywood',
         limit: BATCH_LIMIT,
       }),
-      timeout: 120000,
+      timeout: 600000, // Increased to 10 min
     });
 
     if (!hollywoodResponse.ok) {
@@ -201,7 +255,7 @@ const runTrendingSync = async () => {
         'Content-Type': 'application/json',
         'x-cron-secret': CRON_SECRET
       },
-      timeout: 120000,
+      timeout: 300000, // Increased to 5 min
     });
 
     if (!response.ok) {
@@ -323,6 +377,33 @@ const runDiscoveryPageGeneration = async () => {
   }
 };
 
+/**
+ * Task 7: Weekly SEO Content Update
+ * Updates meta tags, descriptions, and canonicals for all content
+ */
+const runWeeklySEOUpdate = async () => {
+  log('🕒 CRON START: Weekly SEO Content Update');
+  try {
+    const response = await fetch(`${NEXTJS_URL}/api/admin/automation/update-seo-content`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 300000, // 5 minutes timeout
+    });
+
+    if (!response.ok) {
+      errorLog(`Weekly SEO Update returned status ${response.status}`);
+    } else {
+      const data = await response.json();
+      log(`✅ CRON SUCCESS: Weekly SEO Update - ${data.message}`);
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (Weekly SEO):', error);
+  }
+};
+
 // --- Schedule Jobs ---
 
 // 1. Daily Sync (11:00 AM)
@@ -331,14 +412,23 @@ cron.schedule(SCRAPE_INTERVAL, runDailySync);
 // 2. Wikipedia Scraper (11:05 AM)
 cron.schedule('5 11 * * *', runMovieScraper);
 
-// 3. Trending Sync (Every 30 minutes)
+// 3. Celebrity Scraper (11:10 AM)
+cron.schedule('10 11 * * *', runCelebrityScraper);
+
+// 4. Daily Data Refresh (Box Office, OTT) (11:20 AM)
+cron.schedule('20 11 * * *', runDataRefresh);
+
+// 5. Trending Sync (Every 30 minutes)
 cron.schedule('*/30 * * * *', runTrendingSync);
 
-// 4. Weekly Recommendation Update (Every Sunday at 2:00 AM)
+// 6. Weekly Recommendation Update (Every Sunday at 2:00 AM)
 cron.schedule('0 2 * * 0', runRecommendationUpdate);
 
-// 5. Weekly Discovery Page Generation (Every Sunday at 3:00 AM)
+// 7. Weekly Discovery Page Generation (Every Sunday at 3:00 AM)
 cron.schedule('0 3 * * 0', runDiscoveryPageGeneration);
+
+// 8. Weekly SEO Content Update (Every Sunday at 4:00 AM)
+cron.schedule('0 4 * * 0', runWeeklySEOUpdate);
 
 // Heartbeat (Daily 11:00 AM)
 cron.schedule(HEARTBEAT_INTERVAL, () => {

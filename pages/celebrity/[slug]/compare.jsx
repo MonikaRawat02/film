@@ -8,6 +8,7 @@ import ComparisonStats from "@/components/compare/ComparisonStats";
 import RelatedIntelligence from "@/components/compare/RelatedIntelligence";
 import CompareFAQ from "@/components/compare/CompareFAQ";
 import ExploreCTA from "@/components/compare/ExploreCTA";
+import ErrorState from "@/components/common/ErrorState";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
@@ -20,7 +21,12 @@ export async function getServerSideProps(context) {
     const res = await fetch(`${baseUrl}/api/celebrity/profile?slug=${encodeURIComponent(slug)}`);
     const data = await res.json();
     if (!res.ok || !data?.data) {
-      return { notFound: true };
+      return { 
+        props: { 
+          initialCelebrityA: null,
+          initialCelebrityB: null 
+        } 
+      };
     }
 
     let compareCelebrity = null;
@@ -39,12 +45,28 @@ export async function getServerSideProps(context) {
       },
     };
   } catch {
-    return { notFound: true };
+    return { 
+      props: { 
+        initialCelebrityA: null,
+        initialCelebrityB: null 
+      } 
+    };
   }
 }
 
 export default function ComparePage({ initialCelebrityA, initialCelebrityB }) {
   const router = useRouter();
+
+  if (!initialCelebrityA) {
+    return (
+      <ErrorState 
+        type="celebrity" 
+        title="Comparison Data Unavailable" 
+        description="We couldn't load the primary profile for comparison. The intelligence data might still be under processing."
+      />
+    );
+  }
+
   const [celebrityA, setCelebrityA] = useState(initialCelebrityA);
   const [celebrityB, setCelebrityB] = useState(initialCelebrityB);
   const [currency, setCurrency] = useState("USD");

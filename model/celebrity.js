@@ -1,3 +1,4 @@
+//model/celebrity.js
 import mongoose from "mongoose";
 
 const TimelineEntrySchema = new mongoose.Schema({
@@ -322,12 +323,35 @@ premiumIntelligence: {
   },
 
   stats: {
-    celebrityProfiles: Number,
-    monthlyReaders: Number,
-    accuracyRate: Number
-  }
+      celebrityProfiles: Number,
+      monthlyReaders: Number,
+      accuracyRate: Number
+    }
+  },
 
-}
+  // --- AI EXTRACTED DATA ---
+  aiExtractedData: {
+    netWorth: {
+      minUSD: Number,
+      maxUSD: Number,
+      displayUSD: String,
+      minINR: Number,
+      maxINR: Number,
+      displayINR: String,
+      source: String
+    },
+    age: Number,
+    birthDate: Date,
+    height: String,
+    nationality: String,
+    industry: String,
+    profession: [String],
+    activeSince: Number,
+    spouse: String,
+    children: String,
+    awards: [String],
+    notableWorks: [String]
+  }
 },
 { timestamps: true }
 );

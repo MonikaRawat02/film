@@ -35,13 +35,6 @@ export default function ErrorState({ type = "movie", title, description }) {
             <Home className="w-4 h-4" /> Go Home
           </Link>
         </div>
-
-        <div className="max-w-md mx-auto">
-          <div className="flex items-center gap-2 bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-3 text-zinc-500 text-sm justify-center">
-            <Search className="w-4 h-4" />
-            Try searching from the header for more results
-          </div>
-        </div>
       </div>
     </div>
   );

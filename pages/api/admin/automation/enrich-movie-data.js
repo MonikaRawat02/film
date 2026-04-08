@@ -2,6 +2,7 @@ import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import Celebrity from "../../../../model/celebrity";
 import { enrichMovieWithTMDB, fetchCelebrityFromTMDB } from "../../../../lib/api-clients/tmdb";
+import { getOTTAvailability } from "../../../../lib/api-clients/watchmode";
 import { generateMovieContent } from "../../../../lib/ai-generator";
 
 export default async function handler(req, res) {
@@ -36,6 +37,14 @@ export default async function handler(req, res) {
       });
     }
 
+    // --- OTT Availability (Watchmode) ---
+    let ottData = null;
+    if (tmdbData.imdbId) {
+      console.log(`📡 Fetching OTT availability for ${movie.movieTitle} (${tmdbData.imdbId})...`);
+      ottData = await getOTTAvailability(tmdbData.imdbId);
+    }
+    // --- End OTT Availability ---
+
     // --- Genre Analysis Automation ---
     let genreAnalysis = "";
     try {
@@ -66,16 +75,18 @@ export default async function handler(req, res) {
           runtime: tmdbData.runtime || movie.runtime,
           releaseDate: tmdbData.releaseDate || movie.releaseDate,
           tmdbId: tmdbData.tmdbId,
+          imdbId: tmdbData.imdbId,
           rating: tmdbData.rating ?? movie.rating,
           recommendations: tmdbData.recommendations || movie.recommendations,
           genreAnalysis: genreAnalysis || movie.genreAnalysis,
+          ottPlatforms: ottData ? ottData.allSources : movie.ottPlatforms,
         },
       }
     );
 
     return res.status(200).json({
       success: true,
-      message: `Successfully enriched ${movie.movieTitle} and verified lead personel profiles.`,
+      message: `Successfully enriched ${movie.movieTitle} with TMDB and Watchmode data.`,
     });
 
   } catch (error) {
