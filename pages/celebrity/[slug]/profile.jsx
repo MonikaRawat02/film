@@ -9,6 +9,7 @@ import RelatedIntelligenceSection from "@/components/profile/RelatedIntelligence
 import FAQSection from "@/components/profile/FAQSection";
 import EditorialTrustSection from "@/components/profile/EditorialTrustSection";
 import ExploreCTASection from "@/components/profile/ExploreCTASection";
+import ErrorState from "@/components/common/ErrorState";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
@@ -23,7 +24,11 @@ export async function getServerSideProps(context) {
     const data = await res.json();
 
     if (!res.ok || !data.data) {
-      return { notFound: true };
+      return { 
+        props: { 
+          celebrity: null 
+        } 
+      };
     }
 
     return {
@@ -33,12 +38,24 @@ export async function getServerSideProps(context) {
     };
   } catch (error) {
     console.error("Error fetching celebrity data:", error);
-    return { notFound: true };
+    return { 
+      props: { 
+        celebrity: null 
+      } 
+    };
   }
 }
 
 export default function CelebrityProfile({ celebrity }) {
-  if (!celebrity) return null;
+  if (!celebrity) {
+    return (
+      <ErrorState 
+        type="celebrity" 
+        title="Celebrity Profile Not Found" 
+        description="This celebrity profile is currently being enriched with financial and career intelligence. Check back shortly for the full report."
+      />
+    );
+  }
 
   return (
     <>

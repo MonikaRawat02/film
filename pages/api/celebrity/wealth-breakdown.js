@@ -25,7 +25,7 @@ function isStaticDefault(incomeSources = []) {
 async function generateWealthBreakdownWithAI(celebrity) {
   if (!genAI) throw new Error("Gemini API key not configured");
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const name = celebrity.heroSection?.name || "Unknown";
   const industry = celebrity.heroSection?.industry || "Bollywood";

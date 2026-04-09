@@ -11,7 +11,7 @@ const genAI = process.env.GEMINI_API_KEY
 async function extractCelebrityDetailsWithAI(celebrity) {
   if (!genAI) throw new Error("Gemini API key not configured");
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const name = celebrity.heroSection?.name || "Unknown";
   const biography = celebrity.heroSection?.biography || "";
@@ -68,11 +68,20 @@ Respond ONLY with a valid JSON object in this exact format:
 If any field is not found in the biography, set it to null. Be accurate and only extract what's actually mentioned.`;
 
   const result = await model.generateContent(prompt);
-  const text = result.response.text().trim();
+  let text = "";
+  try {
+    text = result.response.text().trim();
+  } catch (textErr) {
+    console.error("AI response text extraction failed:", textErr.message);
+    throw new Error(`AI response was blocked or invalid: ${textErr.message}`);
+  }
 
   // Extract JSON from response
   const jsonMatch = text.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) throw new Error("No JSON object found in AI response");
+  if (!jsonMatch) {
+    console.error("AI Response was:", text);
+    throw new Error("No JSON object found in AI response");
+  }
 
   const parsed = JSON.parse(jsonMatch[0]);
 
