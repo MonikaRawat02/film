@@ -177,7 +177,7 @@ const runCelebrityScraper = async () => {
       },
       body: JSON.stringify({
         industry: 'Bollywood',
-        limit: BATCH_LIMIT,
+        limit: 10, // Strict limit of 10 new celebrities
       }),
       timeout: 600000, // Increased to 10 min for heavy celebrity scraping
     });
@@ -198,7 +198,7 @@ const runCelebrityScraper = async () => {
       },
       body: JSON.stringify({
         industry: 'Hollywood',
-        limit: BATCH_LIMIT,
+        limit: 10, // Strict limit of 10 new celebrities
       }),
       timeout: 600000, // Increased to 10 min
     });

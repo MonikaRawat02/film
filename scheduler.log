@@ -1797,3 +1797,174 @@
 [2026-04-06T06:48:01.928Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
 [2026-04-06T07:00:02.880Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-04-06T07:01:14.069Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-08T12:30:00.312Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-08T12:30:00.352Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync
+[2026-04-08T12:30:00.441Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-08T12:30:00.461Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-08T12:30:13.304Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 3. Background enrichment triggered.
+[2026-04-08T12:30:13.703Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 3. Background enrichment triggered.
+[2026-04-08T12:30:57.481Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-08T12:30:59.852Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-08T13:00:00.283Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-08T13:00:00.286Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-08T13:00:49.630Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-08T13:00:49.814Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-08T13:28:51.690Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-09T04:35:09.643Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-09T04:35:09.646Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-04-09T04:35:09.863Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-09T04:35:09.864Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-09T04:35:09.918Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-09T04:35:09.954Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-09T04:35:15.343Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-09T04:35:15.345Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-09T04:35:15.349Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-09T04:35:28.588Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-09T04:35:32.209Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-09T04:35:40.858Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-09T05:00:00.141Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T05:00:00.165Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T05:00:50.706Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T05:00:57.025Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T05:30:00.103Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-09T05:30:00.151Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-09T05:30:00.170Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T05:30:00.206Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T05:30:00.215Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-09T05:30:00.220Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-09T05:30:10.865Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-09T05:30:11.362Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-09T05:30:53.791Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T05:30:54.227Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T05:35:00.060Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-04-09T05:35:00.087Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-04-09T05:35:06.408Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 10 movies for 2026
+[2026-04-09T05:35:08.143Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 10 movies for 2026
+[2026-04-09T05:40:00.054Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-09T05:40:00.100Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-09T05:40:09.300Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-09T05:40:09.308Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-09T05:40:17.068Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-09T05:40:17.125Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-09T05:50:00.133Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
+[2026-04-09T05:50:00.176Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
+[2026-04-09T05:50:01.261Z] [INFO] 📊 Refreshing data for 50 recent movies
+[2026-04-09T05:50:01.725Z] [INFO] 📊 Refreshing data for 50 recent movies
+[2026-04-09T05:50:01.832Z] [INFO] ✅ Refreshed data for tu-yaa-maintu-yaa-mainexternal-audio
+[2026-04-09T05:50:02.711Z] [INFO] ✅ Refreshed data for tu-yaa-maintu-yaa-mainexternal-audio
+[2026-04-09T05:50:04.063Z] [INFO] ✅ Refreshed data for rahu-ketu
+[2026-04-09T05:50:04.571Z] [INFO] ✅ Refreshed data for rahu-ketu
+[2026-04-09T05:50:04.733Z] [INFO] ✅ Refreshed data for do-deewane-seher-meindo-deewane-seher-meinexternal-audio
+[2026-04-09T05:50:05.054Z] [INFO] ✅ Refreshed data for do-deewane-seher-meindo-deewane-seher-meinexternal-audio
+[2026-04-09T05:50:05.972Z] [INFO] ✅ Refreshed data for assiassi
+[2026-04-09T05:50:06.504Z] [INFO] ✅ Refreshed data for assiassi
+[2026-04-09T05:50:07.213Z] [INFO] ✅ Refreshed data for ikkis
+[2026-04-09T05:50:07.763Z] [INFO] ✅ Refreshed data for ikkis
+[2026-04-09T05:50:07.939Z] [INFO] ✅ Refreshed data for the-kerala-story-2-goes-beyondthe-kerala-story-2-goes-beyond
+[2026-04-09T05:50:08.295Z] [INFO] ✅ Refreshed data for the-kerala-story-2-goes-beyondthe-kerala-story-2-goes-beyond
+[2026-04-09T05:50:08.675Z] [INFO] ✅ Refreshed data for mardaani-3mardaani-3external-audio
+[2026-04-09T05:50:08.789Z] [INFO] ✅ Refreshed data for mardaani-3mardaani-3external-audio
+[2026-04-09T05:50:09.873Z] [INFO] ✅ Refreshed data for oromeo
+[2026-04-09T05:50:10.306Z] [INFO] ✅ Refreshed data for oromeo
+[2026-04-09T05:50:10.848Z] [INFO] ✅ Refreshed data for border-2
+[2026-04-09T05:50:11.253Z] [INFO] ✅ Refreshed data for border-2
+[2026-04-09T05:50:11.826Z] [INFO] ✅ Refreshed data for dhurandhar-the-revenge
+[2026-04-09T05:50:12.361Z] [INFO] ✅ Refreshed data for dhurandhar-the-revenge
+[2026-04-09T05:50:13.080Z] [INFO] ✅ Refreshed data for king
+[2026-04-09T05:50:13.435Z] [INFO] ✅ Refreshed data for king
+[2026-04-09T05:50:14.260Z] [INFO] ✅ Refreshed data for mirzapur
+[2026-04-09T05:50:14.679Z] [INFO] ✅ Refreshed data for mirzapur
+[2026-04-09T05:50:15.444Z] [INFO] ✅ Refreshed data for lahore-1947
+[2026-04-09T05:50:15.831Z] [INFO] ✅ Refreshed data for lahore-1947
+[2026-04-09T05:50:16.616Z] [INFO] ✅ Refreshed data for cocktail-2
+[2026-04-09T05:50:17.067Z] [INFO] ✅ Refreshed data for cocktail-2
+[2026-04-09T05:50:17.794Z] [INFO] ✅ Refreshed data for bandarmonkey-in-a-cage
+[2026-04-09T05:50:18.159Z] [INFO] ✅ Refreshed data for bandarmonkey-in-a-cage
+[2026-04-09T05:50:18.471Z] [INFO] ✅ Refreshed data for ek-dinek-dinexternal-audio
+[2026-04-09T05:50:18.589Z] [INFO] ✅ Refreshed data for ek-dinek-dinexternal-audio
+[2026-04-09T05:50:19.744Z] [INFO] ✅ Refreshed data for raja-shivaji
+[2026-04-09T05:50:19.851Z] [INFO] ✅ Refreshed data for raja-shivaji
+[2026-04-09T05:50:20.847Z] [INFO] ✅ Refreshed data for bhooth-bangla
+[2026-04-09T05:50:21.460Z] [INFO] ✅ Refreshed data for bhooth-bangla
+[2026-04-09T05:50:21.989Z] [INFO] ✅ Refreshed data for toaster
+[2026-04-09T05:50:22.367Z] [INFO] ✅ Refreshed data for toaster
+[2026-04-09T05:50:23.154Z] [INFO] ✅ Refreshed data for jab-khuli-kitaab
+[2026-04-09T05:50:23.496Z] [INFO] ✅ Refreshed data for jab-khuli-kitaab
+[2026-04-09T05:50:24.431Z] [INFO] ✅ Refreshed data for na-jaane-kaun-aa-gaya
+[2026-04-09T05:50:24.838Z] [INFO] ✅ Refreshed data for na-jaane-kaun-aa-gaya
+[2026-04-09T05:50:25.548Z] [INFO] ✅ Refreshed data for charak-fair-of-faith
+[2026-04-09T05:50:25.927Z] [INFO] ✅ Refreshed data for charak-fair-of-faith
+[2026-04-09T05:50:26.701Z] [INFO] ✅ Refreshed data for subedaar
+[2026-04-09T05:50:27.029Z] [INFO] ✅ Refreshed data for subedaar
+[2026-04-09T05:50:27.669Z] [INFO] ✅ Refreshed data for accused
+[2026-04-09T05:50:28.021Z] [INFO] ✅ Refreshed data for accused
+[2026-04-09T05:50:28.862Z] [INFO] ✅ Refreshed data for kennedy
+[2026-04-09T05:50:29.296Z] [INFO] ✅ Refreshed data for kennedy
+[2026-04-09T05:50:29.444Z] [INFO] ✅ Refreshed data for shatak-sangh-ke-100-varsh
+[2026-04-09T05:50:29.704Z] [INFO] ✅ Refreshed data for shatak-sangh-ke-100-varsh
+[2026-04-09T05:50:30.538Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
+[2026-04-09T05:50:31.025Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
+[2026-04-09T05:50:32.114Z] [INFO] ✅ Refreshed data for vadh-2
+[2026-04-09T05:50:32.425Z] [INFO] ✅ Refreshed data for vadh-2
+[2026-04-09T05:50:33.138Z] [INFO] ✅ Refreshed data for mayasabha
+[2026-04-09T05:50:33.452Z] [INFO] ✅ Refreshed data for mayasabha
+[2026-04-09T05:50:34.271Z] [INFO] ✅ Refreshed data for human-cocaine
+[2026-04-09T05:50:34.275Z] [INFO] ✅ Refreshed data for human-cocaine
+[2026-04-09T05:50:35.340Z] [INFO] ✅ Refreshed data for gandhi-talksgandhi-talks
+[2026-04-09T05:50:35.400Z] [INFO] ✅ Refreshed data for gandhi-talksgandhi-talks
+[2026-04-09T05:50:36.417Z] [INFO] ✅ Refreshed data for one-two-cha-cha-chaa
+[2026-04-09T05:50:36.428Z] [INFO] ✅ Refreshed data for one-two-cha-cha-chaa
+[2026-04-09T05:50:36.997Z] [INFO] ✅ Refreshed data for bihu-attack
+[2026-04-09T05:50:37.024Z] [INFO] ✅ Refreshed data for bihu-attack
+[2026-04-09T05:50:37.675Z] [INFO] ✅ Refreshed data for happy-patel-khatarnak-jasooshappy-patel-khatarnak-jasoosexte
+[2026-04-09T05:50:37.706Z] [INFO] ✅ Refreshed data for happy-patel-khatarnak-jasooshappy-patel-khatarnak-jasoosexte
+[2026-04-09T05:50:38.760Z] [INFO] ✅ Refreshed data for azad-bharath
+[2026-04-09T05:50:38.816Z] [INFO] ✅ Refreshed data for azad-bharath
+[2026-04-09T05:50:39.976Z] [INFO] ✅ Refreshed data for vijaypathvijaypath
+[2026-04-09T05:50:39.989Z] [INFO] ✅ Refreshed data for vijaypathvijaypath
+[2026-04-09T05:50:40.451Z] [INFO] ✅ Refreshed data for vaade-iraade
+[2026-04-09T05:50:40.452Z] [INFO] ✅ Refreshed data for vaade-iraade
+[2026-04-09T05:50:41.436Z] [INFO] ✅ Refreshed data for udhaar-ki-zindagi
+[2026-04-09T05:50:42.102Z] [INFO] ✅ Refreshed data for udhaar-ki-zindagi
+[2026-04-09T05:50:43.099Z] [INFO] ✅ Refreshed data for the-gentleman
+[2026-04-09T05:50:43.671Z] [INFO] ✅ Refreshed data for the-gentleman
+[2026-04-09T05:50:44.265Z] [INFO] ✅ Refreshed data for the-cloud-door
+[2026-04-09T05:50:44.618Z] [INFO] ✅ Refreshed data for the-cloud-door
+[2026-04-09T05:50:44.906Z] [INFO] ✅ Refreshed data for teesra-kaun
+[2026-04-09T05:50:45.427Z] [INFO] ✅ Refreshed data for teesra-kaun
+[2026-04-09T05:50:46.315Z] [INFO] ✅ Refreshed data for tarpan
+[2026-04-09T05:50:46.665Z] [INFO] ✅ Refreshed data for tarpan
+[2026-04-09T05:50:47.582Z] [INFO] ✅ Refreshed data for suhaag
+[2026-04-09T05:50:48.182Z] [INFO] ✅ Refreshed data for stunttmanstuntman
+[2026-04-09T05:50:48.285Z] [INFO] ✅ Refreshed data for suhaag
+[2026-04-09T05:50:48.743Z] [INFO] ✅ Refreshed data for stunttmanstuntman
+[2026-04-09T05:50:49.260Z] [INFO] ✅ Refreshed data for shabnam
+[2026-04-09T05:50:49.673Z] [INFO] ✅ Refreshed data for shabnam
+[2026-04-09T05:50:50.409Z] [INFO] ✅ Refreshed data for sangdil-sanam
+[2026-04-09T05:50:50.783Z] [INFO] ✅ Refreshed data for sangdil-sanam
+[2026-04-09T05:50:51.313Z] [INFO] ✅ Refreshed data for salaamisalaami
+[2026-04-09T05:50:51.743Z] [INFO] ✅ Refreshed data for salaamisalaami
+[2026-04-09T05:50:52.376Z] [INFO] ✅ Refreshed data for saajan-ka-ghar
+[2026-04-09T05:50:52.714Z] [INFO] ✅ Refreshed data for saajan-ka-ghar
+[2026-04-09T05:50:53.298Z] [INFO] ✅ Refreshed data for rakhwale
+[2026-04-09T05:50:53.647Z] [INFO] ✅ Refreshed data for rakhwale
+[2026-04-09T05:50:54.233Z] [INFO] ✅ Refreshed data for raja-babu
+[2026-04-09T05:50:54.235Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 50 movies
+[2026-04-09T05:50:54.632Z] [INFO] ✅ Refreshed data for raja-babu
+[2026-04-09T05:50:54.634Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 50 movies
+[2026-04-09T06:00:00.157Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T06:00:00.158Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T06:00:51.733Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T06:00:51.769Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T06:30:00.312Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T06:30:00.301Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-09T06:30:00.406Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-09T06:30:00.418Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T06:30:12.470Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-09T06:30:14.519Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-09T06:31:09.743Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T06:31:11.317Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T07:00:00.334Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T07:00:00.336Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-09T07:01:11.164Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-09T07:01:11.739Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated

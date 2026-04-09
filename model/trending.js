@@ -81,14 +81,10 @@ const trendingSchema = new mongoose.Schema({
     default: "active"
   },
 
-  // Additional metadata for display
+  // Additional metadata for display (User's requirement #1 & #7)
   metadata: {
-    coverImage: String,
-    thumbnail: String,
-    videoId: String,
-    channelId: String,
-    channelTitle: String,
-    relatedQueries: [String]
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
   },
 
   // Timestamps (User's requirement #7)
