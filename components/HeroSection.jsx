@@ -192,13 +192,13 @@ export default function HeroSection() {
             Explore Intelligence Pages
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-200 group-hover:translate-x-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </Link>
-          <a
-            href="#"
+          <Link
+            href="/trending-explainers"
             className="group inline-flex items-center gap-2 rounded-2xl border-2 border-gray-800 bg-white/5 backdrop-blur-md px-10 py-5 text-base font-semibold text-white transition hover:border-gray-700 hover:bg-white/10 active:scale-95"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-80"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
             Trending Explainers
-          </a>
+          </Link>
         </div>
 
         <div className="mx-auto max-w-3xl mt-20 border-t border-gray-800/50 pt-20 grid grid-cols-3 gap-8">
