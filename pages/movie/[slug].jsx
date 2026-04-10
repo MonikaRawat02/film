@@ -420,33 +420,35 @@ export default function MovieDetailPage({ article, pageType, slug }) {
           />
         </div>
 
-        {/* Dynamic Header - Shows on Scroll (Above Global Header) */}
-        <nav className={`fixed top-0 left-0 right-0 z-[70] transition-all duration-500 ${
+        {/* Dynamic Header - Shows on Scroll (Below Global Header) */}
+        <nav className={`fixed top-14 md:top-16 left-0 right-0 z-[70] transition-all duration-500 ${
           scrollProgress > 5 
-            ? 'opacity-100 translate-y-0 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800 py-3' 
+            ? 'opacity-100 translate-y-0 bg-gray-900/95 backdrop-blur-xl border-b border-gray-800 py-2 md:py-3' 
             : 'opacity-0 -translate-y-full pointer-events-none'
         }`}>
-          <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between gap-2">
             <Link 
               href={`/category/${article.category.toLowerCase()}`}
-              className="flex items-center gap-2 text-gray-300 hover:text-white transition-all text-xs font-medium"
+              className="flex items-center gap-2 text-gray-300 hover:text-white transition-all text-xs md:text-sm font-medium flex-shrink-0"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
               <span className="hidden sm:inline">Back</span>
+              <span className="sm:hidden text-xs">Back</span>
             </Link>
             
-            <h2 className="text-sm font-bold text-white truncate max-w-md mx-auto text-center hidden md:block">
+            <h2 className="text-xs md:text-sm font-bold text-white truncate flex-1 text-center max-w-[150px] sm:max-w-[250px] md:max-w-md">
               {article.movieTitle} – {pageType.replace("-", " ")}
             </h2>
 
-            <div className="w-16"></div>
+            <div className="w-12 md:w-16 flex-shrink-0"></div>
           </div>
         </nav>
+
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="relative w-full md:h-[75vh] bg-cover bg-center overflow-hidden -mt-16"
+          className="relative w-full min-h-[60vh] bg-cover bg-center overflow-hidden mt-4 md:mt-6"
         >
           {/* Background Image */}
           {article.coverImage ? (
@@ -574,9 +576,9 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       initial={{ y: 15, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.7, duration: 0.5 }}
-                      className="flex flex-wrap gap-1.5 mb-3"
+                      className="flex flex-wrap gap-1.5 mb-4"
                     >
-                      {article.genres.slice(0, 2).map((genre, idx) => (
+                      {article.genres.map((genre, idx) => (
                         <span key={idx} className="px-2 py-0.5 rounded-full bg-gray-800/80 text-[11px] font-medium border border-gray-600">
                           {genre}
                         </span>
@@ -584,17 +586,209 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     </motion.div>
                   )}
 
-                  {/* Summary - Smaller Text */}
-                  {article.summary && (
-                    <motion.p 
-                      initial={{ y: 15, opacity: 0 }}
-                      animate={{ y: 0, opacity: 1 }}
-                      transition={{ delay: 0.8, duration: 0.5 }}
-                      className="text-gray-300 text-xs sm:text-sm leading-relaxed line-clamp-3 max-w-2xl"
-                    >
-                      {article.summary}
-                    </motion.p>
-                  )}
+                  {/* PAGE-SPECIFIC CONTENT IN HERO */}
+                  <motion.div
+                    initial={{ y: 15, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.8, duration: 0.5 }}
+                  >
+
+                    {/* OVERVIEW - full summary */}
+                    {pageType === "overview" && article.summary && (
+                      <p className="text-gray-300 text-sm leading-relaxed max-w-2xl">
+                        {article.summary}
+                      </p>
+                    )}
+
+                    {/* BOX OFFICE */}
+                    {pageType === "box-office" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Box Office Collection</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                          {article.stats?.worldwide || article.boxOffice?.worldwide ? (
+                            <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
+                              <p className="text-[9px] text-gray-400 uppercase mb-1">Worldwide</p>
+                              <p className="text-base font-bold text-white">{article.stats?.worldwide || article.boxOffice?.worldwide}</p>
+                            </div>
+                          ) : null}
+                          {article.stats?.indiaNet ? (
+                            <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
+                              <p className="text-[9px] text-gray-400 uppercase mb-1">India Net</p>
+                              <p className="text-base font-bold text-white">{article.stats.indiaNet}</p>
+                            </div>
+                          ) : null}
+                          {article.stats?.overseas ? (
+                            <div className="p-3 rounded-lg bg-cyan-600/20 border border-cyan-500/30">
+                              <p className="text-[9px] text-gray-400 uppercase mb-1">Overseas</p>
+                              <p className="text-base font-bold text-white">{article.stats.overseas}</p>
+                            </div>
+                          ) : null}
+                          {article.stats?.openingDay ? (
+                            <div className="p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                              <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Day</p>
+                              <p className="text-base font-bold text-white">{article.stats.openingDay}</p>
+                            </div>
+                          ) : null}
+                          {article.stats?.openingWeekend ? (
+                            <div className="p-3 rounded-lg bg-pink-600/20 border border-pink-500/30">
+                              <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Weekend</p>
+                              <p className="text-base font-bold text-white">{article.stats.openingWeekend}</p>
+                            </div>
+                          ) : null}
+                          {article.stats?.firstWeek ? (
+                            <div className="p-3 rounded-lg bg-orange-600/20 border border-orange-500/30">
+                              <p className="text-[9px] text-gray-400 uppercase mb-1">First Week</p>
+                              <p className="text-base font-bold text-white">{article.stats.firstWeek}</p>
+                            </div>
+                          ) : null}
+                        </div>
+                        {article.stats?.verdict && (
+                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/40">
+                            <span className="text-sm font-black text-red-300 uppercase">{article.stats.verdict}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* CAST */}
+                    {pageType === "cast" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-blue-400 uppercase tracking-wider">Complete Cast</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                          {article.cast?.map((actor, idx) => (
+                            <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-gray-800/60 border border-gray-700/60 backdrop-blur-sm">
+                              <div className="w-7 h-7 rounded-full bg-blue-600/30 flex items-center justify-center flex-shrink-0">
+                                <User className="w-3.5 h-3.5 text-blue-400" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-white text-[11px] font-semibold truncate">{actor.name}</p>
+                                <p className="text-[9px] text-gray-500 truncate">{actor.role || "Actor"}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* BUDGET */}
+                    {pageType === "budget" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">Budget & Profit</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
+                            <p className="text-[9px] text-blue-400 uppercase mb-1">Total Budget</p>
+                            <p className="text-xl font-bold text-white">{article.budget || "N/A"}</p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
+                            <p className="text-[9px] text-green-400 uppercase mb-1">Worldwide Collection</p>
+                            <p className="text-xl font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
+                          </div>
+                        </div>
+                        {article.budget && article.stats?.worldwide && (
+                          <div className="grid grid-cols-3 gap-2">
+                            <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
+                              <p className="text-sm font-bold text-white">{(parseInt(article.stats.worldwide) / parseInt(article.budget)).toFixed(1)}x</p>
+                              <p className="text-[9px] text-gray-400">Return</p>
+                            </div>
+                            <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
+                              <p className="text-sm font-bold text-green-400">{((parseInt(article.stats.worldwide) / parseInt(article.budget) - 1) * 100).toFixed(0)}%</p>
+                              <p className="text-[9px] text-gray-400">Profit</p>
+                            </div>
+                            <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
+                              <p className="text-sm font-bold text-white">{parseInt(article.stats.worldwide) - parseInt(article.budget) > 0 ? 'Profit' : 'Loss'}</p>
+                              <p className="text-[9px] text-gray-400">Result</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* ENDING EXPLAINED */}
+                    {pageType === "ending-explained" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Ending Explained</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                          {article.summary || `Complete ending explanation and hidden meanings for ${movieTitle}.`}
+                        </p>
+                        {article.sections?.slice(0, 2).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-orange-600/10 border border-orange-500/20">
+                            <p className="text-xs font-bold text-orange-300 mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* REVIEW ANALYSIS */}
+                    {pageType === "review-analysis" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Critical Review</p>
+                        <div className="flex items-center gap-4">
+                          <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-600/20 border border-yellow-500/30">
+                            <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                            <div>
+                              <p className="text-2xl font-bold text-white">{article.rating || "N/A"}</p>
+                              <p className="text-[9px] text-yellow-300">IMDb / 10</p>
+                            </div>
+                          </div>
+                          {article.genreAnalysis && (
+                            <p className="text-gray-300 text-sm leading-relaxed flex-1">{article.genreAnalysis}</p>
+                          )}
+                        </div>
+                        {article.sections?.slice(0, 2).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* HIT OR FLOP */}
+                    {pageType === "hit-or-flop" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-red-400 uppercase tracking-wider">Hit or Flop Verdict</p>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
+                            <p className="text-[9px] text-green-400 uppercase mb-1">Box Office</p>
+                            <p className="text-base font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
+                          </div>
+                          <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
+                            <p className="text-[9px] text-blue-400 uppercase mb-1">Budget</p>
+                            <p className="text-base font-bold text-white">{article.budget || "N/A"}</p>
+                          </div>
+                        </div>
+                        {article.stats?.verdict && (
+                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/40">
+                            <span className="text-sm font-black text-red-300 uppercase">{article.stats.verdict}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* OTT RELEASE */}
+                    {pageType === "ott-release" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">OTT Release Info</p>
+                        {article.ott?.platform && (
+                          <div className="p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                            <p className="text-[9px] text-purple-400 uppercase mb-1">Platform</p>
+                            <p className="text-xl font-bold text-white">{article.ott.platform}</p>
+                          </div>
+                        )}
+                        {article.ott?.releaseDate && (
+                          <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
+                            <p className="text-[9px] text-gray-400 uppercase mb-1">OTT Release Date</p>
+                            <p className="text-base font-bold text-white">{article.ott.releaseDate}</p>
+                          </div>
+                        )}
+                        {article.summary && (
+                          <p className="text-gray-300 text-sm leading-relaxed">{article.summary}</p>
+                        )}
+                      </div>
+                    )}
+
+                  </motion.div>
                 </motion.div>
               </motion.div>
             </div>
@@ -719,7 +913,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                   })}
                   
                   {/* OTT Link - Goes to Actual OTT Page */}
-                  {article.ott?.platform ? (
+                  {article.ott?.platform && (
                     <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                       <Link 
                         href={`/ott/${slugify(article.ott.platform)}/${article.slug}`}
@@ -727,16 +921,6 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       >
                         <Tv className="w-4 h-4 mx-auto mb-1 text-purple-400" />
                         <span className="text-[10px] font-semibold block">OTT</span>
-                      </Link>
-                    </motion.div>
-                  ) : (
-                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                      <Link 
-                        href="/ott"
-                        className="block p-2.5 rounded-lg text-center bg-gray-800/50 border border-gray-700 text-gray-500 cursor-not-allowed"
-                      >
-                        <Tv className="w-4 h-4 mx-auto mb-1" />
-                        <span className="text-[10px] font-semibold block">Coming Soon</span>
                       </Link>
                     </motion.div>
                   )}
@@ -768,12 +952,10 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     </p>
                   </motion.div>
                 )}
-
-
               </div>
 
-              {/* Crew Section - Dynamic - Deduplicated */}
-              {(article.director?.length > 0 || article.producer?.length > 0 || article.writer?.length > 0) && (
+              {/* Crew Section - Dynamic - Deduplicated - Only on overview */}
+              {pageType === "overview" && (article.director?.length > 0 || article.producer?.length > 0 || article.writer?.length > 0) && (
                 <motion.div 
                   initial={{ x: 30, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
