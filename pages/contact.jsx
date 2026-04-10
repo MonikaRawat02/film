@@ -1,7 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
-import { Mail, MessageSquare, MapPin, Phone, Send, Clock, Heart } from "lucide-react";
+import { Mail, MessageSquare, MapPin, Phone, Send, Clock, Heart, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -10,11 +11,32 @@ export default function ContactPage() {
     subject: "",
     message: "",
   });
+  const [isSubmitting, setIsSubfilling] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
+    setIsSubfilling(true);
+    
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      
+      const data = await res.json();
+      
+      if (res.ok) {
+        toast.success("Message sent! We'll get back to you soon.");
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        toast.error(data.message || "Failed to send message.");
+      }
+    } catch (error) {
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setIsSubfilling(false);
+    }
   };
 
   const contactMethods = [
@@ -190,12 +212,17 @@ export default function ContactPage() {
                   
                   <motion.button
                     type="submit"
+                    disabled={isSubmitting}
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2"
+                    className={`w-full py-4 bg-gradient-to-r from-red-600 to-orange-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
                   >
-                    <Send className="w-5 h-5" />
-                    Send Message
+                    {isSubmitting ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <Send className="w-5 h-5" />
+                    )}
+                    {isSubmitting ? "Sending..." : "Send Message"}
                   </motion.button>
                 </form>
               </div>
