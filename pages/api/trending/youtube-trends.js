@@ -521,6 +521,8 @@ export default async function handler(req, res) {
           views: preprocessed.viewCount,
           viewsFormatted: formatViews(preprocessed.viewCount),
           image: enriched.poster || enriched.image || validation.metadata?.thumbnail || validation.metadata?.coverImage || null,
+          slug: validation.slug,
+          referenceId: validation.referenceId,
           localMatch: true
         });
 

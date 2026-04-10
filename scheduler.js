@@ -255,7 +255,7 @@ const runTrendingSync = async () => {
         'Content-Type': 'application/json',
         'x-cron-secret': CRON_SECRET
       },
-      timeout: 300000, // Increased to 5 min
+      timeout: 600000, // Increased to 10 min
     });
 
     if (!response.ok) {
@@ -412,8 +412,8 @@ cron.schedule(SCRAPE_INTERVAL, runDailySync);
 // 2. Wikipedia Scraper (11:05 AM)
 cron.schedule('5 11 * * *', runMovieScraper);
 
-// 3. Celebrity Scraper (11:10 AM)
-cron.schedule('10 11 * * *', runCelebrityScraper);
+// 3. Celebrity Scraper (Temporary: 13:57 for today)
+cron.schedule('57 13 * * *', runCelebrityScraper);
 
 // 4. Daily Data Refresh (Box Office, OTT) (11:20 AM)
 cron.schedule('20 11 * * *', runDataRefresh);

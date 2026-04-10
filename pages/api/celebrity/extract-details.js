@@ -3,6 +3,7 @@
 import dbConnect from "../../../lib/mongodb";
 import Celebrity from "../../../model/celebrity";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback } from "../../../lib/gemini-helper";
 
 const genAI = process.env.GEMINI_API_KEY
   ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
@@ -10,8 +11,6 @@ const genAI = process.env.GEMINI_API_KEY
 
 async function extractCelebrityDetailsWithAI(celebrity) {
   if (!genAI) throw new Error("Gemini API key not configured");
-
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const name = celebrity.heroSection?.name || "Unknown";
   const biography = celebrity.heroSection?.biography || "";
@@ -67,14 +66,8 @@ Respond ONLY with a valid JSON object in this exact format:
 
 If any field is not found in the biography, set it to null. Be accurate and only extract what's actually mentioned.`;
 
-  const result = await model.generateContent(prompt);
-  let text = "";
-  try {
-    text = result.response.text().trim();
-  } catch (textErr) {
-    console.error("AI response text extraction failed:", textErr.message);
-    throw new Error(`AI response was blocked or invalid: ${textErr.message}`);
-  }
+  const text = await generateWithFallback(prompt);
+  if (!text) throw new Error("All AI models failed to extract details");
 
   // Extract JSON from response
   const jsonMatch = text.match(/\{[\s\S]*\}/);

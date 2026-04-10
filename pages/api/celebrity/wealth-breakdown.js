@@ -3,6 +3,7 @@
 import dbConnect from "../../../lib/mongodb";
 import Celebrity from "../../../model/celebrity";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback } from "../../../lib/gemini-helper";
 
 const genAI = process.env.GEMINI_API_KEY
   ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
@@ -24,8 +25,6 @@ function isStaticDefault(incomeSources = []) {
 
 async function generateWealthBreakdownWithAI(celebrity) {
   if (!genAI) throw new Error("Gemini API key not configured");
-
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const name = celebrity.heroSection?.name || "Unknown";
   const industry = celebrity.heroSection?.industry || "Bollywood";
@@ -83,8 +82,8 @@ Respond ONLY with a valid JSON array like this:
 
 IMPORTANT: Make it realistic and specific to ${name}'s actual career. Do NOT use generic 65/25/10 split.`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text().trim();
+  const text = await generateWithFallback(prompt);
+  if (!text) throw new Error("All AI models failed to generate wealth breakdown");
 
   // Extract JSON from response
   const jsonMatch = text.match(/\[[\s\S]*\]/);

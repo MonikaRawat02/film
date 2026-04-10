@@ -67,7 +67,7 @@ export default async function handler(req, res) {
       ]
     })
       .limit(7)
-      .select("title slug category movieTitle coverImage summary");
+      .select("title slug category movieTitle coverImage summary ott");
 
     // Search Box Office
     const boxOffice = await BoxOffice.find({
@@ -94,15 +94,27 @@ export default async function handler(req, res) {
         description: c.heroSection.profession?.join(", "),
         href: `/celebrity/${c.heroSection.slug}/profile`
       })),
-      ...articles.map(a => ({
-        id: a._id,
-        title: a.title,
-        type: "Article",
-        category: a.category,
-        image: a.coverImage,
-        description: a.summary || a.movieTitle,
-        href: `/category/${a.category?.toLowerCase() || "bollywood"}/${a.slug}`
-      })),
+      ...articles.map(a => {
+        let href = `/category/${a.category?.toLowerCase() || "bollywood"}/${a.slug}`;
+        
+        // Custom redirection logic based on requirements
+        if (a.category === "Bollywood" || a.category === "Hollywood") {
+          href = `/movie/${a.slug}`;
+        } else if (a.category === "OTT" || a.category === "WebSeries") {
+          const platform = a.ott?.platform?.toLowerCase()?.replace(/\s+/g, "-") || "netflix";
+          href = `/ott/${platform}/${a.slug}`;
+        }
+
+        return {
+          id: a._id,
+          title: a.title,
+          type: "Article",
+          category: a.category,
+          image: a.coverImage,
+          description: a.summary || a.movieTitle,
+          href
+        };
+      }),
       ...boxOffice.map(b => ({
         id: b._id,
         title: b.movieName,

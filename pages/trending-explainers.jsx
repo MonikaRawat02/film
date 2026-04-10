@@ -9,13 +9,14 @@ import {
 } from "lucide-react";
 
 // ─── NORMALISE title for dedup ──────────────────────────────────────────────
-const normTitle = (t = "") =>
-  t.toLowerCase()
+const normTitle = (t) => {
+  if (!t) return "";
+  return String(t).toLowerCase()
     .replace(/\bprofile\b/g, "")
     .replace(/\bintelligence\b/g, "")
-    .replace(/[^a-z0-9\s]/g, "")
     .replace(/\s+/g, " ")
     .trim();
+};
 
 // ─── HEAT BAR ─────────────────────────────────────────────────────────────────
 const HeatBar = ({ score = 70, color = "#ef4444" }) => (
@@ -484,6 +485,8 @@ export default function TrendingExplainersPage() {
   const [trendingData, setTrendingData] = useState([]);  // from /api/trending-intelligence
   const [celebData, setCelebData] = useState([]);         // from /api/trending-celebrities
   const [rawTrending, setRawTrending] = useState([]);     // from /api/trending (google+youtube)
+  const [googleLive, setGoogleLive] = useState([]);       // from /api/trending/google-trends
+  const [youtubeLive, setYoutubeLive] = useState([]);     // from /api/trending/youtube-trends
   const [loading, setLoading] = useState(true);
   const [activeRank, setActiveRank] = useState(0);
   const [activeFilter, setActiveFilter] = useState("All");
@@ -492,35 +495,34 @@ export default function TrendingExplainersPage() {
   const progressWidth = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
   useEffect(() => {
+    // 1. Initial Load: Local/Cached Intelligence Data (FAST)
     Promise.all([
-      fetch("/api/trending-intelligence").then(r => r.json()).catch(() => ({ success: false, data: [] })),
-      fetch("/api/trending-celebrities").then(r => r.json()).catch(() => ({ success: false, data: [] })),
-      fetch("/api/trending?limit=30").then(r => r.json()).catch(() => ({ success: false, data: {} })),
+      fetch("/api/trending-intelligence").then(r => r.json()).catch(err => { console.error("Intel API Error:", err); return { success: false, data: [] }; }),
+      fetch("/api/trending-celebrities").then(r => r.json()).catch(err => { console.error("Celeb API Error:", err); return { success: false, data: [] }; }),
+      fetch("/api/trending?limit=30").then(r => r.json()).catch(err => { console.error("Trending API Error:", err); return { success: false, data: {} }; }),
     ]).then(([intel, celeb, raw]) => {
-      const intelData = (intel.success ? intel.data : []).map(x => ({ ...x, source: x.source || "intelligence" }));
+      const intelData = (intel.success ? (Array.isArray(intel.data) ? intel.data : []) : []).map(x => ({ ...x, source: x.source || "intelligence" }));
+      const celebItems = (celeb.success ? (Array.isArray(celeb.data) ? celeb.data : []) : []).map(x => ({ ...x, category: "Celebrity", source: "intelligence" }));
 
-      const celebItems = (celeb.success ? celeb.data : []).map(x => ({ ...x, category: "Celebrity", source: "intelligence" }));
-
-      // Convert raw trending (google/youtube) into uniform format
-      const rawMovies = (raw.success ? raw.data?.trending_movies || [] : []).map(t => ({
+      const rawMovies = (raw.success && raw.data?.trending_movies ? raw.data.trending_movies : []).map(t => ({
         _id: t._id, title: t.title, category: "Explained",
-        image: t.metadata?.coverImage || t.metadata?.thumbnail || "/placeholder.jpg",
+        image: t.metadata?.coverImage || t.metadata?.thumbnail || t.metadata?.poster || "/placeholder.jpg",
         description: (t.keywords || []).join(" · ") || "",
         slug: t.slug, source: t.source || "google",
         traffic: t.traffic || 0, viewCount: t.viewCount || 0, trendScore: t.score || 0,
         views: t.viewCount > 0 ? `${(t.viewCount / 1000).toFixed(1)}K` : t.traffic > 0 ? `${(t.traffic / 1000).toFixed(0)}K` : "—",
         readTime: "4 min", keywords: t.keywords || []
       }));
-      const rawActors = (raw.success ? raw.data?.trending_actors || [] : []).map(t => ({
+      const rawActors = (raw.success && raw.data?.trending_actors ? raw.data.trending_actors : []).map(t => ({
         _id: t._id, title: t.title, category: "Celebrity",
-        image: t.metadata?.profileImage || t.metadata?.thumbnail || "/placeholder.jpg",
+        image: t.metadata?.profileImage || t.metadata?.thumbnail || t.metadata?.image || "/placeholder.jpg",
         description: (t.keywords || []).join(" · ") || "",
         slug: t.slug, source: t.source || "google",
         traffic: t.traffic || 0, viewCount: t.viewCount || 0, trendScore: t.score || 0,
         views: t.traffic > 0 ? `${(t.traffic / 1000).toFixed(0)}K` : "—",
         readTime: "3 min", keywords: t.keywords || []
       }));
-      const rawTopics = (raw.success ? raw.data?.viral_topics || [] : []).map(t => ({
+      const rawTopics = (raw.success && raw.data?.viral_topics ? raw.data.viral_topics : []).map(t => ({
         _id: t._id, title: t.title, category: "OTT",
         image: t.metadata?.thumbnail || "/placeholder.jpg",
         description: (t.keywords || []).join(" · ") || "",
@@ -530,26 +532,89 @@ export default function TrendingExplainersPage() {
         readTime: "4 min", keywords: t.keywords || []
       }));
 
-      // ─── GLOBAL DEDUP by normalised title ──────────────────
+      const initialList = [...intelData, ...celebItems, ...rawMovies, ...rawActors, ...rawTopics];
       const seen = new Set();
-      const dedup = (arr) => arr.filter(item => {
+      const deduped = initialList.filter(item => {
         const key = normTitle(item.title);
         if (!key || seen.has(key)) return false;
         seen.add(key);
         return true;
       });
 
-      // Priority order: intelligence articles → celebs → raw trending
-      const all = dedup([...intelData, ...celebItems, ...rawMovies, ...rawActors, ...rawTopics]);
+      setTrendingData(deduped);
+      setCelebData(deduped.filter(x => x.category === "Celebrity"));
+      setRawTrending({
+        google: initialList.filter(x => x.source === "google"),
+        youtube: initialList.filter(x => x.source === "youtube")
+      });
+      setLoading(false);
 
-      const googleSrc = [...rawMovies, ...rawActors, ...rawTopics].filter(x => x.source === "google");
-      const youtubeSrc = [...rawMovies, ...rawActors, ...rawTopics].filter(x => x.source === "youtube");
-
-      setTrendingData(all);
-      setCelebData(dedup([...celebItems, ...rawActors]));
-      setRawTrending({ google: googleSrc, youtube: youtubeSrc });
-    }).catch(console.error).finally(() => setLoading(false));
+      // 2. Secondary Load: Live Trends (SLOWER)
+      fetchLiveTrends(deduped);
+    }).catch(err => {
+        console.error("Critical Load Error:", err);
+        setLoading(false);
+    });
   }, []);
+
+  const fetchLiveTrends = async (existingData) => {
+    try {
+      const [googleLiveRes, youtubeLiveRes] = await Promise.all([
+        fetch("/api/trending/google-trends").then(r => r.json()).catch(() => ({ success: false, validatedData: [] })),
+        fetch("/api/trending/youtube-trends").then(r => r.json()).catch(() => ({ success: false, validatedData: [] })),
+      ]);
+
+      const gLive = (googleLiveRes.success ? googleLiveRes.validatedData : []).map(t => {
+        let category = "OTT";
+        if (t.type === "trending_movies") category = "Explained";
+        else if (t.type === "trending_actors") category = "Celebrity";
+        else if (t.localMatch) category = "Celebrity";
+        return {
+          _id: t._id || t.title, title: t.title, category,
+          image: t.image || "/placeholder.jpg",
+          description: t.description || "Live trending insight from Google Trends.",
+          slug: t.slug, source: "google", trendScore: t.score || 0,
+          views: "Live", readTime: "3 min", isLive: true
+        };
+      });
+
+      const yLive = (youtubeLiveRes.success ? youtubeLiveRes.validatedData : []).map(t => {
+        let category = "OTT";
+        if (t.type === "trending_movies") category = "Explained";
+        else if (t.type === "trending_actors") category = "Celebrity";
+        else if (t.localMatch) category = "Celebrity";
+        return {
+          _id: t._id || t.title, title: t.title, category,
+          image: t.image || "/placeholder.jpg",
+          description: t.description || `Trending on YouTube with ${t.viewsFormatted || 'massive'} views.`,
+          slug: t.slug, source: "youtube", trendScore: t.score || 0,
+          views: t.viewsFormatted || "Live", readTime: "4 min", isLive: true
+        };
+      });
+
+      setGoogleLive(gLive);
+      setYoutubeLive(yLive);
+
+      // Merge and dedup again with live data at the top
+      const allMerged = [...gLive, ...yLive, ...existingData];
+      const seen = new Set();
+      const dedupedAll = allMerged.filter(item => {
+        const key = normTitle(item.title);
+        if (!key || seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      setTrendingData(dedupedAll);
+      setCelebData(dedupedAll.filter(x => x.category === "Celebrity"));
+      setRawTrending(prev => ({
+        google: [...gLive, ...prev.google],
+        youtube: [...yLive, ...prev.youtube]
+      }));
+    } catch (error) {
+      console.error("Live fetch failed:", error);
+    }
+  };
 
   const allItems = trendingData.slice(0, 28);
 

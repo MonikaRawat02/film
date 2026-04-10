@@ -18,6 +18,11 @@ export default function ProfileHeroSection({ celebrity }) {
     verified: true,
   };
 
+
+
+
+  console.log('data', data);
+
   const trustBadges = [
     { text: "Multi-Source Verified" },
     { text: "Updated Monthly" },

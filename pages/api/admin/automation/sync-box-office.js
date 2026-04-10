@@ -1,6 +1,7 @@
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback } from "../../../../lib/gemini-helper";
 import axios from "axios";
 
 // Initialize Gemini (Paid Tier as requested earlier)
@@ -44,7 +45,6 @@ export default async function handler(req, res) {
     // 1. Try Gemini for the latest intelligence (Sacnilk/BollyHungama accuracy)
     if (genAI) {
       try {
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         const prompt = `Provide the latest and most accurate box office intelligence for the movie "${movieTitle}" (${releaseYear}). 
         I need specifically:
         1. Budget (in Crores or Dollars)
@@ -64,22 +64,21 @@ export default async function handler(req, res) {
           "verdict": "string"
         }`;
 
-        const result = await model.generateContent(prompt);
-        const response = await result.response;
-        const text = response.text();
-        const jsonMatch = text.match(/\{[\s\S]*?\}/);
-        
-        if (jsonMatch) {
-          const geminiData = JSON.parse(jsonMatch[0]);
-          intelligence = {
-            budget: geminiData.budget || intelligence.budget,
-            openingWeekend: geminiData.opening_weekend || intelligence.openingWeekend,
-            worldwide: geminiData.worldwide || intelligence.worldwide,
-            profit: geminiData.profit || intelligence.profit,
-            roi: geminiData.roi || intelligence.roi,
-            verdict: geminiData.verdict?.toUpperCase() || intelligence.verdict,
-          };
-          console.log(`✅ Gemini Intelligence Success for ${movieTitle}`);
+        const text = await generateWithFallback(prompt);
+        if (text) {
+          const jsonMatch = text.match(/\{[\s\S]*?\}/);
+          if (jsonMatch) {
+            const geminiData = JSON.parse(jsonMatch[0]);
+            intelligence = {
+              budget: geminiData.budget || intelligence.budget,
+              openingWeekend: geminiData.opening_weekend || intelligence.openingWeekend,
+              worldwide: geminiData.worldwide || intelligence.worldwide,
+              profit: geminiData.profit || intelligence.profit,
+              roi: geminiData.roi || intelligence.roi,
+              verdict: geminiData.verdict?.toUpperCase() || intelligence.verdict,
+            };
+            console.log(`✅ Gemini Intelligence Success for ${movieTitle}`);
+          }
         }
       } catch (geminiErr) {
         console.error("❌ Gemini Intelligence Failed:", geminiErr.message);
