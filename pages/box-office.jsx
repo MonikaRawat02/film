@@ -108,7 +108,7 @@ export default function BoxOfficePage() {
         <title>Box Office Truth Database | FilmyFire</title>
       </Head>
   
-      <div className="font-sans mx-auto max-w-[1500px] px-4 lg:px-10 pb-20 overflow-x-hidden">
+      <div className="font-sans mx-auto max-w-[1500px] px-4 lg:px-10 pt-12 pb-20 overflow-x-hidden">
         {/* Header Section with Glass Effect */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}

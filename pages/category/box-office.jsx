@@ -13,51 +13,62 @@ export async function getServerSideProps(context) {
   const baseUrl = `${protocol}://${host}`;
 
   try {
-    const res = await fetch(`${baseUrl}/api/articles/list?category=BoxOffice&limit=20`);
+    const res = await fetch(`${baseUrl}/api/public/unified-content?filter=All&limit=20`);
     const data = await res.json();
 
     return {
       props: {
-        initialArticles: data.data || [],
+        initialData: data.data || { articles: [], celebrities: [], boxOffice: [], ott: [] },
       },
     };
   } catch (error) {
-    console.error("Error fetching articles:", error);
+    console.error("Error fetching data:", error);
     return {
       props: {
-        initialArticles: [],
+        initialData: { articles: [], celebrities: [], boxOffice: [], ott: [] },
       },
     };
   }
 }
 
-export default function BoxOfficePage({ initialArticles }) {
+export default function BoxOfficePage({ initialData }) {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [articles, setArticles] = useState(initialArticles);
+  const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchArticles = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/articles/list?category=BoxOffice&limit=20");
+        const res = await fetch(`/api/public/unified-content?filter=${activeFilter}&limit=20`);
         const data = await res.json();
-        if (data.data) {
-          setArticles(data.data);
+        
+        if (data.success) {
+          // Handle both formats: array or object with arrays
+          if (Array.isArray(data.data)) {
+            setArticles(data.data);
+          } else if (activeFilter === "All") {
+            // Combine all data sources for "All" filter
+            const combined = [
+              ...(data.data.articles || []),
+              ...(data.data.celebrities || []),
+              ...(data.data.boxOffice || []),
+              ...(data.data.ott || [])
+            ];
+            setArticles(combined);
+          } else {
+            setArticles([]);
+          }
         }
       } catch (error) {
-        console.error("Error fetching articles:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchArticles();
-  }, []);
-
-  const filteredArticles = activeFilter === "All" 
-    ? articles 
-    : articles.filter(article => article.category === activeFilter);
+    fetchData();
+  }, [activeFilter]);
 
   return (
     <>
@@ -94,7 +105,7 @@ export default function BoxOfficePage({ initialArticles }) {
         </div>
 
         <CategoryFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} category="BoxOffice" />
-        <CategoryArticlesGrid category="BoxOffice" articles={filteredArticles} loading={loading} />
+        <CategoryArticlesGrid category="BoxOffice" articles={articles} loading={loading} filterType={activeFilter === "All" ? null : activeFilter} />
         
         {/* All-Time Records */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-zinc-900">
