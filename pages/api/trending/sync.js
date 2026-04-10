@@ -11,49 +11,76 @@ import { validateTrend } from "../../../lib/trending/validation";
 const CRON_SECRET = process.env.CRON_SECRET || "filmyfire_automation_secret_2026";
 
 /**
- * Enrich validated trend with full database content
+ * Enrich validated trend with TMDB or local database content
  */
 async function enrichTrendData(trend, validation) {
   try {
     let enrichedData = {
       ...trend,
+      title: validation.title, // Use original keyword preserved in validation
       referenceId: validation.referenceId,
       referenceModel: validation.type === "trending_movies" ? "Article" : validation.type === "trending_actors" ? "Celebrity" : null,
+      metadata: trend.metadata || {}
     };
 
-    // Fetch full details from database
-    if (validation.type === "trending_movies" && validation.referenceId) {
-      const movie = await Article.findById(validation.referenceId).select(
-        "movieTitle slug coverImage releaseYear director genres stats"
-      );
-
-      if (movie) {
+    // 1. Enrich from TMDB Data (if available from validation)
+    if (validation.tmdbData) {
+      const tmdb = validation.tmdbData;
+      if (validation.type === "trending_movies") {
         enrichedData.metadata = {
           ...enrichedData.metadata,
-          movieTitle: movie.movieTitle,
-          releaseYear: movie.releaseYear,
-          director: movie.director?.[0] || "N/A",
-          genres: movie.genres?.join(", ") || "N/A",
-          coverImage: movie.coverImage,
-          boxOffice: movie.stats?.worldwide || "N/A",
+          movieTitle: tmdb.title,
+          releaseDate: tmdb.releaseDate,
+          overview: tmdb.overview,
+          rating: tmdb.rating,
+          coverImage: tmdb.image,
+          tmdbPopularity: tmdb.popularity
+        };
+      } else if (validation.type === "trending_actors") {
+        enrichedData.metadata = {
+          ...enrichedData.metadata,
+          actorName: tmdb.title,
+          knownFor: tmdb.knownFor?.join(", "),
+          profileImage: tmdb.image,
+          tmdbPopularity: tmdb.popularity
         };
       }
     }
 
-    if (validation.type === "trending_actors" && validation.referenceId) {
-      const celebrity = await Celebrity.findById(validation.referenceId).select(
-        "heroSection.name heroSection.industry heroSection.profileImage quickFacts.age netWorth"
-      );
-
-      if (celebrity) {
-        enrichedData.metadata = {
-          ...enrichedData.metadata,
-          actorName: celebrity.heroSection?.name,
-          industry: celebrity.heroSection?.industry,
-          age: celebrity.quickFacts?.age,
-          profileImage: celebrity.heroSection?.profileImage,
-          netWorth: celebrity.netWorth?.netWorthUSD?.display,
-        };
+    // 2. Further enrich from Local Database if it exists
+    if (validation.isLocal && validation.referenceId) {
+      if (validation.type === "trending_movies") {
+        const movie = await Article.findById(validation.referenceId).select(
+          "movieTitle slug coverImage releaseYear director genres stats"
+        );
+        if (movie) {
+          enrichedData.metadata = {
+            ...enrichedData.metadata,
+            localSlug: movie.slug,
+            localTitle: movie.movieTitle,
+            director: movie.director?.[0] || "N/A",
+            genres: movie.genres?.join(", ") || "N/A",
+            boxOffice: movie.stats?.worldwide || "N/A",
+          };
+          // Prefer local image if available
+          if (movie.coverImage) enrichedData.metadata.coverImage = movie.coverImage;
+        }
+      } else if (validation.type === "trending_actors") {
+        const celebrity = await Celebrity.findById(validation.referenceId).select(
+          "heroSection.name heroSection.industry heroSection.profileImage quickFacts.age netWorth"
+        );
+        if (celebrity) {
+          enrichedData.metadata = {
+            ...enrichedData.metadata,
+            localSlug: celebrity.heroSection?.slug,
+            localName: celebrity.heroSection?.name,
+            industry: celebrity.heroSection?.industry,
+            age: celebrity.quickFacts?.age,
+            netWorth: celebrity.netWorth?.netWorthUSD?.display,
+          };
+          // Prefer local image if available
+          if (celebrity.heroSection?.profileImage) enrichedData.metadata.profileImage = celebrity.heroSection.profileImage;
+        }
       }
     }
 
@@ -92,6 +119,15 @@ function calculateScore(trend) {
 
   // Classification confidence (10%)
   score += Math.round((trend.classificationConfidence || 0.5) * 10);
+
+  // TMDB Popularity Boost (Max 10%)
+  if (trend.metadata?.tmdbPopularity) {
+    const pop = trend.metadata.tmdbPopularity;
+    if (pop > 100) score += 10;
+    else if (pop > 50) score += 7;
+    else if (pop > 20) score += 5;
+    else if (pop > 5) score += 2;
+  }
 
   return Math.min(score, 100);
 }
@@ -189,8 +225,8 @@ export default async function handler(req, res) {
         validatedDetails.push({
           title: enriched.title,
           type: validation.type,
-          source: enriched.source,
-          score: score
+          score: score,
+          image: enriched.metadata?.coverImage || enriched.metadata?.profileImage || null
         });
 
         const typeLabel = validation.type === "trending_movies" ? "🎬" : validation.type === "trending_actors" ? "👤" : "📊";

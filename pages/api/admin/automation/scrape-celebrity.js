@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { industry = "Bollywood", limit = 50 } = req.body;
+  const { industry = "Bollywood", limit = 10 } = req.body;
 
   try {
     await dbConnect();
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       isAutomated: true
     });
 
-    const DAILY_LIMIT = 20;
+    const DAILY_LIMIT = 50; // Increased daily cap for more flexibility
     if (countToday >= DAILY_LIMIT) {
       return res.status(200).json({
         success: true,
@@ -38,11 +38,14 @@ export default async function handler(req, res) {
     }
 
     const remainingQuota = DAILY_LIMIT - countToday;
-    const MAX_PER_RUN = Math.min(remainingQuota, 20);
+    const MAX_PER_RUN = Math.min(remainingQuota, limit); // Respect the requested limit
     // --- End Daily Limit Check ---
 
-    const celebUrls = await getCelebrityUrlsByIndustry(industry);
+    let celebUrls = await getCelebrityUrlsByIndustry(industry);
     console.log(`Found ${celebUrls.length} celebrity URLs for ${industry}`);
+    
+    // Randomize the list to discover different celebrities each time
+    celebUrls = celebUrls.sort(() => Math.random() - 0.5);
     
     const results = {
       totalFound: celebUrls.length,
