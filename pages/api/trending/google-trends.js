@@ -960,6 +960,8 @@ export default async function handler(req, res) {
           type: validation.type,
           score: score,
           image: enriched.poster || enriched.image || validation.metadata?.thumbnail || validation.metadata?.coverImage || null,
+          slug: validation.slug,
+          referenceId: validation.referenceId,
           localMatch: true
         });
 

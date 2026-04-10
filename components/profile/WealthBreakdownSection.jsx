@@ -1,3 +1,4 @@
+//components/profile/WealthBreakdownSection.jsx
 "use client";
 import { useState, useEffect } from "react";
 import { Film, Megaphone, Trophy, House, RefreshCw, Loader2 } from "lucide-react";
@@ -52,12 +53,13 @@ export default function WealthBreakdownSection({ celebrity }) {
   };
 
   const breakdownItems = incomeSources.map((source, index) => {
-    const amountVal = netWorthTotal ? (netWorthTotal * (source.percentage / 100)) : 0;
-    const amountDisplay = amountVal >= 1000000
-      ? `$${(amountVal / 1000000).toFixed(1)}M`
-      : amountVal >= 1000
-        ? `$${(amountVal / 1000).toFixed(1)}K`
-        : `$${amountVal}`;
+    const amountVal = netWorthTotal ? Math.round((netWorthTotal * (source.percentage / 100)) * 100) / 100 : 0;
+
+    const amountDisplay = amountVal >= 1000
+      ? `$${(amountVal / 1000).toFixed(2)}B`
+      : amountVal >= 1
+        ? `$${amountVal.toFixed(2)}M`
+        : `$${(amountVal * 1000).toFixed(0)}K`;
 
     return {
       Icon: icons[index % icons.length],

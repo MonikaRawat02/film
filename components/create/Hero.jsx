@@ -1,9 +1,56 @@
 "use client";
-import { Film } from "lucide-react";
-import { useState } from "react";
+import { Film, Search, Loader2 } from "lucide-react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CreateHero() {
   const [isFocused, setIsFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [results, setResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const debounceTimer = useRef(null);
+
+  const fetchResults = async (query) => {
+    if (!query || query.length < 2) {
+      setResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/public/search?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (data.success) {
+        setResults(data.data);
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      fetchResults(searchQuery);
+    }, 300);
+
+    return () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+      }
+    };
+  }, [searchQuery]);
+
+  const handleResultClick = (href) => {
+    router.push(href);
+    setIsFocused(false);
+  };
 
   return (
     <section className="font-sans">
@@ -32,38 +79,106 @@ export default function CreateHero() {
             <div className="relative bg-zinc-900/90 backdrop-blur-xl border border-zinc-800 rounded-2xl overflow-hidden">
               <input
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && searchQuery.length >= 2) {
+                    router.push(`/intelligence?search=${encodeURIComponent(searchQuery)}`);
+                    setIsFocused(false);
+                  }
+                }}
                 placeholder="Search movies, web series, actors, or explanations..."
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
+                onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                 className="w-full h-16 bg-transparent border-0 px-6 py-5 text-white placeholder-zinc-500 focus:outline-none focus:ring-0"
               />
+              <div className="absolute right-6 top-1/2 -translate-y-1/2">
+                {isLoading ? (
+                  <Loader2 className="w-5 h-5 text-zinc-500 animate-spin" />
+                ) : (
+                  <Search className="w-5 h-5 text-zinc-500" />
+                )}
+              </div>
             </div>
             
             {isFocused && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-2xl p-4 shadow-2xl z-50">
-                <div className="text-xs text-zinc-500 mb-3 font-medium">POPULAR SEARCHES</div>
-                <ul className="space-y-1">
-                  <li>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors">
-                      Animal ending explained
-                    </button>
-                  </li>
-                  <li>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors">
-                      Avatar box office
-                    </button>
-                  </li>
-                  <li>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors">
-                      Shah Rukh Khan career
-                    </button>
-                  </li>
-                  <li>
-                    <button className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors">
-                      Mirzapur Season 3
-                    </button>
-                  </li>
-                </ul>
+              <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-900/95 backdrop-blur-xl border border-zinc-800 rounded-2xl p-4 shadow-2xl z-50 max-h-[400px] overflow-y-auto">
+                {searchQuery.length < 2 ? (
+                  <>
+                    <div className="text-xs text-zinc-500 mb-3 font-medium">POPULAR SEARCHES</div>
+                    <ul className="space-y-1">
+                      <li>
+                        <button 
+                          onClick={() => setSearchQuery("Animal ending explained")}
+                          className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                          Animal ending explained
+                        </button>
+                      </li>
+                      <li>
+                        <button 
+                          onClick={() => setSearchQuery("Avatar box office")}
+                          className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                          Avatar box office
+                        </button>
+                      </li>
+                      <li>
+                        <button 
+                          onClick={() => setSearchQuery("Shah Rukh Khan career")}
+                          className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                          Shah Rukh Khan career
+                        </button>
+                      </li>
+                      <li>
+                        <button 
+                          onClick={() => setSearchQuery("Mirzapur Season 3")}
+                          className="w-full text-left px-4 py-2.5 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors"
+                        >
+                          Mirzapur Season 3
+                        </button>
+                      </li>
+                    </ul>
+                  </>
+                ) : results.length > 0 ? (
+                  <div className="space-y-4">
+                    {results.map((result) => (
+                      <button
+                        key={result.id}
+                        onClick={() => handleResultClick(result.href)}
+                        className="w-full flex items-center gap-4 p-3 hover:bg-white/5 rounded-xl transition-all group/item text-left"
+                      >
+                        <div className="w-12 h-16 rounded-lg bg-zinc-800 overflow-hidden flex-shrink-0 border border-white/5 group-hover/item:border-white/10 transition-colors">
+                          {result.image ? (
+                            <img src={result.image} alt={result.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-zinc-600">
+                              <Film className="w-5 h-5" />
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-grow">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-sm font-semibold text-white group-hover/item:text-red-400 transition-colors line-clamp-1">
+                              {result.title}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold uppercase tracking-wider">
+                              {result.type}
+                            </span>
+                          </div>
+                          <p className="text-xs text-zinc-500 line-clamp-2 leading-relaxed">
+                            {result.description}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                ) : !isLoading && (
+                  <div className="py-8 text-center">
+                    <p className="text-sm text-zinc-500 italic">No results found for "{searchQuery}"</p>
+                  </div>
+                )}
               </div>
             )}
           </div>

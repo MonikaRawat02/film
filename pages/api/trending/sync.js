@@ -163,7 +163,7 @@ export default async function handler(req, res) {
       });
     }
 
-    // Step 2: Process and validate
+    // Step 2: Process and validate in parallel batches
     console.log("\n🔍 Step 2: Processing, validating, and enriching...");
     let validated = 0;
     let rejected = 0;
@@ -174,84 +174,78 @@ export default async function handler(req, res) {
     const validatedDetails = [];
     const rejectedDetails = [];
 
-    for (const rawTrend of rawTrends) {
-      try {
-        // Preprocess
-        const preprocessed = await preprocessTrend(rawTrend);
+    // Process in parallel batches of 5 to avoid overwhelming APIs/DB
+    const BATCH_SIZE = 5;
+    for (let i = 0; i < rawTrends.length; i += BATCH_SIZE) {
+      const batch = rawTrends.slice(i, i + BATCH_SIZE);
+      const results = await Promise.all(batch.map(async (rawTrend) => {
+        try {
+          // Preprocess
+          const preprocessed = await preprocessTrend(rawTrend);
 
-        // Validate
-        const validation = await validateTrend(preprocessed);
+          // Validate
+          const validation = await validateTrend(preprocessed);
 
-        if (!validation.isValid) {
-          console.log(
-            `   ⏭️  Skipped: "${rawTrend.title.substring(0, 40)}..." (not in DB)`
-          );
-          rejectedDetails.push({
-            title: rawTrend.title,
-            source: rawTrend.source,
-            reason: validation.reason || "Not found in database or not entertainment related"
-          });
-          rejected++;
-          continue;
+          if (!validation.isValid) {
+            return { success: false, title: rawTrend.title, reason: validation.reason || "Not found" };
+          }
+
+          // Enrich with database content
+          const enriched = await enrichTrendData(preprocessed, validation);
+
+          // Calculate score
+          const score = calculateScore(enriched);
+
+          // Create record for database
+          const trendRecord = {
+            title: enriched.title,
+            type: validation.type,
+            entityType: validation.entityType,
+            referenceId: enriched.referenceId,
+            referenceModel: enriched.referenceModel,
+            slug: validation.slug,
+            source: enriched.source,
+            traffic: enriched.traffic || 0,
+            viewCount: enriched.viewCount || 0,
+            keywords: enriched.keywords || [],
+            classificationConfidence: enriched.classificationConfidence || 0.5,
+            status: "active",
+            trendTimestamp: new Date(enriched.timestamp),
+            expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+            metadata: enriched.metadata,
+            score: score,
+          };
+
+          return { success: true, record: trendRecord, validation, enriched, score };
+        } catch (error) {
+          return { success: false, title: rawTrend.title, error: error.message };
         }
+      }));
 
-        // Enrich with database content
-        const enriched = await enrichTrendData(preprocessed, validation);
+      // Process batch results
+      for (const res of results) {
+        if (res.success) {
+          trendingRecords.push(res.record);
+          validatedDetails.push({
+            title: res.record.title,
+            type: res.record.type,
+            score: res.score,
+            image: res.record.metadata?.coverImage || res.record.metadata?.profileImage || null
+          });
 
-        // Calculate score
-        const score = calculateScore(enriched);
+          const typeLabel = res.record.type === "trending_movies" ? "🎬" : res.record.type === "trending_actors" ? "👤" : "📊";
+          console.log(`   ${typeLabel} Validated & enriched: "${res.record.title.substring(0, 30)}..." (Score: ${res.score})`);
 
-        // Create record for database
-        const trendRecord = {
-          title: enriched.title,
-          type: validation.type,
-          entityType: validation.entityType,
-          referenceId: enriched.referenceId,
-          referenceModel: enriched.referenceModel,
-          slug: validation.slug,
-          source: enriched.source,
-          traffic: enriched.traffic || 0,
-          viewCount: enriched.viewCount || 0,
-          keywords: enriched.keywords || [],
-          classificationConfidence: enriched.classificationConfidence || 0.5,
-          status: "active",
-          trendTimestamp: new Date(enriched.timestamp),
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-          metadata: enriched.metadata,
-          score: score,
-        };
-
-        trendingRecords.push(trendRecord);
-        validatedDetails.push({
-          title: enriched.title,
-          type: validation.type,
-          score: score,
-          image: enriched.metadata?.coverImage || enriched.metadata?.profileImage || null
-        });
-
-        const typeLabel = validation.type === "trending_movies" ? "🎬" : validation.type === "trending_actors" ? "👤" : "📊";
-        console.log(
-          `   ${typeLabel} Validated & enriched: "${enriched.title.substring(0, 30)}..." (Score: ${score})`
-        );
-
-        validated++;
-        if (validation.type === "trending_movies") movies++;
-        else if (validation.type === "trending_actors") actors++;
-        else if (validation.type === "viral_topics") topics++;
-      } catch (error) {
-        console.log(
-          `   ❌ Error processing "${rawTrend.title.substring(0, 30)}...": ${error.message}`
-        );
-        rejectedDetails.push({
-          title: rawTrend.title,
-          source: rawTrend.source,
-          reason: error.message
-        });
-        rejected++;
+          validated++;
+          if (res.record.type === "trending_movies") movies++;
+          else if (res.record.type === "trending_actors") actors++;
+          else if (res.record.type === "viral_topics") topics++;
+        } else {
+          console.log(`   ⏭️  Skipped/Error: "${res.title.substring(0, 40)}..." (${res.reason || res.error})`);
+          rejectedDetails.push({ title: res.title, reason: res.reason || res.error });
+          rejected++;
+        }
       }
-
-      // Rate limiting
-      await new Promise((resolve) => setTimeout(resolve, 200));
     }
 
     console.log(`\n📝 Processing Complete`);

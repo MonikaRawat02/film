@@ -3,6 +3,7 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { generateWithFallback } from "../../../lib/gemini-helper";
 
 const genAI = process.env.GEMINI_API_KEY
   ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
@@ -10,8 +11,6 @@ const genAI = process.env.GEMINI_API_KEY
 
 async function generateFAQsWithAI(movieData, pageType) {
   if (!genAI) throw new Error("Gemini API key not configured");
-
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const { 
     movieTitle, 
@@ -72,8 +71,8 @@ Respond ONLY with a valid JSON array in this exact format:
 
 IMPORTANT: Return ONLY the JSON array, no additional text or explanations.`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text().trim();
+  const text = await generateWithFallback(prompt);
+  if (!text) throw new Error("All AI models failed to generate FAQs");
 
   // Extract JSON from response (handle markdown code blocks)
   let jsonText = text;
