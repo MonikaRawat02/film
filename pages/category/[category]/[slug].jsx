@@ -579,46 +579,46 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Box Office Collection</p>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                          {(article.stats?.worldwide || article.boxOffice?.worldwide) && (
+                          {(article.boxOffice?.worldwide) && (
                             <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
                               <p className="text-[9px] text-gray-400 uppercase mb-1">Worldwide</p>
-                              <p className="text-base font-bold text-white">{article.stats?.worldwide || article.boxOffice?.worldwide}</p>
+                              <p className="text-base font-bold text-white">{article.boxOffice?.worldwide}</p>
                             </div>
                           )}
-                          {article.stats?.indiaNet && (
+                          {article.boxOffice?.india && (
                             <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
                               <p className="text-[9px] text-gray-400 uppercase mb-1">India Net</p>
-                              <p className="text-base font-bold text-white">{article.stats.indiaNet}</p>
+                              <p className="text-base font-bold text-white">{article.boxOffice.india}</p>
                             </div>
                           )}
-                          {article.stats?.overseas && (
+                          {article.boxOffice?.overseas && (
                             <div className="p-3 rounded-lg bg-cyan-600/20 border border-cyan-500/30">
                               <p className="text-[9px] text-gray-400 uppercase mb-1">Overseas</p>
-                              <p className="text-base font-bold text-white">{article.stats.overseas}</p>
+                              <p className="text-base font-bold text-white">{article.boxOffice.overseas}</p>
                             </div>
                           )}
-                          {article.stats?.openingDay && (
+                          {article.boxOffice?.openingDay && (
                             <div className="p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
                               <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Day</p>
-                              <p className="text-base font-bold text-white">{article.stats.openingDay}</p>
+                              <p className="text-base font-bold text-white">{article.boxOffice.openingDay}</p>
                             </div>
                           )}
-                          {article.stats?.openingWeekend && (
+                          {article.boxOffice?.openingWeekend && (
                             <div className="p-3 rounded-lg bg-pink-600/20 border border-pink-500/30">
                               <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Weekend</p>
-                              <p className="text-base font-bold text-white">{article.stats.openingWeekend}</p>
+                              <p className="text-base font-bold text-white">{article.boxOffice.openingWeekend}</p>
                             </div>
                           )}
-                          {article.stats?.firstWeek && (
+                          {article.boxOffice?.firstWeek && (
                             <div className="p-3 rounded-lg bg-orange-600/20 border border-orange-500/30">
                               <p className="text-[9px] text-gray-400 uppercase mb-1">First Week</p>
-                              <p className="text-base font-bold text-white">{article.stats.firstWeek}</p>
+                              <p className="text-base font-bold text-white">{article.boxOffice.firstWeek}</p>
                             </div>
                           )}
                         </div>
-                        {article.stats?.verdict && (
+                        {article.boxOffice?.verdict && (
                           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/40">
-                            <span className="text-sm font-black text-red-300 uppercase">{article.stats.verdict}</span>
+                            <span className="text-sm font-black text-red-300 uppercase">{article.boxOffice.verdict}</span>
                           </div>
                         )}
                       </div>

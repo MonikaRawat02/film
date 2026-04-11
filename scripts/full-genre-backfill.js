@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
+const OpenAI = require('openai');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
 
@@ -15,14 +15,15 @@ const ArticleSchema = new mongoose.Schema({
 
 const Article = mongoose.models.Article || mongoose.model('Article', ArticleSchema);
 
-// Initialize Gemini (PRIMARY - FREE)
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
+// Initialize OpenAI
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null;
+const MODEL = process.env.OPENAI_MODEL || "gpt-4o-mini";
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function runFullBackfill() {
   try {
-    console.log("🚀 Starting Full Genre Analysis Backfill (Gemini Only)...");
+    console.log("🚀 Starting Full Genre Analysis Backfill (OpenAI Only)...");
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("✅ Connected to MongoDB");
 
@@ -51,40 +52,29 @@ async function runFullBackfill() {
           Focus on blending genres (e.g., "A supernatural horror comedy that balances genuine scares with sharp social satire").
           Output ONLY the analysis text, no headings or formatting.`;
 
-          let analysis = "";
-          let success = false;
+          if (openai) {
+            console.log(`🤖 Using OpenAI (${MODEL}) for ${article.title}...`);
+            const completion = await openai.chat.completions.create({
+              model: MODEL,
+              messages: [{ role: "user", content: prompt }],
+              max_tokens: 200,
+              temperature: 0.7
+            });
 
-          // Use Google Gemini (FREE)
-          if (genAI) {
-            try {
-              console.log(`🤖 Using Google Gemini (FREE) for ${article.title}...`);
-              const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-              const result = await model.generateContent(prompt);
-              const response = await result.response;
-              analysis = response.text().trim();
-              success = true;
-            } catch (geminiErr) {
-              if (geminiErr.message?.includes('429')) {
-                console.warn(`⚠️ Gemini 429: Rate limit hit. Waiting 60 seconds...`);
-                await sleep(60000);
-                retryCount++;
-                continue;
-              } else {
-                console.error(`❌ Google Gemini failed: ${geminiErr.message}`);
-              }
+            const analysis = completion.choices[0]?.message?.content?.trim();
+
+            if (analysis) {
+              await Article.findByIdAndUpdate(article._id, { $set: { genreAnalysis: analysis } });
+              console.log(`✅ Updated.`);
+              // Small delay for OpenAI rate limits
+              await sleep(1000);
+              break; 
             }
           }
-
-          if (success && analysis) {
-            await Article.findByIdAndUpdate(article._id, { $set: { genreAnalysis: analysis } });
-            console.log(`✅ Updated.`);
-            // Add a small delay between requests to avoid hitting rate limits
-            await sleep(12000); // 12 seconds per request (5 RPM)
-          }
-          break; // Exit the retry loop on success or non-retryable failure
         } catch (err) {
-          console.error(`❌ Error: ${err.message}`);
-          break;
+          retryCount++;
+          console.warn(`⚠️ Error on try ${retryCount}: ${err.message}`);
+          await sleep(2000 * retryCount);
         }
       }
     }

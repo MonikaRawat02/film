@@ -57,10 +57,24 @@ export default async function handler(req, res) {
     let generatedCount = 0;
     for (const pageType of subPageTypes) {
       try {
-        // Check if we should skip generation (if content already exists and isn't AI generated)
+        const subPageKey = pageType.replace(/-/g, "").replace("explained", "Explained").replace("release", "Release").replace("analysis", "Analysis").replace("flop", "Flop").replace("office", "Office");
+        
+        // 1. Strict check: Skip if subPages flag is already true (for everything except overview)
+        if (pageType !== "overview" && movie.subPages && movie.subPages[subPageKey]) {
+          console.log(`⏩ Skipping [${pageType}] for ${slug}: Flag 'subPages.${subPageKey}' is already true.`);
+          continue;
+        }
+
+        // 2. Overview check: Skip if overview content exists
+        if (pageType === "overview" && movie.pSEO_Content_overview && movie.pSEO_Content_overview.length > 0) {
+          console.log(`⏩ Skipping [${pageType}] for ${slug}: Overview content already exists.`);
+          continue;
+        }
+
+        // 3. Data existence check: Skip if content array already has data
         const updateField = `pSEO_Content_${pageType.replace(/-/g, "_")}`;
-        if (movie[updateField] && movie[updateField].length > 5 && !movie.isAIContent) {
-          console.log(`⏩ Skipping [${pageType}] for ${slug}: High-quality content already exists.`);
+        if (movie[updateField] && movie[updateField].length > 0) {
+          console.log(`⏩ Skipping [${pageType}] for ${slug}: Data already exists in ${updateField}.`);
           continue;
         }
 

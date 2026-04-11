@@ -2,21 +2,14 @@
 // Uses Gemini AI to extract structured celebrity data from Wikipedia biography
 import dbConnect from "../../../lib/mongodb";
 import Celebrity from "../../../model/celebrity";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../lib/gemini-helper";
-
-const genAI = process.env.GEMINI_API_KEY
-  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  : null;
+import { generateContent } from "../../../lib/openai-helper";
 
 async function extractCelebrityDetailsWithAI(celebrity) {
-  if (!genAI) throw new Error("Gemini API key not configured");
-
   const name = celebrity.heroSection?.name || "Unknown";
   const biography = celebrity.heroSection?.biography || "";
   const existingIndustry = celebrity.heroSection?.industry || "Bollywood";
 
-  const prompt = `You are an expert data extractor for celebrity information. Analyze the following Wikipedia biography and extract structured data.
+  const prompt = `Analyze the following Wikipedia biography for ${name} and extract structured data.
 
 **Celebrity Name:** ${name}
 **Current Industry:** ${existingIndustry}
@@ -24,16 +17,14 @@ async function extractCelebrityDetailsWithAI(celebrity) {
 **Wikipedia Biography:**
 ${biography.slice(0, 8000)}
 
-**Your Task:**
-Extract the following information accurately from the biography:
-
+Extract the following information accurately:
 1. **Net Worth**: Look for any mention of net worth, wealth, earnings, fortune (in USD or INR)
-2. **Age**: Current age or birth date to calculate age
-3. **Height**: Physical height in feet/inches or cm
+2. **Age**: Current age or birth date
+3. **Height**: Physical height
 4. **Birth Date**: Exact date of birth
 5. **Nationality**: Country of citizenship
-6. **Industry**: Based on their work (Bollywood, Hollywood, Web Series, Music, Sports, etc.)
-7. **Profession**: All their professions (Actor, Producer, Singer, Director, etc.)
+6. **Industry**: Based on their work
+7. **Profession**: All their professions
 8. **Active Since**: Year they started their career
 9. **Spouse**: Marriage information
 10. **Children**: Number and names of children
@@ -64,10 +55,10 @@ Respond ONLY with a valid JSON object in this exact format:
   "notableWorks": ["Deewana", "Darr", "DDLJ", "Pathaan", "Jawan"]
 }
 
-If any field is not found in the biography, set it to null. Be accurate and only extract what's actually mentioned.`;
+If any field is not found, set it to null. Return ONLY the JSON object.`;
 
-  const text = await generateWithFallback(prompt);
-  if (!text) throw new Error("All AI models failed to extract details");
+  const text = await generateContent(prompt);
+  if (!text) throw new Error("OpenAI failed to extract details");
 
   // Extract JSON from response
   const jsonMatch = text.match(/\{[\s\S]*\}/);

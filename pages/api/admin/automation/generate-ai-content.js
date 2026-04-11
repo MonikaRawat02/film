@@ -31,6 +31,29 @@ export default async function handler(req, res) {
       return res.status(404).json({ message: "Movie not found in database" });
     }
 
+    // Check if content already exists for this pageType to avoid duplicate generation
+    const contentFieldMap = {
+      "overview": "pSEO_Content_overview",
+      "ending-explained": "pSEO_Content_ending_explained",
+      "box-office": "pSEO_Content_box_office",
+      "budget": "pSEO_Content_budget",
+      "ott-release": "pSEO_Content_ott_release",
+      "cast": "pSEO_Content_cast",
+      "review-analysis": "pSEO_Content_review_analysis",
+      "hit-or-flop": "pSEO_Content_hit_or_flop"
+    };
+
+    const contentField = contentFieldMap[pageType];
+    if (contentField && movie[contentField] && movie[contentField].length > 0) {
+      console.log(`⏩ Skipping [${pageType}] for ${movie.movieTitle}: Content already exists.`);
+      return res.status(200).json({
+        success: true,
+        message: `Skipped: Content for ${pageType} already exists.`,
+        movie: movie.movieTitle,
+        sectionsCount: movie[contentField].length
+      });
+    }
+
     // 2. Generate long-form AI content
     console.log(`🚀 Generating AI content for ${movie.movieTitle} (${pageType})...`);
     let aiResponse;
@@ -66,19 +89,6 @@ export default async function handler(req, res) {
       updateData["boxOffice.overseasMarkets"] = extraData.overseasMarkets;
     }
     
-    // Map pageType to specific pSEO content field
-    const contentFieldMap = {
-      "overview": "pSEO_Content_overview",
-      "ending-explained": "pSEO_Content_ending_explained",
-      "box-office": "pSEO_Content_box_office",
-      "budget": "pSEO_Content_budget",
-      "ott-release": "pSEO_Content_ott_release",
-      "cast": "pSEO_Content_cast",
-      "review-analysis": "pSEO_Content_review_analysis",
-      "hit-or-flop": "pSEO_Content_hit_or_flop"
-    };
-
-    const contentField = contentFieldMap[pageType];
     if (contentField) {
       updateData[contentField] = aiSections;
       
@@ -117,7 +127,7 @@ export default async function handler(req, res) {
     await Article.findOneAndUpdate(
       { slug },
       { $set: updateData },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     return res.status(200).json({

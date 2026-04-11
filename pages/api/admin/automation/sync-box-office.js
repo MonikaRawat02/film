@@ -1,11 +1,7 @@
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../../lib/gemini-helper";
+import { generateContent } from "../../../../lib/openai-helper";
 import axios from "axios";
-
-// Initialize Gemini (Paid Tier as requested earlier)
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -35,54 +31,68 @@ export default async function handler(req, res) {
 
     let intelligence = {
       budget: movie.budget || "N/A",
+      openingDay: movie.boxOffice?.openingDay || "N/A",
       openingWeekend: movie.boxOffice?.openingWeekend || "N/A",
+      firstWeek: movie.boxOffice?.firstWeek || "N/A",
       worldwide: movie.boxOffice?.worldwide || "N/A",
+      overseas: movie.boxOffice?.overseas || "N/A",
+      india: movie.boxOffice?.india || "N/A",
       roi: movie.boxOffice?.roi || "N/A",
       profit: movie.boxOffice?.profit || "N/A",
       verdict: movie.verdict || "AVERAGE",
     };
 
-    // 1. Try Gemini for the latest intelligence (Sacnilk/BollyHungama accuracy)
-    if (genAI) {
-      try {
-        const prompt = `Provide the latest and most accurate box office intelligence for the movie "${movieTitle}" (${releaseYear}). 
-        I need specifically:
-        1. Budget (in Crores or Dollars)
-        2. Opening Weekend Collection (in Crores or Dollars)
-        3. Worldwide Collection (in Crores or Dollars)
-        4. Profit or Net Profit (in Crores or Dollars)
-        5. ROI (Return on Investment percentage)
-        6. Verdict (Strictly one of: BLOCKBUSTER, SUPER HIT, HIT, AVERAGE, FLOP)
+    // 1. Try OpenAI for the latest intelligence (Sacnilk/BollyHungama accuracy)
+    try {
+      const prompt = `Provide the latest and most accurate box office intelligence for the movie "${movieTitle}" (${releaseYear}). 
+      I need specifically:
+      1. Budget (in Crores or Dollars)
+      2. Opening Day Collection (in Crores or Dollars)
+      3. Opening Weekend Collection (in Crores or Dollars)
+      4. First Week Collection (in Crores or Dollars)
+      5. Worldwide Collection (in Crores or Dollars)
+      6. Overseas Collection (in Crores or Dollars)
+      7. India Net Collection (in Crores or Dollars)
+      8. Profit or Net Profit (in Crores or Dollars)
+      9. ROI (Return on Investment percentage)
+      10. Verdict (Strictly one of: ALL TIME BLOCKBUSTER, BLOCKBUSTER, SUPER HIT, HIT, SEMI HIT, AVERAGE, BELOW AVERAGE, FLOP, DISASTER)
 
-        Return the data in this exact JSON format:
-        {
-          "budget": "string",
-          "opening_weekend": "string",
-          "worldwide": "string",
-          "profit": "string",
-          "roi": "string",
-          "verdict": "string"
-        }`;
+      Return the data in this exact JSON format:
+      {
+        "budget": "string",
+        "opening_day": "string",
+        "opening_weekend": "string",
+        "first_week": "string",
+        "worldwide": "string",
+        "overseas": "string",
+        "india_net": "string",
+        "profit": "string",
+        "roi": "string",
+        "verdict": "string"
+      }`;
 
-        const text = await generateWithFallback(prompt);
-        if (text) {
-          const jsonMatch = text.match(/\{[\s\S]*?\}/);
-          if (jsonMatch) {
-            const geminiData = JSON.parse(jsonMatch[0]);
-            intelligence = {
-              budget: geminiData.budget || intelligence.budget,
-              openingWeekend: geminiData.opening_weekend || intelligence.openingWeekend,
-              worldwide: geminiData.worldwide || intelligence.worldwide,
-              profit: geminiData.profit || intelligence.profit,
-              roi: geminiData.roi || intelligence.roi,
-              verdict: geminiData.verdict?.toUpperCase() || intelligence.verdict,
-            };
-            console.log(`✅ Gemini Intelligence Success for ${movieTitle}`);
-          }
+      const text = await generateContent(prompt);
+      if (text) {
+        const jsonMatch = text.match(/\{[\s\S]*?\}/);
+        if (jsonMatch) {
+          const aiData = JSON.parse(jsonMatch[0]);
+          intelligence = {
+            budget: aiData.budget || intelligence.budget,
+            openingDay: aiData.opening_day || intelligence.openingDay,
+            openingWeekend: aiData.opening_weekend || intelligence.openingWeekend,
+            firstWeek: aiData.first_week || intelligence.firstWeek,
+            worldwide: aiData.worldwide || intelligence.worldwide,
+            overseas: aiData.overseas || intelligence.overseas,
+            india: aiData.india_net || intelligence.india,
+            profit: aiData.profit || intelligence.profit,
+            roi: aiData.roi || intelligence.roi,
+            verdict: aiData.verdict?.toUpperCase() || intelligence.verdict,
+          };
+          console.log(`✅ OpenAI Intelligence Success for ${movieTitle}`);
         }
-      } catch (geminiErr) {
-        console.error("❌ Gemini Intelligence Failed:", geminiErr.message);
       }
+    } catch (aiErr) {
+      console.error(`❌ OpenAI Intelligence Failed:`, aiErr.message);
     }
 
     // 2. Fallback/Enrich with TMDB if Gemini failed or to verify
@@ -117,12 +127,17 @@ export default async function handler(req, res) {
       {
         $set: {
           budget: intelligence.budget,
+          verdict: intelligence.verdict,
+          "boxOffice.openingDay": intelligence.openingDay,
           "boxOffice.openingWeekend": intelligence.openingWeekend,
+          "boxOffice.firstWeek": intelligence.firstWeek,
           "boxOffice.worldwide": intelligence.worldwide,
+          "boxOffice.overseas": intelligence.overseas,
+          "boxOffice.india": intelligence.india,
           "boxOffice.roi": intelligence.roi,
           "boxOffice.profit": intelligence.profit,
-          verdict: intelligence.verdict,
-          lastBackfillAttempt: new Date(),
+          "boxOffice.verdict": intelligence.verdict,
+          lastTrendingSync: new Date(),
         },
       },
       { new: true }
