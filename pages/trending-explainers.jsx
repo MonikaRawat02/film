@@ -224,14 +224,29 @@ const MosaicStrip = ({ items }) => {
 // ─── TICKER TAPE ──────────────────────────────────────────────────────────────
 const TickerTape = ({ items }) => {
   if (!items?.length) return null;
-  const doubled = [...items, ...items];
+  const labelItem = { title: "Live Trending India", isLabel: true };
+  const combined = [labelItem, ...items];
+  const doubled = [...combined, ...combined, ...combined]; // triple for extra safety on large screens
   return (
-    <div className="overflow-hidden bg-red-600 py-2.5">
+    <div className="fixed top-16 left-0 right-0 z-[100] h-11 bg-red-600 flex items-center overflow-hidden border-b border-red-700/40 shadow-[0_4px_20px_rgba(220,38,38,0.15)] pointer-events-auto">
       <div className="flex ticker-scroll">
         {doubled.map((item, i) => (
-          <span key={i} className="flex items-center gap-3 px-6 shrink-0">
-            <Zap className="w-3 h-3 text-white/50 shrink-0" />
-            <span className="text-white text-[11px] font-black uppercase tracking-wider whitespace-nowrap">{item.title}</span>
+          <span key={i} className="flex items-center gap-4 px-8 shrink-0">
+            {item.isLabel ? (
+              <div className="flex items-center gap-2.5">
+                <div className="relative">
+                  <Flame className="w-4 h-4 text-white animate-pulse relative z-10" />
+                  <div className="absolute inset-0 bg-white/40 blur-md animate-pulse" />
+                </div>
+                <span className="text-white text-[11px] font-black uppercase tracking-[0.2em] whitespace-nowrap">Live Trending India</span>
+                <div className="w-px h-3.5 bg-white/30 ml-4" />
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <Zap className="w-3.5 h-3.5 text-white/40 shrink-0" />
+                <span className="text-white/95 text-[11px] font-bold uppercase tracking-widest whitespace-nowrap">{item.title}</span>
+              </div>
+            )}
           </span>
         ))}
       </div>
@@ -326,42 +341,94 @@ const VelocityTracker = ({ items }) => {
 
 // ─── FILM STRIP ───────────────────────────────────────────────────────────────
 const FilmStripScroll = ({ items }) => {
+  const scrollRef = useRef(null);
   if (!items?.length) return null;
+
+  const scroll = (direction) => {
+    if (scrollRef.current) {
+      const { scrollLeft, clientWidth } = scrollRef.current;
+      const scrollTo = direction === 'left' ? scrollLeft - clientWidth / 1.5 : scrollLeft + clientWidth / 1.5;
+      scrollRef.current.scrollTo({ left: scrollTo, behavior: 'smooth' });
+    }
+  };
+
   const accentMap = { Explained: "#3b82f6", "Box Office": "#10b981", OTT: "#a855f7", Celebrity: "#f59e0b" };
+  
   return (
-    <div className="relative">
-      <div className="flex gap-3 px-4 mb-2 overflow-hidden opacity-[0.12]">
-        {[...Array(32)].map((_, i) => <div key={i} className="w-5 h-3 rounded-sm border border-zinc-500 shrink-0" />)}
+    <div className="group/strip relative px-2">
+      {/* Navigation Arrows (Visible on hover for large screens) */}
+      <button 
+        onClick={() => scroll('left')}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-12 h-24 bg-black/40 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover/strip:opacity-100 transition-opacity hidden md:flex rounded-r-2xl border border-white/10"
+      >
+        <ChevronRight className="w-6 h-6 rotate-180" />
+      </button>
+      <button 
+        onClick={() => scroll('right')}
+        className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-12 h-24 bg-black/40 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover/strip:opacity-100 transition-opacity hidden md:flex rounded-l-2xl border border-white/10"
+      >
+        <ChevronRight className="w-6 h-6" />
+      </button>
+
+      {/* Decorative dots strip */}
+      <div className="flex gap-3 px-4 mb-5 overflow-hidden opacity-[0.1]">
+        {[...Array(40)].map((_, i) => <div key={i} className="w-6 h-4 rounded-sm border border-zinc-500 shrink-0" />)}
       </div>
-      <div className="overflow-x-auto no-scrollbar">
-        <div className="flex gap-4 px-2 pb-2" style={{ width: "max-content" }}>
+
+      <div 
+        ref={scrollRef}
+        className="overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory px-4"
+      >
+        <div className="flex gap-5 pb-6" style={{ width: "max-content" }}>
           {items.map((item, i) => {
             const accent = accentMap[item.category] || "#ef4444";
             const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
             return (
-              <motion.div key={item._id || i} initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-                className="group relative w-[155px] shrink-0 rounded-xl overflow-hidden border border-white/[0.06] hover:border-white/[0.14] transition-colors">
-                <div className="aspect-[2/3] relative overflow-hidden">
+              <motion.div 
+                key={item._id || i} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }} 
+                viewport={{ once: true }} 
+                transition={{ delay: i * 0.05 }}
+                className="group relative w-[200px] md:w-[240px] shrink-0 snap-start"
+              >
+                <Link href={href} className="block relative aspect-[2/3] rounded-2xl overflow-hidden border border-white/[0.08] group-hover:border-white/20 transition-all duration-500">
                   <img src={item.image || "/placeholder.jpg"} alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-600" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
-                  <div className="absolute top-0 left-0 right-0 h-0.5" style={{ backgroundColor: accent }} />
-                </div>
-                <div className="p-3">
-                  <p className="text-[8px] font-black uppercase tracking-widest mb-1" style={{ color: accent }}>{item.category}</p>
-                  <h4 className="text-white text-[11px] font-bold leading-tight line-clamp-2 mb-2 group-hover:text-red-400 transition-colors">{item.title}</h4>
-                  <Link href={href} className="text-[9px] text-zinc-600 hover:text-white flex items-center gap-1 transition-colors font-bold">
-                    View <ArrowRight className="w-2.5 h-2.5" />
-                  </Link>
-                </div>
+                    className="w-full h-full object-cover scale-100 group-hover:scale-110 transition-transform duration-1000" />
+                  
+                  {/* Overlay Gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80 group-hover:opacity-100 transition-opacity" />
+                  
+                  {/* Category Badge (Floating top) */}
+                  <div className="absolute top-3 left-3 z-10">
+                    <span className="px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-black uppercase tracking-widest" style={{ color: accent }}>
+                      {item.category}
+                    </span>
+                  </div>
+
+                  {/* Content (Bottom) */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5 z-10 translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
+                    <h4 className="text-white text-sm md:text-base font-black leading-tight mb-2 line-clamp-2 drop-shadow-lg">
+                      {item.title}
+                    </h4>
+                    <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                      <span className="text-[10px] font-bold text-white/60 uppercase tracking-widest">View Intel</span>
+                      <ArrowRight className="w-3.5 h-3.5 text-white/60 group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+
+                  {/* Top accent bar */}
+                  <div className="absolute top-0 left-0 right-0 h-1 z-20" style={{ backgroundColor: accent }} />
+                </Link>
               </motion.div>
             );
           })}
         </div>
       </div>
-      <div className="flex gap-3 px-4 mt-2 overflow-hidden opacity-[0.12]">
-        {[...Array(32)].map((_, i) => <div key={i} className="w-5 h-3 rounded-sm border border-zinc-500 shrink-0" />)}
+
+      {/* Decorative dots strip bottom */}
+      <div className="flex gap-3 px-4 mt-2 overflow-hidden opacity-[0.1]">
+        {[...Array(40)].map((_, i) => <div key={i} className="w-6 h-4 rounded-sm border border-zinc-500 shrink-0" />)}
       </div>
     </div>
   );
@@ -457,25 +524,22 @@ const KeywordPulse = ({ items }) => {
   );
 };
 
-// ─── TRENDING NOW MARQUEE ROW ─────────────────────────────────────────────────
-const MarqueeRow = ({ items, reverse = false }) => {
+// ─── STATIC DATA ROW ──────────────────────────────────────────────────────────
+const StaticDataRow = ({ items }) => {
   if (!items?.length) return null;
-  const doubled = [...items, ...items];
   const accentMap = { Explained: "#3b82f6", "Box Office": "#10b981", OTT: "#a855f7", Celebrity: "#f59e0b" };
   return (
-    <div className="overflow-hidden">
-      <div className={`flex gap-3 ${reverse ? "marquee-reverse" : "marquee-fwd"}`}>
-        {doubled.map((item, i) => {
-          const accent = accentMap[item.category] || "#ef4444";
-          return (
-            <div key={i} className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] shrink-0 hover:border-white/[0.12] transition-colors cursor-default">
-              <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: accent }} />
-              <span className="text-[11px] font-semibold text-white/70 whitespace-nowrap">{item.title}</span>
-              <span className="text-[9px] font-black uppercase tracking-widest shrink-0" style={{ color: accent }}>{item.category}</span>
-            </div>
-          );
-        })}
-      </div>
+    <div className="flex flex-wrap gap-3">
+      {items.map((item, i) => {
+        const accent = accentMap[item.category] || "#ef4444";
+        return (
+          <div key={i} className="flex items-center gap-2.5 px-4 py-2 rounded-full border border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12] transition-colors cursor-default">
+            <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: accent }} />
+            <span className="text-[11px] font-semibold text-white/70 whitespace-nowrap">{item.title}</span>
+            <span className="text-[9px] font-black uppercase tracking-widest shrink-0" style={{ color: accent }}>{item.category}</span>
+          </div>
+        );
+      })}
     </div>
   );
 };
@@ -503,7 +567,6 @@ export default function TrendingExplainersPage() {
     ]).then(([intel, celeb, raw]) => {
       const intelData = (intel.success ? (Array.isArray(intel.data) ? intel.data : []) : []).map(x => ({ ...x, source: x.source || "intelligence" }));
       const celebItems = (celeb.success ? (Array.isArray(celeb.data) ? celeb.data : []) : []).map(x => ({ ...x, category: "Celebrity", source: "intelligence" }));
-
       const rawMovies = (raw.success && raw.data?.trending_movies ? raw.data.trending_movies : []).map(t => ({
         _id: t._id, title: t.title, category: "Explained",
         image: t.metadata?.coverImage || t.metadata?.thumbnail || t.metadata?.poster || "/placeholder.jpg",
@@ -564,7 +627,7 @@ export default function TrendingExplainersPage() {
         fetch("/api/trending/youtube-trends").then(r => r.json()).catch(() => ({ success: false, validatedData: [] })),
       ]);
 
-      const gLive = (googleLiveRes.success ? googleLiveRes.validatedData : []).map(t => {
+      const gLive = (googleLiveRes.success && Array.isArray(googleLiveRes.validatedData) ? googleLiveRes.validatedData : []).map(t => {
         let category = "OTT";
         if (t.type === "trending_movies") category = "Explained";
         else if (t.type === "trending_actors") category = "Celebrity";
@@ -578,7 +641,7 @@ export default function TrendingExplainersPage() {
         };
       });
 
-      const yLive = (youtubeLiveRes.success ? youtubeLiveRes.validatedData : []).map(t => {
+      const yLive = (youtubeLiveRes.success && Array.isArray(youtubeLiveRes.validatedData) ? youtubeLiveRes.validatedData : []).map(t => {
         let category = "OTT";
         if (t.type === "trending_movies") category = "Explained";
         else if (t.type === "trending_actors") category = "Celebrity";
@@ -655,7 +718,7 @@ export default function TrendingExplainersPage() {
       <motion.div className="fixed top-0 left-0 h-[2px] z-[999] bg-gradient-to-r from-red-600 via-purple-500 to-blue-500"
         style={{ width: progressWidth }} />
 
-      <div ref={pageRef} className="min-h-screen" style={{ background: "#080808" }}>
+      <div ref={pageRef} className="min-h-screen pt-28 sm:pt-28" style={{ background: "#080808" }}>
 
         {/* ── TICKER ─────────────────────────────────────────── */}
         <TickerTape items={allItems.slice(0, 12)} />
@@ -720,11 +783,11 @@ export default function TrendingExplainersPage() {
             )}
           </div>
 
-          {/* ═══ 2. MARQUEE ROWS ════════════════════════════════ */}
+          {/* ═══ 2. TRENDING TOPICS ════════════════════════════════ */}
           {!loading && allItems.length > 6 && (
-            <section className="py-10 border-t border-white/[0.04] space-y-3 overflow-hidden">
-              <MarqueeRow items={allItems.slice(0, 10)} />
-              <MarqueeRow items={allItems.slice(5, 15)} reverse />
+            <section className="py-10 border-t border-white/[0.04]">
+              <SectionDivider label="Trending Signal Overview" />
+              <StaticDataRow items={allItems.slice(0, 15)} />
             </section>
           )}
 
@@ -815,16 +878,10 @@ export default function TrendingExplainersPage() {
         </div>
       </div>
 
-      <style jsx>{`
-        .ticker-scroll { display:flex; animation:ticker 30s linear infinite; width:max-content; }
-        .ticker-scroll:hover { animation-play-state:paused; }
-        @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-        .marquee-fwd { display:flex; animation:marquee-f 35s linear infinite; width:max-content; }
-        .marquee-fwd:hover { animation-play-state:paused; }
-        .marquee-reverse { display:flex; animation:marquee-r 38s linear infinite; width:max-content; }
-        .marquee-reverse:hover { animation-play-state:paused; }
-        @keyframes marquee-f { from{transform:translateX(0)} to{transform:translateX(-50%)} }
-        @keyframes marquee-r { from{transform:translateX(-50%)} to{transform:translateX(0)} }
+      <style jsx global>{`
+        .ticker-scroll { display:flex; animation:ticker-loop 45s linear infinite; width:max-content; }
+        @keyframes ticker-loop { from{transform:translateX(0)} to{transform:translateX(-33.333%)} }
+        
         .no-scrollbar { -ms-overflow-style:none; scrollbar-width:none; }
         .no-scrollbar::-webkit-scrollbar { display:none; }
       `}</style>
