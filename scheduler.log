@@ -2057,3 +2057,117 @@
 [2026-04-10T04:30:32.384Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-04-10T05:00:00.141Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-04-10T05:00:34.945Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-10T13:10:23.295Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-10T13:10:23.295Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-10T13:10:23.318Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-10T13:10:23.319Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-10T13:10:23.330Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-10T13:10:23.335Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-10T13:10:28.394Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-10T13:10:28.395Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-10T13:10:28.396Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-10T13:10:40.345Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-10T13:10:41.267Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 5. Background enrichment triggered.
+[2026-04-10T13:10:47.900Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-11T04:39:48.090Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-11T04:39:48.091Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-11T04:39:48.154Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-11T04:39:48.155Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-11T04:39:48.168Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-11T04:39:48.174Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-11T04:39:53.255Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-11T04:39:53.256Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T04:39:53.257Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-11T04:40:03.325Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-11T04:40:05.415Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-11T04:40:11.044Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-11T05:00:00.029Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T05:00:05.161Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T05:30:00.012Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T05:30:00.017Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T05:30:00.020Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-11T05:30:05.320Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T05:30:07.342Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 4. Background enrichment triggered.
+[2026-04-11T05:35:00.037Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-04-11T05:35:15.022Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 50 movies for 2026
+[2026-04-11T05:50:00.026Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
+[2026-04-11T05:50:00.514Z] [INFO] 📊 Refreshing data for 50 recent movies
+[2026-04-11T05:50:03.763Z] [INFO] ✅ Refreshed data for king
+[2026-04-11T05:50:05.844Z] [INFO] ✅ Refreshed data for ramayana-part-1
+[2026-04-11T05:50:07.982Z] [INFO] ✅ Refreshed data for mirzapur
+[2026-04-11T05:50:10.180Z] [INFO] ✅ Refreshed data for lahore-1947
+[2026-04-11T05:50:12.386Z] [INFO] ✅ Refreshed data for cocktail-2
+[2026-04-11T05:50:14.525Z] [INFO] ✅ Refreshed data for bandarmonkey-in-a-cage
+[2026-04-11T05:50:14.959Z] [INFO] ✅ Refreshed data for ek-dinek-dinexternal-audio
+[2026-04-11T05:50:17.141Z] [INFO] ✅ Refreshed data for raja-shivaji
+[2026-04-11T05:50:19.261Z] [INFO] ✅ Refreshed data for ginny-wedss-sunny-2
+[2026-04-11T05:50:21.461Z] [INFO] ✅ Refreshed data for bhooth-bangla
+[2026-04-11T05:50:23.620Z] [INFO] ✅ Refreshed data for toaster
+[2026-04-11T05:50:26.384Z] [INFO] ✅ Refreshed data for everybody-loves-sohrab-handa
+[2026-04-11T05:50:28.836Z] [INFO] ✅ Refreshed data for dacoit
+[2026-04-11T05:50:29.318Z] [INFO] ✅ Refreshed data for tu-yaa-maintu-yaa-mainexternal-audio
+[2026-04-11T05:50:31.423Z] [INFO] ✅ Refreshed data for dhurandhar-the-revenge
+[2026-04-11T05:50:33.703Z] [INFO] ✅ Refreshed data for rahu-ketu
+[2026-04-11T05:50:34.129Z] [INFO] ✅ Refreshed data for kissa-court-kachehari-kakissa-court-kachehari-kaexternal-aud
+[2026-04-11T05:50:35.490Z] [INFO] ✅ Refreshed data for jab-khuli-kitaab
+[2026-04-11T05:50:36.851Z] [INFO] ✅ Refreshed data for na-jaane-kaun-aa-gaya
+[2026-04-11T05:50:38.311Z] [INFO] ✅ Refreshed data for charak-fair-of-faith
+[2026-04-11T05:50:39.685Z] [INFO] ✅ Refreshed data for subedaar
+[2026-04-11T05:50:41.069Z] [INFO] ✅ Refreshed data for ikkis
+[2026-04-11T05:50:42.490Z] [INFO] ✅ Refreshed data for accused
+[2026-04-11T05:50:42.981Z] [INFO] ✅ Refreshed data for the-kerala-story-2-goes-beyondthe-kerala-story-2-goes-beyond
+[2026-04-11T05:50:44.350Z] [INFO] ✅ Refreshed data for kennedy
+[2026-04-11T05:50:44.830Z] [INFO] ✅ Refreshed data for do-deewane-seher-meindo-deewane-seher-meinexternal-audio
+[2026-04-11T05:50:46.180Z] [INFO] ✅ Refreshed data for assiassi
+[2026-04-11T05:50:46.613Z] [INFO] ✅ Refreshed data for shatak-sangh-ke-100-varsh
+[2026-04-11T05:50:48.027Z] [INFO] ✅ Refreshed data for oromeo
+[2026-04-11T05:50:49.404Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
+[2026-04-11T05:50:50.960Z] [INFO] ✅ Refreshed data for vadh-2
+[2026-04-11T05:50:51.451Z] [INFO] ✅ Refreshed data for mardaani-3mardaani-3external-audio
+[2026-04-11T05:50:52.783Z] [INFO] ✅ Refreshed data for mayasabha
+[2026-04-11T05:50:54.123Z] [INFO] ✅ Refreshed data for human-cocaine
+[2026-04-11T05:50:55.757Z] [INFO] ✅ Refreshed data for gandhi-talksgandhi-talks
+[2026-04-11T05:50:57.191Z] [INFO] ✅ Refreshed data for border-2
+[2026-04-11T05:50:58.600Z] [INFO] ✅ Refreshed data for one-two-cha-cha-chaa
+[2026-04-11T05:50:59.030Z] [INFO] ✅ Refreshed data for bihu-attack
+[2026-04-11T05:50:59.498Z] [INFO] ✅ Refreshed data for happy-patel-khatarnak-jasooshappy-patel-khatarnak-jasoosexte
+[2026-04-11T05:51:00.851Z] [INFO] ✅ Refreshed data for azad-bharath
+[2026-04-11T05:51:02.154Z] [INFO] ✅ Refreshed data for vijaypathvijaypath
+[2026-04-11T05:51:02.619Z] [INFO] ✅ Refreshed data for vaade-iraade
+[2026-04-11T05:51:03.951Z] [INFO] ✅ Refreshed data for udhaar-ki-zindagi
+[2026-04-11T05:51:05.267Z] [INFO] ✅ Refreshed data for the-gentleman
+[2026-04-11T05:51:06.654Z] [INFO] ✅ Refreshed data for the-cloud-door
+[2026-04-11T05:51:07.726Z] [INFO] ✅ Refreshed data for teesra-kaun
+[2026-04-11T05:51:09.226Z] [INFO] ✅ Refreshed data for tarpan
+[2026-04-11T05:51:10.589Z] [INFO] ✅ Refreshed data for suhaag
+[2026-04-11T05:51:11.017Z] [INFO] ✅ Refreshed data for stunttmanstuntman
+[2026-04-11T05:51:13.071Z] [INFO] ✅ Refreshed data for shabnam
+[2026-04-11T05:51:13.072Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 50 movies
+[2026-04-11T06:00:00.017Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T06:00:05.065Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T06:30:00.017Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T06:30:00.018Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T06:30:06.020Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T06:30:18.249Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 9. Background enrichment triggered.
+[2026-04-11T07:00:00.029Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T07:00:06.030Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T07:30:00.020Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T07:30:00.021Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T07:30:06.121Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T07:30:10.695Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 20. Background enrichment triggered.
+[2026-04-11T08:00:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T08:00:05.115Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T08:27:00.032Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-11T08:27:09.186Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-11T08:27:18.496Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-11T08:30:00.022Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T08:30:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T08:30:05.602Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T08:30:15.852Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 20. Background enrichment triggered.
+[2026-04-11T09:00:00.024Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T09:00:06.015Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T09:30:00.018Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T09:30:00.019Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T09:30:05.938Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T09:30:08.483Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 20. Background enrichment triggered.
+[2026-04-11T09:38:31.292Z] [INFO] Received kill signal, shutting down gracefully...
