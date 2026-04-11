@@ -25,6 +25,7 @@ export default async function handler(req, res) {
     }
 
     const subPageTypes = [
+      "overview", // Added overview to the generation list
       "ending-explained",
       "box-office",
       "budget",
@@ -44,6 +45,7 @@ export default async function handler(req, res) {
       }
     };
 
+    populateFromSections(["overview", "plot", "introduction"], "pSEO_Content_overview");
     populateFromSections(["ending", "climax", "plot"], "pSEO_Content_ending_explained");
     populateFromSections(["box office", "commercial", "budget"], "pSEO_Content_box_office");
     populateFromSections(["production", "budget", "cost"], "pSEO_Content_budget");
@@ -55,6 +57,13 @@ export default async function handler(req, res) {
     let generatedCount = 0;
     for (const pageType of subPageTypes) {
       try {
+        // Check if we should skip generation (if content already exists and isn't AI generated)
+        const updateField = `pSEO_Content_${pageType.replace(/-/g, "_")}`;
+        if (movie[updateField] && movie[updateField].length > 5 && !movie.isAIContent) {
+          console.log(`⏩ Skipping [${pageType}] for ${slug}: High-quality content already exists.`);
+          continue;
+        }
+
         // Defensive check: Ensure we have at least a movie title to proceed
         if (!movie.movieTitle && !movie.title) {
           console.warn(`⚠️ Skipping [${pageType}] for ${slug}: Missing movie title.`);
@@ -66,17 +75,23 @@ export default async function handler(req, res) {
         
         if (aiResponse && aiResponse.sections && aiResponse.sections.length > 0) {
           const { sections, isAI } = aiResponse;
-          const updateField = `pSEO_Content_${pageType.replace(/-/g, "_")}`;
+          
+          const updateData = {
+            [updateField]: sections,
+            isAIContent: isAI,
+          };
+
+          // Mark subPage as active if it's not the overview
+          if (pageType !== "overview") {
+            updateData[`subPages.${pageType.replace(/-/g, "_")}`] = true;
+          } else {
+            // For overview, also update the main sections array for compatibility
+            updateData.sections = sections;
+          }
           
           await Article.updateOne(
             { _id: movie._id },
-            { 
-              $set: { 
-                [updateField]: sections,
-                [`subPages.${pageType.replace(/-/g, "_")}`]: true,
-                isAIContent: isAI,
-              }
-            }
+            { $set: updateData }
           );
           generatedCount++;
         }

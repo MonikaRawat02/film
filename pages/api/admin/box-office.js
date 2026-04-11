@@ -2,7 +2,7 @@ import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
 import Subscriber from "../../../model/subscriber";
 import jwt from "jsonwebtoken";
-import { sendNotification } from "../../../lib/mail";
+import mailHelper from "../../../lib/mail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -131,7 +131,17 @@ export default async function handler(req, res) {
         const updatedItem = await Article.findByIdAndUpdate(id, { $set: updateData }, { new: true });
         if (!updatedItem) return res.status(404).json({ message: "Not found" });
         
-        // Send notification for major updates (optional)
+        // Notify subscribers about update
+        const subscribers = await Subscriber.find({});
+        if (subscribers.length > 0) {
+          mailHelper.sendNotification(subscribers, {
+            title: `Box Office Update: ${updatedItem.title}`,
+            description: `New box office numbers are out for ${updatedItem.movieTitle || updatedItem.title}.`,
+            link: `/articles/${updatedItem.category?.toLowerCase()}/${updatedItem.slug}`,
+            category: updatedItem.category
+          }).catch(e => console.error("Notification error:", e));
+        }
+
         return res.status(200).json({ success: true, data: updatedItem });
       } catch (error) {
         return res.status(400).json({ success: false, message: error.message });

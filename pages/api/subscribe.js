@@ -1,6 +1,6 @@
 import dbConnect from "../../lib/mongodb";
 import Subscriber from "../../model/subscriber";
-import { sendWelcomeEmail } from "../../lib/mail";
+import mailHelper from "../../lib/mail";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         
         // Trigger welcome email (non-blocking)
         try {
-          await sendWelcomeEmail(trimmedEmail);
+          await mailHelper.sendWelcomeEmail(trimmedEmail);
         } catch (e) {
           console.error("Failed to send welcome email:", e);
         }
@@ -49,7 +49,7 @@ export default async function handler(req, res) {
     
     // Trigger welcome email (non-blocking)
     try {
-      await sendWelcomeEmail(trimmedEmail);
+      await mailHelper.sendWelcomeEmail(trimmedEmail);
     } catch (e) {
       console.error("Failed to send welcome email:", e);
     }

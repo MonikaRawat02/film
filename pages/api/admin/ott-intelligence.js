@@ -2,7 +2,7 @@ import dbConnect from "../../../lib/mongodb";
 import OTTIntelligence from "../../../model/ottIntelligence";
 import Subscriber from "../../../model/subscriber";
 import jwt from "jsonwebtoken";
-import { sendNotification } from "../../../lib/mail";
+import mailHelper from "../../../lib/mail";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -40,16 +40,16 @@ export default async function handler(req, res) {
       try {
         const newItem = await OTTIntelligence.create(req.body);
 
-        // Send notification to all active subscribers (non-blocking)
+        // Notify subscribers
         try {
           const activeSubscribers = await Subscriber.find({ active: true });
           if (activeSubscribers.length > 0) {
-            await sendNotification(activeSubscribers, {
+            mailHelper.sendNotification(activeSubscribers, {
               title: `New OTT Intelligence: ${newItem.platformName}`,
-              description: `New insights available for ${newItem.platformName}. Deep dive into OTT trends and performance.`,
+              description: `Deep-dive OTT analysis for ${newItem.platformName} is now available.`,
               link: `/ott-insights`,
-              category: "OTT Intelligence"
-            });
+              category: "OTT Analysis"
+            }).catch(e => console.error("Notification error:", e));
           }
         } catch (notificationError) {
           console.error("Failed to send OTT notification:", notificationError);
