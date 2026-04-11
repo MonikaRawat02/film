@@ -15,12 +15,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { limit = 20, forceRefresh = false } = req.body; // Added forceRefresh option
+  const { limit = 10, forceRefresh = false } = req.body; // Set default limit to 10
 
   try {
     await dbConnect();
     const currentYear = new Date().getFullYear();
-    const categories = ["Hollywood", "Bollywood"];
+    const categories = req.body.categories || ["Hollywood", "Bollywood"];
     const results = {
       totalSynced: 0,
       totalFailed: 0,
@@ -30,7 +30,11 @@ export default async function handler(req, res) {
     const MAX_PER_CATEGORY = Math.ceil(limit / categories.length);
 
     for (const category of categories) {
-      const movieUrls = await getMoviesByYear(currentYear, category);
+      // Map WebSeries and BoxOffice to appropriate source categories if needed
+      const sourceCategory = (category === "WebSeries" || category === "OTT") ? "WebSeries" : 
+                            (category === "BoxOffice") ? "Bollywood" : category;
+      
+      const movieUrls = await getMoviesByYear(currentYear, sourceCategory);
       let syncedInCategory = 0;
 
       // Scan the entire list until we find MAX_PER_CATEGORY new movies
@@ -82,15 +86,15 @@ export default async function handler(req, res) {
             status: "draft",
             tags: [category, scrapedData.releaseYear?.toString(), ...scrapedData.genres].filter(Boolean),
             
-            // Map pSEO Content fields from scraper
-            pSEO_Content_overview: scrapedData.pSEO_Content_overview || [],
-            pSEO_Content_ending_explained: scrapedData.pSEO_Content_ending_explained || [],
-            pSEO_Content_box_office: scrapedData.pSEO_Content_box_office || [],
-            pSEO_Content_budget: scrapedData.pSEO_Content_budget || [],
-            pSEO_Content_ott_release: scrapedData.pSEO_Content_ott_release || [],
-            pSEO_Content_cast: scrapedData.pSEO_Content_cast || [],
-            pSEO_Content_review_analysis: scrapedData.pSEO_Content_review_analysis || [],
-            pSEO_Content_hit_or_flop: scrapedData.pSEO_Content_hit_or_flop || [],
+            // Initialize pSEO Content fields as empty arrays
+            pSEO_Content_overview: [],
+            pSEO_Content_ending_explained: [],
+            pSEO_Content_box_office: [],
+            pSEO_Content_budget: [],
+            pSEO_Content_ott_release: [],
+            pSEO_Content_cast: [],
+            pSEO_Content_review_analysis: [],
+            pSEO_Content_hit_or_flop: [],
 
             meta: {
               title: `${scrapedData.title} (${scrapedData.releaseYear}) - Box Office, Cast & Review`,
@@ -102,7 +106,7 @@ export default async function handler(req, res) {
           const newArticle = await Article.findOneAndUpdate(
             { slug: finalSlug },
             { $set: articleData },
-            { upsert: true, new: true }
+            { upsert: true, returnDocument: 'after' }
           );
           console.log(`✅ Saved/Updated article: ${newArticle.title} (${newArticle._id})`);
 
@@ -115,44 +119,46 @@ export default async function handler(req, res) {
       results.details.push(`${category}: ${syncedInCategory} new movies synced.`);
     }
 
-    // After all movies are synced, trigger a background process to enrich those that are missing data
-    // This decouples the "Scrape" from the "Enrich/AI" to stay within cron time limits
+    // After all movies are synced, trigger a background process to enrich and generate content
     (async () => {
       try {
         const baseUrl = `${req.headers["x-forwarded-proto"] || "http"}://${req.headers.host}`;
         const headers = { 'x-cron-secret': cronSecret };
         
         // Find movies that were just added or are missing enrichment
-        // Or if forceRefresh is true, find any movies that haven't been refreshed in 24 hours
-        // Or if cast members are missing profile images
         const pendingMovies = await Article.find({
           contentType: "movie",
-          $or: [
-            { tmdbId: { $exists: false } },
-            { genreAnalysis: { $exists: false } },
-            { "cast.profileImage": "" },
-            { "cast.profileImage": { $exists: false } },
-            { updatedAt: { $lt: new Date(Date.now() - 24 * 60 * 60 * 1000) } }
-          ]
-        }).limit(20);
+          isAIContent: { $ne: true } // Key indicator that AI content hasn't been generated
+        }).limit(limit); // Limit to the same number of movies we synced
 
         console.log(`🤖 Starting background enrichment for ${pendingMovies.length} movies...`);
 
         for (const movie of pendingMovies) {
           try {
-            // First, enrich the data with TMDB
+            // 1. First, enrich the data with TMDB
             await axios.post(`${baseUrl}/api/admin/automation/enrich-movie-data`, {
               slug: movie.slug
             }, { headers });
 
-            // Then, generate all sub-pages
+            // 2. Then, generate all sub-pages
             await axios.post(`${baseUrl}/api/admin/automation/generate-sub-pages`, {
               slug: movie.slug
             }, { headers });
 
-            console.log(`✅ Finished background processing for ${movie.slug}`);
+            // 3. IF content generation fails or is incomplete, delete the movie to keep database clean
+            const updatedMovie = await Article.findOne({ _id: movie._id });
+            const hasAIContent = updatedMovie.isAIContent === true;
+            
+            if (!hasAIContent) {
+              console.warn(`🗑️ Deleting ${movie.slug} because AI content generation failed.`);
+              await Article.deleteOne({ _id: movie._id });
+            } else {
+              console.log(`✅ Successfully processed and KEPT ${movie.slug}`);
+            }
           } catch (err) {
             console.error(`❌ Background processing failed for ${movie.slug}:`, err.message);
+            // On failure, delete to maintain "only keep generated content" rule
+            await Article.deleteOne({ _id: movie._id });
           }
         }
       } catch (bgErr) {

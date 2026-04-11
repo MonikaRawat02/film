@@ -74,9 +74,12 @@ const ArticleSchema = new mongoose.Schema(
     // pSEO Fields
     budget: String,
     boxOffice: {
+      openingDay: String,
       openingWeekend: String,
+      firstWeek: String,
       worldwide: String,
       india: String,
+      overseas: String,
       roi: String, // e.g., "+562%"
       profit: String, // e.g., "+₹100 Crore"
       verdict: String, // e.g., "Blockbuster"

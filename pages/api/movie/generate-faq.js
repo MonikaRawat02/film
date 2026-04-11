@@ -2,16 +2,9 @@
 // Dynamically generates FAQs using Gemini AI based on movie data
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../lib/gemini-helper";
-
-const genAI = process.env.GEMINI_API_KEY
-  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  : null;
+import { generateContent } from "../../../lib/openai-helper";
 
 async function generateFAQsWithAI(movieData, pageType) {
-  if (!genAI) throw new Error("Gemini API key not configured");
-
   const { 
     movieTitle, 
     releaseYear, 
@@ -25,9 +18,7 @@ async function generateFAQsWithAI(movieData, pageType) {
     summary 
   } = movieData;
 
-  const prompt = `You are a movie FAQ generator for FilmyFire, a film intelligence platform. 
-
-Generate exactly 5-6 frequently asked questions (FAQs) about the movie "${movieTitle}" (${releaseYear}).
+  const prompt = `Generate exactly 5-6 frequently asked questions (FAQs) about the movie "${movieTitle}" (${releaseYear}).
 
 **Movie Details:**
 - Title: ${movieTitle}
@@ -42,37 +33,18 @@ Generate exactly 5-6 frequently asked questions (FAQs) about the movie "${movieT
 - Summary: ${summary?.substring(0, 300) || "N/A"}
 - Page Type: ${pageType}
 
-**Instructions:**
-1. Generate 5-6 unique questions that people actually search for
-2. Questions should be specific to this movie and page type (${pageType})
-3. Answers must be 2-4 sentences, informative, and SEO-friendly
-4. Include keywords naturally: "${movieTitle}", "${genres?.[0] || 'movie'}", "${pageType.replace('-', ' ')}"
-5. Make answers sound professional and authoritative
-6. Focus on the page type:
-   - For "budget": Ask about production costs, ROI, comparisons
-   - For "box-office": Ask about collections, hit/flop verdict, regional performance
-   - For "overview": Ask about streaming, ratings, general info
-   - For "ending-explained": Ask about sequel possibilities, themes
-   - For "ott-release": Ask about platform availability, release dates
-   - For "cast": Ask about actors, performances, cameos
-   - For "review-analysis": Ask about critic reception, worth watching
-
 Respond ONLY with a valid JSON array in this exact format:
 [
   {
     "question": "What was the budget of [Movie Name]?",
     "answer": "[Movie Name] was made on an estimated budget of ₹XXX crore. This includes production costs, VFX expenses, and marketing. The film recovered its budget through theatrical collections and digital rights."
-  },
-  {
-    "question": "Did [Movie Name] recover its investment?",
-    "answer": "Yes, [Movie Name] successfully recovered its budget through box office collections of ₹XXX crore worldwide. The film's OTT deal and satellite rights also contributed significantly to profitability."
   }
 ]
 
 IMPORTANT: Return ONLY the JSON array, no additional text or explanations.`;
 
-  const text = await generateWithFallback(prompt);
-  if (!text) throw new Error("All AI models failed to generate FAQs");
+  const text = await generateContent(prompt);
+  if (!text) throw new Error("OpenAI failed to generate FAQs");
 
   // Extract JSON from response (handle markdown code blocks)
   let jsonText = text;

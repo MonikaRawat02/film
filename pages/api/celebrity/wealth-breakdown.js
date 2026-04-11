@@ -2,12 +2,7 @@
 // Dynamically generates real wealth breakdown using celebrity biography + Gemini AI
 import dbConnect from "../../../lib/mongodb";
 import Celebrity from "../../../model/celebrity";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../lib/gemini-helper";
-
-const genAI = process.env.GEMINI_API_KEY
-  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  : null;
+import { generateContent } from "../../../lib/openai-helper";
 
 const STATIC_DEFAULTS = ["Acting", "Endorsements", "Business Ventures"];
 
@@ -24,8 +19,6 @@ function isStaticDefault(incomeSources = []) {
 }
 
 async function generateWealthBreakdownWithAI(celebrity) {
-  if (!genAI) throw new Error("Gemini API key not configured");
-
   const name = celebrity.heroSection?.name || "Unknown";
   const industry = celebrity.heroSection?.industry || "Bollywood";
   const profession = (celebrity.heroSection?.profession || []).join(", ");
@@ -36,7 +29,7 @@ async function generateWealthBreakdownWithAI(celebrity) {
     "Unknown";
   const activeSince = celebrity.quickFacts?.activeSince || "Unknown";
 
-  const prompt = `You are a celebrity wealth analyst. Based on the following real information about ${name}, generate a realistic and accurate income source breakdown.
+  const prompt = `Based on the following real information about ${name}, generate a realistic and accurate income source breakdown.
 
 **Celebrity Profile:**
 - Name: ${name}
@@ -46,13 +39,7 @@ async function generateWealthBreakdownWithAI(celebrity) {
 - Active Since: ${activeSince}
 - Biography: ${biography.slice(0, 1500)}
 
-**Your Task:**
-Analyze the biography and career to determine their REAL income sources and percentages. Consider:
-- Primary career (acting, directing, producing, singing, etc.)
-- Brand endorsements if mentioned
-- Business ventures, production companies
-- Investments, real estate, other income
-
+Analyze the biography and career to determine their REAL income sources and percentages.
 Generate 3-5 income sources that are SPECIFIC to this celebrity's actual career.
 Total percentages MUST add up to exactly 100.
 
@@ -62,28 +49,13 @@ Respond ONLY with a valid JSON array like this:
     "sourceName": "Film Acting",
     "percentage": 55,
     "description": "Primary income from lead roles in Bollywood films spanning 3 decades."
-  },
-  {
-    "sourceName": "Music & Playback Singing",
-    "percentage": 30,
-    "description": "Significant earnings from legendary singing career with 185+ recorded songs."
-  },
-  {
-    "sourceName": "Endorsements",
-    "percentage": 10,
-    "description": "Brand partnerships and commercial appearances."
-  },
-  {
-    "sourceName": "Royalties",
-    "percentage": 5,
-    "description": "Ongoing royalties from music catalog and film reruns."
   }
 ]
 
-IMPORTANT: Make it realistic and specific to ${name}'s actual career. Do NOT use generic 65/25/10 split.`;
+IMPORTANT: Return ONLY the JSON array, no additional text.`;
 
-  const text = await generateWithFallback(prompt);
-  if (!text) throw new Error("All AI models failed to generate wealth breakdown");
+  const text = await generateContent(prompt);
+  if (!text) throw new Error("OpenAI failed to generate wealth breakdown");
 
   // Extract JSON from response
   const jsonMatch = text.match(/\[[\s\S]*\]/);
