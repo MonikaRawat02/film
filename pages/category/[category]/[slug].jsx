@@ -12,42 +12,135 @@ import {
   Clapperboard, Star, Book, FileText
 } from "lucide-react";
 
+// Utility function to clean placeholder text from AI-generated content
+function cleanContent(content) {
+  if (!content) return "";
+  return content
+    .replace(/\[insert[^\]]*\]/gi, "")
+    .replace(/\[unknown\]/gi, "To be announced")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Utility function to parse FAQs from content (handles **Q1:** followed by **A1:** on new line)
+// Utility function to parse FAQs from content
+function parseFAQsFromContent(content) {
+  if (!content) return [];
+  const faqs = [];
+  
+  // Method 1: Split by **Q patterns
+  const blocks = content.split(/\*\*Q\s*\d+:?\s*/);
+  if (blocks.length > 1) {
+    for (let i = 1; i < blocks.length; i++) {
+      const block = blocks[i];
+      const questionMatch = block.match(/^([^?]*\?)/);
+      if (!questionMatch) continue;
+      const question = questionMatch[1].trim();
+      let answer = '';
+      const aMatch = block.match(/\*\*A\s*\d+:?\s*([^\n]+)/);
+      if (aMatch) {
+        answer = aMatch[1].trim();
+      } else {
+        const afterQuestion = block.substring(block.indexOf('?') + 1);
+        answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+      }
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 2: Parse numbered format "1. **Question?** Answer"
+  if (faqs.length === 0) {
+    const numberedPattern = /(\d+)\.\s+\*\*([^*]+)\*\*/g;
+    let match;
+    while ((match = numberedPattern.exec(content)) !== null) {
+      const num = match[1];
+      const questionWithBold = match[2];
+      // Extract question (everything up to ?)
+      const qMatch = questionWithBold.match(/([^?]*\?)/);
+      if (!qMatch) continue;
+      const question = qMatch[1].trim();
+      // Get answer text after the question
+      const matchIndex = match.index;
+      const afterMatch = content.substring(matchIndex + match[0].length);
+      // Find next numbered item or end
+      const nextNumMatch = afterMatch.match(/\n\s*\d+\.\s+\*\*/);
+      let answer = nextNumMatch ? afterMatch.substring(0, nextNumMatch.index) : afterMatch;
+      answer = answer.replace(/\*\*/g, '').replace(/^[\s:]+/, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 3: Parse "Q1: Question?" format
+  if (faqs.length === 0) {
+    const qaPattern = /Q\.?\s*(\d+):?\s*([^?]+\?)\s*A\.?\s*\d+:?\s*([^\n]+)/gi;
+    let match;
+    while ((match = qaPattern.exec(content)) !== null) {
+      const question = match[2].trim();
+      let answer = match[3].trim();
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  return faqs;
+}
+
+// Extract FAQs from sections array
+function extractFAQsFromSections(sections) {
+  if (!sections || !Array.isArray(sections)) return [];
+  
+  for (const section of sections) {
+    if (section.heading?.toLowerCase().includes('faq') || 
+        section.content?.includes('Q1:') || 
+        section.content?.includes('**Q')) {
+      const parsed = parseFAQsFromContent(section.content);
+      if (parsed.length > 0) return parsed;
+    }
+  }
+  
+  return [];
+}
+
 // FAQ Accordion Item Component
 function FAQItem({ question, answer, index }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden transition-all duration-300 hover:border-blue-500/30">
+    <div className="rounded-xl border border-gray-800 bg-[#1a1a2e]/60 backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-red-500/40 hover:bg-[#1a1a2e]/80">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-8 py-6 flex items-center justify-between gap-4 text-left group"
+        className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left group"
       >
-        <span className="flex items-center gap-4 flex-grow">
-          <span className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-sm">
-            Q{index + 1}
+        <span className="flex items-center gap-4 flex-grow min-w-0">
+          <span className="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+            <span className="text-white font-bold text-sm">?</span>
           </span>
-          <span className="text-lg md:text-xl font-bold text-white group-hover:text-blue-400 transition-colors leading-relaxed">
+          <span className="text-sm md:text-base font-medium text-white group-hover:text-red-300 transition-colors leading-snug">
             {question}
           </span>
         </span>
-        <ChevronDown
-          className={`w-6 h-6 text-zinc-500 transition-transform duration-300 flex-shrink-0 ${
-            isOpen ? 'rotate-180 text-blue-400' : ''
-          }`}
-        />
+        <span className={`flex-shrink-0 w-7 h-7 rounded-full bg-gray-800/80 flex items-center justify-center transition-all duration-300 ${isOpen ? 'rotate-180 bg-red-600/20' : ''}`}>
+          <ChevronDown className={`w-4 h-4 text-gray-400 ${isOpen ? 'text-red-400' : ''}`} />
+        </span>
       </button>
       
       <div
         className={`overflow-hidden transition-all duration-300 ${
-          isOpen ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
+          isOpen ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className="px-8 pb-8 pt-2">
-          <div className="pl-12 border-l-2 border-blue-500/30">
-            <p className="text-base md:text-lg text-zinc-400 leading-relaxed">
-              {answer}
-            </p>
-          </div>
+        <div className="px-5 pb-5 pt-0">
+          <div className="h-px bg-gradient-to-r from-red-500/50 via-red-500/20 to-transparent mb-4"></div>
+          <p className="text-sm md:text-base text-gray-300 leading-relaxed pl-0 md:pl-1">
+            {answer}
+          </p>
         </div>
       </div>
     </div>
@@ -692,12 +785,12 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       </div>
                     )}
   
-                    {/* ENDING EXPLAINED */}
-                    {pageType === "ending-explained" && (
+                    {/* ENDING EXPLAINED - Use SEO Content */}
+                    {pageType === "ending-explained" && sections && sections.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Ending Explained</p>
-                        <p className="text-gray-300 text-sm leading-relaxed">{article.summary || `Complete ending explanation and hidden meanings for ${movieTitle}.`}</p>
-                        {article.sections?.slice(0, 2).map((section, idx) => (
+                        <p className="text-gray-300 text-sm leading-relaxed">{sections[0]?.content?.substring(0, 200) || article.summary}</p>
+                        {sections.slice(0, 3).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-orange-600/10 border border-orange-500/20">
                             <p className="text-xs font-bold text-orange-300 mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
@@ -706,7 +799,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       </div>
                     )}
   
-                    {/* REVIEW ANALYSIS */}
+                    {/* REVIEW ANALYSIS - Use SEO Content */}
                     {pageType === "review-analysis" && (
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Critical Review</p>
@@ -720,11 +813,11 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                               </div>
                             </div>
                           )}
-                          {article.genreAnalysis && (
-                            <p className="text-gray-300 text-sm leading-relaxed flex-1">{article.genreAnalysis}</p>
+                          {sections[0]?.content && (
+                            <p className="text-gray-300 text-sm leading-relaxed flex-1">{sections[0].content.substring(0, 200)}...</p>
                           )}
                         </div>
-                        {article.sections?.slice(0, 2).map((section, idx) => (
+                        {sections.slice(0, 3).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
@@ -795,75 +888,259 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
           {/* Top Grid - 2 Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
             
-            {/* Left Sidebar - Movie Details + Quick Nav */}
+            {/* Left Sidebar - Page-Specific Content */}
             <div className="lg:col-span-4 space-y-6">
-              {/* Movie Stats Card */}
-              <motion.div 
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
-              >
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center">
-                    <BarChart3 className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  Movie Stats
-                </h3>
-                
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center py-2 border-b border-gray-800">
-                    <span className="text-[10px] text-gray-500 uppercase">Views</span>
-                    <span className="text-xs font-bold text-white">{article.stats?.views?.toLocaleString() || 0}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-gray-800">
-                    <span className="text-[10px] text-gray-500 uppercase">Read Time</span>
-                    <span className="text-xs font-bold text-white">{article.stats?.readTime || `${readingTime} min`}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-gray-800">
-                    <span className="text-[10px] text-gray-500 uppercase">Published</span>
-                    <span className="text-xs font-bold text-white">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2">
-                    <span className="text-[10px] text-gray-500 uppercase">AI Content</span>
-                    <span className={`text-xs font-bold ${article.isAIContent ? 'text-green-400' : 'text-gray-400'}`}>
-                      {article.isAIContent ? '✓ Yes' : 'No'}
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Movie Details Card */}
-              <motion.div 
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="rounded-xl bg-gray-900/80 border border-gray-800 p-5">
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
-                    <Film className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  Movie Details
-                </h3>
-                
-                <div className="space-y-3">
-                  {[
-                    { label: "Director", value: article.director?.[0] || "N/A" },
-                    { label: "Producer", value: article.producer?.[0] || "N/A" },
-                    { label: "Writer", value: article.writer?.[0] || "N/A" },
-                    { label: "Genre", value: article.genres?.[0] || "N/A" },
-                    { label: "Runtime", value: article.runtime || "TBA" },
-                    { label: "Release", value: article.releaseDate || article.releaseYear || "TBA" },
-                  ].map((stat, idx) => (
-                    <div key={idx} className="flex justify-between items-start gap-3 py-2 border-b border-gray-800 last:border-0">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider flex-shrink-0">{stat.label}</span>
-                      <span className="text-xs font-semibold text-white text-right">{stat.value}</span>
+              
+              {/* OVERVIEW: Movie Stats Card */}
+              {pageType === "overview" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center">
+                      <BarChart3 className="w-3.5 h-3.5 text-white" />
                     </div>
-                  ))}
-                </div>
-              </motion.div>
+                    Movie Stats
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                      <span className="text-[10px] text-gray-500 uppercase">Views</span>
+                      <span className="text-xs font-bold text-white">{article.stats?.views?.toLocaleString() || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                      <span className="text-[10px] text-gray-500 uppercase">Read Time</span>
+                      <span className="text-xs font-bold text-white">{article.stats?.readTime || `${readingTime} min`}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                      <span className="text-[10px] text-gray-500 uppercase">Published</span>
+                      <span className="text-xs font-bold text-white">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'N/A'}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-[10px] text-gray-500 uppercase">AI Content</span>
+                      <span className={`text-xs font-bold ${article.isAIContent ? 'text-green-400' : 'text-gray-400'}`}>
+                        {article.isAIContent ? '✓ Yes' : 'No'}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
 
-              {/* Quick Navigation */}
+              {/* OVERVIEW: Movie Details Card */}
+              {pageType === "overview" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
+                      <Film className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Movie Details
+                  </h3>
+                  <div className="space-y-3">
+                    {[
+                      { label: "Director", value: article.director?.[0] || "N/A" },
+                      { label: "Producer", value: article.producer?.[0] || "N/A" },
+                      { label: "Writer", value: article.writer?.[0] || "N/A" },
+                      { label: "Genre", value: article.genres?.[0] || "N/A" },
+                      { label: "Runtime", value: article.runtime || "TBA" },
+                      { label: "Release", value: article.releaseDate || article.releaseYear || "TBA" },
+                    ].map((stat, idx) => (
+                      <div key={idx} className="flex justify-between items-start gap-3 py-2 border-b border-gray-800 last:border-0">
+                        <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider flex-shrink-0">{stat.label}</span>
+                        <span className="text-xs font-semibold text-white text-right">{stat.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* CAST: Cast Stats Card */}
+              {pageType === "cast" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center">
+                      <Users className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Cast Information
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                      <span className="text-[10px] text-gray-500 uppercase">Total Cast</span>
+                      <span className="text-xs font-bold text-white">{article.cast?.length || 0}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                      <span className="text-[10px] text-gray-500 uppercase">Director</span>
+                      <span className="text-xs font-bold text-white">{article.director?.[0] || "N/A"}</span>
+                    </div>
+                    {article.crew && article.crew.length > 0 && (
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-[10px] text-gray-500 uppercase">Crew</span>
+                        <span className="text-xs font-bold text-white">{article.crew.length}</span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* BOX OFFICE: Box Office Stats Card */}
+              {pageType === "box-office" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gradient-to-br from-green-900/30 to-emerald-900/20 border border-green-800/50 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Box Office Stats
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-green-900/50">
+                      <span className="text-[10px] text-gray-400 uppercase">Worldwide</span>
+                      <span className="text-sm font-bold text-green-400">{article.boxOffice?.worldwide || article.stats?.worldwide || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-green-900/50">
+                      <span className="text-[10px] text-gray-400 uppercase">India Net</span>
+                      <span className="text-sm font-bold text-white">{article.boxOffice?.india || article.stats?.indiaNet || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2">
+                      <span className="text-[10px] text-gray-400 uppercase">Verdict</span>
+                      <span className={`text-xs font-bold ${article.boxOffice?.verdict?.toLowerCase().includes('hit') ? 'text-green-400' : 'text-yellow-400'}`}>
+                        {article.boxOffice?.verdict || article.stats?.verdict || "TBA"}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* BUDGET: Budget Stats Card */}
+              {pageType === "budget" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gradient-to-br from-blue-900/30 to-cyan-900/20 border border-blue-800/50 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
+                      <DollarSign className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Budget Analysis
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center py-2 border-b border-blue-900/50">
+                      <span className="text-[10px] text-gray-400 uppercase">Budget</span>
+                      <span className="text-sm font-bold text-blue-400">{article.budget || "N/A"}</span>
+                    </div>
+                    <div className="flex justify-between items-center py-2 border-b border-blue-900/50">
+                      <span className="text-[10px] text-gray-400 uppercase">Collection</span>
+                      <span className="text-sm font-bold text-white">{article.stats?.worldwide || "N/A"}</span>
+                    </div>
+                    {article.budget && article.stats?.worldwide && (
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-[10px] text-gray-400 uppercase">ROI</span>
+                        <span className="text-xs font-bold text-green-400">
+                          {((parseInt(article.stats.worldwide) / parseInt(article.budget) - 1) * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ENDING EXPLAINED: Summary Card */}
+              {pageType === "ending-explained" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center">
+                      <Zap className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Ending Summary
+                  </h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    {article.summary ? `${article.summary.substring(0, 200)}...` : "Explore the complete ending explanation and hidden meanings of " + movieTitle + "."}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* REVIEWS: Reviews Summary Card */}
+              {pageType === "review-analysis" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-yellow-600 to-orange-600 flex items-center justify-center">
+                      <Star className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Review Summary
+                  </h3>
+                  <div className="space-y-3">
+                    {article.rating && (
+                      <div className="flex items-center gap-2 py-2 border-b border-gray-800">
+                        <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                        <span className="text-lg font-bold text-white">{article.rating}/10</span>
+                      </div>
+                    )}
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      {article.criticalResponse ? `${article.criticalResponse.substring(0, 150)}...` : "Critical reviews and audience reactions analysis."}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* OTT RELEASE: OTT Info Card */}
+              {pageType === "ott-release" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                      <Tv className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Streaming Info
+                  </h3>
+                  <div className="space-y-3">
+                    {article.ott?.platform && (
+                      <div className="flex justify-between items-center py-2 border-b border-gray-800">
+                        <span className="text-[10px] text-gray-500 uppercase">Platform</span>
+                        <span className="text-xs font-bold text-purple-400">{article.ott.platform}</span>
+                      </div>
+                    )}
+                    {article.ott?.releaseDate && (
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-[10px] text-gray-500 uppercase">Release Date</span>
+                        <span className="text-xs font-bold text-white">{article.ott.releaseDate}</span>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Quick Navigation - Always Visible */}
               <motion.div 
                 initial={{ x: -30, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
@@ -876,7 +1153,6 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </div>
                   Quick Links
                 </h3>
-                
                 <div className="grid grid-cols-2 gap-2">
                   {[
                     { label: "Overview", suffix: "", icon: Info },
@@ -911,143 +1187,38 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               </motion.div>
             </div>
 
-            {/* Right Side - Always Show Movie Overview & Related Content */}
+            {/* Right Side - Page-Specific Content */}
             <div className="lg:col-span-8 space-y-6">
-              {/* Movie Summary - Always Show */}
-              <motion.div 
-                initial={{ x: 30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
-              >
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center">
-                    <Info className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  About {movieTitle}
-                </h3>
-                <p className="text-sm text-gray-300 leading-relaxed">
-                  {article.summary || `${movieTitle} is a ${article.genres?.join("/")} film released in ${article.releaseYear}. Directed by ${article.director?.join(", ") || 'N/A'}, the film stars ${article.cast?.slice(0, 3).map(c => c.name).join(", ") || 'N/A'}.`}
-                </p>
-                {article.tagline && (
-                  <p className="text-xs text-gray-500 italic mt-3">"{article.tagline}"</p>
-                )}
-              </motion.div>
-
-              {/* Current Page Context - Show relevant info based on page type */}
-              {pageType === "cast" && article.cast && article.cast.length > 0 && (
+              
+              {/* OVERVIEW: Show About section */}
+              {pageType === "overview" && (
                 <motion.div 
                   initial={{ x: 30, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
                   className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
                 >
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center">
-                      <Users className="w-3.5 h-3.5 text-white" />
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center">
+                      <Info className="w-3.5 h-3.5 text-white" />
                     </div>
-                    Cast Highlights
+                    About {movieTitle}
                   </h3>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {article.cast.slice(0, 6).map((actor, idx) => (
-                      <Link key={idx} href={`/celebrity/${slugify(actor.name)}`} className="group">
-                        <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-blue-500/50 transition-all">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                            {actor.profileImage ? (
-                              <img src={actor.profileImage} alt={actor.name} className="w-full h-full object-cover" />
-                            ) : actor.image ? (
-                              <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
-                            ) : (
-                              <User className="w-4 h-4 text-gray-400" />
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <p className="text-[11px] font-semibold text-white truncate group-hover:text-blue-400 transition-colors">{actor.name}</p>
-                            <p className="text-[9px] text-gray-500 truncate">{actor.role || "Actor"}</p>
-                          </div>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+                  <p className="text-sm text-gray-300 leading-relaxed">
+                    {article.summary || `${movieTitle} is a ${article.genres?.join("/")} film released in ${article.releaseYear}. Directed by ${article.director?.join(", ") || 'N/A'}, the film stars ${article.cast?.slice(0, 3).map(c => c.name).join(", ") || 'N/A'}.`}
+                  </p>
+                  {article.tagline && (
+                    <p className="text-xs text-gray-500 italic mt-3">"{article.tagline}"</p>
+                  )}
                 </motion.div>
               )}
 
-              {pageType === "box-office" && (article.stats || article.boxOffice) && (
-                <motion.div 
-                  initial={{ x: 30, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="rounded-xl bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-700/30 p-5"
-                >
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
-                      <TrendingUp className="w-3.5 h-3.5 text-white" />
-                    </div>
-                    Performance Highlights
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {(article.stats?.worldwide || article.boxOffice?.worldwide) && (
-                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                        <p className="text-[9px] text-gray-400 uppercase mb-1">Worldwide</p>
-                        <p className="text-lg font-bold text-white">{article.stats?.worldwide || article.boxOffice?.worldwide}</p>
-                      </div>
-                    )}
-                    {article.stats?.indiaNet && (
-                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                        <p className="text-[9px] text-gray-400 uppercase mb-1">India Net</p>
-                        <p className="text-lg font-bold text-white">{article.stats.indiaNet}</p>
-                      </div>
-                    )}
-                    {article.stats?.openingDay && (
-                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                        <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Day</p>
-                        <p className="text-lg font-bold text-white">{article.stats.openingDay}</p>
-                      </div>
-                    )}
-                    {article.stats?.verdict && (
-                      <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
-                        <p className="text-[9px] text-green-400 uppercase mb-1">Verdict</p>
-                        <p className="text-lg font-bold text-green-400">{article.stats.verdict}</p>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-
-              {pageType === "budget" && article.budget && (
-                <motion.div 
-                  initial={{ x: 30, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="rounded-xl bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-700/30 p-5"
-                >
-                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                    <div className="w-6 h-6 rounded bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
-                      <DollarSign className="w-3.5 h-3.5 text-white" />
-                    </div>
-                    Budget Highlights
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                      <p className="text-[9px] text-gray-400 uppercase mb-1">Budget</p>
-                      <p className="text-lg font-bold text-white">{article.budget}</p>
-                    </div>
-                    {article.stats?.worldwide && (
-                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                        <p className="text-[9px] text-gray-400 uppercase mb-1">Collection</p>
-                        <p className="text-lg font-bold text-white">{article.stats.worldwide}</p>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-  
               {/* Key Crew - Show on overview and cast pages */}
               {(pageType === "overview" || pageType === "cast") && (article.director?.length > 0 || article.producer?.length > 0 || article.writer?.length > 0) && (
                 <motion.div 
                   initial={{ x: 30, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
                   className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
                 >
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
@@ -1101,11 +1272,11 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               )}
 
               {/* Tags */}
-              {article.tags && article.tags.length > 0 && (
+              {pageType === "overview" && article.tags && article.tags.length > 0 && (
                 <motion.div 
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
                   className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
                 >
                   <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
@@ -1121,22 +1292,222 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </div>
                 </motion.div>
               )}
+
+              {/* Cast Highlight Cards - Only for overview */}
+              {pageType === "overview" && article.cast && article.cast.length > 0 && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center">
+                      <Users className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Cast Highlights
+                  </h3>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {article.cast.slice(0, 6).map((actor, idx) => (
+                      <Link key={idx} href={`/celebrity/${slugify(actor.name)}`} className="group">
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-pink-500/50 transition-all">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {actor.profileImage ? (
+                              <img src={actor.profileImage} alt={actor.name} className="w-full h-full object-cover" />
+                            ) : actor.image ? (
+                              <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-4 h-4 text-gray-400" />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-semibold text-white truncate group-hover:text-pink-400 transition-colors">{actor.name}</p>
+                            <p className="text-[9px] text-gray-500 truncate">{actor.role || "Actor"}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* CAST: Cast Overview */}
+              {pageType === "cast" && article.cast && article.cast.length > 0 && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-pink-600 to-purple-600 flex items-center justify-center">
+                      <Users className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Complete Cast
+                  </h3>
+                  <p className="text-sm text-gray-400 mb-4">Total cast members: {article.cast.length}</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {article.cast.map((actor, idx) => (
+                      <Link key={idx} href={`/celebrity/${slugify(actor.name)}`} className="group">
+                        <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-pink-500/50 transition-all">
+                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                            {actor.profileImage ? (
+                              <img src={actor.profileImage} alt={actor.name} className="w-full h-full object-cover" />
+                            ) : actor.image ? (
+                              <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
+                            ) : (
+                              <User className="w-4 h-4 text-gray-400" />
+                            )}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[11px] font-semibold text-white truncate group-hover:text-pink-400 transition-colors">{actor.name}</p>
+                            <p className="text-[9px] text-gray-500 truncate">{actor.role || "Actor"}</p>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* BOX OFFICE: Box Office Overview */}
+              {pageType === "box-office" && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gradient-to-br from-green-900/30 to-emerald-900/20 border border-green-800/50 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-green-600 to-emerald-600 flex items-center justify-center">
+                      <TrendingUp className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Box Office Performance
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[9px] text-gray-400 uppercase mb-1">Worldwide</p>
+                      <p className="text-xl font-bold text-green-400">{article.boxOffice?.worldwide || article.stats?.worldwide || "N/A"}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[9px] text-gray-400 uppercase mb-1">India Net</p>
+                      <p className="text-xl font-bold text-white">{article.boxOffice?.india || article.stats?.indiaNet || "N/A"}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* BUDGET: Budget Overview */}
+              {pageType === "budget" && article.budget && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gradient-to-br from-blue-900/30 to-cyan-900/20 border border-blue-800/50 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center">
+                      <DollarSign className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Budget & Investment
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[9px] text-gray-400 uppercase mb-1">Budget</p>
+                      <p className="text-xl font-bold text-blue-400">{article.budget || "N/A"}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[9px] text-gray-400 uppercase mb-1">Collection</p>
+                      <p className="text-xl font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ENDING EXPLAINED: Overview - Use SEO Content */}
+              {pageType === "ending-explained" && sections && sections.length > 0 && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-orange-600 to-red-600 flex items-center justify-center">
+                      <Zap className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Ending Explained
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed">
+                    {sections[0]?.content?.substring(0, 300) || article.summary}
+                  </p>
+                </motion.div>
+              )}
+
+              {/* REVIEWS: Reviews Overview - Use SEO Content */}
+              {pageType === "review-analysis" && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-yellow-600 to-orange-600 flex items-center justify-center">
+                      <Star className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Critical Reviews
+                  </h3>
+                  {article.rating && (
+                    <div className="flex items-center gap-3 mb-4">
+                      <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
+                      <span className="text-2xl font-bold text-white">{article.rating}/10</span>
+                    </div>
+                  )}
+                  {sections[0]?.content ? (
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      {sections[0].content.substring(0, 300)}...
+                    </p>
+                  ) : article.criticalResponse && (
+                    <p className="text-sm text-gray-400 leading-relaxed">
+                      {article.criticalResponse.substring(0, 300)}...
+                    </p>
+                  )}
+                </motion.div>
+              )}
+
+              {/* OTT RELEASE: Overview */}
+              {pageType === "ott-release" && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
+                      <Tv className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Streaming Information
+                  </h3>
+                  <div className="space-y-3">
+                    {article.ott?.platform && (
+                      <div className="flex items-center gap-3">
+                        <Play className="w-5 h-5 text-red-500" />
+                        <span className="text-white font-semibold">{article.ott.platform}</span>
+                      </div>
+                    )}
+                    {article.ott?.releaseDate && (
+                      <p className="text-sm text-gray-400">Released: {article.ott.releaseDate}</p>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+          
             </div>
           </div>
 
-          {/* Intro for non-overview pages */}
-          {pageType !== "overview" && (
-            <div className="mb-12 p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 border-l-4 border-l-red-500">
-              <p className="text-gray-300 leading-relaxed text-base">
-                {article.summary ?
-                  `${article.summary.substring(0, 300)}... This dedicated report focuses specifically on the ${pageType.replace(/-/g, " ")} of ${movieTitle}.` :
-                  `Explore the detailed ${pageType.replace(/-/g, " ")} analysis for ${movieTitle} (${article.releaseYear}).`
-                }
-              </p>
-            </div>
-          )}
-
-          {/* Rich Content Sections Based on PageType */}
+          {/* Page-Specific Content Sections */}
           {pageType === "overview" && (
             <motion.section 
               initial={{ opacity: 0 }}
@@ -1145,189 +1516,115 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               transition={{ duration: 0.6 }}
               className="space-y-8"
             >
-              {/* Intro Section */}
-              <motion.div 
-                whileHover={{ y: -3 }}
-                className="p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-5">
-                  <Sparkles className="w-24 h-24" />
-                </div>
-                <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                  <Info className="w-6 h-6 text-red-500" /> Movie Overview
-                </h2>
-                <p className="text-gray-300 leading-relaxed text-base relative z-10">
-                  {article.summary || `${movieTitle} is a highly anticipated ${article.genres?.join("/")} feature that has taken the ${article.category} industry by storm. This full intelligence report provides a comprehensive analysis of the film's theatrical journey, its digital release strategy, and the creative vision behind its production.`}
-                </p>
-              </motion.div>
-
-              {/* Plot Summary Section */}
-              <motion.div 
-                whileHover={{ y: -3 }}
-                className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-              >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <BookOpen className="w-6 h-6 text-red-500" /> Plot Summary
-                </h2>
-                <div className="space-y-4">
-                  {article.sections?.filter(s => s.heading.toLowerCase().includes("plot") || s.heading.toLowerCase().includes("story")).map((section, idx) => (
-                    <div key={idx}>
-                      <h3 className="text-xl font-semibold text-white mb-3">{section.heading}</h3>
-                      <p className="text-gray-400 leading-relaxed">{section.content}</p>
+              {/* Render all sections from pSEO_Content_overview */}
+              {article.pSEO_Content_overview?.map((section, idx) => {
+                // Skip FAQ section - we'll render it separately
+                if (section.heading?.toLowerCase().includes('faq')) {
+                  return null;
+                }
+                
+                const cleanedContent = cleanContent(section.content);
+                if (!cleanedContent) return null;
+                
+                // Determine icon based on heading
+                const heading = section.heading?.toLowerCase() || '';
+                let Icon = Info;
+                let iconColor = "text-red-500";
+                
+                if (heading.includes('introduction') || heading.includes('overview')) {
+                  Icon = Info;
+                } else if (heading.includes('plot')) {
+                  Icon = BookOpen;
+                } else if (heading.includes('ending') || heading.includes('explained')) {
+                  Icon = Zap;
+                } else if (heading.includes('box office') || heading.includes('collection')) {
+                  Icon = TrendingUp;
+                  iconColor = "text-green-500";
+                } else if (heading.includes('budget') || heading.includes('profit')) {
+                  Icon = DollarSign;
+                  iconColor = "text-blue-500";
+                } else if (heading.includes('ott') || heading.includes('release') || heading.includes('streaming')) {
+                  Icon = Tv;
+                  iconColor = "text-purple-500";
+                } else if (heading.includes('cast') || heading.includes('character')) {
+                  Icon = Users;
+                  iconColor = "text-pink-500";
+                } else if (heading.includes('audience') || heading.includes('reaction') || heading.includes('review')) {
+                  Icon = Heart;
+                  iconColor = "text-orange-500";
+                } else if (heading.includes('director')) {
+                  Icon = Film;
+                } else if (heading.includes('genre')) {
+                  Icon = Tag;
+                } else {
+                  Icon = FileText;
+                }
+                
+                return (
+                  <motion.div 
+                    key={section._id || idx}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: idx * 0.05 }}
+                    whileHover={{ y: -2 }}
+                    className="p-6 md:p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+                  >
+                    <h2 className="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                      <Icon className={`w-6 h-6 ${iconColor}`} />
+                      {section.heading}
+                    </h2>
+                    <div className="space-y-4">
+                      {cleanedContent.split(/\n\n/).filter(p => p.trim()).map((para, pIdx) => (
+                        <p key={pIdx} className="text-gray-400 leading-relaxed text-sm md:text-base">
+                          {para}
+                        </p>
+                      ))}
                     </div>
-                  )) || <p className="text-gray-500 italic">Detailed plot analysis is being updated by our film experts.</p>}
-                </div>
-              </motion.div>
-
-              {/* Ending Explained Section */}
-              <motion.div 
-                id="ending-section"
-                whileHover={{ y: -3 }}
-                className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-              >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <Zap className="w-6 h-6 text-red-500" /> Ending Explained
-                </h2>
-                <div className="space-y-4">
-                  {article.pSEO_Content_ending_explained?.length > 0 ? (
-                    article.pSEO_Content_ending_explained.map((section, idx) => (
-                      <div key={idx}>
-                        <h3 className="text-xl font-semibold text-white mb-3">{section.heading}</h3>
-                        <p className="text-gray-400 leading-relaxed">{section.content}</p>
+                  </motion.div>
+                );
+              })}
+              
+              {/* FAQ Section from pSEO_Content_overview */}
+              {(() => {
+                const faqSection = article.pSEO_Content_overview?.find(s => 
+                  s.heading?.toLowerCase().includes('faq')
+                );
+                if (!faqSection) return null;
+                
+                const overviewFaqs = parseFAQsFromContent(faqSection.content);
+                if (overviewFaqs.length === 0) return null;
+                
+                return (
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="pt-8"
+                  >
+                    {/* FAQ Header */}
+                    <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                      <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+                          <HelpCircle className="w-5 h-5 text-white" />
+                        </span>
+                        Frequently Asked Questions
+                      </h2>
+                      <span className="text-xs font-medium text-gray-400 bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700">{overviewFaqs.length} questions</span>
+                    </div>
+                    
+                    {/* FAQ Container Card */}
+                    <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                      <div className="space-y-3">
+                        {overviewFaqs.map((faq, i) => (
+                          <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                        ))}
                       </div>
-                    ))
-                  ) : (
-                    <p className="text-gray-400 leading-relaxed">
-                      For a deep-dive analysis of the final climax and hidden meanings, visit our dedicated 
-                      <Link href={`/category/${category.toLowerCase()}/${article.slug}-ending-explained`} className="text-red-500 hover:underline mx-1 font-semibold">
-                        {movieTitle} Ending Explained
-                      </Link> page.
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-
-              {/* Box Office & Budget Cards */}
-              <motion.div 
-                initial={{ y: 30, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 }}
-                className="grid grid-cols-1 md:grid-cols-2 gap-6"
-              >
-                <motion.div 
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="p-6 rounded-2xl bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-700/30"
-                >
-                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                    <TrendingUp className="w-5 h-5 text-green-500" /> Box Office
-                  </h2>
-                  <div className="space-y-3">
-                    <p className="text-3xl font-bold text-white">{article.boxOffice?.worldwide || article.stats?.worldwide || "TBA"}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      The global theatrical run has shown impressive resilience. 
-                      <Link href={`/category/${category.toLowerCase()}/${article.slug}-box-office`} className="text-green-500 hover:underline mx-1 font-semibold">
-                        Full Financial Report
-                      </Link>
-                    </p>
-                  </div>
-                </motion.div>
-
-                <motion.div 
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  className="p-6 rounded-2xl bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-700/30">
-                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                    <DollarSign className="w-5 h-5 text-blue-500" /> Budget
-                  </h2>
-                  <div className="space-y-3">
-                    <p className="text-3xl font-bold text-white">{article.budget || "TBA"}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      Production scale and marketing investments were significant. 
-                      <Link href={`/category/${category.toLowerCase()}/${article.slug}-budget`} className="text-blue-500 hover:underline mx-1 font-semibold">
-                        Budget Breakdown
-                      </Link>
-                    </p>
-                  </div>
-                </motion.div>
-              </motion.div>
-
-              {/* OTT Release Details */}
-              <motion.div 
-                whileHover={{ y: -3 }}
-                className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-              >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <Tv className="w-6 h-6 text-red-500" /> OTT Release Details
-                </h2>
-                <div className="space-y-4">
-                  {article.ott?.platform ? (
-                    <p className="text-gray-400 leading-relaxed">
-                      {movieTitle} is officially streaming on <span className="text-white font-semibold">{article.ott.platform}</span>. 
-                      The digital rights were secured in a multi-crore deal. Visit our 
-                      <Link href={`/ott/${slugify(article.ott.platform)}`} className="text-red-500 hover:underline mx-1 font-semibold">
-                        OTT Intelligence
-                      </Link> page for the exact release timeline.
-                    </p>
-                  ) : (
-                    <p className="text-gray-400 leading-relaxed">
-                      Streaming platform details are currently under negotiation. 
-                      Check our <Link href="/category/ott" className="text-red-500 hover:underline font-semibold">OTT Hub</Link> for updates.
-                    </p>
-                  )}
-                </div>
-              </motion.div>
-
-              {/* Cast & Characters Section */}
-              <motion.div 
-                id="cast-section"
-                whileHover={{ y: -3 }}
-                className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <Users className="w-6 h-6 text-red-500" /> Cast & Characters
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                  {article.cast?.slice(0, 4).map((actor, idx) => (
-                    <motion.div 
-                      key={idx}
-                      whileHover={{ scale: 1.03, x: 5 }}
-                      className="flex items-center gap-4 p-4 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-gray-600 transition-all"
-                    >
-                      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-red-600/30 to-purple-600/30 flex items-center justify-center border border-gray-600 overflow-hidden">
-                        {actor.profileImage ? (
-                          <img src={actor.profileImage} alt={actor.name} className="w-full h-full object-cover" />
-                        ) : actor.image ? (
-                          <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <User className="w-6 h-6 text-gray-400" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-white font-semibold">{actor.name}</p>
-                        <p className="text-xs text-gray-500 uppercase tracking-wider">{actor.role || "Lead Role"}</p>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                <Link href={`/category/${category.toLowerCase()}/${article.slug}-cast`} className="text-red-500 text-sm font-semibold hover:underline flex items-center gap-1">
-                  View Full Cast & Performance Analysis <ChevronRight className="w-4 h-4" />
-                </Link>
-              </motion.div>
-
-              {/* Audience Reaction Section */}
-              <motion.div 
-                whileHover={{ y: -3 }}
-                className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-              >
-                <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                  <Heart className="w-6 h-6 text-red-500" /> Audience Reaction
-                </h2>
-                <p className="text-gray-400 leading-relaxed mb-6">
-                  {article.criticalResponse || `Audience and critical reception has been a major point of discussion. The film's unique narrative approach and technical brilliance have received praise from industry experts.`}
-                </p>
-                <Link href={`/category/${category.toLowerCase()}/${article.slug}-review-analysis`} className="text-red-500 text-sm font-semibold hover:underline flex items-center gap-1">
-                  See Critical Review Analysis <ChevronRight className="w-4 h-4" />
-                </Link>
-              </motion.div>
+                    </div>
+                  </motion.div>
+                );
+              })()}
             </motion.section>
           )}
 
@@ -1424,6 +1721,35 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </div>
                 </div>
               )}
+              
+              {/* Cast FAQs Section - Extract from pSEO_Content_cast */}
+              {(() => {
+                const castFaqs = extractFAQsFromSections(article.pSEO_Content_cast);
+                if (castFaqs.length === 0) return null;
+                return (
+                  <div className="mt-12 pt-8 border-t border-gray-800">
+                    {/* FAQ Header */}
+                    <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                      <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+                          <HelpCircle className="w-5 h-5 text-white" />
+                        </span>
+                        Frequently Asked Questions
+                      </h3>
+                      <span className="text-xs font-medium text-gray-400 bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700">{castFaqs.length} questions</span>
+                    </div>
+                    
+                    {/* FAQ Container Card */}
+                    <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                      <div className="space-y-3">
+                        {castFaqs.map((faq, i) => (
+                          <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </section>
           )}
 
@@ -1466,10 +1792,21 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
             </section>
           )}
 
-          {/* Generic Content Sections from pSEO_Content */}
-          {sections && sections.length > 0 && pageType !== "cast" && (
+          {/* Generic Content Sections - Sub-pages only */}
+          {sections && sections.length > 0 && pageType !== "cast" && pageType !== "overview" && (
             <div id="overview-section" className="space-y-12 mt-12">
-              {sections.map((section, idx) => (
+              {sections.map((section, idx) => {
+                // Check if this section is a Q&A formatted section (FAQ or numbered questions)
+                const sectionFaqs = extractFAQsFromSections([section]);
+                const isQASection = sectionFaqs.length > 0 && (
+                  section.heading?.toLowerCase().includes('faq') || 
+                  section.heading?.toLowerCase().includes('question') ||
+                  section.content?.includes('**Q') || 
+                  section.content?.includes('Q1:') ||
+                  /^\s*\d+\.\s+\*\*/.test(section.content) // Starts with "1. **"
+                );
+                
+                return (
                 <motion.section
                   key={idx}
                   initial={{ opacity: 0, y: 40 }}
@@ -1477,14 +1814,35 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   viewport={{ once: true }}
                   className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
                 >
-                  <h2 className="text-2xl font-black text-white mb-6">{section.heading}</h2>
-                  <div className="space-y-8">
-                    {section.content.split('\n\n').map((para, i) => (
-                      <p key={i} className="text-lg text-gray-400 leading-relaxed">{para}</p>
-                    ))}
-                  </div>
+                  {isQASection && sectionFaqs.length > 0 ? (
+                    <>
+                      <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                        <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center">
+                          <HelpCircle className="w-5 h-5 text-white" />
+                        </span>
+                        {section.heading}
+                      </h2>
+                      <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                        <div className="space-y-3">
+                          {sectionFaqs.map((faq, i) => (
+                            <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="text-2xl font-black text-white mb-6">{section.heading}</h2>
+                      <div className="space-y-8">
+                        {section.content.split('\n\n').map((para, i) => (
+                          <p key={i} className="text-lg text-gray-400 leading-relaxed">{para}</p>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </motion.section>
-              ))}
+              );
+              })}
             </div>
           )}
 
@@ -1586,20 +1944,31 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="pt-16 border-t border-gray-800"
+              className="pt-16"
             >
-              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <HelpCircle className="w-6 h-6 text-red-500" /> Frequently Asked Questions
+              {/* FAQ Header */}
+              <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <h2 className="text-xl font-bold text-white flex items-center gap-3">
+                  <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+                    <HelpCircle className="w-5 h-5 text-white" />
+                  </span>
+                  Frequently Asked Questions
                 </h2>
-                <span className="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full">{seo.faq.length} questions</span>
+                <span className="text-xs font-medium text-gray-400 bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700">{seo.faq.length} questions</span>
               </div>
-              {seo.faq.map((faq, i) => (
-                <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
-              ))}
+              
+              {/* FAQ Container Card */}
+              <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                <div className="space-y-3">
+                  {seo.faq.map((faq, i) => (
+                    <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                  ))}
+                </div>
+              </div>
+              
               <div className="mt-8 text-center">
-                <p className="text-xs text-gray-600 uppercase tracking-wider">
-                  Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400">Contact our film experts</Link>
+                <p className="text-sm font-medium uppercase tracking-wider text-gray-500">
+                  Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400 ml-1">Contact our film experts</Link>
                 </p>
               </div>
             </motion.div>
