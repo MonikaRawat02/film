@@ -58,7 +58,7 @@
             <nav className="hidden lg:flex items-center gap-10">
                {nav.map((item) => (
                  <Link
-                   key={item.href}
+                   key={item.name}
                    href={item.href}
                    onClick={(e) => scrollToSection(e, item.href)}
                    className="relative text-[15px] text-gray-400 hover:text-white transition-colors font-medium group"

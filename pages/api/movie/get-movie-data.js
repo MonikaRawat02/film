@@ -85,18 +85,48 @@ function generateContentSections(article, pageType) {
       sections.push(
         {
           type: "introduction",
-          heading: `${article.movieTitle}: A Complete Analysis`,
+          heading: `${article.movieTitle} (${article.releaseYear}) – Full Analysis, Box Office & OTT Details`,
+          content: article.summary
+        },
+        {
+          type: "overview",
+          heading: `${article.movieTitle} Overview`,
           content: article.summary
         },
         {
           type: "plot",
-          heading: "Story Overview",
+          heading: "Plot Summary",
           content: article.sections?.find(s => s.heading.toLowerCase().includes('plot'))?.content || article.summary
         },
         {
+          type: "ending",
+          heading: "Ending Explained",
+          content: article.sections?.find(s => s.heading.toLowerCase().includes('ending'))?.content || "Click the 'Ending Explained' sub-page for a deep-dive analysis of the conclusion."
+        },
+        {
           type: "box-office-preview",
-          heading: "Box Office Performance",
+          heading: "Box Office Collection",
           content: `The film grossed ${article.stats?.worldwide || article.boxOffice?.worldwide || 'N/A'} worldwide.`
+        },
+        {
+          type: "budget",
+          heading: "Budget & Profit",
+          content: `${article.movieTitle} was made on a budget of ${article.budget || 'N/A'}.`
+        },
+        {
+          type: "ott",
+          heading: "OTT Release Details",
+          content: `${article.movieTitle} is available on ${article.ott?.platform || 'streaming platforms'}.`
+        },
+        {
+          type: "cast",
+          heading: "Cast & Characters",
+          content: `The film features ${article.cast?.slice(0, 5).map(c => c.name).join(', ')}.`
+        },
+        {
+          type: "reaction",
+          heading: "Audience Reaction",
+          content: "The film received mixed to positive reactions from the audience."
         }
       );
       break;
@@ -104,19 +134,29 @@ function generateContentSections(article, pageType) {
     case "ending-explained":
       sections.push(
         {
+          type: "introduction",
+          heading: `${article.movieTitle} Ending Explained – Deep Analysis & Hidden Meanings`,
+          content: `A comprehensive breakdown of the ${article.movieTitle} ending and what it means for the characters.`
+        },
+        {
           type: "ending-summary",
-          heading: "Ending Explained: What Happened?",
+          heading: "The Final Sequence Breakdown",
           content: article.sections?.find(s => s.heading.toLowerCase().includes('ending') || s.heading.toLowerCase().includes('conclusion'))?.content || "The film concludes with a dramatic resolution that ties together the main storylines."
         },
         {
           type: "analysis",
-          heading: "Hidden Meanings & Symbolism",
+          heading: "Themes and Symbolism",
           content: "The ending carries deeper thematic significance, exploring themes of sacrifice, redemption, and the consequences of choices."
         },
         {
-          type: "sequel-tease",
-          heading: "Sequel Possibilities",
-          content: "While no official sequel has been announced, the ending leaves room for future exploration of the storyline."
+          type: "character-resolutions",
+          heading: "Character Resolutions",
+          content: "Each character's journey reaches a definitive point by the end of the film."
+        },
+        {
+          type: "unanswered-questions",
+          heading: "Unanswered Questions",
+          content: "While many arcs are resolved, some questions remain for the audience to interpret."
         }
       );
       break;
@@ -124,18 +164,28 @@ function generateContentSections(article, pageType) {
     case "box-office":
       sections.push(
         {
-          type: "box-office-performance",
-          heading: "Worldwide Box Office Collection",
+          type: "introduction",
+          heading: `${article.movieTitle} Box Office Collection – Worldwide Revenue & Verdict`,
+          content: `A detailed report on the commercial performance of ${article.movieTitle}.`
+        },
+        {
+          type: "theatrical-timeline",
+          heading: "Theatrical Run Timeline",
+          content: "The film had an extensive run in theaters worldwide."
+        },
+        {
+          type: "performance",
+          heading: "Domestic vs International Performance",
           content: `The film collected approximately ${article.stats?.worldwide || article.boxOffice?.worldwide || 'N/A'} globally, with strong performances in key markets.`
         },
         {
-          type: "territorial-breakdown",
-          heading: "Territorial Breakdown",
-          content: `${article.movieTitle} performed well across domestic and international markets.`
+          type: "budget-analysis",
+          heading: "Budget vs Collection Analysis",
+          content: `With a budget of ${article.budget}, the film's collections are being analyzed for profitability.`
         },
         {
           type: "verdict",
-          heading: "Hit or Flop Verdict",
+          heading: "Final Verdict (Hit/Flop)",
           content: getVerdict(article)
         }
       );
@@ -144,39 +194,29 @@ function generateContentSections(article, pageType) {
     case "budget":
       sections.push(
         {
+          type: "introduction",
+          heading: `${article.movieTitle} Movie Budget – Production Costs & Profit Analysis`,
+          content: `An in-depth look at the financial aspects of ${article.movieTitle}.`
+        },
+        {
           type: "budget-breakdown",
-          heading: "Production Budget Analysis",
+          heading: "Production Cost Breakdown",
           content: `${article.movieTitle} was made on an estimated budget of ${article.budget || 'N/A'}. This includes production costs, VFX expenses, marketing, and distribution charges.`
         },
         {
-          type: "cost-breakdown",
-          heading: "Cost Distribution",
-          content: "The budget allocation reflects the film's ambitious scale and production quality."
+          type: "salaries",
+          heading: "Cast & Crew Salaries",
+          content: "A significant portion of the budget was allocated to the lead cast and technical crew."
+        },
+        {
+          type: "marketing",
+          heading: "Marketing & Distribution Costs",
+          content: "The film's marketing campaign spanned multiple platforms and territories."
         },
         {
           type: "roi",
-          heading: "Return on Investment",
+          heading: "Profitability Analysis",
           content: `The film's ROI analysis shows ${article.boxOffice?.roi || 'strong commercial performance'}.`
-        }
-      );
-      break;
-
-    case "cast":
-      sections.push(
-        {
-          type: "lead-cast",
-          heading: "Main Cast & Characters",
-          content: `The film stars ${article.cast?.slice(0, 5).map(c => c.name).join(', ')} in pivotal roles.`
-        },
-        {
-          type: "performances",
-          heading: "Standout Performances",
-          content: "The cast delivers powerful performances that elevate the material, bringing depth and authenticity to their characters."
-        },
-        {
-          type: "cameos",
-          heading: "Special Appearances",
-          content: "The film also features several cameo appearances that add excitement and surprise value."
         }
       );
       break;
@@ -184,19 +224,119 @@ function generateContentSections(article, pageType) {
     case "ott-release":
       sections.push(
         {
+          type: "introduction",
+          heading: `${article.movieTitle} OTT Release Date – Streaming Platform & Rights`,
+          content: `Everything you need to know about where to stream ${article.movieTitle}.`
+        },
+        {
           type: "streaming-info",
-          heading: "OTT Platform & Release Date",
+          heading: "Digital Rights and Platform",
           content: `${article.movieTitle} is available for streaming on ${article.ott?.platform || 'N/A'} starting ${article.ott?.releaseDate ? new Date(article.ott.releaseDate).toLocaleDateString() : 'the digital release date'}.`
         },
         {
-          type: "digital-rights",
-          heading: "Digital Streaming Rights",
-          content: "The OTT rights were acquired in a competitive deal, making it one of the most anticipated digital releases."
+          type: "theatrical-window",
+          heading: "Theatrical to OTT Window",
+          content: "The film followed the standard industry window for its digital premiere."
         },
         {
-          type: "where-to-watch",
-          heading: "How to Watch",
-          content: `Viewers can stream ${article.movieTitle} exclusively on ${article.ott?.platform || 'the platform'} with a subscription.`
+          type: "satellite",
+          heading: "Satellite Rights Details",
+          content: "The television broadcasting rights were sold to a major network."
+        },
+        {
+          type: "response",
+          heading: "Audience Response on OTT",
+          content: `Viewers have been streaming ${article.movieTitle} extensively since its digital debut.`
+        }
+      );
+      break;
+
+    case "cast":
+      sections.push(
+        {
+          type: "introduction",
+          heading: `${article.movieTitle} Cast & Characters – Performance Analysis`,
+          content: "A deep dive into the performances and characters of the film."
+        },
+        {
+          type: "lead-cast",
+          heading: "Lead Performances Breakdown",
+          content: `The film stars ${article.cast?.slice(0, 5).map(c => c.name).join(', ')} in pivotal roles.`
+        },
+        {
+          type: "supporting",
+          heading: "Supporting Cast Highlights",
+          content: "The supporting cast provides excellent backup to the main leads."
+        },
+        {
+          type: "arc",
+          heading: "Character Arc Analysis",
+          content: "The characters undergo significant emotional and narrative development."
+        },
+        {
+          type: "impact",
+          heading: "Casting Decisions and Impact",
+          content: "The casting was instrumental in bringing the director's vision to life."
+        }
+      );
+      break;
+
+    case "review-analysis":
+      sections.push(
+        {
+          type: "introduction",
+          heading: `${article.movieTitle} Review Analysis – Critical Response & Audience Reaction`,
+          content: "A summary of how the film was received by critics and fans."
+        },
+        {
+          type: "critical",
+          heading: "Critical Consensus",
+          content: "Critics praised the film for its technical aspects and performances."
+        },
+        {
+          type: "audience",
+          heading: "Audience Reception",
+          content: "The general public responded positively to the emotional core of the story."
+        },
+        {
+          type: "technical",
+          heading: "Technical Aspects (Direction, Cinematography)",
+          content: "The direction and cinematography were highlighted as major strengths."
+        },
+        {
+          type: "score",
+          heading: "Final Score & Recommendation",
+          content: `With a rating of ${article.rating || 'N/A'}, the film is a recommended watch.`
+        }
+      );
+      break;
+
+    case "hit-or-flop":
+      sections.push(
+        {
+          type: "introduction",
+          heading: `${article.movieTitle} Hit or Flop – Final Verdict & Performance Analysis`,
+          content: "The definitive verdict on the film's commercial status."
+        },
+        {
+          type: "expectations",
+          heading: "Commercial Expectations",
+          content: "The film carried high expectations due to its star cast and director."
+        },
+        {
+          type: "comparison",
+          heading: "Box Office vs Budget Comparison",
+          content: `The film's collections of ${article.stats?.worldwide || 'N/A'} are compared against its ${article.budget} budget.`
+        },
+        {
+          type: "recovery",
+          heading: "Recovery and Profit Analysis",
+          content: "The film successfully recovered its costs through theatrical and non-theatrical rights."
+        },
+        {
+          type: "verdict",
+          heading: "Final Industry Verdict",
+          content: getVerdict(article)
         }
       );
       break;

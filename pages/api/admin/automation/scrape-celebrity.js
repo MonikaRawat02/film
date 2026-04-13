@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { industry = "Bollywood", limit = 10 } = req.body;
+  const { industry = "Bollywood", limit = 50 } = req.body;
 
   try {
     await dbConnect();
@@ -28,7 +28,7 @@ export default async function handler(req, res) {
       isAutomated: true
     });
 
-    const DAILY_LIMIT = 50; // Increased daily cap for more flexibility
+    const DAILY_LIMIT = 20;
     if (countToday >= DAILY_LIMIT) {
       return res.status(200).json({
         success: true,
@@ -38,14 +38,11 @@ export default async function handler(req, res) {
     }
 
     const remainingQuota = DAILY_LIMIT - countToday;
-    const MAX_PER_RUN = Math.min(remainingQuota, limit); // Respect the requested limit
+    const MAX_PER_RUN = Math.min(remainingQuota, 20);
     // --- End Daily Limit Check ---
 
-    let celebUrls = await getCelebrityUrlsByIndustry(industry);
+    const celebUrls = await getCelebrityUrlsByIndustry(industry);
     console.log(`Found ${celebUrls.length} celebrity URLs for ${industry}`);
-    
-    // Randomize the list to discover different celebrities each time
-    celebUrls = celebUrls.sort(() => Math.random() - 0.5);
     
     const results = {
       totalFound: celebUrls.length,
@@ -77,25 +74,14 @@ export default async function handler(req, res) {
         
         let finalData = scrapedData;
         if (aiData) {
-          // Merge AI data but PRIORITIZE Wikipedia (scrapedData)
           finalData = {
-            ...aiData, // AI data as base
-            ...scrapedData, // Wikipedia data overwrites AI data where both exist
+            ...scrapedData,
+            ...aiData,
             heroSection: {
-              ...aiData.heroSection,
-              ...scrapedData.heroSection, // Wikipedia hero section info is more accurate
-              industry // Ensure industry is preserved
-            },
-            quickFacts: {
-              ...aiData.quickFacts,
-              ...scrapedData.quickFacts // Wikipedia facts are more accurate
+              ...scrapedData.heroSection,
+              ...aiData.heroSection
             }
           };
-          
-          // Specialized merge for biographyTimeline to combine both sources if possible
-          if (scrapedData.biographyTimeline?.length > 0) {
-            finalData.biographyTimeline = scrapedData.biographyTimeline;
-          }
         }
         // --- End AI Intelligence Enhancement ---
 
