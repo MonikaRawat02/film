@@ -2308,3 +2308,83 @@
 [2026-04-11T09:51:20.501Z] [INFO] 🕒 CRON START: Celebrity Scraper
 [2026-04-11T09:51:28.804Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
 [2026-04-11T09:52:10.549Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-11T09:52:43.686Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-11T09:52:43.687Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-11T09:52:43.707Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-11T09:52:43.707Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-11T09:52:43.718Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-11T09:52:43.722Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-11T09:52:48.747Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-11T09:52:48.747Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T09:52:48.748Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-11T09:52:54.160Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T09:54:35.539Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-11T09:56:33.716Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-11T10:00:00.026Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T10:00:01.485Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T10:30:00.026Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T10:30:00.027Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T10:30:01.577Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T10:30:05.883Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T11:00:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T11:00:01.247Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T11:30:00.026Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T11:30:00.027Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T11:30:01.538Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T11:30:04.769Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T12:02:19.402Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-11T12:02:19.403Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-11T12:02:19.470Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-11T12:02:19.470Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-11T12:02:19.483Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-11T12:02:19.486Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-11T12:02:24.514Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-11T12:02:24.515Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T12:02:24.516Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-11T12:02:29.633Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T12:04:45.229Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-11T12:06:46.089Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-11T12:19:18.246Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-11T12:19:18.247Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-11T12:19:18.314Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-11T12:19:18.314Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-11T12:19:18.327Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-11T12:19:18.332Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-11T12:19:23.435Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-11T12:19:23.436Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T12:19:23.436Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-11T12:19:31.030Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T12:21:23.024Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-11T12:23:13.019Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-11T12:30:00.029Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T12:30:00.030Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T12:30:01.564Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-11T12:30:05.646Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T13:00:00.012Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-11T13:00:00.078Z] [ERROR] Trending Sync returned status 500 
+[2026-04-11T13:00:23.438Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-11T13:00:29.933Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-11T13:00:29.933Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-11T13:00:29.954Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-11T13:00:29.954Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-11T13:00:29.965Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-11T13:00:29.969Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-11T13:00:35.010Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-11T13:00:35.011Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-11T13:00:35.012Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-11T13:00:39.717Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-11T13:02:49.472Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-11T13:04:49.256Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-13T04:43:13.653Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-13T04:43:13.654Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-13T04:43:13.720Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-13T04:43:13.720Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-13T04:43:13.735Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-13T04:43:13.738Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-13T04:43:18.844Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-13T04:43:18.845Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-13T04:43:18.846Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-13T04:43:30.813Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-13T04:45:31.859Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-13T04:47:38.356Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-13T04:49:10.885Z] [INFO] Received kill signal, shutting down gracefully...
