@@ -12,6 +12,30 @@ import {
   Clapperboard, Star, Book, FileText
 } from "lucide-react";
 
+// Utility function to extract complete sentences without cutting mid-word
+function getCompleteSentence(text, maxLength = 300) {
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  
+  // Find the last sentence boundary (., !, ?) before maxLength
+  const truncated = text.substring(0, maxLength);
+  const lastPeriod = truncated.lastIndexOf('.');
+  const lastExclamation = truncated.lastIndexOf('!');
+  const lastQuestion = truncated.lastIndexOf('?');
+  
+  // Get the furthest sentence boundary
+  const lastBoundary = Math.max(lastPeriod, lastExclamation, lastQuestion);
+  
+  // If we found a sentence boundary, use it; otherwise find last space
+  if (lastBoundary > maxLength * 0.5) {
+    return text.substring(0, lastBoundary + 1);
+  }
+  
+  // Fallback: find last space to avoid cutting mid-word
+  const lastSpace = truncated.lastIndexOf(' ');
+  return lastSpace > 0 ? text.substring(0, lastSpace) + '...' : truncated + '...';
+}
+
 // Utility function to clean placeholder text from AI-generated content
 function cleanContent(content) {
   if (!content) return "";
@@ -780,11 +804,11 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     {pageType === "ending-explained" && sections && sections.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Ending Explained</p>
-                        <p className="text-gray-300 text-sm leading-relaxed">{sections[0]?.content?.substring(0, 200) || article.summary}</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">{getCompleteSentence(sections[0]?.content, 250) || article.summary}</p>
                         {sections.slice(0, 3).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-orange-600/10 border border-orange-500/20">
                             <p className="text-xs font-bold text-orange-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
                         ))}
                       </div>
@@ -805,13 +829,13 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                             </div>
                           )}
                           {sections[0]?.content && (
-                            <p className="text-gray-300 text-sm leading-relaxed flex-1">{sections[0].content.substring(0, 200)}...</p>
+                            <p className="text-gray-300 text-sm leading-relaxed flex-1">{getCompleteSentence(sections[0].content, 250)}</p>
                           )}
                         </div>
                         {sections.slice(0, 3).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
                         ))}
                       </div>
@@ -1067,7 +1091,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     Ending Summary
                   </h3>
                   <p className="text-xs text-gray-400 leading-relaxed">
-                    {article.summary ? `${article.summary.substring(0, 200)}...` : "Explore the complete ending explanation and hidden meanings of " + movieTitle + "."}
+                    {article.summary ? getCompleteSentence(article.summary, 250) : "Explore the complete ending explanation and hidden meanings of " + movieTitle + "."}
                   </p>
                 </motion.div>
               )}
@@ -1094,7 +1118,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       </div>
                     )}
                     <p className="text-xs text-gray-400 leading-relaxed">
-                      {article.criticalResponse ? `${article.criticalResponse.substring(0, 150)}...` : "Critical reviews and audience reactions analysis."}
+                      {article.criticalResponse ? getCompleteSentence(article.criticalResponse, 200) : "Critical reviews and audience reactions analysis."}
                     </p>
                   </div>
                 </motion.div>
@@ -1127,6 +1151,41 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                         <span className="text-xs font-bold text-white">{article.ott.releaseDate}</span>
                       </div>
                     )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* HIT OR FLOP: Verdict Card */}
+              {pageType === "hit-or-flop" && (
+                <motion.div 
+                  initial={{ x: -30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center">
+                      <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Verdict Summary
+                  </h3>
+                  <div className="space-y-3">
+                    {article.stats?.verdict && (
+                      <div className="p-3 rounded-lg bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/30 text-center">
+                        <p className="text-[10px] text-red-400 uppercase mb-1">Overall Verdict</p>
+                        <p className="text-xl font-black text-white uppercase">{article.stats.verdict}</p>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                        <p className="text-[9px] text-gray-400 uppercase mb-1">Budget</p>
+                        <p className="text-sm font-bold text-white">{article.budget || "N/A"}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                        <p className="text-[9px] text-gray-400 uppercase mb-1">Collection</p>
+                        <p className="text-sm font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
+                      </div>
+                    </div>
                   </div>
                 </motion.div>
               )}
@@ -1337,8 +1396,8 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     Complete Cast
                   </h3>
                   <p className="text-sm text-gray-400 mb-4">Total cast members: {article.cast.length}</p>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                    {article.cast.map((actor, idx) => (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                    {article.cast.slice(0, 6).map((actor, idx) => (
                       <Link key={idx} href={`/celebrity/${slugify(actor.name)}`} className="group">
                         <div className="flex items-center gap-2 p-2 rounded-lg bg-gray-800/50 border border-gray-700 hover:border-pink-500/50 transition-all">
                           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -1358,6 +1417,19 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       </Link>
                     ))}
                   </div>
+                  
+                  {/* Show additional sections from API */}
+                  {sections && sections.length > 0 && (
+                    <div className="space-y-3 pt-4 border-t border-gray-800">
+                      <p className="text-xs font-semibold text-pink-400 uppercase tracking-wider">Cast Details</p>
+                      {sections.slice(0, 3).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -1375,7 +1447,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     </div>
                     Box Office Performance
                   </h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                       <p className="text-[9px] text-gray-400 uppercase mb-1">Worldwide</p>
                       <p className="text-xl font-bold text-green-400">{article.boxOffice?.worldwide || article.stats?.worldwide || "N/A"}</p>
@@ -1385,6 +1457,19 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       <p className="text-xl font-bold text-white">{article.boxOffice?.india || article.stats?.indiaNet || "N/A"}</p>
                     </div>
                   </div>
+                  
+                  {/* Show additional sections from API */}
+                  {sections && sections.length > 0 && (
+                    <div className="space-y-3 pt-4 border-t border-green-800/30">
+                      <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">Key Insights</p>
+                      {sections.slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -1402,7 +1487,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     </div>
                     Budget & Investment
                   </h3>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-4 mb-4">
                     <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                       <p className="text-[9px] text-gray-400 uppercase mb-1">Budget</p>
                       <p className="text-xl font-bold text-blue-400">{article.budget || "N/A"}</p>
@@ -1412,6 +1497,19 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       <p className="text-xl font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
                     </div>
                   </div>
+                  
+                  {/* Show additional sections from API */}
+                  {sections && sections.length > 0 && (
+                    <div className="space-y-3 pt-4 border-t border-blue-800/30">
+                      <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Budget Analysis</p>
+                      {sections.slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -1429,9 +1527,22 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     </div>
                     Ending Explained
                   </h3>
-                  <p className="text-sm text-gray-400 leading-relaxed">
-                    {sections[0]?.content?.substring(0, 300) || article.summary}
+                  <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                    {getCompleteSentence(sections[0]?.content, 400) || article.summary}
                   </p>
+                  
+                  {/* Show additional sections from API */}
+                  {sections.length > 1 && (
+                    <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                      <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Key Sections</p>
+                      {sections.slice(1, 5).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
 
@@ -1456,13 +1567,26 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     </div>
                   )}
                   {sections[0]?.content ? (
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                      {sections[0].content.substring(0, 300)}...
+                    <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                      {getCompleteSentence(sections[0].content, 400)}
                     </p>
                   ) : article.criticalResponse && (
-                    <p className="text-sm text-gray-400 leading-relaxed">
-                      {article.criticalResponse.substring(0, 300)}...
+                    <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                      {getCompleteSentence(article.criticalResponse, 400)}
                     </p>
+                  )}
+                  
+                  {/* Show additional sections from API */}
+                  {sections && sections.length > 1 && (
+                    <div className="space-y-3 pt-4 border-t border-gray-800">
+                      <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">Review Breakdown</p>
+                      {sections.slice(1, 5).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </motion.div>
               )}
@@ -1481,7 +1605,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     </div>
                     Streaming Information
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-3 mb-4">
                     {article.ott?.platform && (
                       <div className="flex items-center gap-3">
                         <Play className="w-5 h-5 text-red-500" />
@@ -1492,6 +1616,69 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       <p className="text-sm text-gray-400">Released: {article.ott.releaseDate}</p>
                     )}
                   </div>
+                  
+                  {/* Show additional sections from API */}
+                  {sections && sections.length > 0 && (
+                    <div className="space-y-3 pt-4 border-t border-gray-800">
+                      <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">OTT Details</p>
+                      {sections.slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              )}
+
+              {/* HIT OR FLOP: Verdict Overview */}
+              {pageType === "hit-or-flop" && (
+                <motion.div 
+                  initial={{ x: 30, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center">
+                      <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                    </div>
+                    Hit or Flop Verdict
+                  </h3>
+                  
+                  {/* Verdict Badge */}
+                  {article.stats?.verdict && (
+                    <div className="mb-4 p-4 rounded-xl bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/30 text-center">
+                      <p className="text-[10px] text-red-400 uppercase mb-2">Overall Verdict</p>
+                      <p className="text-2xl font-black text-white uppercase">{article.stats.verdict}</p>
+                    </div>
+                  )}
+                  
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[9px] text-gray-400 uppercase mb-1">Budget</p>
+                      <p className="text-lg font-bold text-white">{article.budget || "N/A"}</p>
+                    </div>
+                    <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                      <p className="text-[9px] text-gray-400 uppercase mb-1">Collection</p>
+                      <p className="text-lg font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
+                    </div>
+                  </div>
+                  
+                  {/* Show additional sections from API */}
+                  {sections && sections.length > 0 && (
+                    <div className="space-y-3 pt-4 border-t border-gray-800">
+                      <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">Verdict Analysis</p>
+                      {sections.slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               )}
           
@@ -1779,6 +1966,45 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               <p className="text-zinc-400 leading-relaxed">
                 The production budget of {article.movieTitle} reflects the film's scale and ambition. 
                 With strategic investments in cast, VFX, and marketing, the film aimed for maximum impact across global markets.
+              </p>
+            </section>
+          )}
+
+          {/* Hit or Flop Verdict Page */}
+          {pageType === "hit-or-flop" && (
+            <section>
+              <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                <ShieldCheck className="w-6 h-6 text-red-600" /> Hit or Flop Verdict
+              </h2>
+              
+              {/* Verdict Badge */}
+              {article.stats?.verdict && (
+                <div className="mb-8">
+                  <div className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/40">
+                    <ShieldCheck className="w-8 h-8 text-red-400" />
+                    <div>
+                      <p className="text-xs text-red-400 uppercase tracking-widest mb-1">Overall Verdict</p>
+                      <p className="text-3xl font-black text-white uppercase">{article.stats.verdict}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Box Office Stats */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="p-6 rounded-2xl bg-green-900/20 border border-green-700/30">
+                  <p className="text-xs text-green-400 uppercase tracking-widest mb-1">Box Office Collection</p>
+                  <p className="text-3xl font-black text-white">{article.boxOffice?.worldwide || article.stats?.worldwide || "N/A"}</p>
+                </div>
+                <div className="p-6 rounded-2xl bg-blue-900/20 border border-blue-700/30">
+                  <p className="text-xs text-blue-400 uppercase tracking-widest mb-1">Production Budget</p>
+                  <p className="text-3xl font-black text-white">{article.budget || "N/A"}</p>
+                </div>
+              </div>
+              
+              <p className="text-zinc-400 leading-relaxed mb-8">
+                The commercial performance of {article.movieTitle} has been analyzed based on its box office collection, 
+                budget recovery, and audience reception. This verdict reflects the film's success in the competitive market.
               </p>
             </section>
           )}

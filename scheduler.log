@@ -2388,3 +2388,25 @@
 [2026-04-13T04:45:31.859Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
 [2026-04-13T04:47:38.356Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
 [2026-04-13T04:49:10.885Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-13T04:49:34.007Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-13T04:49:34.008Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-13T04:49:34.031Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-13T04:49:34.031Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-13T04:49:34.042Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-13T04:49:34.047Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-13T04:49:39.066Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-13T04:49:39.066Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-13T04:49:39.067Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-13T04:49:44.043Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-13T04:51:30.188Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood
+[2026-04-13T04:53:49.700Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood
+[2026-04-13T05:00:00.038Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-13T05:00:01.566Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-13T05:30:00.018Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-13T05:30:00.020Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-13T05:30:00.021Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-04-13T05:30:01.056Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-13T05:30:05.549Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
+[2026-04-13T05:35:00.026Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-04-13T05:35:02.508Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 10 movies for 2026
+[2026-04-13T05:39:56.777Z] [INFO] Received kill signal, shutting down gracefully...
