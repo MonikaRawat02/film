@@ -1,4 +1,3 @@
-import axios from "axios";
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import { getMoviesByYear, scrapeWikipediaMovie } from "../../../../lib/scrapers/wikipedia";
@@ -50,7 +49,7 @@ export default async function handler(req, res) {
           slug: movieSlug,
           coverImage: scrapedData.poster,
           category: category,
-          contentType: category.toLowerCase() === 'webseries' ? "webseries" : "movie",
+          contentType: "movie",
           movieTitle: scrapedData.title,
           releaseYear: scrapedData.releaseYear,
           summary: scrapedData.summary,
@@ -65,12 +64,7 @@ export default async function handler(req, res) {
           genres: scrapedData.genres,
           criticalResponse: scrapedData.criticalResponse,
           sections: scrapedData.sections || [],
-          ott: {
-            platform: scrapedData.ottPlatform || "",
-            releaseDate: scrapedData.releaseYear ? new Date(scrapedData.releaseYear, 0, 1) : null,
-          },
-          status: "published",
-          publishedAt: new Date(),
+          status: "draft", // Scraped articles start as draft
           tags: [category, scrapedData.releaseYear?.toString(), "Movie Analysis", ...scrapedData.genres].filter(Boolean),
           meta: {
             title: `${scrapedData.title} (${scrapedData.releaseYear}) - Box Office, Cast & Review`,
@@ -86,45 +80,36 @@ export default async function handler(req, res) {
           { upsert: true, new: true }
         );
 
-        // --- NEW: Trigger AI Content Generation in background ---
-        (async () => {
-          try {
-            console.log(`🤖 Starting background AI Content Generation for ${movieSlug}...`);
-            const protocol = req.headers["x-forwarded-proto"] || "http";
-            const host = req.headers.host;
-            const baseUrl = `${protocol}://${host}`;
-            const headers = { 
-              "Content-Type": "application/json",
-              "x-cron-secret": cronSecret
-            };
-            
-            const subPages = [
-              "overview",
-              "ending-explained",
-              "box-office",
-              "budget",
-              "ott-release",
-              "cast",
-              "review-analysis",
-              "hit-or-flop"
-            ];
-
-            for (const pageType of subPages) {
-              try {
-                console.log(`⏳ Generating ${pageType} for ${movieSlug}...`);
-                await axios.post(`${baseUrl}/api/admin/automation/generate-ai-content`, {
-                  slug: movieSlug,
-                  pageType
-                }, { headers, timeout: 120000 });
-              } catch (subErr) {
-                console.error(`❌ Failed to generate ${pageType} for ${movieSlug}:`, subErr.message);
-              }
-            }
-            console.log(`✅ Finished AI generation for ${movieSlug}`);
-          } catch (aiTriggerErr) {
-            console.error(`❌ AI Content Background Task Failed for ${movieSlug}:`, aiTriggerErr.message);
+        // --- NEW: Trigger AI Content Generation for the newly synced movie ---
+        try {
+          console.log(`🤖 Triggering AI Content Generation for ${movieSlug}...`);
+          const protocol = req.headers["x-forwarded-proto"] || "http";
+          const host = req.headers.host;
+          const baseUrl = `${protocol}://${host}`;
+          const headers = { 
+            "Content-Type": "application/json",
+            "x-cron-secret": cronSecret
+          };
+          
+          // Generate Overview first
+          await fetch(`${baseUrl}/api/admin/automation/generate-ai-content`, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({ slug: movieSlug, pageType: "overview" })
+          });
+          
+          // Generate other pSEO pages
+          const pSEOPages = ["ending-explained", "box-office", "budget"];
+          for (const pageType of pSEOPages) {
+            await fetch(`${baseUrl}/api/admin/automation/generate-ai-content`, {
+              method: "POST",
+              headers,
+              body: JSON.stringify({ slug: movieSlug, pageType })
+            });
           }
-        })();
+        } catch (aiErr) {
+          console.error(`AI Generation failed for ${movieSlug}:`, aiErr.message);
+        }
 
         results.synced++;
         results.movies.push(scrapedData.title);

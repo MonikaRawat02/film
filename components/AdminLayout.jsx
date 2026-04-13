@@ -21,7 +21,6 @@
      { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
      { name: "Celebrity", href: "/admin/celebrity", icon: Star },
      { name: "Trending Intelligence", href: "/admin/trending-intelligence", icon: BarChart },
-     { name: "Global Trends Sync", href: "/admin/trending-sync", icon: BarChart },
      { name: "Box Office", href: "/admin/box-office", icon: BarChart },
      { name: "OTT Analysis", href: "/admin/ott-intelligence", icon: Tv },
      { name: "Articles", href: "/admin/articles", icon: FileText },

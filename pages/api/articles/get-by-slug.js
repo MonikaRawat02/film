@@ -72,6 +72,16 @@ export default async function handler(req, res) {
       return res.status(404).json({ success: false, message: "Article not found" });
     }
 
+    // --- Increment View Count ---
+    try {
+      await Article.updateOne(
+        { _id: article._id },
+        { $inc: { "stats.views": 1 } }
+      );
+    } catch (viewError) {
+      console.error("Failed to increment view count:", viewError);
+    }
+
     return res.status(200).json({
       success: true,
       data: article,

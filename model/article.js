@@ -1,22 +1,5 @@
 import mongoose from "mongoose";
 
-/**
- * Slugify function - converts text to URL-friendly slug
- */
-function slugify(text) {
-  if (!text) return "";
-  return text
-    .toString()
-    .toLowerCase()
-    .trim()
-    .replace(/\s+/g, "-")           // Replace spaces with -
-    .replace(/[^\w-]+/g, "")         // Remove all non-word chars
-    .replace(/--+/g, "-")            // Replace multiple - with single -
-    .replace(/^-+/, "")              // Trim - from start of text
-    .replace(/-+$/, "")              // Trim - from end of text
-    .substring(0, 60);               // Limit to 60 characters
-}
-
 const ArticleSchema = new mongoose.Schema(
   {
     title: {
@@ -74,29 +57,9 @@ const ArticleSchema = new mongoose.Schema(
     // pSEO Fields
     budget: String,
     boxOffice: {
-      openingDay: String,
       openingWeekend: String,
-      firstWeek: String,
       worldwide: String,
       india: String,
-      overseas: String,
-      roi: String, // e.g., "+562%"
-      profit: String, // e.g., "+₹100 Crore"
-      verdict: String, // e.g., "Blockbuster"
-      analysisLink: String,
-      territorialBreakdown: [
-        { region: String, percentage: Number, amount: String }
-      ],
-      overseasMarkets: [
-        { market: String, amount: String }
-      ],
-      movieDNA: {
-        emotionalIntensity: { type: Number, default: 0 },
-        violenceLevel: { type: Number, default: 0 },
-        psychologicalDepth: { type: Number, default: 0 },
-        familyFriendliness: { type: Number, default: 0 },
-        complexityLevel: { type: Number, default: 0 },
-      },
     },
     cast: [
       {
@@ -126,21 +89,6 @@ const ArticleSchema = new mongoose.Schema(
         slug: String,
       }
     ],
-    
-    // NEW: Related Movies (Calculated by our recommendation engine)
-    relatedMovies: [
-      {
-        _id: String,
-        slug: String,
-        movieTitle: String,
-        releaseYear: Number,
-        coverImage: String,
-        similarityScore: Number,
-        matchLevel: String
-      }
-    ],
-    lastRecommendationUpdate: Date,
-    
     ott: {
       platform: String,
       releaseDate: Date,
@@ -165,10 +113,6 @@ const ArticleSchema = new mongoose.Schema(
     pSEO_Content_review_analysis: [{ heading: String, content: String }],
     pSEO_Content_hit_or_flop: [{ heading: String, content: String }],
     pSEO_Content_overview: [{ heading: String, content: String }], // Added for 1200-2000 word main page
-
-    // --- NEW: Trending Intelligence ---
-    trendingScore: { type: Number, default: 0 },
-    lastTrendingSync: { type: Date },
 
     // Detailed SEO fields per sub-page
     subPagesSEO: {
@@ -215,22 +159,5 @@ const ArticleSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-/**
- * Pre-save hook to auto-generate slug from movieTitle if not provided
- */
-ArticleSchema.pre("save", function(next) {
-  // Auto-generate slug from movieTitle if slug is not set
-  if (!this.slug && this.movieTitle) {
-    this.slug = slugify(this.movieTitle);
-  }
-  
-  // Ensure slug is lowercase and trimmed
-  if (this.slug) {
-    this.slug = this.slug.toLowerCase().trim();
-  }
-  
-  next();
-});
 
 export default mongoose.models.Article || mongoose.model("Article", ArticleSchema);

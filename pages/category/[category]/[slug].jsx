@@ -392,8 +392,17 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
       const content = sections?.map(s => s.content).join(" ") || "";
       const words = content.split(/\s+/).length;
       setReadingTime(Math.max(1, Math.ceil(words / 200)));
+
+      // --- Record Article View ---
+      if (article?.slug) {
+        fetch("/api/public/record-article-view", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug: article.slug })
+        }).catch(err => console.error("Failed to record view:", err));
+      }
     }
-  }, [article?._id, sections]);
+  }, [article?._id, article?.slug, sections]);
 
   useEffect(() => {
     const handleScroll = () => {
