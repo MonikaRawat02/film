@@ -368,6 +368,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
   const [isSaved, setIsSaved] = useState(false);
   const [readingTime, setReadingTime] = useState(5);
   const [scrollProgress, setScrollProgress] = useState(0);
+  const [showFullAnalysis, setShowFullAnalysis] = useState(false);
 
   const movieTitle = article.movieTitle || article.title;
 
@@ -1249,7 +1250,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
             {/* Right Side - Page-Specific Content */}
             <div className="lg:col-span-8 space-y-6">
               
-              {/* OVERVIEW: Show About section */}
+              {/* OVERVIEW: Show About section with Expand/Collapse */}
               {pageType === "overview" && (
                 <motion.div 
                   initial={{ x: 30, opacity: 0 }}
@@ -1268,6 +1269,36 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </p>
                   {article.tagline && (
                     <p className="text-xs text-gray-500 italic mt-3">"{article.tagline}"</p>
+                  )}
+                  
+                  {/* Expandable Sections */}
+                  {sections && sections.length > 0 && (
+                    <div className="mt-4">
+                      <button
+                        onClick={() => setShowFullAnalysis(!showFullAnalysis)}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors"
+                      >
+                        {showFullAnalysis ? 'Show Less' : 'Read Full Analysis'} 
+                        <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-300 ${showFullAnalysis ? 'rotate-90' : ''}`} />
+                      </button>
+                      
+                      {showFullAnalysis && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="mt-4 space-y-3 pt-4 border-t border-gray-700"
+                        >
+                          {sections.map((section, idx) => (
+                            <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                              <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                              <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 250)}</p>
+                            </div>
+                          ))}
+                        </motion.div>
+                      )}
+                    </div>
                   )}
                 </motion.div>
               )}

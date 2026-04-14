@@ -72,123 +72,6 @@ const pageTitles = {
 };
 
 // Dynamic FAQ Generator Function
-function generateFAQs(article, pageType) {
-  const movieTitle = article.movieTitle;
-  const releaseYear = article.releaseYear;
-  const director = article.director?.[0] || "the director";
-  const cast = article.cast?.slice(0, 3).map(c => c.name).join(", ") || "the cast";
-  const genres = article.genres?.join(", ") || "action";
-  const budget = article.budget || "N/A";
-  const boxOffice = article.stats?.worldwide || article.boxOffice?.worldwide || "N/A";
-  const ottPlatform = article.ott?.platform || "streaming platforms";
-  const rating = article.rating || "N/A";
-
-  // Base FAQs that work for all movies
-  const baseFAQs = [
-    {
-      question: `When was ${movieTitle} released?`,
-      answer: `${movieTitle} was officially released in ${releaseYear}. The film premiered in theaters worldwide and later became available on ${ottPlatform}.`
-    },
-    {
-      question: `Who directed ${movieTitle}?`,
-      answer: `${movieTitle} was directed by ${director}, who brought their unique vision to this ${genres} film. The director is known for their distinctive storytelling style and visual approach.`
-    },
-    {
-      question: `What is the story of ${movieTitle} about?`,
-      answer: article.summary || `Without revealing spoilers, ${movieTitle} explores themes common to the ${genres} genre. The film follows a compelling narrative that keeps audiences engaged throughout.`
-    }
-  ];
-
-  // Page-specific FAQs
-  const pageSpecificFAQs = {
-    "overview": [
-      {
-        question: `Where can I watch ${movieTitle}?`,
-        answer: `${movieTitle} is available for streaming on ${ottPlatform}. You can also catch it in select theaters depending on your location. Check local listings for showtimes.`
-      },
-      {
-        question: `What is the IMDb rating of ${movieTitle}?`,
-        answer: `${movieTitle} currently holds an IMDb rating of ${rating}/10. Audience reception has been ${parseFloat(rating) >= 7 ? 'positive' : 'mixed'}, with critics praising various aspects of the production.`
-      }
-    ],
-    "box-office": [
-      {
-        question: `How much did ${movieTitle} collect at the box office?`,
-        answer: `${movieTitle} grossed approximately ${boxOffice} worldwide. The film's commercial performance varied across different markets, with particularly strong showing in domestic circuits.`
-      },
-      {
-        question: `Was ${movieTitle} a hit or flop?`,
-        answer: `Based on its box office collection of ${boxOffice} against a budget of ${budget}, ${movieTitle} can be considered ${parseInt(boxOffice) > parseInt(budget) * 2 ? 'a commercial success' : 'an average performer'}. The film's profitability also includes revenue from digital and satellite rights.`
-      },
-      {
-        question: `Which regions contributed most to ${movieTitle}'s box office?`,
-        answer: `${movieTitle} performed exceptionally well in key markets including Mumbai, Delhi-NCR, and overseas territories like UAE and USA. The film showed strong occupancy in multiplexes and single-screen theaters alike.`
-      }
-    ],
-    "budget": [
-      {
-        question: `What was the budget of ${movieTitle}?`,
-        answer: `${movieTitle} was made on an estimated budget of ${budget}. This includes production costs, marketing expenses, and distribution charges. The budget reflects the film's scale and ambition.`
-      },
-      {
-        question: `Did ${movieTitle} recover its budget?`,
-        answer: `Yes, ${movieTitle} successfully recovered its budget through a combination of theatrical collections, digital streaming rights, satellite rights, and music sales. The film's OTT deal with ${ottPlatform} was particularly lucrative.`
-      },
-      {
-        question: `How does ${movieTitle}'s budget compare to other films in the genre?`,
-        answer: `With a budget of ${budget}, ${movieTitle} ranks among the ${genres.toLowerCase()} films with significant production investment. The allocation covered extensive VFX work, elaborate sets, and high-profile cast remuneration.`
-      }
-    ],
-    "ending-explained": [
-      {
-        question: `Does ${movieTitle} have a sequel or prequel?`,
-        answer: `As of now, there's no official announcement regarding a sequel or prequel to ${movieTitle}. However, given the film's ${boxOffice !== 'N/A' ? 'commercial performance' : 'reception'}, future installments remain a possibility.`
-      },
-      {
-        question: `What is the main message of ${movieTitle}?`,
-        answer: `${movieTitle} explores deeper themes beneath its ${genres} exterior. The film delivers commentary on human nature, relationships, and societal expectations, leaving audiences with thought-provoking takeaways.`
-      }
-    ],
-    "ott-release": [
-      {
-        question: `Is ${movieTitle} available on Netflix/Prime/other platforms?`,
-        answer: `${movieTitle} is exclusively available on ${ottPlatform}. The digital streaming rights were acquired as part of a strategic distribution deal, making it accessible to subscribers of the platform.`
-      },
-      {
-        question: `When did ${movieTitle} start streaming on OTT?`,
-        answer: `${movieTitle} began streaming on ${ottPlatform} shortly after its theatrical run. The exact OTT release date typically falls 4-8 weeks after the cinema premiere, depending on box office performance.`
-      }
-    ],
-    "cast": [
-      {
-        question: `Who are the main actors in ${movieTitle}?`,
-        answer: `${movieTitle} stars ${cast}. The ensemble cast brings depth to their characters, with each actor contributing to the film's overall impact through powerful performances.`
-      },
-      {
-        question: `Are there any cameo appearances in ${movieTitle}?`,
-        answer: `${movieTitle} features several surprise cameo appearances that enhance the viewing experience. These special appearances add layers to the narrative and provide memorable moments for audiences.`
-      }
-    ],
-    "review-analysis": [
-      {
-        question: `What are critics saying about ${movieTitle}?`,
-        answer: `Critics have given ${movieTitle} ${parseFloat(rating) >= 7 ? 'largely positive' : 'mixed'} reviews, with praise for ${parseFloat(rating) >= 7 ? 'its direction, performances, and technical brilliance' : 'certain aspects while noting areas that could have been stronger'}. The film holds a rating of ${rating}/10.`
-      },
-      {
-        question: `Is ${movieTitle} worth watching?`,
-        answer: `${movieTitle} offers ${parseFloat(rating) >= 7 ? 'a compelling cinematic experience with strong performances and engaging storytelling' : 'entertainment value, though it may not meet all expectations'}. Fans of the ${genres} genre will find plenty to appreciate.`
-      }
-    ]
-  };
-
-
-  // Combine base FAQs with page-specific ones
-  const specificFAQs = pageSpecificFAQs[pageType] || pageSpecificFAQs.overview;
-  
-  // Return first 5-6 FAQs (mix of base and specific)
-  return [...baseFAQs.slice(0, 3), ...specificFAQs.slice(0, 3)].slice(0, 6);
-}
-
 const categoryIcons = {
   Bollywood: Clapperboard,
   Hollywood: Film,
@@ -198,64 +81,171 @@ const categoryIcons = {
   Celebrities: Users,
 };
 
-// Dropdown FAQ Component
-function FAQDropdown({ faqs, loading }) {
-  const [openIndex, setOpenIndex] = useState(null);
-
-  const toggleFAQ = (index) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
-  if (loading) {
-    return (
-      <div className="space-y-4">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="p-6 rounded-2xl bg-gray-800/50 border border-gray-700 animate-pulse">
-            <div className="h-5 bg-gray-700 rounded w-3/4 mb-3"></div>
-            <div className="h-4 bg-gray-700 rounded w-full mb-2"></div>
-            <div className="h-4 bg-gray-700 rounded w-2/3"></div>
-          </div>
-        ))}
-      </div>
-    );
+// Utility function to extract complete sentences without cutting mid-word
+function getCompleteSentence(text, maxLength = 300) {
+  if (!text) return "";
+  if (text.length <= maxLength) return text;
+  
+  const truncated = text.substring(0, maxLength);
+  const lastPeriod = truncated.lastIndexOf('.');
+  const lastExclamation = truncated.lastIndexOf('!');
+  const lastQuestion = truncated.lastIndexOf('?');
+  
+  const lastBoundary = Math.max(lastPeriod, lastExclamation, lastQuestion);
+  
+  if (lastBoundary > maxLength * 0.5) {
+    return text.substring(0, lastBoundary + 1);
   }
+  
+  const lastSpace = truncated.lastIndexOf(' ');
+  return lastSpace > 0 ? text.substring(0, lastSpace) + '...' : truncated + '...';
+}
 
-  if (!faqs.length) return null;
+// Utility function to clean placeholder text from AI-generated content
+function cleanContent(content) {
+  if (!content) return "";
+  return content
+    .replace(/\[insert[^\]]*\]/gi, "")
+    .replace(/\[unknown\]/gi, "To be announced")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Utility function to parse FAQs from content
+function parseFAQsFromContent(content) {
+  if (!content) return [];
+  const faqs = [];
+  
+  // Method 1: Split by **Q patterns (with or without numbers)
+  const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
+  if (blocks.length > 1) {
+    for (let i = 1; i < blocks.length; i++) {
+      const block = blocks[i];
+      const questionMatch = block.match(/^([^?]*\?)/);
+      if (!questionMatch) continue;
+      const question = questionMatch[1].trim();
+      let answer = '';
+      const aMatch = block.match(/\*\*A\.?\s*\d*:?\s*([^\n]+)/);
+      if (aMatch) {
+        answer = aMatch[1].trim();
+      } else {
+        // Try to find "A:" without bold
+        const aMatchPlain = block.match(/^A:\s*([^\n]+)/m);
+        if (aMatchPlain) {
+          answer = aMatchPlain[1].trim();
+        } else {
+          const afterQuestion = block.substring(block.indexOf('?') + 1);
+          answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+      }
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 2: Parse "**Q: Question?**\nA: Answer" format (your current format)
+  if (faqs.length === 0) {
+    const qaBlockPattern = /\*\*Q:\s*([^?]+\?)\*\*\s*\nA:\s*([^\n]+)/g;
+    let match;
+    while ((match = qaBlockPattern.exec(content)) !== null) {
+      const question = match[1].trim();
+      const answer = match[2].trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 3: Parse numbered format "1. **Question?** Answer"
+  if (faqs.length === 0) {
+    const numberedPattern = /(\d+)\.\s+\*\*([^*]+)\*\*/g;
+    let match;
+    while ((match = numberedPattern.exec(content)) !== null) {
+      const num = match[1];
+      const questionWithBold = match[2];
+      const qMatch = questionWithBold.match(/([^?]*\?)/);
+      if (!qMatch) continue;
+      const question = qMatch[1].trim();
+      const matchIndex = match.index;
+      const afterMatch = content.substring(matchIndex + match[0].length);
+      const nextNumMatch = afterMatch.match(/\n\s*\d+\.\s+\*\*/);
+      let answer = nextNumMatch ? afterMatch.substring(0, nextNumMatch.index) : afterMatch;
+      answer = answer.replace(/\*\*/g, '').replace(/^[\s:]+/, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 4: Parse "Q1: Question?" format
+  if (faqs.length === 0) {
+    const qaPattern = /Q\.?\s*(\d+):?\s*([^?]+\?)\s*A\.?\s*\d+:?\s*([^\n]+)/gi;
+    let match;
+    while ((match = qaPattern.exec(content)) !== null) {
+      const question = match[2].trim();
+      let answer = match[3].trim();
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  return faqs;
+}
+
+// Extract FAQs from sections array
+function extractFAQsFromSections(sections) {
+  if (!sections || !Array.isArray(sections)) return [];
+  
+  for (const section of sections) {
+    if (section.heading?.toLowerCase().includes('faq') || 
+        section.content?.includes('Q1:') || 
+        section.content?.includes('**Q')) {
+      const parsed = parseFAQsFromContent(section.content);
+      if (parsed.length > 0) return parsed;
+    }
+  }
+  
+  return [];
+}
+
+// FAQ Accordion Item Component
+function FAQItem({ question, answer, index }) {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="space-y-3">
-      {faqs.map((faq, idx) => (
-        <div 
-          key={idx} 
-          className="faq-item rounded-2xl bg-gradient-to-br from-gray-800/50 to-gray-900/50 border border-gray-700 hover:border-red-500/30 transition-all duration-300 overflow-hidden"
-        >
-          <button
-            onClick={() => toggleFAQ(idx)}
-            className="w-full px-6 py-5 flex items-center justify-between text-left group"
-          >
-            <div className="flex items-start gap-4 pr-4">
-              <div className="flex-shrink-0 mt-1">
-                <HelpCircle className="w-5 h-5 text-red-500/70 group-hover:text-red-500 transition-colors" />
-              </div>
-              <h4 className="text-base md:text-lg font-semibold text-white leading-relaxed group-hover:text-red-400 transition-colors">
-                {faq.question}
-              </h4>
-            </div>
-            <div className={`flex-shrink-0 transition-transform duration-300 ${openIndex === idx ? 'rotate-180' : ''}`}>
-              <ChevronDown className="w-5 h-5 text-gray-400 group-hover:text-red-400" />
-            </div>
-          </button>
-          
-          <div className={`faq-answer ${openIndex === idx ? 'open' : ''}`}>
-            <div className="px-6 pb-6 pt-0 pl-14 md:pl-16">
-              <div className="h-px bg-gradient-to-r from-red-500/20 via-red-500/50 to-red-500/20 mb-4"></div>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                {faq.answer}
-              </p>
-            </div>
-          </div>
+    <div className="rounded-xl border border-gray-800 bg-[#1a1a2e]/60 backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-red-500/40 hover:bg-[#1a1a2e]/80">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left group"
+      >
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <span className="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30 group-hover:shadow-red-900/50 transition-shadow">
+            <span className="text-white font-bold text-sm">?</span>
+          </span>
+          <span className="text-sm font-semibold text-white group-hover:text-red-400 transition-colors truncate">
+            {question}
+          </span>
         </div>
-      ))}
+        <ChevronDown 
+          className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-all duration-300 ${isOpen ? 'rotate-180 text-red-400' : ''}`} 
+        />
+      </button>
+      
+      <div
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? '500px' : '0px', opacity: isOpen ? 1 : 0 }}
+      >
+        <div className="px-5 pb-5 pl-[4.5rem]">
+          <div className="w-8 h-px bg-gradient-to-r from-red-500/50 to-transparent mb-3"></div>
+          <p className="text-sm text-gray-300 leading-relaxed">
+            {answer}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
@@ -277,8 +267,6 @@ export default function MovieDetailPage({ article, pageType, slug }) {
   const [scrollProgress, setProgress] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [faqs, setFaqs] = useState([]);
-  const [loadingFAQs, setLoadingFAQs] = useState(true);
 
   // Mark this page to skip PublicLayout padding
   MovieDetailPage.noPadding = true;
@@ -306,34 +294,6 @@ export default function MovieDetailPage({ article, pageType, slug }) {
       }
     }
   }, [article?._id, article?.slug]);
-
-  // Fetch dynamic FAQs from AI
-  useEffect(() => {
-    async function loadFAQs() {
-      try {
-        setLoadingFAQs(true);
-        const res = await fetch('/api/movie/generate-faq', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug, pageType })
-        });
-        
-        if (res.ok) {
-          const result = await res.json();
-          console.log("❓ FAQ API Response:", result);
-          setFaqs(result.data || []);
-        } else {
-          console.error('Failed to fetch FAQs');
-        }
-      } catch (error) {
-        console.error('FAQ fetch error:', error);
-      } finally {
-        setLoadingFAQs(false);
-      }
-    }
-
-    loadFAQs();
-  }, [slug, pageType]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -464,8 +424,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
-          className="relative w-full min-h-[60vh] bg-cover bg-center overflow-hidden mt-4 md:mt-6"
-        >
+          className="relative w-full min-h-[60vh] bg-cover bg-center overflow-hidden mt-4 md:mt-6">
           {/* Background Image */}
           {article.coverImage ? (
             <motion.img 
@@ -1547,60 +1506,83 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 </motion.section>
               )}
 
-              {pageType === "box-office" && (
-                <section>
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <TrendingUp className="w-6 h-6 text-red-600" /> Box Office Collection Analysis
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                    <div className="p-6 rounded-2xl bg-zinc-900 border border-white/5">
-                      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Worldwide Collection</p>
-                      <p className="text-3xl font-black text-white">{article.boxOffice?.worldwide || "TBA"}</p>
+              {/* Page-Specific Content Renderer with FAQ Support */}
+              {pageType !== "overview" && (() => {
+                const contentKey = `pSEO_Content_${pageType.replace(/-/g, "_")}`;
+                const pageContent = article[contentKey];
+                
+                if (!pageContent || pageContent.length === 0) {
+                  return (
+                    <div className="text-center py-12">
+                      <p className="text-gray-500 text-lg">Content for this section is being updated.</p>
                     </div>
-                    <div className="p-6 rounded-2xl bg-zinc-900 border border-white/5">
-                      <p className="text-xs text-zinc-500 uppercase tracking-widest mb-1">India Net Collection</p>
-                      <p className="text-3xl font-black text-white">{article.boxOffice?.india || "TBA"}</p>
-                    </div>
-                  </div>
-                  <p className="text-zinc-400 leading-relaxed">
-                    The box office performance of {article.movieTitle} has been a major talking point in the industry. 
-                    With a global reach and strong domestic interest, the numbers reflect the audience's massive reaction to this cinematic intelligence.
-                  </p>
-                </section>
-              )}
-
-              {pageType === "cast" && (
-                <section>
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Users className="w-6 h-6 text-red-600" /> Cast & Character Intel
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {article.cast?.map((actor, idx) => (
-                      <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
-                        <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center">
-                          <User className="w-6 h-6 text-zinc-600" />
+                  );
+                }
+                
+                // Extract page-specific FAQs
+                const pageFaqs = extractFAQsFromSections(pageContent);
+                
+                return (
+                  <div className="space-y-12">
+                    {/* Regular Content Sections (excluding FAQ sections) */}
+                    {pageContent
+                      .filter(section => {
+                        const isFAQSection = section.heading?.toLowerCase().includes('faq') || 
+                                            section.content?.includes('**Q') || 
+                                            section.content?.includes('Q1:');
+                        return !isFAQSection;
+                      })
+                      .map((section, idx) => (
+                        <motion.section
+                          key={idx}
+                          initial={{ opacity: 0, y: 40 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5 }}
+                          className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+                        >
+                          <h2 className="text-2xl font-black text-white mb-6">{section.heading}</h2>
+                          <div className="space-y-4">
+                            {cleanContent(section.content).split('\n\n').filter(p => p.trim()).map((para, pIdx) => (
+                              <p key={pIdx} className="text-zinc-400 leading-relaxed text-lg">{para}</p>
+                            ))}
+                          </div>
+                        </motion.section>
+                      ))}
+                    
+                    {/* Page-Specific FAQ Section */}
+                    {pageFaqs.length > 0 && (
+                      <motion.section
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="pt-8"
+                      >
+                        {/* FAQ Header */}
+                        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                          <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                            <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+                              <HelpCircle className="w-5 h-5 text-white" />
+                            </span>
+                            Frequently Asked Questions
+                          </h2>
+                          <span className="text-xs font-medium text-gray-400 bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700">{pageFaqs.length} questions</span>
                         </div>
-                        <div>
-                          <p className="text-white font-bold">{actor.name}</p>
-                          <p className="text-[10px] text-zinc-500 uppercase tracking-widest">{actor.role || "Actor"}</p>
+                        
+                        {/* FAQ Container Card */}
+                        <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                          <div className="space-y-3">
+                            {pageFaqs.map((faq, i) => (
+                              <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      </motion.section>
+                    )}
                   </div>
-                </section>
-              )}
-
-              {/* Generic Sub-Page Content Renderer */}
-              {pageType !== "overview" && (
-                <div id="budget-section" className="space-y-12">
-                  {article[`pSEO_Content_${pageType.replace(/-/g, "_")}`]?.map((section, idx) => (
-                    <section key={idx}>
-                      <h2 className="text-2xl font-black text-white mb-6">{section.heading}</h2>
-                      <p className="text-zinc-400 leading-relaxed text-lg">{section.content}</p>
-                    </section>
-                  ))}
-                </div>
-              )}
+                );
+              })()}
 
               {/* Internal Linking Section (Auto) - Ranking Backbone */}
               <div className="mt-20 pt-12 border-t border-gray-800">
@@ -1676,31 +1658,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               </div>
             </div>
 
-            {/* FAQ Section (Required for SEO) */}
-            <motion.div 
-              initial={{ y: 30, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="pt-16 border-t border-gray-800"
-            >
-              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <HelpCircle className="w-6 h-6 text-red-500" /> Frequently Asked Questions
-                </h2>
-                <span className="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full">
-                  {faqs.length} questions
-                </span>
-              </div>
-              
-              <FAQDropdown faqs={faqs} loading={loadingFAQs} />
-              
-              <div className="mt-8 text-center">
-                <p className="text-xs text-gray-600 uppercase tracking-wider">
-                  Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400">Contact our film experts</Link>
-                </p>
-              </div>
-            </motion.div>
+
         </main>
       </div>
     </>
