@@ -8,7 +8,8 @@ import {
   Info, HelpCircle, Calendar, Globe, List, BookOpen, ThumbsUp,
   Clock, DollarSign, BarChart3, ShieldCheck, Star, Sparkles, ChevronDown
 } from "lucide-react";
-import { slugify } from "../../lib/slugify";
+import { slugify } from "@/lib/slugify";
+import { motion } from "framer-motion";
 
 // Known platforms for routing logic
 const PLATFORMS = [

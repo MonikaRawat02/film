@@ -2297,3 +2297,11 @@
 [2026-04-11T08:30:01.765Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-04-11T08:30:12.906Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 10. Background enrichment triggered.
 [2026-04-11T09:35:26.705Z] [ERROR] ❌ CRON FATAL (Celebrity): network timeout at: http://localhost:3000/api/admin/automation/scrape-celebrity
+[2026-04-14T11:00:00.162Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-14T11:00:02.322Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-14T11:30:00.175Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-14T11:30:00.188Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-14T11:30:01.986Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-14T11:32:01.944Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-04-14T12:00:00.256Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-14T12:00:04.130Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated

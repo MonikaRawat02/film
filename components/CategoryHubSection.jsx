@@ -91,7 +91,7 @@ export default function CategoryHubSection() {
       iconBg: "from-amber-600 via-orange-600 to-red-600",
       border: "from-amber-500 via-orange-500 to-red-600",
       textGrad: "from-amber-400 to-red-500",
-      category: "boxoffice",
+      category: "box-office",
     },
     {
       title: "Celebrities",
@@ -101,7 +101,7 @@ export default function CategoryHubSection() {
       iconBg: "from-fuchsia-600 via-violet-600 to-purple-600",
       border: "from-fuchsia-600 via-violet-600 to-purple-600",
       textGrad: "from-fuchsia-400 to-purple-500",
-      category: "celebrities",
+      category: "celebrity",
       preview: celebrityPreview.slice(0, 3).map(c => ({
         name: c.heroSection?.name,
         image: c.heroSection?.profileImage,

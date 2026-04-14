@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { TrendingUp, Sparkles, PlaySquare, ChevronRight, Search, Loader2, X } from "lucide-react";
 
-import { slugify } from "../../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 
 export default function OTTArticlesGrid({ initialArticles = [], activeFilter = "All" }) {
   const [allArticles, setAllArticles] = useState(initialArticles);

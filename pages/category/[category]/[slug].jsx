@@ -2,10 +2,13 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { slugify } from "@/lib/slugify";
+import { motion } from "framer-motion";
 import { 
   ArrowLeft, Share2, Clock, User, 
   Calendar, DollarSign, Users, Play, Award,
-  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase
+  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase,
+  Target, HelpCircle, ShieldCheck, Film, List, Zap, TrendingUp, Star, BookOpen, Tv, Tag, Info, Heart, FileText, ChevronDown
 } from "lucide-react";
 
 // Utility function to extract complete sentences without cutting mid-word
@@ -30,6 +33,162 @@ function getCompleteSentence(text, maxLength = 300) {
   // Fallback: find last space to avoid cutting mid-word
   const lastSpace = truncated.lastIndexOf(' ');
   return lastSpace > 0 ? text.substring(0, lastSpace) + '...' : truncated + '...';
+}
+
+// Utility function to clean placeholder text from AI-generated content
+function cleanContent(content) {
+  if (!content) return "";
+  return content
+    .replace(/\[insert[^\]]*\]/gi, "")
+    .replace(/\[unknown\]/gi, "To be announced")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Utility function to parse FAQs from content
+function parseFAQsFromContent(content) {
+  if (!content) return [];
+  const faqs = [];
+  
+  // Method 1: Split by **Q patterns (with or without numbers)
+  const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
+  if (blocks.length > 1) {
+    for (let i = 1; i < blocks.length; i++) {
+      const block = blocks[i];
+      const questionMatch = block.match(/^([^?]*\?)/);
+      if (!questionMatch) continue;
+      const question = questionMatch[1].trim();
+      let answer = '';
+      const aMatch = block.match(/\*\*A\.?\s*\d*:?\s*([^\n]+)/);
+      if (aMatch) {
+        answer = aMatch[1].trim();
+      } else {
+        // Try to find "A:" without bold
+        const aMatchPlain = block.match(/^A:\s*([^\n]+)/m);
+        if (aMatchPlain) {
+          answer = aMatchPlain[1].trim();
+        } else {
+          const afterQuestion = block.substring(block.indexOf('?') + 1);
+          answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+      }
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 2: Parse "**Q: Question?**\nA: Answer" format (your current format)
+  if (faqs.length === 0) {
+    const qaBlockPattern = /\*\*Q:\s*([^?]+\?)\*\*\s*\nA:\s*([^\n]+)/g;
+    let match;
+    while ((match = qaBlockPattern.exec(content)) !== null) {
+      const question = match[1].trim();
+      const answer = match[2].trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 3: Parse numbered format "1. **Question?** Answer"
+  if (faqs.length === 0) {
+    const numberedPattern = /(\d+)\.\s+\*\*([^*]+)\*\*/g;
+    let match;
+    while ((match = numberedPattern.exec(content)) !== null) {
+      const num = match[1];
+      const questionWithBold = match[2];
+      const qMatch = questionWithBold.match(/([^?]*\?)/);
+      if (!qMatch) continue;
+      const question = qMatch[1].trim();
+      const matchIndex = match.index;
+      const afterMatch = content.substring(matchIndex + match[0].length);
+      const nextNumMatch = afterMatch.match(/\n\s*\d+\.\s+\*\*/);
+      let answer = nextNumMatch ? afterMatch.substring(0, nextNumMatch.index) : afterMatch;
+      answer = answer.replace(/\*\*/g, '').replace(/^[\s:]+/, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 4: Parse "Q1: Question?" format
+  if (faqs.length === 0) {
+    const qaPattern = /Q\.?\s*(\d+):?\s*([^?]+\?)\s*A\.?\s*\d+:?\s*([^\n]+)/gi;
+    let match;
+    while ((match = qaPattern.exec(content)) !== null) {
+      const question = match[2].trim();
+      let answer = match[3].trim();
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  return faqs;
+}
+
+// Extract FAQs from sections array
+function extractFAQsFromSections(sections) {
+  if (!sections || !Array.isArray(sections)) return [];
+  
+  for (const section of sections) {
+    if (section.heading?.toLowerCase().includes('faq') || 
+        section.content?.includes('Q1:') || 
+        section.content?.includes('**Q')) {
+      const parsed = parseFAQsFromContent(section.content);
+      if (parsed.length > 0) return parsed;
+    }
+  }
+  
+  return [];
+}
+
+// FAQ Accordion Item Component
+function FAQItem({ question, answer, index }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="rounded-xl border border-gray-800 bg-[#1a1a2e]/60 backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-red-500/40 hover:bg-[#1a1a2e]/80">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left group"
+      >
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <span className="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30 group-hover:shadow-red-900/50 transition-shadow">
+            <span className="text-white font-bold text-sm">?</span>
+          </span>
+          <span className="text-sm font-semibold text-white group-hover:text-red-400 transition-colors truncate">
+            {question}
+          </span>
+        </div>
+        <div className="flex items-center justify-center w-5 h-5">
+           <svg 
+            className={`w-4 h-4 text-gray-400 transition-all duration-300 ${isOpen ? 'rotate-180 text-red-400' : ''}`} 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </div>
+      </button>
+      
+      <div
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? '500px' : '0px', opacity: isOpen ? 1 : 0 }}
+      >
+        <div className="px-5 pb-5 pl-[4.5rem]">
+          <div className="w-8 h-px bg-gradient-to-r from-red-500/50 to-transparent mb-3"></div>
+          <p className="text-sm text-gray-300 leading-relaxed">
+            {answer}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export async function getServerSideProps(context) {
@@ -241,8 +400,8 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
         "@type": "BreadcrumbList",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://filmyfire.com" },
-          { "@type": "ListItem", "position": 2, "name": category, "item": `https://filmyfire.com/category/${category.toLowerCase()}` },
-          { "@type": "ListItem", "position": 3, "name": article.movieTitle || article.title, "item": `https://filmyfire.com/category/${category.toLowerCase()}/${article.slug}` }
+          { "@type": "ListItem", "position": 2, "name": category, "item": `https://filmyfire.com${categoryPageUrl}` },
+          { "@type": "ListItem", "position": 3, "name": article.movieTitle || article.title, "item": `https://filmyfire.com${categoryPageUrl}/${article.slug}` }
         ]
       },
       // 2. Primary Content Schema
@@ -284,7 +443,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
       <Head>
         <title>{seo.title} | FilmyFire Intelligence</title>
         <meta name="description" content={seo.description || article.summary} />
-        <link rel="canonical" href={`https://filmyfire.com/category/${category.toLowerCase()}/${slug}`} />
+        <link rel="canonical" href={`https://filmyfire.com${categoryPageUrl}/${slug}`} />
         
         {/* Automated Intelligence Schema (Task 7) */}
         <script
@@ -299,7 +458,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
         <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
           <div className="max-w-[1600px] mx-auto px-6 h-14 flex items-center justify-between">
             <Link 
-              href={`/category/${category.toLowerCase()}`}
+              href={categoryPageUrl}
               className="flex items-center gap-2 text-zinc-500 hover:text-white transition-all group"
             >
               <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" />
@@ -637,7 +796,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     return (
                       <motion.div key={idx} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
                         <Link 
-                          href={`/category/${category.toLowerCase()}/${article.slug}${link.suffix}`}
+                          href={`${categoryPageUrl}/${article.slug}${link.suffix}`}
                           className={`block p-2.5 rounded-lg text-center transition-all ${
                             isActive
                               ? "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-md" 
@@ -1549,7 +1708,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                 {dynamicRecommendations && dynamicRecommendations.length > 0 ? (
                   <div id="recommendations-scroll" className="flex gap-4 overflow-x-auto pb-8 snap-x scrollbar-hide">
                     {dynamicRecommendations.map((rec, i) => (
-                      <Link key={i} href={`/category/${category.toLowerCase()}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
+                      <Link key={i} href={`${categoryPageUrl}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
                         <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-gray-700 group-hover/rec:border-red-500/30 transition-all shadow-lg">
                           {rec.backdropImage ? (
                             <img src={rec.backdropImage} alt={rec.movieTitle || rec.title} className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105" />
@@ -1570,7 +1729,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                 ) : article.recommendations && article.recommendations.length > 0 ? (
                   <div id="recommendations-scroll" className="flex gap-4 overflow-x-auto pb-8 snap-x scrollbar-hide">
                     {article.recommendations.map((rec, i) => (
-                      <Link key={i} href={`/category/${category.toLowerCase()}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
+                      <Link key={i} href={`${categoryPageUrl}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
                         <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-gray-700 group-hover/rec:border-red-500/30 transition-all shadow-lg">
                           {rec.backdropImage ? (
                             <img src={rec.backdropImage} alt={rec.title} className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105" />

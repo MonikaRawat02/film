@@ -1,7 +1,7 @@
 "use client";
  import { useState } from "react";
  import Link from "next/link";
- import { Flame, Menu, X } from "lucide-react";
+ import { Flame, Menu, X, Shield } from "lucide-react";
  
  const SiteHeader = () => {
    const [openMobile, setOpenMobile] = useState(false);
@@ -70,6 +70,15 @@
              </nav>
  
              <div className="flex items-center gap-2">
+              {/* Admin Login Button */}
+              <Link
+                href="/admin/login"
+                className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-red-600/25"
+              >
+                <Shield className="w-4 h-4" />
+                Admin Login
+              </Link>
+
               <button
                 aria-label="Open menu"
                 className="inline-flex lg:hidden items-center justify-center rounded-lg p-2.5 hover:bg-gray-900"
@@ -122,6 +131,18 @@
                    {item.name}
                  </Link>
                ))}
+               
+               {/* Mobile Admin Login Button */}
+               <div className="pt-4 mt-4 border-t border-gray-800">
+                 <Link
+                   href="/admin/login"
+                   onClick={() => setOpenMobile(false)}
+                   className="flex items-center justify-center gap-2 w-full rounded-lg px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-base font-semibold transition-all duration-300"
+                 >
+                   <Shield className="w-5 h-5" />
+                   Admin Login
+                 </Link>
+               </div>
              </nav>
            </div>
          </div>

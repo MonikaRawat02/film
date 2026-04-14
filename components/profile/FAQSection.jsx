@@ -25,16 +25,22 @@ export default function FAQSection({ celebrity }) {
           body: JSON.stringify({ slug }),
         });
 
-        if (res.ok) {
-          const result = await res.json();
-          setFaqs(result.data || []);
-        } else {
-          const errorData = await res.json();
-          throw new Error(errorData.message || "Failed to fetch celebrity FAQs");
+        if (!res.ok) {
+          // If celebrity not found (404) or any error, silently use fallback or show nothing
+          console.warn(`FAQ API returned ${res.status}, using fallback`);
+          if (celebrity.faqs && celebrity.faqs.length > 0) {
+            setFaqs(celebrity.faqs.map(item => ({
+              question: item.question,
+              answer: item.answer
+            })));
+          }
+          return;
         }
+
+        const result = await res.json();
+        setFaqs(result.data || []);
       } catch (err) {
         console.error("Celebrity FAQ fetch error:", err);
-        setError(err.message);
         // Fallback to celebrity.faqs if API fails
         if (celebrity.faqs && celebrity.faqs.length > 0) {
           setFaqs(celebrity.faqs.map(item => ({

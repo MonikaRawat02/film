@@ -1,7 +1,7 @@
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import { getMoviesByYear, scrapeWikipediaMovie } from "../../../../lib/scrapers/wikipedia";
-import { slugify } from "../../../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 import axios from "axios";
 
 export default async function handler(req, res) {

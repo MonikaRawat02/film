@@ -64,7 +64,7 @@ export default function GuidesSection() {
           {guides.map((g, i) => (
             <Link
               key={i}
-              href={`/articles/${g.category}/${g.slug}`}
+              href={`/category/${g.category.toLowerCase()}/${g.slug}`}
               className="group block relative rounded-2xl border border-red-800/30 bg-[#121112] overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500" />
