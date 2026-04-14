@@ -1,5 +1,5 @@
-import dbConnect from "../../../lib/mongodb";
-import Article from "../../../model/article";
+import dbConnect from "../../lib/mongodb";
+import Article from "../../model/article";
 
 /**
  * Discovery API: Find movies based on genres, keywords, or similarity
