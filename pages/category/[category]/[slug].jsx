@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
+import { slugify } from "@/lib/slugify";
 import { 
   ArrowLeft, Share2, Clock, User, 
   Calendar, DollarSign, Users, Play, Award,
-  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase
+  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase, Film, List, Info, Zap, TrendingUp, Star, ShieldCheck, Tv, BookOpen, Tag, Heart, HelpCircle, ChevronDown, Target, FileText 
 } from "lucide-react";
 
 // Utility function to extract complete sentences without cutting mid-word
@@ -30,6 +32,120 @@ function getCompleteSentence(text, maxLength = 300) {
   // Fallback: find last space to avoid cutting mid-word
   const lastSpace = truncated.lastIndexOf(' ');
   return lastSpace > 0 ? text.substring(0, lastSpace) + '...' : truncated + '...';
+}
+
+// Utility function to clean content
+function cleanContent(content) {
+  if (!content) return "";
+  return content
+    .replace(/\[insert[^\]]*\]/gi, "")
+    .replace(/\[unknown\]/gi, "To be announced")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Utility function to parse FAQs from content
+function parseFAQsFromContent(content) {
+  if (!content) return [];
+  const faqs = [];
+  
+  // Method 1: Split by **Q patterns (with or without numbers)
+  const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
+  if (blocks.length > 1) {
+    for (let i = 1; i < blocks.length; i++) {
+      const block = blocks[i];
+      const questionMatch = block.match(/^([^?]*\?)/);
+      if (!questionMatch) continue;
+      const question = questionMatch[1].trim();
+      let answer = '';
+      const aMatch = block.match(/\*\*A\.?\s*\d*:?\s*([^\n]+)/);
+      if (aMatch) {
+        answer = aMatch[1].trim();
+      } else {
+        // Try to find "A:" without bold
+        const aMatchPlain = block.match(/^A:\s*([^\n]+)/m);
+        if (aMatchPlain) {
+          answer = aMatchPlain[1].trim();
+        } else {
+          const afterQuestion = block.substring(block.indexOf('?') + 1);
+          answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+      }
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 2: Parse "**Q: Question?**\nA: Answer" format
+  if (faqs.length === 0) {
+    const qaBlockPattern = /\*\*Q:\s*([^?]+\?)\*\*\s*\nA:\s*([^\n]+)/g;
+    let match;
+    while ((match = qaBlockPattern.exec(content)) !== null) {
+      const question = match[1].trim();
+      const answer = match[2].trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  return faqs;
+}
+
+// Extract FAQs from sections
+function extractFAQsFromSections(sections) {
+  if (!sections || !Array.isArray(sections)) return [];
+  
+  for (const section of sections) {
+    if (section.heading?.toLowerCase().includes('faq') || 
+        section.content?.includes('Q1:') || 
+        section.content?.includes('**Q')) {
+      const parsed = parseFAQsFromContent(section.content);
+      if (parsed.length > 0) return parsed;
+    }
+  }
+  
+  return [];
+}
+
+// FAQ Item Component
+function FAQItem({ question, answer, index }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="rounded-xl border border-gray-800 bg-[#1a1a2e]/60 backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-red-500/40 hover:bg-[#1a1a2e]/80">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-5 py-4 flex items-center justify-between gap-4 text-left group"
+      >
+        <div className="flex items-center gap-4 flex-1 min-w-0">
+          <span className="flex-shrink-0 w-9 h-9 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30 group-hover:shadow-red-900/50 transition-shadow">
+            <span className="text-white font-bold text-sm">?</span>
+          </span>
+          <span className="text-sm font-semibold text-white group-hover:text-red-400 transition-colors truncate">
+            {question}
+          </span>
+        </div>
+        <ChevronDown 
+          className={`w-5 h-5 text-gray-400 flex-shrink-0 transition-all duration-300 ${isOpen ? 'rotate-180 text-red-400' : ''}`} 
+        />
+      </button>
+      
+      <div
+        className="overflow-hidden transition-all duration-300 ease-in-out"
+        style={{ maxHeight: isOpen ? '500px' : '0px', opacity: isOpen ? 1 : 0 }}
+      >
+        <div className="px-5 pb-5 pl-[4.5rem]">
+          <div className="w-8 h-px bg-gradient-to-r from-red-500/50 to-transparent mb-3"></div>
+          <p className="text-sm text-gray-300 leading-relaxed">
+            {answer}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export async function getServerSideProps(context) {
