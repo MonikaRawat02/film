@@ -1,9 +1,9 @@
-import { Rocket, Calculator, TrendingUp, Video, CheckSquare, BarChart3 } from "lucide-react";
+import { Rocket, Calculator, TrendingUp, Video, SquareCheck, BarChart } from "lucide-react";
 
 export default function InnovationRoadmap() {
   const items = [
     {
-      icon: <BarChart3 className="w-6 h-6 text-white" />,
+      icon: <BarChart className="w-6 h-6 text-white" />,
       iconBg: "from-purple-600 to-pink-600",
       title: "Movie Success Score",
       desc: "AI-powered prediction model analyzing cast, director, budget, genre & release timing",
@@ -24,7 +24,7 @@ export default function InnovationRoadmap() {
       eta: "Q4 2026",
     },
     {
-      icon: <CheckSquare className="w-6 h-6 text-white" />,
+      icon: <SquareCheck className="w-6 h-6 text-white" />,
       iconBg: "from-orange-600 to-amber-600",
       title: "Audience Verdict Polls",
       desc: "Community-driven ratings, predictions & real-time audience sentiment analysis",
@@ -70,12 +70,8 @@ export default function InnovationRoadmap() {
               className="group relative rounded-2xl border border-gray-800 bg-[#0b0b10] p-6 transition-all duration-300 hover:border-amber-600/40 hover:-translate-y-1"
             >
               <div className="flex items-start justify-between mb-5">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br grid place-items-center text-white"
-                     style={{ backgroundImage: `linear-gradient(to bottom right, var(--tw-gradient-from), var(--tw-gradient-to))` }}
-                >
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${it.iconBg} grid place-items-center`}>
-                    {it.icon}
-                  </div>
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${it.iconBg} grid place-items-center text-white`}>
+                  {it.icon}
                 </div>
                 <span className="inline-flex px-3 py-1 rounded-full text-xs font-semibold text-amber-300 bg-amber-500/10 border border-amber-600/30">
                   Planned

@@ -1,17 +1,79 @@
 "use client";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronDown, Loader2 } from "lucide-react";
 
 export default function FAQSection({ celebrity }) {
   if (!celebrity) return null;
   const name = celebrity.heroSection?.name || "Unknown";
-  const [expandedIndex, setExpandedIndex] = useState(0);
+  const slug = celebrity.heroSection?.slug;
 
-  const faqsData = celebrity.faqs || [];
-  const faqs = faqsData.map(item => ({
-    question: item.question,
-    answer: item.answer
-  }));
+  const [expandedIndex, setExpandedIndex] = useState(0);
+  const [faqs, setFaqs] = useState([]);
+  const [loadingFAQs, setLoadingFAQs] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!slug) return;
+
+    async function loadFAQs() {
+      try {
+        setLoadingFAQs(true);
+        setError(null);
+        const res = await fetch("/api/celebrity/generate-faq", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ slug }),
+        });
+
+        if (res.ok) {
+          const result = await res.json();
+          setFaqs(result.data || []);
+        } else {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Failed to fetch celebrity FAQs");
+        }
+      } catch (err) {
+        console.error("Celebrity FAQ fetch error:", err);
+        setError(err.message);
+        // Fallback to celebrity.faqs if API fails
+        if (celebrity.faqs && celebrity.faqs.length > 0) {
+          setFaqs(celebrity.faqs.map(item => ({
+            question: item.question,
+            answer: item.answer
+          })));
+        }
+      } finally {
+        setLoadingFAQs(false);
+      }
+    }
+
+    loadFAQs();
+  }, [slug, celebrity.faqs]);
+
+  if (loadingFAQs) {
+    return (
+      <section className="bg-[#0a0c14] py-16 sm:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 text-center">
+          <Loader2 className="w-10 h-10 text-blue-500 animate-spin mx-auto mb-4" />
+          <p className="text-slate-400">Generating FAQs...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) {
+    return (
+      <section className="bg-[#0a0c14] py-16 sm:py-24">
+        <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-red-500">Error loading FAQs: {error}</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!faqs.length) {
+    return null; // Don't render section if no FAQs are available
+  }
 
   return (
     <section className="bg-[#0a0c14] py-16 sm:py-24">

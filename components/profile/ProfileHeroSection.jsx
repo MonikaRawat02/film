@@ -12,9 +12,9 @@ export default function ProfileHeroSection({ celebrity }) {
     netWorth: celebrity.netWorth?.netWorthUSD?.display || celebrity.netWorth?.netWorthINR?.display || "N/A",
     profession: Array.isArray(celebrity.heroSection?.profession) 
       ? celebrity.heroSection.profession.join(", ") 
-      : celebrity.heroSection?.profession || "N/A",
-    primaryIncome: celebrity.netWorthCalculation?.incomeSources?.[0]?.sourceName || "N/A",
-    activeSince: celebrity.quickFacts?.activeSince || "N/A",
+      : (celebrity.quickFacts?.profession?.join(", ") || celebrity.heroSection?.profession || "N/A"),
+    primaryIncome: celebrity.quickFacts?.primaryIncome || celebrity.netWorthCalculation?.incomeSources?.[0]?.sourceName || "N/A",
+    activeSince: celebrity.quickFacts?.activeSince || celebrity.heroSection?.activeSince || "N/A",
     verified: true,
   };
 

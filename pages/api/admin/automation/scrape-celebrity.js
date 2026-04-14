@@ -2,7 +2,6 @@ import dbConnect from "../../../../lib/mongodb";
 import Celebrity from "../../../../model/celebrity";
 import { getCelebrityUrlsByIndustry, scrapeWikipediaCelebrity } from "../../../../lib/scrapers/wikipedia";
 import { slugify } from "../../../../lib/slugify";
-import { generateCelebrityData } from "../../../../lib/ai-generator";
 
 export default async function handler(req, res) {
   // Security check for production
@@ -20,30 +19,8 @@ export default async function handler(req, res) {
   try {
     await dbConnect();
 
-    // --- Daily Limit Check ---
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const countToday = await Celebrity.countDocuments({
-      createdAt: { $gte: today },
-      isAutomated: true
-    });
-
-    const DAILY_LIMIT = 20;
-    if (countToday >= DAILY_LIMIT) {
-      return res.status(200).json({
-        success: true,
-        message: `Daily limit of ${DAILY_LIMIT} celebrities reached. Skipping for today.`,
-        synced: 0
-      });
-    }
-
-    const remainingQuota = DAILY_LIMIT - countToday;
-    const MAX_PER_RUN = Math.min(remainingQuota, 20);
-    // --- End Daily Limit Check ---
-
     const celebUrls = await getCelebrityUrlsByIndustry(industry);
     console.log(`Found ${celebUrls.length} celebrity URLs for ${industry}`);
-    
     const results = {
       totalFound: celebUrls.length,
       synced: 0,
@@ -51,7 +28,9 @@ export default async function handler(req, res) {
       celebrities: []
     };
 
+    // Limit the number of new celebrities to scrape per request
     let syncedInIndustry = 0;
+    const MAX_PER_RUN = 20; // Increased from 5 to 20 for more coverage per run
 
     for (const celebInfo of celebUrls) {
       if (syncedInIndustry >= MAX_PER_RUN) break;
@@ -68,29 +47,12 @@ export default async function handler(req, res) {
           continue;
         }
 
-        // --- New AI Intelligence Enhancement ---
-        console.log(`🤖 Generating intelligence data for ${celebInfo.name}...`);
-        const aiData = await generateCelebrityData(celebInfo.name, industry);
-        
-        let finalData = scrapedData;
-        if (aiData) {
-          finalData = {
-            ...scrapedData,
-            ...aiData,
-            heroSection: {
-              ...scrapedData.heroSection,
-              ...aiData.heroSection
-            }
-          };
-        }
-        // --- End AI Intelligence Enhancement ---
-
-        const finalSlug = finalData.heroSection.slug;
+        const finalSlug = scrapedData.heroSection.slug;
         
         // Update if exists, otherwise create
         await Celebrity.findOneAndUpdate(
           { "heroSection.slug": finalSlug },
-          { $set: finalData },
+          { $set: scrapedData },
           { upsert: true, returnDocument: 'after' }
         );
 

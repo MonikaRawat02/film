@@ -3,7 +3,7 @@
  import Link from "next/link";
  import { Flame, Menu, X } from "lucide-react";
  
- const SiteHeader =() =>{
+ const SiteHeader = () => {
    const [openMobile, setOpenMobile] = useState(false);
  
    const nav = [
@@ -17,8 +17,8 @@
   const scrollToSection = (e, href) => {
     if (href.startsWith('/#')) {
       const sectionId = href.split('#')[1];
-                  const element = document.getElementById(sectionId);
-        if (element) {
+      const element = document.getElementById(sectionId);
+      if (element) {
           e.preventDefault();
           setOpenMobile(false);
           const headerOffset = 80;

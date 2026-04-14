@@ -38,15 +38,8 @@ industry: String,
 
   slug: {
     type: String,
-    unique: true,
-    required: true
+    unique: true
   },
-
-  tmdbId: Number,
-  biography: String,
-  birthday: String,
-  placeOfBirth: String,
-  isAutomated: { type: Boolean, default: false },
 
   filmsCount: {
     type: Number

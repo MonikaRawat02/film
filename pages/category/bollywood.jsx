@@ -40,6 +40,31 @@ export async function getServerSideProps(context) {
 
 export default function BollywoodPage({ initialArticles }) {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [articles, setArticles] = useState(initialArticles);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/articles/list?category=Bollywood&limit=20");
+        const data = await res.json();
+        if (data.data) {
+          setArticles(data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  const filteredArticles = activeFilter === "All" 
+    ? articles 
+    : articles.filter(article => article.category === activeFilter);
 
   return (
     <>
@@ -51,7 +76,7 @@ export default function BollywoodPage({ initialArticles }) {
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
         <BollywoodHeroSection />
         <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-        <BollywoodArticlesGrid initialArticles={initialArticles} activeFilter={activeFilter} />
+        <BollywoodArticlesGrid articles={filteredArticles} loading={loading} />
         <BollywoodMovieIntelligence />
         <BollywoodBoxOfficeDashboard />
         <CelebrityIntelligenceHub industry="Bollywood" />

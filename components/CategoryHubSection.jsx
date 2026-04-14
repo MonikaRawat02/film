@@ -91,17 +91,17 @@ export default function CategoryHubSection() {
       iconBg: "from-amber-600 via-orange-600 to-red-600",
       border: "from-amber-500 via-orange-500 to-red-600",
       textGrad: "from-amber-400 to-red-500",
-      category: "box-office",
+      category: "boxoffice",
     },
     {
       title: "Celebrities",
       subtitle: "Verified star profiles",
       count: `${counts.Celebrities.toLocaleString()}+ Profiles`,
       icon: Users,
-      iconBg: "from-purple-600 via-indigo-600 to-blue-600",
-      border: "from-purple-500 via-indigo-500 to-blue-500",
-      textGrad: "from-purple-400 to-blue-500",
-      category: "celebrity",
+      iconBg: "from-fuchsia-600 via-violet-600 to-purple-600",
+      border: "from-fuchsia-600 via-violet-600 to-purple-600",
+      textGrad: "from-fuchsia-400 to-purple-500",
+      category: "celebrities",
       preview: celebrityPreview.slice(0, 3).map(c => ({
         name: c.heroSection?.name,
         image: c.heroSection?.profileImage,
@@ -111,7 +111,7 @@ export default function CategoryHubSection() {
   ];
 
   return (
-    <section id="categories" className="relative py-16">
+    <section id="categories" className="relative py-28">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#050505] via-gray-950/20 to-transparent" />
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
         <div className="text-center space-y-4 mb-12">

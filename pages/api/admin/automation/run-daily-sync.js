@@ -15,12 +15,12 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { limit = 10, forceRefresh = false } = req.body; // Set default limit to 10
+  const { limit = 20 } = req.body; // Increased default from 10 to 20 per sync run
 
   try {
     await dbConnect();
     const currentYear = new Date().getFullYear();
-    const categories = req.body.categories || ["Hollywood", "Bollywood"];
+    const categories = ["Hollywood", "Bollywood"];
     const results = {
       totalSynced: 0,
       totalFailed: 0,
@@ -30,11 +30,7 @@ export default async function handler(req, res) {
     const MAX_PER_CATEGORY = Math.ceil(limit / categories.length);
 
     for (const category of categories) {
-      // Map WebSeries and BoxOffice to appropriate source categories if needed
-      const sourceCategory = (category === "WebSeries" || category === "OTT") ? "WebSeries" : 
-                            (category === "BoxOffice") ? "Bollywood" : category;
-      
-      const movieUrls = await getMoviesByYear(currentYear, sourceCategory);
+      const movieUrls = await getMoviesByYear(currentYear, category);
       let syncedInCategory = 0;
 
       // Scan the entire list until we find MAX_PER_CATEGORY new movies
@@ -44,19 +40,8 @@ export default async function handler(req, res) {
         try {
           const movieSlug = slugify(movieInfo.title);
           const existing = await Article.findOne({ slug: movieSlug });
-          
-          // If not forcing refresh and movie exists, skip
-          if (existing && !forceRefresh) {
+          if (existing) {
             continue; 
-          }
-
-          // If movie exists but we are refreshing, check age (Requirement: 24h)
-          if (existing && forceRefresh) {
-            const lastUpdated = new Date(existing.updatedAt || existing.createdAt);
-            const hoursSinceUpdate = (new Date() - lastUpdated) / (1000 * 60 * 60);
-            if (hoursSinceUpdate < 24) {
-              continue; // Skip if updated in the last 24 hours
-            }
           }
 
           console.log(`🔍 Scraping new movie: ${movieInfo.title}...`);
@@ -86,15 +71,15 @@ export default async function handler(req, res) {
             status: "draft",
             tags: [category, scrapedData.releaseYear?.toString(), ...scrapedData.genres].filter(Boolean),
             
-            // Initialize pSEO Content fields as empty arrays
-            pSEO_Content_overview: [],
-            pSEO_Content_ending_explained: [],
-            pSEO_Content_box_office: [],
-            pSEO_Content_budget: [],
-            pSEO_Content_ott_release: [],
-            pSEO_Content_cast: [],
-            pSEO_Content_review_analysis: [],
-            pSEO_Content_hit_or_flop: [],
+            // Map pSEO Content fields from scraper
+            pSEO_Content_overview: scrapedData.pSEO_Content_overview || [],
+            pSEO_Content_ending_explained: scrapedData.pSEO_Content_ending_explained || [],
+            pSEO_Content_box_office: scrapedData.pSEO_Content_box_office || [],
+            pSEO_Content_budget: scrapedData.pSEO_Content_budget || [],
+            pSEO_Content_ott_release: scrapedData.pSEO_Content_ott_release || [],
+            pSEO_Content_cast: scrapedData.pSEO_Content_cast || [],
+            pSEO_Content_review_analysis: scrapedData.pSEO_Content_review_analysis || [],
+            pSEO_Content_hit_or_flop: scrapedData.pSEO_Content_hit_or_flop || [],
 
             meta: {
               title: `${scrapedData.title} (${scrapedData.releaseYear}) - Box Office, Cast & Review`,
@@ -106,9 +91,31 @@ export default async function handler(req, res) {
           const newArticle = await Article.findOneAndUpdate(
             { slug: finalSlug },
             { $set: articleData },
-            { upsert: true, returnDocument: 'after' }
+            { upsert: true, new: true }
           );
           console.log(`✅ Saved/Updated article: ${newArticle.title} (${newArticle._id})`);
+
+          // Trigger enrichment and sub-page generation
+          (async () => {
+            try {
+              const baseUrl = `${req.headers["x-forwarded-proto"] || "http"}://${req.headers.host}`;
+              const headers = { 'x-cron-secret': cronSecret };
+              
+              // First, enrich the data with TMDB
+              await axios.post(`${baseUrl}/api/admin/automation/enrich-movie-data`, {
+                slug: finalSlug
+              }, { headers });
+
+              // Then, generate all sub-pages
+              await axios.post(`${baseUrl}/api/admin/automation/generate-sub-pages`, {
+                slug: finalSlug
+              }, { headers });
+
+              console.log(`✅ Triggered all post-processing for ${finalSlug}`);
+            } catch (postProcessErr) {
+              console.error(`❌ Post-processing trigger failed for ${finalSlug}:`, postProcessErr.message);
+            }
+          })();
 
           syncedInCategory++;
         } catch (err) {
@@ -119,56 +126,9 @@ export default async function handler(req, res) {
       results.details.push(`${category}: ${syncedInCategory} new movies synced.`);
     }
 
-    // After all movies are synced, trigger a background process to enrich and generate content
-    (async () => {
-      try {
-        const baseUrl = `${req.headers["x-forwarded-proto"] || "http"}://${req.headers.host}`;
-        const headers = { 'x-cron-secret': cronSecret };
-        
-        // Find movies that were just added or are missing enrichment
-        const pendingMovies = await Article.find({
-          contentType: "movie",
-          isAIContent: { $ne: true } // Key indicator that AI content hasn't been generated
-        }).limit(limit); // Limit to the same number of movies we synced
-
-        console.log(`🤖 Starting background enrichment for ${pendingMovies.length} movies...`);
-
-        for (const movie of pendingMovies) {
-          try {
-            // 1. First, enrich the data with TMDB
-            await axios.post(`${baseUrl}/api/admin/automation/enrich-movie-data`, {
-              slug: movie.slug
-            }, { headers });
-
-            // 2. Then, generate all sub-pages
-            await axios.post(`${baseUrl}/api/admin/automation/generate-sub-pages`, {
-              slug: movie.slug
-            }, { headers });
-
-            // 3. IF content generation fails or is incomplete, delete the movie to keep database clean
-            const updatedMovie = await Article.findOne({ _id: movie._id });
-            const hasAIContent = updatedMovie.isAIContent === true;
-            
-            if (!hasAIContent) {
-              console.warn(`🗑️ Deleting ${movie.slug} because AI content generation failed.`);
-              await Article.deleteOne({ _id: movie._id });
-            } else {
-              console.log(`✅ Successfully processed and KEPT ${movie.slug}`);
-            }
-          } catch (err) {
-            console.error(`❌ Background processing failed for ${movie.slug}:`, err.message);
-            // On failure, delete to maintain "only keep generated content" rule
-            await Article.deleteOne({ _id: movie._id });
-          }
-        }
-      } catch (bgErr) {
-        console.error(`❌ Background task orchestrator failed:`, bgErr.message);
-      }
-    })();
-
     return res.status(200).json({
       success: true,
-      message: `Daily sync completed. Total new movies synced: ${results.totalSynced}. Background enrichment triggered.`,
+      message: `Daily sync completed. Total new movies: ${results.totalSynced}`,
       data: results.details
     });
 

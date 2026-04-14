@@ -6,53 +6,45 @@ import { generateContent } from "../../../lib/openai-helper";
 
 async function extractCelebrityDetailsWithAI(celebrity) {
   const name = celebrity.heroSection?.name || "Unknown";
-  const biography = celebrity.heroSection?.biography || "";
   const existingIndustry = celebrity.heroSection?.industry || "Bollywood";
 
-  const prompt = `Analyze the following Wikipedia biography for ${name} and extract structured data.
+  const prompt = `Provide detailed and accurate information about the celebrity "${name}" (${existingIndustry} industry) based on your extensive knowledge base. Do not rely solely on their Wikipedia biography; provide the most accurate, up-to-date, and commonly accepted public data.
 
-**Celebrity Name:** ${name}
-**Current Industry:** ${existingIndustry}
+Please provide the following specific information:
+1. **Net Worth**: Estimated net worth in USD and INR for 2026.
+2. **Primary Income**: Their main source of income (e.g., Acting, Brand Endorsements, Production).
+3. **Age**: Current age.
+4. **Height**: Physical height in feet/inches and cm.
+5. **Industry**: The primary entertainment industry they work in (e.g., Bollywood, Hollywood).
+6. **Nationality**: Country of citizenship.
+7. **Birth Date**: Exact date of birth (YYYY-MM-DD).
+8. **Profession**: List of their professions.
+9. **FAQs**: Provide 3-5 Frequently Asked Questions with detailed answers about their life, career, or wealth.
 
-**Wikipedia Biography:**
-${biography.slice(0, 8000)}
-
-Extract the following information accurately:
-1. **Net Worth**: Look for any mention of net worth, wealth, earnings, fortune (in USD or INR)
-2. **Age**: Current age or birth date
-3. **Height**: Physical height
-4. **Birth Date**: Exact date of birth
-5. **Nationality**: Country of citizenship
-6. **Industry**: Based on their work
-7. **Profession**: All their professions
-8. **Active Since**: Year they started their career
-9. **Spouse**: Marriage information
-10. **Children**: Number and names of children
-11. **Awards**: Major awards won
-12. **Notable Works**: Famous movies/shows
-
-Respond ONLY with a valid JSON object in this exact format:
+Respond ONLY with a valid JSON object in this exact format (replace values with real data):
 {
   "netWorth": {
-    "minUSD": 5,
-    "maxUSD": 11,
-    "displayUSD": "$5-11M",
-    "minINR": 474,
-    "maxINR": 1043,
-    "displayINR": "₹474-1043 Cr",
-    "source": "Quote from biography mentioning net worth"
+    "minUSD": 10,
+    "maxUSD": 20,
+    "displayUSD": "$10-20M",
+    "minINR": 800,
+    "maxINR": 1600,
+    "displayINR": "₹800-1600 Cr",
+    "source": "String explaining the source"
   },
-  "age": 61,
-  "birthDate": "1965-11-02",
-  "height": "5'8\" (173 cm)",
-  "nationality": "Indian",
-  "industry": "Bollywood",
-  "profession": ["Actor", "Film Producer", "Television Presenter"],
-  "activeSince": 1988,
-  "spouse": "Gauri Khan (m. 1991)",
-  "children": "3 (Aryan, Suhana, AbRam)",
-  "awards": ["Filmfare Awards", "National Film Award", "Padma Shri"],
-  "notableWorks": ["Deewana", "Darr", "DDLJ", "Pathaan", "Jawan"]
+  "primaryIncome": "String",
+  "age": 45,
+  "birthDate": "YYYY-MM-DD",
+  "height": "String",
+  "nationality": "String",
+  "industry": "String",
+  "profession": ["String"],
+  "faqs": [
+    {
+      "question": "String",
+      "answer": "String"
+    }
+  ]
 }
 
 If any field is not found, set it to null. Return ONLY the JSON object.`;
@@ -72,12 +64,14 @@ If any field is not found, set it to null. Return ONLY the JSON object.`;
   // Validate and clean data
   const cleaned = {
     netWorth: parsed.netWorth || null,
+    primaryIncome: parsed.primaryIncome || null,
     age: parsed.age || null,
     birthDate: parsed.birthDate ? new Date(parsed.birthDate) : null,
     height: parsed.height || "N/A",
     nationality: parsed.nationality || "N/A",
     industry: parsed.industry || existingIndustry,
     profession: Array.isArray(parsed.profession) ? parsed.profession : [],
+    faqs: Array.isArray(parsed.faqs) ? parsed.faqs : [],
     activeSince: parsed.activeSince || null,
     spouse: parsed.spouse || null,
     children: parsed.children || null,
@@ -155,6 +149,11 @@ export default async function handler(req, res) {
           "quickFacts.activeSince": extractedData.activeSince || celebrity.quickFacts.activeSince,
           "quickFacts.spouse": extractedData.spouse || celebrity.quickFacts.spouse,
           "quickFacts.children": extractedData.children || celebrity.quickFacts.children,
+          "quickFacts.primaryIncome": extractedData.primaryIncome || celebrity.quickFacts.primaryIncome,
+          // Update FAQs if generated
+          ...(extractedData.faqs.length > 0 && {
+            faqs: extractedData.faqs
+          }),
           // Update netWorth if found
           ...(extractedData.netWorth && {
             "netWorth.netWorthUSD": {

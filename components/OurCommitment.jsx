@@ -1,4 +1,4 @@
-import { XCircle, CheckCircle2, Shield } from "lucide-react";
+import { CircleX, CircleCheck, Shield } from "lucide-react";
 import { Playfair_Display } from "next/font/google";
 
 const playfair = Playfair_Display({
@@ -10,24 +10,19 @@ const playfair = Playfair_Display({
 export default function OurCommitment() {
   const items = [
     {
-      title: "No Breaking News",
+      title: "No Gossip, No Clickbait",
       type: "negative",
-      icon: <XCircle className="h-8 w-8" />,
+      icon: <CircleX className="h-8 w-8" />,
     },
     {
-      title: "No Gossip",
-      type: "negative",
-      icon: <XCircle className="h-8 w-8" />,
-    },
-    {
-      title: "No Piracy",
-      type: "negative",
-      icon: <XCircle className="h-8 w-8" />,
-    },
-    {
-      title: "Only Explained, Verified & Evergreen Content",
+      title: "Verified Intelligence",
       type: "positive",
-      icon: <CheckCircle2 className="h-8 w-8" />,
+      icon: <CircleCheck className="h-8 w-8" />,
+    },
+    {
+      title: "Transparency First",
+      type: "positive",
+      icon: <Shield className="h-8 w-8" />,
     },
   ];
 
@@ -70,9 +65,9 @@ export default function OurCommitment() {
                 } rounded-2xl flex items-center justify-center mx-auto mb-6`}
               >
                 {it.type === "positive" ? (
-                  <CheckCircle2 className="w-9 h-9 text-green-500" />
+                  <CircleCheck className="w-9 h-9 text-green-500" />
                 ) : (
-                  <XCircle className="w-9 h-9 text-red-500" />
+                  <CircleX className="w-9 h-9 text-red-500" />
                 )}
               </div>
               <p className="text-white text-xl font-bold leading-relaxed">

@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ 
         success: false, 
         message: `AI generation failed: ${aiErr.message}`,
-        error: aiErr.message?.includes('429') ? "AI Quota Exceeded. Please check your provider limits." : aiErr.message
+        error: aiErr.status === 429 ? "OpenAI Quota Exceeded. Please check your billing." : aiErr.message
       });
     }
 

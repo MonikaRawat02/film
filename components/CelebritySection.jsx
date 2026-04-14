@@ -75,13 +75,14 @@ export default function CelebritySection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {(loading ? new Array(4).fill(null) : items).map((item, i) => {
-            const name = item?.name || "";
+            // Support both direct properties and nested heroSection properties
+            const name = item?.heroSection?.name || item?.name || "";
             const netWorth = item?.netWorth || "";
             const films = item?.filmsCount ?? null;
             const awards = item?.awardsCount ?? null;
             const trend = item?.trendingPercentage ?? null;
-            const slug = item?.slug || "";
-            const image = item?.profileImage || "";
+            const slug = item?.heroSection?.slug || item?.slug || "";
+            const image = item?.heroSection?.profileImage || item?.profileImage || "";
             
             return (
               <div
