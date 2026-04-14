@@ -1,7 +1,7 @@
 import dbConnect from "../../../../lib/mongodb";
 import Celebrity from "../../../../model/celebrity";
 import { getCelebrityUrlsByIndustry, scrapeWikipediaCelebrity } from "../../../../lib/scrapers/wikipedia";
-import { slugify } from "../../../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 
 export default async function handler(req, res) {
   // Security check for production

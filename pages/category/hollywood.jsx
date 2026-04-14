@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import HollywoodHeroSection from "../../components/category/hollywood/HollywoodHeroSection";
 import HollywoodArticlesGrid from "../../components/category/hollywood/HollywoodArticlesGrid";
-import HollywoodDatabaseSection from "../../components/category/hollywood/HollywoodDatabaseSection";
-import HollywoodCelebritySection from "../../components/category/hollywood/HollywoodCelebritySection";
-import HollywoodOTTSection from "../../components/category/hollywood/HollywoodOTTSection";
-import HollywoodBoxOfficeSection from "../../components/category/hollywood/HollywoodBoxOfficeSection";
-import HollywoodThemesSection from "../../components/category/hollywood/HollywoodThemesSection";
-import HollywoodIndustryAnalysis from "../../components/category/hollywood/HollywoodIndustryAnalysis";
+// import HollywoodDatabaseSection from "../../components/category/hollywood/HollywoodDatabaseSection";
+// import HollywoodCelebritySection from "../../components/category/hollywood/HollywoodCelebritySection";
+// import HollywoodOTTSection from "../../components/category/hollywood/HollywoodOTTSection";
+// import HollywoodBoxOfficeSection from "../../components/category/hollywood/HollywoodBoxOfficeSection";
+// import HollywoodThemesSection from "../../components/category/hollywood/HollywoodThemesSection";
+// import HollywoodIndustryAnalysis from "../../components/category/hollywood/HollywoodIndustryAnalysis";
 
 export async function getServerSideProps(context) {
   const protocol = context.req.headers["x-forwarded-proto"] || "http";
@@ -72,12 +72,12 @@ export default function HollywoodPage({ initialArticles = [] }) {
       <div className="min-h-screen bg-[#0B0F1A] text-zinc-100">
         <HollywoodHeroSection />
         <HollywoodArticlesGrid articles={articles} loading={loading} />
-        <HollywoodDatabaseSection />
-        <HollywoodCelebritySection />
-        <HollywoodOTTSection />
-        <HollywoodBoxOfficeSection />
-        <HollywoodThemesSection />
-        <HollywoodIndustryAnalysis />
+        {/* <HollywoodDatabaseSection /> */}
+        {/* <HollywoodCelebritySection /> */}
+        {/* <HollywoodOTTSection /> */}
+        {/* <HollywoodBoxOfficeSection /> */}
+        {/* <HollywoodThemesSection /> */}
+        {/* <HollywoodIndustryAnalysis /> */}
       </div>
     </>
   );

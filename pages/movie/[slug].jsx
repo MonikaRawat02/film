@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { slugify } from "../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 import { motion } from "framer-motion";
 import { 
   FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft, 
@@ -264,6 +264,17 @@ export default function MovieDetailPage({ article, pageType, slug }) {
     );
   }
 
+  // Map category slug to actual page URL
+  const categoryUrlMap = {
+    'boxoffice': '/category/box-office',
+    'bollywood': '/category/bollywood',
+    'hollywood': '/category/hollywood',
+    'webseries': '/category/webseries',
+    'ott': '/category/ott',
+    'celebrity': '/category/celebrity'
+  };
+  const categoryPageUrl = categoryUrlMap[article.category?.toLowerCase()] || `/category/${article.category?.toLowerCase() || 'bollywood'}`;
+
   const Icon = categoryIcons[article.category] || FileText;
   const [scrollProgress, setProgress] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
@@ -405,7 +416,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
         }`}>
           <div className="max-w-7xl mx-auto px-4 md:px-6 flex items-center justify-between gap-2">
             <Link 
-              href={`/category/${article.category.toLowerCase()}`}
+              href={categoryPageUrl}
               className="flex items-center gap-2 text-gray-300 hover:text-white transition-all text-xs md:text-sm font-medium flex-shrink-0"
             >
               <ArrowLeft className="w-3.5 h-3.5 md:w-4 md:h-4" />
@@ -446,7 +457,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
 
           {/* Back Button - Top Left */}
           <Link 
-            href={`/category/${article.category.toLowerCase()}`}
+            href={categoryPageUrl}
             className="absolute top-8 left-8 z-20 flex items-center gap-2 text-gray-200 hover:text-white transition-all text-sm font-medium group bg-black/40 hover:bg-black/60 px-3 py-2 rounded-lg border border-gray-500/30 backdrop-blur-sm"
           >
             <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
@@ -994,8 +1005,17 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       
                       // Category tags → go to category page
                       if (["bollywood", "hollywood", "ott", "webseries", "boxoffice", "celebrities"].includes(tagLower)) {
+                        const categoryUrlMap = {
+                          'boxoffice': '/category/box-office',
+                          'bollywood': '/category/bollywood',
+                          'hollywood': '/category/hollywood',
+                          'webseries': '/category/webseries',
+                          'ott': '/category/ott',
+                          'celebrities': '/category/celebrity'
+                        };
+                        const targetUrl = categoryUrlMap[tagLower] || `/category/${tagLower}`;
                         return (
-                          <Link key={idx} href={`/category/${tagLower}`} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-red-600/20 to-pink-600/20 border border-red-500/30 text-xs text-red-400 hover:text-white hover:border-red-500/50 transition-all">
+                          <Link key={idx} href={targetUrl} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-red-600/20 to-pink-600/20 border border-red-500/30 text-xs text-red-400 hover:text-white hover:border-red-500/50 transition-all">
                             #{tag}
                           </Link>
                         );
@@ -1813,7 +1833,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       {article.genres?.map((genre, idx) => (
                         <Link 
                           key={idx} 
-                          href={`/category/${article.category.toLowerCase()}`}
+                          href={categoryPageUrl}
                           className="px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-xs text-gray-400 hover:text-white hover:border-red-500/50 transition-all"
                         >
                           {genre}

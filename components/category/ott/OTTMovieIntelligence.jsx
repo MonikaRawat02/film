@@ -14,7 +14,7 @@ import {
   Zap
 } from "lucide-react";
 import Link from "next/link";
-import { slugify } from "../../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 
 export default function OTTMovieIntelligence() {
   const [movies, setMovies] = useState([]);

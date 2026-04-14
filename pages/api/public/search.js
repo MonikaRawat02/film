@@ -95,7 +95,16 @@ export default async function handler(req, res) {
         href: `/celebrity/${c.heroSection.slug}/profile`
       })),
       ...articles.map(a => {
-        let href = `/category/${a.category?.toLowerCase() || "bollywood"}/${a.slug}`;
+        const categoryUrlMap = {
+          'boxoffice': 'box-office',
+          'bollywood': 'bollywood',
+          'hollywood': 'hollywood',
+          'webseries': 'webseries',
+          'ott': 'ott',
+          'celebrity': 'celebrity'
+        };
+        const categorySlug = categoryUrlMap[a.category?.toLowerCase()] || a.category?.toLowerCase() || "bollywood";
+        let href = `/category/${categorySlug}/${a.slug}`;
         
         // Custom redirection logic based on requirements
         if (a.category === "Bollywood" || a.category === "Hollywood") {

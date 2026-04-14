@@ -1,6 +1,6 @@
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
-import { slugify } from "../../../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 
 /**
  * GET /api/ott/[platform]/movies

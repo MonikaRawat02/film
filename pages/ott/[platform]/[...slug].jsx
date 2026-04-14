@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { slugify } from "../../../lib/slugify";
+import { slugify } from "@/lib/slugify";
 import {
   FileText, Clock, User, ChevronRight, Share2, ThumbsUp, Eye, ArrowLeft,
   Clapperboard, Film, Tv, PlaySquare, TrendingUp,
@@ -871,7 +871,16 @@ export default function OTTMovieDetailPage({
                     {article.tags.map((tag, idx) => {
                       const tagLower = tag.toLowerCase();
                       if (["bollywood", "hollywood", "ott", "webseries", "boxoffice", "celebrities"].includes(tagLower)) {
-                        return <Link key={idx} href={`/category/${tagLower}`} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-red-600/20 to-pink-600/20 border border-red-500/30 text-xs text-red-400 hover:text-white hover:border-red-500/50 transition-all">#{tag}</Link>;
+                        const categoryUrlMap = {
+                          'boxoffice': '/category/box-office',
+                          'bollywood': '/category/bollywood',
+                          'hollywood': '/category/hollywood',
+                          'webseries': '/category/webseries',
+                          'ott': '/category/ott',
+                          'celebrities': '/category/celebrity'
+                        };
+                        const targetUrl = categoryUrlMap[tagLower] || `/category/${tagLower}`;
+                        return <Link key={idx} href={targetUrl} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-red-600/20 to-pink-600/20 border border-red-500/30 text-xs text-red-400 hover:text-white hover:border-red-500/50 transition-all">#{tag}</Link>;
                       }
                       if (["netflix", "prime video", "prime", "disney+ hotstar", "hotstar", "jio cinema", "zee5", "sonyliv"].includes(tagLower)) {
                         return <Link key={idx} href={`/ott/${slugify(tag)}`} className="px-3 py-1.5 rounded-full bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 text-xs text-purple-400 hover:text-white transition-all">#{tag}</Link>;
