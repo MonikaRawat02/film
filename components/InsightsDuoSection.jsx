@@ -11,22 +11,58 @@ export default function InsightsDuoSection() {
     const fetchData = async () => {
       try {
         const [boRes, ottRes] = await Promise.all([
-          fetch("/api/admin/box-office"),
-          fetch("/api/admin/ott-intelligence")
+          fetch("/api/public/box-office?limit=3"),
+          fetch("/api/public/ott-intelligence?limit=3")
         ]);
+        
+        // Check if responses are ok
+        if (!boRes.ok || !ottRes.ok) {
+          console.warn("API returned non-ok status, using fallback data");
+          setBoxOfficeData(getFallbackBoxOffice());
+          setOttData(getFallbackOTT());
+          setLoading(false);
+          return;
+        }
+        
         const boJson = await boRes.json();
         const ottJson = await ottRes.json();
         
-        if (boJson.success) setBoxOfficeData(boJson.data.slice(0, 3));
-        if (ottJson.success) setOttData(ottJson.data.slice(0, 3));
+        // Use API data if available, otherwise use fallback
+        if (boJson.success && boJson.data && boJson.data.length > 0) {
+          setBoxOfficeData(boJson.data.slice(0, 3));
+        } else {
+          setBoxOfficeData(getFallbackBoxOffice());
+        }
+        
+        if (ottJson.success && ottJson.data && ottJson.data.length > 0) {
+          setOttData(ottJson.data.slice(0, 3));
+        } else {
+          setOttData(getFallbackOTT());
+        }
       } catch (error) {
         console.error("Error fetching homepage insights:", error);
+        // Use fallback data on error
+        setBoxOfficeData(getFallbackBoxOffice());
+        setOttData(getFallbackOTT());
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, []);
+
+  // Fallback data functions
+  const getFallbackBoxOffice = () => [
+    { _id: 1, movieName: "Sample Movie 1", budget: "₹200 Cr", collection: "₹500 Cr", roi: "+150%", verdict: "HIT", analysisLink: "/box-office" },
+    { _id: 2, movieName: "Sample Movie 2", budget: "₹150 Cr", collection: "₹300 Cr", roi: "+100%", verdict: "HIT", analysisLink: "/box-office" },
+    { _id: 3, movieName: "Sample Movie 3", budget: "₹100 Cr", collection: "₹80 Cr", roi: "-20%", verdict: "FLOP", analysisLink: "/box-office" }
+  ];
+
+  const getFallbackOTT = () => [
+    { _id: 1, platformName: "Netflix", averageDealValue: "$20M–$50M", marketShare: 35, statusLabel: "Most Active", detailsLink: "/ott" },
+    { _id: 2, platformName: "Amazon Prime", averageDealValue: "$15M–$40M", marketShare: 28, statusLabel: "Growing", detailsLink: "/ott" },
+    { _id: 3, platformName: "Disney+ Hotstar", averageDealValue: "$10M–$30M", marketShare: 20, statusLabel: "Most Active", detailsLink: "/ott" }
+  ];
 
   const statusClasses = (label = "") => {
     const L = String(label).toLowerCase();
