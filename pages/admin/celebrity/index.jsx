@@ -207,6 +207,7 @@ export default function CelebrityModule() {
   const [activeTab, setActiveTab] = useState(0);
   const [imagePreview, setImagePreview] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
+  const [backfilling, setBackfilling] = useState(false);
   
   // List management
   const [celebrities, setCelebrities] = useState([]);
@@ -497,6 +498,33 @@ export default function CelebrityModule() {
     } catch (e) {
       toast.error("Unexpected error occurred");
       setSubmitting(false);
+    }
+  };
+
+  const handleBackfill = async () => {
+    if (!confirm("Are you sure you want to backfill data for ALL celebrities? This action will update existing data.")) return;
+    setBackfilling(true);
+    try {
+      const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+      const res = await fetch("/api/admin/automation/backfill-celebrities", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token ? `Bearer ${token}` : ""
+        },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.message || "Failed to backfill celebrity data");
+        setBackfilling(false);
+        return;
+      }
+      toast.success(data.message || "Celebrity data backfilled successfully!");
+      setBackfilling(false);
+      fetchCelebrities(); // Refresh the list after backfill
+    } catch (e) {
+      toast.error("Unexpected error occurred during backfill");
+      setBackfilling(false);
     }
   };
 
@@ -1496,6 +1524,14 @@ export default function CelebrityModule() {
               <p className="text-sm text-gray-400 mt-1">Create and update celebrity profiles with detailed information</p>
             </div>
             <div className="flex items-center gap-3 relative" ref={createMenuRef}>
+              <button
+                onClick={handleBackfill}
+                disabled={backfilling}
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-2.5 text-white font-medium hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg shadow-blue-600/20"
+              >
+                {backfilling ? <Loader2 className="h-5 w-5 animate-spin" /> : <UploadCloud className="h-5 w-5" />}
+                <span>{backfilling ? "Backfilling..." : "Backfill All Data"}</span>
+              </button>
               <button
                 onClick={() => setShowCreateMenu(!showCreateMenu)}
                 className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-red-500 px-5 py-2.5 text-white font-medium hover:from-red-700 hover:to-red-600 transition-all shadow-lg shadow-red-600/20"

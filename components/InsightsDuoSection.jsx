@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BarChart3, TrendingUp, ExternalLink, Target } from "lucide-react";
+import { BarChart, TrendingUp, ExternalLink, Target } from "lucide-react";
 import Link from "next/link";
 
 export default function InsightsDuoSection() {
@@ -67,7 +67,7 @@ export default function InsightsDuoSection() {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="h-10 w-10 grid place-items-center rounded-xl border border-emerald-700/40 bg-emerald-600/10">
-                <BarChart3 className="w-6 h-6 text-green-500" />
+                <BarChart className="w-6 h-6 text-green-500" />
               </div>
               <div>
                 <h2 className="text-5xl font-serif font-bold text-white mb-1">Box Office Truth</h2>

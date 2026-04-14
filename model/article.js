@@ -47,7 +47,6 @@ const ArticleSchema = new mongoose.Schema(
 
     // Scraped Data
     genres: [String],
-    genreAnalysis: String,
     director: [String],
     producer: [String],
     writer: [String],
@@ -75,17 +74,6 @@ const ArticleSchema = new mongoose.Schema(
         job: String,
         department: String,
         profileImage: String,
-        slug: String,
-      }
-    ],
-    recommendations: [
-      {
-        tmdbId: Number,
-        title: String,
-        releaseYear: Number,
-        rating: String,
-        coverImage: String,
-        backdropImage: String,
         slug: String,
       }
     ],

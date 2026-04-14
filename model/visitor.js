@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const VisitorSchema = new mongoose.Schema(
   {
-    ip: { type: String, required: true, unique: true },
+    ip: { type: String, required: true },
     lastVisit: { type: Date, default: Date.now },
   },
   { timestamps: true }

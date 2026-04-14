@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { DollarSign, Calendar, Ruler, CalendarDays, MapPin, Briefcase } from "lucide-react";
+import { DollarSign, Calendar, Ruler, CalendarDays, MapPin, Briefcase, Wallet, Star } from "lucide-react";
 
 export default function QuickStatsSection({ celebrity }) {
   if (!celebrity) return null;
@@ -11,6 +11,12 @@ export default function QuickStatsSection({ celebrity }) {
       color: "#f59e0b", // Amber
       label: "Net Worth",
       value: celebrity.netWorth?.netWorthUSD?.display || celebrity.netWorth?.netWorthINR?.display || "N/A",
+    },
+    {
+      Icon: Wallet,
+      color: "#10b981", // Emerald
+      label: "Primary Income",
+      value: celebrity.quickFacts?.primaryIncome || "N/A",
     },
     {
       Icon: Calendar,
@@ -25,10 +31,10 @@ export default function QuickStatsSection({ celebrity }) {
       value: celebrity.heroSection?.height || "N/A",
     },
     {
-      Icon: CalendarDays,
-      color: "#10b981", // Green
-      label: "Birth Date",
-      value: celebrity.quickFacts?.birthDate ? new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A",
+      Icon: Briefcase,
+      color: "#ec4899", // Pink
+      label: "Industry",
+      value: celebrity.heroSection?.industry || "N/A",
     },
     {
       Icon: MapPin,
@@ -37,10 +43,16 @@ export default function QuickStatsSection({ celebrity }) {
       value: celebrity.heroSection?.nationality || "N/A",
     },
     {
-      Icon: Briefcase,
-      color: "#ec4899", // Pink
-      label: "Industry",
-      value: celebrity.heroSection?.industry || "N/A",
+      Icon: CalendarDays,
+      color: "#06b6d4", // Cyan
+      label: "Birthdate",
+      value: celebrity.quickFacts?.birthDate ? new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A",
+    },
+    {
+      Icon: Star,
+      color: "#ef4444", // Red
+      label: "Profession",
+      value: celebrity.heroSection?.profession?.join(", ") || "N/A",
     },
   ];
 
@@ -49,7 +61,7 @@ export default function QuickStatsSection({ celebrity }) {
   return (
     <section className="bg-[#0a0c14] py-10 sm:py-12">
       <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 sm:gap-4">
           {stats.map((stat, index) => (
             <div
               key={index}
