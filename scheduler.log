@@ -2441,3 +2441,24 @@
 [2026-04-15T06:30:00.033Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-04-15T06:30:01.552Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-04-15T06:30:41.334Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-15T06:31:30.848Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-15T06:31:30.849Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-15T06:31:30.873Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-15T06:31:30.873Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-15T06:31:30.884Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-15T06:31:30.889Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-04-15T06:31:35.912Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-15T06:31:35.913Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-15T06:31:35.913Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-15T06:32:19.975Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 20 new celebrities for Bollywood
+[2026-04-15T06:32:49.788Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 20 new celebrities for Hollywood
+[2026-04-15T06:33:33.653Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-04-15T07:00:00.029Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-15T07:00:04.327Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-15T07:30:00.029Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-15T07:30:00.030Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-15T07:30:04.307Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-15T07:31:55.842Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-04-15T08:00:00.016Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-15T08:00:04.118Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-15T08:11:06.882Z] [INFO] Received kill signal, shutting down gracefully...
