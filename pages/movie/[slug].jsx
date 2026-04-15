@@ -252,6 +252,7 @@ function FAQItem({ question, answer, index }) {
 
 export default function MovieDetailPage({ article, pageType, slug }) {
   const router = useRouter();
+  const [showFullAnalysis, setShowFullAnalysis] = useState(false);
 
   if (!article) {
     return (
@@ -587,52 +588,18 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     )}
 
                     {/* BOX OFFICE */}
-                    {pageType === "box-office" && (
+                    {pageType === "box-office" && article.pSEO_Content_box_office && article.pSEO_Content_box_office.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
-                        <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Box Office Collection</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                          {article.stats?.worldwide || article.boxOffice?.worldwide ? (
-                            <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
-                              <p className="text-[9px] text-gray-400 uppercase mb-1">Worldwide</p>
-                              <p className="text-base font-bold text-white">{article.stats?.worldwide || article.boxOffice?.worldwide}</p>
-                            </div>
-                          ) : null}
-                          {article.stats?.indiaNet ? (
-                            <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
-                              <p className="text-[9px] text-gray-400 uppercase mb-1">India Net</p>
-                              <p className="text-base font-bold text-white">{article.stats.indiaNet}</p>
-                            </div>
-                          ) : null}
-                          {article.stats?.overseas ? (
-                            <div className="p-3 rounded-lg bg-cyan-600/20 border border-cyan-500/30">
-                              <p className="text-[9px] text-gray-400 uppercase mb-1">Overseas</p>
-                              <p className="text-base font-bold text-white">{article.stats.overseas}</p>
-                            </div>
-                          ) : null}
-                          {article.stats?.openingDay ? (
-                            <div className="p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
-                              <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Day</p>
-                              <p className="text-base font-bold text-white">{article.stats.openingDay}</p>
-                            </div>
-                          ) : null}
-                          {article.stats?.openingWeekend ? (
-                            <div className="p-3 rounded-lg bg-pink-600/20 border border-pink-500/30">
-                              <p className="text-[9px] text-gray-400 uppercase mb-1">Opening Weekend</p>
-                              <p className="text-base font-bold text-white">{article.stats.openingWeekend}</p>
-                            </div>
-                          ) : null}
-                          {article.stats?.firstWeek ? (
-                            <div className="p-3 rounded-lg bg-orange-600/20 border border-orange-500/30">
-                              <p className="text-[9px] text-gray-400 uppercase mb-1">First Week</p>
-                              <p className="text-base font-bold text-white">{article.stats.firstWeek}</p>
-                            </div>
-                          ) : null}
-                        </div>
-                        {article.stats?.verdict && (
-                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/40">
-                            <span className="text-sm font-black text-red-300 uppercase">{article.stats.verdict}</span>
+                        <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Box Office Analysis</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                          {getCompleteSentence(article.pSEO_Content_box_office[0].content, 250)}
+                        </p>
+                        {article.pSEO_Content_box_office.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-green-600/10 border border-green-500/20">
+                            <p className="text-xs font-bold text-green-300 mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
-                        )}
+                        ))}
                       </div>
                     )}
 
@@ -643,8 +610,14 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {article.cast?.map((actor, idx) => (
                             <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-gray-800/60 border border-gray-700/60 backdrop-blur-sm">
-                              <div className="w-7 h-7 rounded-full bg-blue-600/30 flex items-center justify-center flex-shrink-0">
-                                <User className="w-3.5 h-3.5 text-blue-400" />
+                              <div className="w-7 h-7 rounded-full bg-blue-600/30 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                {actor.profileImage ? (
+                                  <img src={actor.profileImage} alt={actor.name} className="w-full h-full object-cover" />
+                                ) : actor.image ? (
+                                  <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  <User className="w-3.5 h-3.5 text-blue-400" />
+                                )}
                               </div>
                               <div className="min-w-0">
                                 <p className="text-white text-[11px] font-semibold truncate">{actor.name}</p>
@@ -657,120 +630,82 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     )}
 
                     {/* BUDGET */}
-                    {pageType === "budget" && (
+                    {pageType === "budget" && article.pSEO_Content_budget && article.pSEO_Content_budget.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
-                        <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">Budget & Profit</p>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
-                            <p className="text-[9px] text-blue-400 uppercase mb-1">Total Budget</p>
-                            <p className="text-xl font-bold text-white">{article.budget || "N/A"}</p>
+                        <p className="text-xs font-bold text-blue-400 uppercase tracking-wider">Budget Analysis</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                          {getCompleteSentence(article.pSEO_Content_budget[0].content, 250)}
+                        </p>
+                        {article.pSEO_Content_budget.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-blue-600/10 border border-blue-500/20">
+                            <p className="text-xs font-bold text-blue-300 mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
-                          <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
-                            <p className="text-[9px] text-green-400 uppercase mb-1">Worldwide Collection</p>
-                            <p className="text-xl font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
-                          </div>
-                        </div>
-                        {article.budget && article.stats?.worldwide && (
-                          <div className="grid grid-cols-3 gap-2">
-                            <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
-                              <p className="text-sm font-bold text-white">{(parseInt(article.stats.worldwide) / parseInt(article.budget)).toFixed(1)}x</p>
-                              <p className="text-[9px] text-gray-400">Return</p>
-                            </div>
-                            <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
-                              <p className="text-sm font-bold text-green-400">{((parseInt(article.stats.worldwide) / parseInt(article.budget) - 1) * 100).toFixed(0)}%</p>
-                              <p className="text-[9px] text-gray-400">Profit</p>
-                            </div>
-                            <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
-                              <p className="text-sm font-bold text-white">{parseInt(article.stats.worldwide) - parseInt(article.budget) > 0 ? 'Profit' : 'Loss'}</p>
-                              <p className="text-[9px] text-gray-400">Result</p>
-                            </div>
-                          </div>
-                        )}
+                        ))}
                       </div>
                     )}
 
                     {/* ENDING EXPLAINED */}
-                    {pageType === "ending-explained" && (
+                    {pageType === "ending-explained" && article.pSEO_Content_ending_explained && article.pSEO_Content_ending_explained.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Ending Explained</p>
                         <p className="text-gray-300 text-sm leading-relaxed">
-                          {article.summary || `Complete ending explanation and hidden meanings for ${movieTitle}.`}
+                          {getCompleteSentence(article.pSEO_Content_ending_explained[0].content, 250)}
                         </p>
-                        {article.sections?.slice(0, 2).map((section, idx) => (
+                        {article.pSEO_Content_ending_explained.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-orange-600/10 border border-orange-500/20">
                             <p className="text-xs font-bold text-orange-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
                         ))}
                       </div>
                     )}
 
                     {/* REVIEW ANALYSIS */}
-                    {pageType === "review-analysis" && (
+                    {pageType === "review-analysis" && article.pSEO_Content_review_analysis && article.pSEO_Content_review_analysis.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
-                        <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Critical Review</p>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-600/20 border border-yellow-500/30">
-                            <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                            <div>
-                              <p className="text-2xl font-bold text-white">{article.rating || "N/A"}</p>
-                              <p className="text-[9px] text-yellow-300">IMDb / 10</p>
-                            </div>
-                          </div>
-                          {article.genreAnalysis && (
-                            <p className="text-gray-300 text-sm leading-relaxed flex-1">{article.genreAnalysis}</p>
-                          )}
-                        </div>
-                        {article.sections?.slice(0, 2).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
-                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                        <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Review Analysis</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                          {getCompleteSentence(article.pSEO_Content_review_analysis[0].content, 250)}
+                        </p>
+                        {article.pSEO_Content_review_analysis.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-yellow-600/10 border border-yellow-500/20">
+                            <p className="text-xs font-bold text-yellow-300 mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
                         ))}
                       </div>
                     )}
 
                     {/* HIT OR FLOP */}
-                    {pageType === "hit-or-flop" && (
+                    {pageType === "hit-or-flop" && article.pSEO_Content_hit_or_flop && article.pSEO_Content_hit_or_flop.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-red-400 uppercase tracking-wider">Hit or Flop Verdict</p>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
-                            <p className="text-[9px] text-green-400 uppercase mb-1">Box Office</p>
-                            <p className="text-base font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                          {getCompleteSentence(article.pSEO_Content_hit_or_flop[0].content, 250)}
+                        </p>
+                        {article.pSEO_Content_hit_or_flop.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-red-600/10 border border-red-500/20">
+                            <p className="text-xs font-bold text-red-300 mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
-                          <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
-                            <p className="text-[9px] text-blue-400 uppercase mb-1">Budget</p>
-                            <p className="text-base font-bold text-white">{article.budget || "N/A"}</p>
-                          </div>
-                        </div>
-                        {article.stats?.verdict && (
-                          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-red-600/30 to-orange-600/30 border border-red-500/40">
-                            <span className="text-sm font-black text-red-300 uppercase">{article.stats.verdict}</span>
-                          </div>
-                        )}
+                        ))}
                       </div>
                     )}
 
                     {/* OTT RELEASE */}
-                    {pageType === "ott-release" && (
+                    {pageType === "ott-release" && article.pSEO_Content_ott_release && article.pSEO_Content_ott_release.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
-                        <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">OTT Release Info</p>
-                        {article.ott?.platform && (
-                          <div className="p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
-                            <p className="text-[9px] text-purple-400 uppercase mb-1">Platform</p>
-                            <p className="text-xl font-bold text-white">{article.ott.platform}</p>
+                        <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">OTT Release Details</p>
+                        <p className="text-gray-300 text-sm leading-relaxed">
+                          {getCompleteSentence(article.pSEO_Content_ott_release[0].content, 250)}
+                        </p>
+                        {article.pSEO_Content_ott_release.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-purple-600/10 border border-purple-500/20">
+                            <p className="text-xs font-bold text-purple-300 mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
                           </div>
-                        )}
-                        {article.ott?.releaseDate && (
-                          <div className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
-                            <p className="text-[9px] text-gray-400 uppercase mb-1">OTT Release Date</p>
-                            <p className="text-base font-bold text-white">{article.ott.releaseDate}</p>
-                          </div>
-                        )}
-                        {article.summary && (
-                          <p className="text-gray-300 text-sm leading-relaxed">{article.summary}</p>
-                        )}
+                        ))}
                       </div>
                     )}
 
@@ -780,6 +715,47 @@ export default function MovieDetailPage({ article, pageType, slug }) {
             </div>
           </div>
         </motion.div>
+
+        {/* Horizontal Quick Navigation Bar */}
+        <div className="sticky top-0 z-40 bg-gradient-to-b from-[#0a0a0f] via-[#0a0a0f]/98 to-[#0a0a0f]/95 backdrop-blur-xl border-b border-gray-800/50">
+          <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-3">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              {[
+                { label: "Overview", suffix: "", icon: Info },
+                { label: "Ending", suffix: "-ending-explained", icon: Zap },
+                { label: "Box Office", suffix: "-box-office", icon: TrendingUp },
+                { label: "Budget", suffix: "-budget", icon: DollarSign },
+                { label: "OTT Release", suffix: "-ott-release", icon: Tv },
+                { label: "Cast", suffix: "-cast", icon: Users },
+                { label: "Reviews", suffix: "-review-analysis", icon: Star },
+                { label: "Verdict", suffix: "-hit-or-flop", icon: ShieldCheck },
+              ].map((link, idx) => {
+                const IconComponent = link.icon;
+                const isActive = (pageType === "overview" && link.suffix === "") || 
+                                 (pageType !== "overview" && link.suffix === `-${pageType}`);
+                return (
+                  <motion.div 
+                    key={idx} 
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link 
+                      href={`/movie/${article.slug}${link.suffix}`}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                        isActive
+                          ? "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-lg shadow-red-900/30" 
+                          : "bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700"
+                      }`}
+                    >
+                      <IconComponent className="w-3.5 h-3.5" />
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
         {/* Content Section - Left/Right Split Layout */}
         <main className="max-w-[1600px] mx-auto px-4 md:px-6 py-8">
@@ -854,62 +830,6 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       <span className="text-xs font-semibold text-white text-right">{stat.value}</span>
                     </div>
                   ))}
-                </div>
-              </motion.div>
-
-              {/* Quick Navigation */}
-              <motion.div 
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
-              >
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-                    <List className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  Quick Links
-                </h3>
-                
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: "Overview", suffix: "", icon: Info },
-                    { label: "Ending", suffix: "-ending-explained", icon: Zap },
-                    { label: "Box Office", suffix: "-box-office", icon: TrendingUp },
-                    { label: "Budget", suffix: "-budget", icon: DollarSign },
-                    { label: "Cast", suffix: "-cast", icon: Users },
-                  ].map((link, idx) => {
-                    const IconComponent = link.icon;
-                    const isActive = (pageType === "overview" && link.suffix === "") || (pageType !== "overview" && link.suffix === `-${pageType}`);
-                    return (
-                      <motion.div key={idx} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                        <Link 
-                          href={`/movie/${article.slug}${link.suffix}`}
-                          className={`block p-2.5 rounded-lg text-center transition-all ${
-                            isActive
-                              ? "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-md" 
-                              : "bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700"
-                          }`}
-                        >
-                          <IconComponent className="w-4 h-4 mx-auto mb-1" />
-                          <span className="text-[10px] font-semibold block">{link.label}</span>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                  
-                  {/* OTT Link - Goes to Actual OTT Page */}
-                  {article.ott?.platform && (
-                    <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                      <Link 
-                        href={`/ott/${slugify(article.ott.platform)}/${article.slug}`}
-                        className="block p-2.5 rounded-lg text-center bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 text-gray-300 hover:border-purple-500/50 hover:text-white transition-all"
-                      >
-                        <Tv className="w-4 h-4 mx-auto mb-1 text-purple-400" />
-                        <span className="text-[10px] font-semibold block">OTT</span>
-                      </Link>
-                    </motion.div>
-                  )}
                 </div>
               </motion.div>
             </div>
@@ -1121,31 +1041,319 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 </motion.div>
               )}
 
-              {/* Movie Overview Preview - Enhanced */}
+              {/* Page-Specific Content Preview - Dynamic */}
               <motion.div 
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.6 }}
                 className="rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-800 p-5"
               >
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Info className="w-4 h-4 text-red-500" />
-                  Quick Summary
-                </h3>
-                <p className="text-sm text-gray-400 leading-relaxed line-clamp-4">
-                  {article.summary || `${movieTitle} is a ${article.genres?.join(", ")} feature.`}
-                </p>
-                {article.genreAnalysis && (
-                  <p className="text-xs text-gray-500 mt-2 italic line-clamp-2">
-                    "{article.genreAnalysis}"
-                  </p>
+                {/* OVERVIEW */}
+                {pageType === "overview" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Info className="w-4 h-4 text-red-500" />
+                      About {movieTitle}
+                    </h3>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {article.summary || `${movieTitle} is a ${article.genres?.join("/")} film released in ${article.releaseYear}. Directed by ${article.director?.join(", ") || 'N/A'}, the film stars ${article.cast?.slice(0, 3).map(c => c.name).join(", ") || 'N/A'}.`}
+                    </p>
+                    {article.tagline && (
+                      <p className="text-xs text-gray-500 italic mt-3">"{article.tagline}"</p>
+                    )}
+                    
+                    {/* Expandable Sections */}
+                    {article.pSEO_Content_overview && article.pSEO_Content_overview.length > 0 && (
+                      <div className="mt-4">
+                        <button
+                          onClick={() => setShowFullAnalysis(!showFullAnalysis)}
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors"
+                        >
+                          {showFullAnalysis ? 'Show Less' : 'Read Full Analysis'} 
+                          <ChevronRight className={`w-3.5 h-3.5 transition-transform duration-300 ${showFullAnalysis ? 'rotate-90' : ''}`} />
+                        </button>
+                        
+                        {showFullAnalysis && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.3 }}
+                            className="mt-4 space-y-3 pt-4 border-t border-gray-700"
+                          >
+                            {article.pSEO_Content_overview.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
+                              <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                                <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                                <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 250)}</p>
+                              </div>
+                            ))}
+                          </motion.div>
+                        )}
+                      </div>
+                    )}
+                  </>
                 )}
-                <Link 
-                  href={`/movie/${article.slug}`}
-                  className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors"
-                >
-                  Read Full Analysis <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
+
+                {/* BOX OFFICE */}
+                {pageType === "box-office" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4 text-green-500" />
+                      Box Office Analysis
+                    </h3>
+                    {article.boxOffice?.worldwide && (
+                      <div className="mb-3">
+                        <p className="text-[10px] text-gray-500 uppercase mb-1">Worldwide Collection</p>
+                        <p className="text-xl font-bold text-green-400">{article.boxOffice.worldwide}</p>
+                      </div>
+                    )}
+                    {article.stats?.verdict && (
+                      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-500/30 mb-3">
+                        <span className="text-xs font-bold text-green-400 uppercase">{article.stats.verdict}</span>
+                      </div>
+                    )}
+                    
+                    {/* Key Sections from API */}
+                    {article.pSEO_Content_box_office && article.pSEO_Content_box_office.length > 1 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">Key Sections</p>
+                        {article.pSEO_Content_box_office.slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* BUDGET */}
+                {pageType === "budget" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-blue-500" />
+                      Budget Analysis
+                    </h3>
+                    {article.budget && (
+                      <div className="mb-3">
+                        <p className="text-[10px] text-gray-500 uppercase mb-1">Production Budget</p>
+                        <p className="text-xl font-bold text-blue-400">{article.budget}</p>
+                      </div>
+                    )}
+                    
+                    {/* Key Sections from API */}
+                    {article.pSEO_Content_budget && article.pSEO_Content_budget.length > 1 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Key Sections</p>
+                        {article.pSEO_Content_budget.slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* OTT RELEASE */}
+                {pageType === "ott-release" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Tv className="w-4 h-4 text-purple-500" />
+                      OTT Release Details
+                    </h3>
+                    {article.ott?.platform && (
+                      <div className="mb-3 p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                        <p className="text-[10px] text-purple-400 uppercase mb-1">Streaming On</p>
+                        <p className="text-lg font-bold text-white">{article.ott.platform}</p>
+                      </div>
+                    )}
+                    {article.ott?.releaseDate && (
+                      <div className="mb-3">
+                        <p className="text-[10px] text-gray-500 uppercase mb-1">Release Date</p>
+                        <p className="text-sm font-bold text-white">{article.ott.releaseDate}</p>
+                      </div>
+                    )}
+                    
+                    {/* Key Sections from API */}
+                    {article.pSEO_Content_ott_release && article.pSEO_Content_ott_release.length > 1 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Key Sections</p>
+                        {article.pSEO_Content_ott_release.slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* CAST */}
+                {pageType === "cast" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-pink-500" />
+                      Cast Analysis
+                    </h3>
+                    {article.cast && article.cast.length > 0 && (
+                      <div className="mb-3">
+                        <p className="text-[10px] text-gray-500 uppercase mb-2">Lead Cast</p>
+                        <div className="space-y-2">
+                          {article.cast.slice(0, 4).map((actor, idx) => (
+                            <div key={idx} className="flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0">
+                                <User className="w-3 h-3 text-gray-400" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <p className="text-xs font-semibold text-white truncate">{actor.name}</p>
+                                {actor.role && <p className="text-[10px] text-gray-500 truncate">{actor.role}</p>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Key Sections from API */}
+                    {article.pSEO_Content_cast && article.pSEO_Content_cast.length > 1 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-pink-400 uppercase tracking-wider">Key Sections</p>
+                        {article.pSEO_Content_cast.slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* REVIEW ANALYSIS */}
+                {pageType === "review-analysis" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Star className="w-4 h-4 text-yellow-500" />
+                      Review Analysis
+                    </h3>
+                    {article.rating && (
+                      <div className="mb-3 flex items-center gap-3">
+                        <div className="flex items-center gap-2 p-3 rounded-lg bg-yellow-600/20 border border-yellow-500/30">
+                          <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                          <div>
+                            <p className="text-xl font-bold text-white">{article.rating}</p>
+                            <p className="text-[9px] text-yellow-300">/ 10</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Key Sections from API */}
+                    {article.pSEO_Content_review_analysis && article.pSEO_Content_review_analysis.length > 0 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">Key Sections</p>
+                        {article.pSEO_Content_review_analysis
+                          .filter(s => !s.heading?.toLowerCase().includes('faq'))
+                          .slice(0, 4)
+                          .map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Fallback content if no API sections */}
+                    {!article.pSEO_Content_review_analysis || article.pSEO_Content_review_analysis.length === 0 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">Review Summary</p>
+                        <div className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs text-gray-400 leading-relaxed">
+                            {article.summary ? getCompleteSentence(article.summary, 200) : `${movieTitle} review and critical analysis coming soon.`}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* HIT OR FLOP */}
+                {pageType === "hit-or-flop" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4 text-red-500" />
+                      Verdict Analysis
+                    </h3>
+                    {article.stats?.verdict && (
+                      <div className="mb-3 p-4 rounded-xl bg-gradient-to-r from-red-600/20 to-orange-600/20 border border-red-500/30 text-center">
+                        <p className="text-[10px] text-red-400 uppercase mb-1">Overall Verdict</p>
+                        <p className="text-2xl font-black text-white uppercase">{article.stats.verdict}</p>
+                      </div>
+                    )}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {article.budget && (
+                        <div className="p-2 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-[9px] text-gray-400 uppercase mb-1">Budget</p>
+                          <p className="text-sm font-bold text-white">{article.budget}</p>
+                        </div>
+                      )}
+                      {article.boxOffice?.worldwide && (
+                        <div className="p-2 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-[9px] text-gray-400 uppercase mb-1">Collection</p>
+                          <p className="text-sm font-bold text-white">{article.boxOffice.worldwide}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Key Sections from API */}
+                    {article.pSEO_Content_hit_or_flop && article.pSEO_Content_hit_or_flop.length > 1 && (
+                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                        <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">Key Sections</p>
+                        {article.pSEO_Content_hit_or_flop.slice(0, 4).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* ENDING EXPLAINED */}
+                {pageType === "ending-explained" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-orange-500" />
+                      Ending Explained
+                    </h3>
+                    {article.pSEO_Content_ending_explained && article.pSEO_Content_ending_explained.length > 0 && (
+                      <>
+                        <p className="text-sm text-gray-400 leading-relaxed mb-4">
+                          {getCompleteSentence(article.pSEO_Content_ending_explained[0].content, 300)}
+                        </p>
+                        
+                        {/* Key Sections from API */}
+                        {article.pSEO_Content_ending_explained.length > 1 && (
+                          <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
+                            <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Key Sections</p>
+                            {article.pSEO_Content_ending_explained.slice(1, 5).map((section, idx) => (
+                              <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                                <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
+                                <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </>
+                )}
               </motion.div>
             </div>
           </div>
@@ -1344,185 +1552,115 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                   transition={{ duration: 0.6 }}
                   className="space-y-8"
                 >
-                  {/* Intro Section */}
-                  <motion.div 
-                    whileHover={{ y: -3 }}
-                    className="p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 right-0 p-6 opacity-5">
-                      <Sparkles className="w-24 h-24" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                      <Info className="w-6 h-6 text-red-500" /> Movie Overview
-                    </h2>
-                    <p className="text-gray-300 leading-relaxed text-base relative z-10">
-                      {article.summary || `${movieTitle} is a highly anticipated ${article.genres?.join("/")} feature that has taken the ${article.category} industry by storm. This full intelligence report provides a comprehensive analysis of the film's theatrical journey, its digital release strategy, and the creative vision behind its production.`}
-                    </p>
-                  </motion.div>
-
-                  {/* Plot Summary Section */}
-                  <motion.div 
-                    whileHover={{ y: -3 }}
-                    className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-                  >
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <BookOpen className="w-6 h-6 text-red-500" /> Plot Summary
-                    </h2>
-                    <div className="space-y-4">
-                      {article.sections?.filter(s => s.heading.toLowerCase().includes("plot") || s.heading.toLowerCase().includes("story")).map((section, idx) => (
-                        <div key={idx}>
-                          <h3 className="text-xl font-semibold text-white mb-3">{section.heading}</h3>
-                          <p className="text-gray-400 leading-relaxed">{section.content}</p>
+                  {/* Render all sections from pSEO_Content_overview */}
+                  {article.pSEO_Content_overview?.map((section, idx) => {
+                    // Skip FAQ section - we'll render it separately
+                    if (section.heading?.toLowerCase().includes('faq')) {
+                      return null;
+                    }
+                    
+                    const cleanedContent = cleanContent(section.content);
+                    if (!cleanedContent) return null;
+                    
+                    // Determine icon based on heading
+                    const heading = section.heading?.toLowerCase() || '';
+                    let Icon = Info;
+                    let iconColor = "text-red-500";
+                    
+                    if (heading.includes('introduction') || heading.includes('overview')) {
+                      Icon = Info;
+                    } else if (heading.includes('plot')) {
+                      Icon = BookOpen;
+                    } else if (heading.includes('ending') || heading.includes('explained')) {
+                      Icon = Zap;
+                    } else if (heading.includes('box office') || heading.includes('collection')) {
+                      Icon = TrendingUp;
+                      iconColor = "text-green-500";
+                    } else if (heading.includes('budget') || heading.includes('profit')) {
+                      Icon = DollarSign;
+                      iconColor = "text-blue-500";
+                    } else if (heading.includes('ott') || heading.includes('release') || heading.includes('streaming')) {
+                      Icon = Tv;
+                      iconColor = "text-purple-500";
+                    } else if (heading.includes('cast') || heading.includes('character')) {
+                      Icon = Users;
+                      iconColor = "text-pink-500";
+                    } else if (heading.includes('audience') || heading.includes('reaction') || heading.includes('review')) {
+                      Icon = Heart;
+                      iconColor = "text-orange-500";
+                    } else if (heading.includes('director')) {
+                      Icon = Film;
+                    } else if (heading.includes('genre')) {
+                      Icon = Tag;
+                    } else {
+                      Icon = FileText;
+                    }
+                    
+                    return (
+                      <motion.div 
+                        key={section._id || idx}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: idx * 0.05 }}
+                        whileHover={{ y: -2 }}
+                        className="p-6 md:p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+                      >
+                        <h2 className="text-xl md:text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                          <Icon className={`w-6 h-6 ${iconColor}`} />
+                          {section.heading}
+                        </h2>
+                        <div className="space-y-4">
+                          {cleanedContent.split(/\n\n/).filter(p => p.trim()).map((para, pIdx) => (
+                            <p key={pIdx} className="text-gray-400 leading-relaxed text-sm md:text-base">
+                              {para}
+                            </p>
+                          ))}
                         </div>
-                      )) || <p className="text-gray-500 italic">Detailed plot analysis is being updated by our film experts.</p>}
-                    </div>
-                  </motion.div>
-
-                  {/* Ending Explained Section */}
-                  <motion.div 
-                    id="ending-section"
-                    whileHover={{ y: -3 }}
-                    className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-                  >
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <Zap className="w-6 h-6 text-red-500" /> Ending Explained
-                    </h2>
-                    <div className="space-y-4">
-                      {article.pSEO_Content_ending_explained?.length > 0 ? (
-                        article.pSEO_Content_ending_explained.map((section, idx) => (
-                          <div key={idx}>
-                            <h3 className="text-xl font-semibold text-white mb-3">{section.heading}</h3>
-                            <p className="text-gray-400 leading-relaxed">{section.content}</p>
+                      </motion.div>
+                    );
+                  })}
+                  
+                  {/* FAQ Section from pSEO_Content_overview */}
+                  {(() => {
+                    const faqSection = article.pSEO_Content_overview?.find(s => 
+                      s.heading?.toLowerCase().includes('faq')
+                    );
+                    if (!faqSection) return null;
+                    
+                    const overviewFaqs = parseFAQsFromContent(faqSection.content);
+                    if (overviewFaqs.length === 0) return null;
+                    
+                    return (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="pt-8"
+                      >
+                        {/* FAQ Header */}
+                        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                          <h2 className="text-xl md:text-2xl font-bold text-white flex items-center gap-3">
+                            <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+                              <HelpCircle className="w-5 h-5 text-white" />
+                            </span>
+                            Frequently Asked Questions
+                          </h2>
+                          <span className="text-xs font-medium text-gray-400 bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700">{overviewFaqs.length} questions</span>
+                        </div>
+                        
+                        {/* FAQ Container Card */}
+                        <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                          <div className="space-y-3">
+                            {overviewFaqs.map((faq, i) => (
+                              <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                            ))}
                           </div>
-                        ))
-                      ) : (
-                        <p className="text-gray-400 leading-relaxed">
-                          For a deep-dive analysis of the final climax and hidden meanings, visit our dedicated 
-                          <Link href={`/movie/${article.slug}-ending-explained`} className="text-red-500 hover:underline mx-1 font-semibold">
-                            {movieTitle} Ending Explained
-                          </Link> page.
-                        </p>
-                      )}
-                    </div>
-                  </motion.div>
-
-                  {/* Box Office & Budget Sections */}
-                  <motion.div 
-                    initial={{ y: 30, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                  >
-                    <motion.div 
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      className="p-6 rounded-2xl bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-700/30"
-                    >
-                      <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                        <TrendingUp className="w-5 h-5 text-green-500" /> Box Office
-                      </h2>
-                      <div className="space-y-3">
-                        <p className="text-3xl font-bold text-white">{article.boxOffice?.worldwide || "TBA"}</p>
-                        <p className="text-gray-400 text-sm leading-relaxed">
-                          The global theatrical run has shown impressive resilience. 
-                          <Link href={`/movie/${article.slug}-box-office`} className="text-green-500 hover:underline mx-1 font-semibold">
-                            Full Financial Report
-                          </Link>
-                        </p>
-                      </div>
-                    </motion.div>
-
-                    <motion.div 
-                      whileHover={{ scale: 1.02, y: -5 }}
-                      className="p-6 rounded-2xl bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-700/30"
-                    >
-                      <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                        <DollarSign className="w-5 h-5 text-blue-500" /> Budget
-                      </h2>
-                      <div className="space-y-3">
-                        <p className="text-3xl font-bold text-white">{article.budget || "TBA"}</p>
-                        <p className="text-gray-400 text-sm leading-relaxed">
-                          Production scale and marketing investments were significant. 
-                          <Link href={`/movie/${article.slug}-budget`} className="text-blue-500 hover:underline mx-1 font-semibold">
-                            Budget Breakdown
-                          </Link>
-                        </p>
-                      </div>
-                    </motion.div>
-                  </motion.div>
-
-                  {/* OTT Release Details */}
-                  <motion.div 
-                    whileHover={{ y: -3 }}
-                    className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-                  >
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <Tv className="w-6 h-6 text-red-500" /> OTT Release Details
-                    </h2>
-                    <div className="space-y-4">
-                      {article.ott?.platform ? (
-                        <p className="text-gray-400 leading-relaxed">
-                          {movieTitle} is officially streaming on <span className="text-white font-semibold">{article.ott.platform}</span>. 
-                          The digital rights were secured in a multi-crore deal. Visit our 
-                          <Link href={`/ott/${slugify(article.ott.platform)}`} className="text-red-500 hover:underline mx-1 font-semibold">
-                            OTT Intelligence
-                          </Link> page for the exact release timeline.
-                        </p>
-                      ) : (
-                        <p className="text-gray-400 leading-relaxed">
-                          Streaming platform details are currently under negotiation. 
-                          Check our <Link href="/category/ott" className="text-red-500 hover:underline font-semibold">OTT Hub</Link> for updates.
-                        </p>
-                      )}
-                    </div>
-                  </motion.div>
-
-                  {/* Cast & Characters Section */}
-                  <motion.div 
-                    id="cast-section"
-                    whileHover={{ y: -3 }}
-                    className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-                  >
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <Users className="w-6 h-6 text-red-500" /> Cast & Characters
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                      {article.cast?.slice(0, 4).map((actor, idx) => (
-                        <motion.div 
-                          key={idx}
-                          whileHover={{ scale: 1.03, x: 5 }}
-                          className="flex items-center gap-4 p-4 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-gray-600 transition-all"
-                        >
-                          <div className="w-14 h-14 rounded-full bg-gradient-to-br from-red-600/30 to-purple-600/30 flex items-center justify-center border border-gray-600">
-                            <User className="w-6 h-6 text-gray-400" />
-                          </div>
-                          <div>
-                            <p className="text-white font-semibold">{actor.name}</p>
-                            <p className="text-xs text-gray-500 uppercase tracking-wider">{actor.role || "Lead Role"}</p>
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                    <Link href={`/movie/${article.slug}-cast`} className="text-red-500 text-sm font-semibold hover:underline flex items-center gap-1">
-                      View Full Cast & Performance Analysis <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </motion.div>
-
-                  {/* Audience Reaction Section */}
-                  <motion.div 
-                    whileHover={{ y: -3 }}
-                    className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-                  >
-                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <ThumbsUp className="w-6 h-6 text-red-500" /> Audience Reaction
-                    </h2>
-                    <p className="text-gray-400 leading-relaxed mb-6">
-                      {article.criticalResponse || `Audience and critical reception has been a major point of discussion. The film's unique narrative approach and technical brilliance have received praise from industry experts.`}
-                    </p>
-                    <Link href={`/movie/${article.slug}-review-analysis`} className="text-red-500 text-sm font-semibold hover:underline flex items-center gap-1">
-                      See Critical Review Analysis <ChevronRight className="w-4 h-4" />
-                    </Link>
-                  </motion.div>
+                        </div>
+                      </motion.div>
+                    );
+                  })()}
                 </motion.section>
               )}
 
@@ -1530,6 +1668,64 @@ export default function MovieDetailPage({ article, pageType, slug }) {
               {pageType !== "overview" && (() => {
                 const contentKey = `pSEO_Content_${pageType.replace(/-/g, "_")}`;
                 const pageContent = article[contentKey];
+                
+                // Special rendering for Cast page
+                if (pageType === "cast" && article.cast && article.cast.length > 0) {
+                  return (
+                    <div className="space-y-12">
+                      {/* Cast Members Grid */}
+                      <motion.section
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5 }}
+                        className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+                      >
+                        <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
+                          <Users className="w-6 h-6 text-pink-500" />
+                          Complete Cast ({article.cast.length} members)
+                        </h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                          {article.cast.map((actor, idx) => (
+                            <motion.div
+                              key={idx}
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              whileInView={{ opacity: 1, scale: 1 }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 0.3, delay: idx * 0.05 }}
+                              whileHover={{ y: -4, scale: 1.02 }}
+                              className="group p-4 rounded-xl bg-gradient-to-br from-gray-800/80 to-gray-900/80 border border-gray-700/50 hover:border-pink-500/30 transition-all"
+                            >
+                              <div className="flex items-start gap-3">
+                                {/* Profile Image */}
+                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0 overflow-hidden ring-2 ring-gray-700/50 group-hover:ring-pink-500/30 transition-all">
+                                  {actor.profileImage ? (
+                                    <img src={actor.profileImage} alt={actor.name} className="w-full h-full object-cover" />
+                                  ) : actor.image ? (
+                                    <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" />
+                                  ) : (
+                                    <User className="w-6 h-6 text-pink-400" />
+                                  )}
+                                </div>
+                                
+                                {/* Actor Info */}
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-bold text-white truncate group-hover:text-pink-300 transition-colors">{actor.name}</p>
+                                  {actor.role && (
+                                    <p className="text-xs text-gray-400 mt-1 line-clamp-2">{actor.role}</p>
+                                  )}
+                                  {actor.character && (
+                                    <p className="text-[10px] text-gray-500 mt-1 italic">as {actor.character}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </motion.section>
+                    </div>
+                  );
+                }
                 
                 if (!pageContent || pageContent.length === 0) {
                   return (

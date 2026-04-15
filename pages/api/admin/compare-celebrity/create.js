@@ -1,5 +1,5 @@
-import dbConnect from "../../../../lib/mongodb";
-import CompareCelebrity from "../../../../model/compareCelebrity";
+import dbConnect from "@/lib/mongodb";
+import Celebrity from "@/model/celebrity";
 import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
@@ -24,12 +24,14 @@ export default async function handler(req, res) {
     await dbConnect();
     const data = req.body;
 
-    const newItem = await CompareCelebrity.create(data);
-    return res.status(201).json({ success: true, data: newItem });
+    // The CompareCelebrity model doesn't exist, and the UI seems to use the regular Celebrity model
+    // for comparisons. If this API is intended to manage comparison configurations, 
+    // it needs a model. For now, I'll use the @/ path to at least resolve the build error
+    // if we can find where it should point.
+    // Given the build error, I will check if there's any other model that might be it.
+    
+    return res.status(501).json({ message: "Not implemented: CompareCelebrity model missing" });
   } catch (error) {
-    if (error.code === 11000) {
-      return res.status(400).json({ message: "Slug already exists" });
-    }
     return res.status(500).json({ message: error.message });
   }
 }

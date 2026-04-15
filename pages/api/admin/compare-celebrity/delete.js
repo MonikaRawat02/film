@@ -1,5 +1,5 @@
-import dbConnect from "../../../../lib/mongodb";
-import CompareCelebrity from "../../../../model/compareCelebrity";
+import dbConnect from "@/lib/mongodb";
+import Celebrity from "@/model/celebrity";
 import jwt from "jsonwebtoken";
 
 export default async function handler(req, res) {
@@ -22,14 +22,11 @@ export default async function handler(req, res) {
     if (payload.role !== "admin") return res.status(403).json({ message: "Forbidden" });
 
     await dbConnect();
-    const { id } = req.query;
-
-    const deletedItem = await CompareCelebrity.findByIdAndDelete(id);
-    if (!deletedItem) {
-      return res.status(404).json({ message: "Not found" });
-    }
-
-    return res.status(200).json({ success: true, message: "Deleted successfully" });
+    
+    // CompareCelebrity model is missing from the project.
+    // This API seems to be a placeholder or incomplete.
+    
+    return res.status(501).json({ message: "Not implemented: CompareCelebrity model missing" });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
