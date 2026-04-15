@@ -132,6 +132,87 @@ const pageTitles = {
   "hit-or-flop": "Hit or Flop Verdict & Box Office Performance",
 };
 
+// Parse FAQs from content with multiple format support
+function parseFAQsFromContent(content) {
+  if (!content) return [];
+  const faqs = [];
+  
+  // Method 1: Split by **Q patterns
+  const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
+  if (blocks.length > 1) {
+    for (let i = 1; i < blocks.length; i++) {
+      const block = blocks[i];
+      const questionMatch = block.match(/^([^?]*\?)/);
+      if (!questionMatch) continue;
+      const question = questionMatch[1].trim();
+      let answer = '';
+      const aMatch = block.match(/\*\*A\.?\s*\d*:?\s*([^\n]+)/);
+      if (aMatch) {
+        answer = aMatch[1].trim();
+      } else {
+        const aMatchPlain = block.match(/^A:\s*([^\n]+)/m);
+        if (aMatchPlain) {
+          answer = aMatchPlain[1].trim();
+        } else {
+          const afterQuestion = block.substring(block.indexOf('?') + 1);
+          answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+        }
+      }
+      answer = answer.replace(/\*\*/g, '').trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  // Method 2: Parse "**Q: Question?**\nA: Answer" format
+  if (faqs.length === 0) {
+    const qaBlockPattern = /\*\*Q:\s*([^?]+\?)\*\*\s*\nA:\s*([^\n]+)/g;
+    let match;
+    while ((match = qaBlockPattern.exec(content)) !== null) {
+      const question = match[1].trim();
+      const answer = match[2].trim();
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  return faqs;
+}
+
+// Extract FAQs from sections array
+function extractFAQsFromSections(sections) {
+  if (!sections || !Array.isArray(sections)) return [];
+  
+  for (const section of sections) {
+    if (section.heading?.toLowerCase().includes('faq') || 
+        section.content?.includes('Q1:') || 
+        section.content?.includes('**Q')) {
+      const parsed = parseFAQsFromContent(section.content);
+      if (parsed.length > 0) return parsed;
+    }
+  }
+  
+  return [];
+}
+
+// Truncate text at first complete sentence (at first period/full stop)
+function truncateAtSentence(text, maxLength = 150) {
+  if (!text) return text;
+  
+  // Find the first period to show complete first sentence
+  const firstPeriod = text.indexOf('.');
+  
+  // If we found a period, return text up to and including it
+  if (firstPeriod > 0) {
+    return text.substring(0, firstPeriod + 1);
+  }
+  
+  // If no period found, return the full text
+  return text;
+}
+
 function FAQDropdown({ faqs, loading }) {
   const [openIndex, setOpenIndex] = useState(null);
   const toggleFAQ = (index) => setOpenIndex(openIndex === index ? null : index);
@@ -192,10 +273,11 @@ export default function OTTMovieDetailPage({
   contentSections = [], metaTitleSuffix = '', metaDescription = '', notFound = false
 }) {
   const [scrollProgress, setProgress] = useState(0);
-  const [faqs, setFaqs] = useState([]);
-  const [loadingFAQs, setLoadingFAQs] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+
+  // Extract FAQs from page-specific contentSections
+  const faqs = extractFAQsFromSections(contentSections);
 
   OTTMovieDetailPage.noPadding = true;
 
@@ -207,26 +289,6 @@ export default function OTTMovieDetailPage({
       setIsSaved(savedArticles.includes(article?._id));
     }
   }, [article?._id]);
-
-  useEffect(() => {
-    if (!movieSlug) return;
-    async function loadFAQs() {
-      try {
-        setLoadingFAQs(true);
-        const res = await fetch('/api/movie/generate-faq', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ slug: movieSlug, pageType })
-        });
-        if (res.ok) {
-          const result = await res.json();
-          setFaqs(result.data || []);
-        }
-      } catch (error) { console.error('FAQ fetch error:', error); }
-      finally { setLoadingFAQs(false); }
-    }
-    loadFAQs();
-  }, [movieSlug, pageType]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -542,56 +604,39 @@ export default function OTTMovieDetailPage({
                   )}
 
                   {/* BUDGET hero stats */}
-                  {pageType === "budget" && (
+                  {pageType === "budget" && article.pSEO_Content_budget?.length > 0 && (
                     <motion.div initial={{ y: 15, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }} className="space-y-3 max-w-2xl">
-                      <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">Budget & Profit</p>
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="p-3 rounded-lg bg-blue-600/20 border border-blue-500/30">
-                          <p className="text-[9px] text-blue-400 uppercase mb-1">Total Budget</p>
-                          <p className="text-xl font-bold text-white">{article.budget || "N/A"}</p>
+                      <p className="text-xs font-bold text-blue-400 uppercase tracking-wider">Budget Analysis</p>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        {article.pSEO_Content_budget[0].content.substring(0, 250)}
+                      </p>
+                      {article.pSEO_Content_budget.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-blue-600/10 border border-blue-500/20">
+                          <p className="text-xs font-bold text-blue-300 mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{section.content.substring(0, 200)}</p>
                         </div>
-                        <div className="p-3 rounded-lg bg-green-600/20 border border-green-500/30">
-                          <p className="text-[9px] text-green-400 uppercase mb-1">Worldwide Collection</p>
-                          <p className="text-xl font-bold text-white">{article.stats?.worldwide || "N/A"}</p>
-                        </div>
-                      </div>
-                      {article.budget && article.stats?.worldwide && (
-                        <div className="grid grid-cols-3 gap-2">
-                          <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
-                            <p className="text-sm font-bold text-white">{(parseInt(article.stats.worldwide) / parseInt(article.budget)).toFixed(1)}x</p>
-                            <p className="text-[9px] text-gray-400">Return</p>
-                          </div>
-                          <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
-                            <p className="text-sm font-bold text-green-400">{((parseInt(article.stats.worldwide) / parseInt(article.budget) - 1) * 100).toFixed(0)}%</p>
-                            <p className="text-[9px] text-gray-400">Profit</p>
-                          </div>
-                          <div className="p-2 rounded-lg bg-gray-800/60 border border-gray-700 text-center">
-                            <p className="text-sm font-bold text-white">{parseInt(article.stats.worldwide) - parseInt(article.budget) > 0 ? 'Profit' : 'Loss'}</p>
-                            <p className="text-[9px] text-gray-400">Result</p>
-                          </div>
-                        </div>
-                      )}
+                      ))}
                     </motion.div>
                   )}
 
                   {/* ENDING EXPLAINED hero */}
-                  {pageType === "ending-explained" && (
+                  {pageType === "ending-explained" && article.pSEO_Content_ending_explained?.length > 0 && (
                     <motion.div initial={{ y: 15, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }} className="space-y-3 max-w-2xl">
                       <p className="text-xs font-bold text-orange-400 uppercase tracking-wider">Ending Explained</p>
                       <p className="text-gray-300 text-sm leading-relaxed">
-                        {article.summary || `Complete ending explanation and hidden meanings for ${movieTitle}.`}
+                        {article.pSEO_Content_ending_explained[0].content.substring(0, 250)}
                       </p>
-                      {article.sections?.slice(0, 2).map((section, idx) => (
+                      {article.pSEO_Content_ending_explained.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
                         <div key={idx} className="p-3 rounded-lg bg-orange-600/10 border border-orange-500/20">
                           <p className="text-xs font-bold text-orange-300 mb-1">{section.heading}</p>
-                          <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{section.content.substring(0, 200)}</p>
                         </div>
                       ))}
                     </motion.div>
                   )}
 
                   {/* REVIEW ANALYSIS hero */}
-                  {pageType === "review-analysis" && (
+                  {pageType === "review-analysis" && article.pSEO_Content_review_analysis?.length > 0 && (
                     <motion.div initial={{ y: 15, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.8, duration: 0.5 }} className="space-y-3 max-w-2xl">
                       <p className="text-xs font-bold text-yellow-400 uppercase tracking-wider">Critical Review</p>
                       <div className="flex items-center gap-4">
@@ -606,10 +651,10 @@ export default function OTTMovieDetailPage({
                           <p className="text-gray-300 text-sm leading-relaxed flex-1">{article.genreAnalysis}</p>
                         )}
                       </div>
-                      {article.sections?.slice(0, 2).map((section, idx) => (
-                        <div key={idx} className="p-3 rounded-lg bg-gray-800/60 border border-gray-700">
-                          <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
-                          <p className="text-gray-400 text-xs leading-relaxed">{section.content?.substring(0, 180)}...</p>
+                      {article.pSEO_Content_review_analysis.slice(1, 2).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-yellow-600/10 border border-yellow-500/20">
+                          <p className="text-xs font-bold text-yellow-300 mb-1">{section.heading}</p>
+                          <p className="text-gray-400 text-xs leading-relaxed">{section.content.substring(0, 200)}</p>
                         </div>
                       ))}
                     </motion.div>
@@ -663,6 +708,47 @@ export default function OTTMovieDetailPage({
             </div>
           </div>
         </motion.div>
+
+        {/* Sticky Navigation Bar - matches movie page */}
+        <div className="sticky top-0 z-40 bg-gradient-to-b from-[#0a0a0f] via-[#0a0a0f]/98 to-[#0a0a0f]/95 backdrop-blur-xl border-b border-gray-800/50">
+          <div className="max-w-[1600px] mx-auto px-4 md:px-6 py-3">
+            <div className="flex items-center gap-2 overflow-x-auto scrollbar-hide">
+              {[
+                { label: "Overview", suffix: "", icon: Info },
+                { label: "Ending", suffix: "-ending-explained", icon: Zap },
+                { label: "Box Office", suffix: "-box-office", icon: TrendingUp },
+                { label: "Budget", suffix: "-budget", icon: DollarSign },
+                { label: "OTT Release", suffix: "-ott-release", icon: Tv },
+                { label: "Cast", suffix: "-cast", icon: Users },
+                { label: "Reviews", suffix: "-review-analysis", icon: Star },
+                { label: "Verdict", suffix: "-hit-or-flop", icon: ShieldCheck },
+              ].map((link, idx) => {
+                const IconComponent = link.icon;
+                const isActive = (pageType === "overview" && link.suffix === "") || 
+                                 (pageType !== "overview" && link.suffix === `-${pageType}`);
+                return (
+                  <motion.div 
+                    key={idx} 
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Link 
+                      href={`/ott/${platform}/${movieSlug}${link.suffix}`}
+                      className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+                        isActive
+                          ? "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-lg shadow-red-900/30" 
+                          : "bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700"
+                      }`}
+                    >
+                      <IconComponent className="w-3.5 h-3.5" />
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
 
         {/* Content Section - Left/Right Split Layout (matches movie page) */}
         <main className="max-w-[1600px] mx-auto px-4 md:px-6 py-8">
@@ -743,48 +829,7 @@ export default function OTTMovieDetailPage({
                 </div>
               </motion.div>
 
-              {/* Quick Links Card */}
-              <motion.div
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
-              >
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-4 flex items-center gap-2">
-                  <div className="w-6 h-6 rounded bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center">
-                    <List className="w-3.5 h-3.5 text-white" />
-                  </div>
-                  Quick Links
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    { label: "Overview", suffix: "", icon: Info },
-                    { label: "Ending", suffix: "-ending-explained", icon: Zap },
-                    { label: "Box Office", suffix: "-box-office", icon: TrendingUp },
-                    { label: "Budget", suffix: "-budget", icon: DollarSign },
-                    { label: "Cast", suffix: "-cast", icon: Users },
-                    { label: "Review", suffix: "-review-analysis", icon: ThumbsUp },
-                  ].map((link, idx) => {
-                    const IconComp = link.icon;
-                    const isActive = (pageType === "overview" && link.suffix === "") || (pageType !== "overview" && link.suffix === `-${pageType}`);
-                    return (
-                      <motion.div key={idx} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                        <Link
-                          href={`/ott/${platform}/${movieSlug}${link.suffix}`}
-                          className={`block p-2.5 rounded-lg text-center transition-all ${
-                            isActive
-                              ? "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-md"
-                              : "bg-gray-800/50 text-gray-400 hover:bg-gray-700/50 hover:text-white border border-gray-700"
-                          }`}
-                        >
-                          <IconComp className="w-4 h-4 mx-auto mb-1" />
-                          <span className="text-[10px] font-semibold block">{link.label}</span>
-                        </Link>
-                      </motion.div>
-                    );
-                  })}
-                </div>
-              </motion.div>
+              {/* Quick Links - Hidden (Already in Top Navigation Bar) */}
             </div>
 
             {/* RIGHT COLUMN - Content Sections */}
@@ -891,31 +936,225 @@ export default function OTTMovieDetailPage({
                 </motion.div>
               )}
 
-              {/* Quick Summary */}
+              {/* Quick Summary - Only on overview page */}
+              {pageType === "overview" && (
+                <motion.div
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-800 p-5"
+                >
+                  <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Info className="w-4 h-4 text-red-500" /> Quick Summary
+                  </h3>
+                  <p className="text-sm text-gray-400 leading-relaxed line-clamp-4">
+                    {article.summary || `${movieTitle} is a ${article.genres?.join(", ")} feature streaming on ${article.ott?.platform || platform}.`}
+                  </p>
+                  {article.genreAnalysis && (
+                    <p className="text-xs text-gray-500 mt-2 italic line-clamp-2">"{article.genreAnalysis}"</p>
+                  )}
+                  {/* <Link href={`/ott/${platform}/${movieSlug}`} className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors">
+                    Full Analysis <ChevronRight className="w-3.5 h-3.5" />
+                  </Link> */}
+                </motion.div>
+              )}
+
+              {/* Page-Specific Content Card - matches category page */}
               <motion.div
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.5 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
                 className="rounded-xl bg-gradient-to-br from-gray-900/80 to-gray-800/80 border border-gray-800 p-5"
               >
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
-                  <Info className="w-4 h-4 text-red-500" /> Quick Summary
-                </h3>
-                <p className="text-sm text-gray-400 leading-relaxed line-clamp-4">
-                  {article.summary || `${movieTitle} is a ${article.genres?.join(", ")} feature streaming on ${article.ott?.platform || platform}.`}
-                </p>
-                {article.genreAnalysis && (
-                  <p className="text-xs text-gray-500 mt-2 italic line-clamp-2">"{article.genreAnalysis}"</p>
+                {/* OVERVIEW PAGE - Show sections with View More */}
+                {pageType === "overview" && article.sections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <BookOpen className="w-4 h-4" /> Key Analysis Sections
+                    </h3>
+                    <div className="space-y-3">
+                      {article.sections.slice(0, 4).map((section, idx) => (
+                        <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                          <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                          <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 150)}</p>
+                        </div>
+                      ))}
+                    </div>
+                    {article.sections.length > 4 && (
+                      <Link href={`#overview-section`} className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors">
+                        View More <ChevronRight className="w-3.5 h-3.5" />
+                      </Link>
+                    )}
+                  </>
                 )}
-                <Link href={`/ott/${platform}/${movieSlug}`} className="inline-flex items-center gap-1 mt-3 text-xs font-semibold text-red-500 hover:text-red-400 transition-colors">
-                  Full Analysis <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
+
+                {/* ENDING EXPLAINED */}
+                {pageType === "ending-explained" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-orange-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Zap className="w-4 h-4" /> Ending Explained
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-orange-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* BOX OFFICE */}
+                {pageType === "box-office" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-green-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <TrendingUp className="w-4 h-4" /> Box Office Analysis
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-green-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* BUDGET */}
+                {pageType === "budget" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4" /> Budget Analysis
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* OTT RELEASE */}
+                {pageType === "ott-release" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-purple-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Tv className="w-4 h-4" /> OTT Release Details
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-purple-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* CAST */}
+                {pageType === "cast" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Users className="w-4 h-4" /> Cast Analysis
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-blue-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* REVIEW ANALYSIS */}
+                {pageType === "review-analysis" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-yellow-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <Star className="w-4 h-4" /> Review Analysis
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-yellow-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* HIT OR FLOP */}
+                {pageType === "hit-or-flop" && contentSections?.length > 0 && (
+                  <>
+                    <h3 className="text-xs font-bold text-red-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <ShieldCheck className="w-4 h-4" /> Verdict Analysis
+                    </h3>
+                    <p className="text-sm text-gray-400 leading-relaxed line-clamp-3 mb-4">
+                      {truncateAtSentence(contentSections[0].content, 250)}
+                    </p>
+                    {contentSections.length > 1 && (
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-bold text-red-400 uppercase tracking-wider">Key Sections</p>
+                        {contentSections.slice(1, 5).map((section, idx) => (
+                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
+                            <p className="text-xs font-semibold text-white mb-1">{section.heading}</p>
+                            <p className="text-[11px] text-gray-400 line-clamp-2">{truncateAtSentence(section.content, 180)}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </motion.div>
             </div>
           </div>
 
-          {/* MAIN CONTENT AREA */}
-          <div id="overview-section" className="space-y-12">
+          {/* MAIN CONTENT AREA - Full Width Below Grid */}
+          <div className="max-w-[1600px] mx-auto px-4 md:px-6">
+          <div id="overview-section" className="space-y-12 mt-8">
 
             {/* Intro for non-overview pages */}
             {pageType !== "overview" && (
@@ -929,153 +1168,35 @@ export default function OTTMovieDetailPage({
               </div>
             )}
 
-            {/* OVERVIEW page sections */}
-            {pageType === "overview" && (
-              <motion.section
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className="space-y-8"
-              >
-                {/* Overview Intro */}
-                <motion.div
-                  whileHover={{ y: -3 }}
-                  className="p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 p-6 opacity-5"><Sparkles className="w-24 h-24" /></div>
-                  <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
-                    <Info className="w-6 h-6 text-red-500" /> Movie Overview
-                  </h2>
-                  <p className="text-gray-300 leading-relaxed text-base relative z-10">
-                    {article.summary || `${movieTitle} is a highly anticipated ${article.genres?.join("/")} feature streaming on ${article.ott?.platform || platform}. This full intelligence report provides a comprehensive analysis of the film's narrative, OTT release, and production insights.`}
-                  </p>
-                </motion.div>
-
-                {/* Plot Summary */}
-                <motion.div whileHover={{ y: -3 }} className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <BookOpen className="w-6 h-6 text-red-500" /> Plot Summary
-                  </h2>
-                  <div className="space-y-4">
-                    {article.sections?.filter(s => s.heading.toLowerCase().includes("plot") || s.heading.toLowerCase().includes("story")).map((section, idx) => (
-                      <div key={idx}>
-                        <h3 className="text-xl font-semibold text-white mb-3">{section.heading}</h3>
-                        <p className="text-gray-400 leading-relaxed">{section.content}</p>
+            {/* OVERVIEW page sections - Only show overview content (exclude FAQs) */}
+            {pageType === "overview" && article.sections?.length > 0 && (
+              <div className="space-y-8">
+                {article.sections
+                  .filter(section => !section.heading?.toLowerCase().includes('faq'))
+                  .map((section, idx) => (
+                    <motion.div 
+                      key={idx}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: idx * 0.05 }}
+                      whileHover={{ y: -3 }}
+                      className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+                    >
+                      <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-3">
+                        <BookOpen className="w-6 h-6 text-red-500" />
+                        {section.heading}
+                      </h2>
+                      <div className="space-y-4">
+                        {section.content.split(/\n\n/).filter(p => p.trim()).map((para, pIdx) => (
+                          <p key={pIdx} className="text-gray-400 leading-relaxed text-base">
+                            {para}
+                          </p>
+                        ))}
                       </div>
-                    )) || <p className="text-gray-500 italic">Detailed plot analysis is being updated by our film experts.</p>}
-                  </div>
-                </motion.div>
-
-                {/* Ending Explained */}
-                <motion.div id="ending-section" whileHover={{ y: -3 }} className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Zap className="w-6 h-6 text-red-500" /> Ending Explained
-                  </h2>
-                  <div className="space-y-4">
-                    {article.pSEO_Content_ending_explained?.length > 0 ? (
-                      article.pSEO_Content_ending_explained.map((section, idx) => (
-                        <div key={idx}>
-                          <h3 className="text-xl font-semibold text-white mb-3">{section.heading}</h3>
-                          <p className="text-gray-400 leading-relaxed">{section.content}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-400 leading-relaxed">
-                        For a deep-dive analysis of the final climax and hidden meanings, visit our dedicated{" "}
-                        <Link href={`/ott/${platform}/${movieSlug}-ending-explained`} className="text-red-500 hover:underline font-semibold">
-                          {movieTitle} Ending Explained
-                        </Link> page.
-                      </p>
-                    )}
-                  </div>
-                </motion.div>
-
-                {/* Box Office & Budget */}
-                <motion.div
-                  initial={{ y: 30, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.2 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                >
-                  <motion.div whileHover={{ scale: 1.02, y: -5 }} className="p-6 rounded-2xl bg-gradient-to-br from-green-900/20 to-emerald-900/20 border border-green-700/30">
-                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                      <TrendingUp className="w-5 h-5 text-green-500" /> Box Office
-                    </h2>
-                    <p className="text-3xl font-bold text-white">{article.boxOffice?.worldwide || article.stats?.worldwide || "TBA"}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed mt-2">
-                      Global theatrical run.{" "}
-                      <Link href={`/ott/${platform}/${movieSlug}-box-office`} className="text-green-500 hover:underline font-semibold">Full Report</Link>
-                    </p>
-                  </motion.div>
-                  <motion.div whileHover={{ scale: 1.02, y: -5 }} className="p-6 rounded-2xl bg-gradient-to-br from-blue-900/20 to-cyan-900/20 border border-blue-700/30">
-                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-3">
-                      <DollarSign className="w-5 h-5 text-blue-500" /> Budget
-                    </h2>
-                    <p className="text-3xl font-bold text-white">{article.budget || "TBA"}</p>
-                    <p className="text-gray-400 text-sm leading-relaxed mt-2">
-                      Production investment.{" "}
-                      <Link href={`/ott/${platform}/${movieSlug}-budget`} className="text-blue-500 hover:underline font-semibold">Budget Breakdown</Link>
-                    </p>
-                  </motion.div>
-                </motion.div>
-
-                {/* OTT Release Details */}
-                <motion.div whileHover={{ y: -3 }} className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Tv className="w-6 h-6 text-red-500" /> OTT Release Details
-                  </h2>
-                  {article.ott?.platform ? (
-                    <p className="text-gray-400 leading-relaxed">
-                      {movieTitle} is officially streaming on <span className="text-white font-semibold">{article.ott.platform}</span>.
-                      The digital rights were secured in a major deal. Visit our{" "}
-                      <Link href={`/ott/${slugify(article.ott.platform)}`} className="text-red-500 hover:underline font-semibold">OTT Intelligence</Link> page for timeline.
-                    </p>
-                  ) : (
-                    <p className="text-gray-400 leading-relaxed">
-                      Streaming platform details for {movieTitle} are being monitored.{" "}
-                      <Link href="/category/ott" className="text-red-500 hover:underline font-semibold">OTT Hub</Link> for updates.
-                    </p>
-                  )}
-                </motion.div>
-
-                {/* Cast */}
-                <motion.div id="cast-section" whileHover={{ y: -3 }} className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <Users className="w-6 h-6 text-red-500" /> Cast & Characters
-                  </h2>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                    {article.cast?.slice(0, 4).map((actor, idx) => (
-                      <motion.div key={idx} whileHover={{ scale: 1.03, x: 5 }} className="flex items-center gap-4 p-4 rounded-xl bg-gray-800/50 border border-gray-700 hover:border-gray-600 transition-all">
-                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-red-600/30 to-purple-600/30 flex items-center justify-center border border-gray-600 overflow-hidden">
-                          {actor.image ? <img src={actor.image} alt={actor.name} className="w-full h-full object-cover" /> : <User className="w-6 h-6 text-gray-400" />}
-                        </div>
-                        <div>
-                          <p className="text-white font-semibold">{actor.name}</p>
-                          <p className="text-xs text-gray-500 uppercase tracking-wider">{actor.role || "Lead Role"}</p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  <Link href={`/ott/${platform}/${movieSlug}-cast`} className="text-red-500 text-sm font-semibold hover:underline flex items-center gap-1">
-                    View Full Cast & Performance Analysis <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </motion.div>
-
-                {/* Audience Reaction */}
-                <motion.div whileHover={{ y: -3 }} className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
-                  <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                    <ThumbsUp className="w-6 h-6 text-red-500" /> Audience Reaction
-                  </h2>
-                  <p className="text-gray-400 leading-relaxed mb-6">
-                    {article.criticalResponse || `Audience and critical reception for ${movieTitle} has been a major talking point. The film's unique narrative approach and technical brilliance have received praise.`}
-                  </p>
-                  <Link href={`/ott/${platform}/${movieSlug}-review-analysis`} className="text-red-500 text-sm font-semibold hover:underline flex items-center gap-1">
-                    See Critical Review Analysis <ChevronRight className="w-4 h-4" />
-                  </Link>
-                </motion.div>
-              </motion.section>
+                    </motion.div>
+                  ))}
+              </div>
             )}
 
             {/* Generic Sub-Page Content */}
@@ -1202,7 +1323,7 @@ export default function OTTMovieDetailPage({
                       </h3>
                       <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
                         <p className="text-zinc-300 leading-relaxed text-base mb-6">{article.summary || "Trade analysis coming soon."}</p>
-                        {contentSections?.map((section, idx) => (
+                        {contentSections?.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                           <div key={idx} className="mb-6 last:mb-0">
                             <h4 className="text-lg font-bold text-white mb-3">{section.heading}</h4>
                             <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1243,7 +1364,7 @@ export default function OTTMovieDetailPage({
                       </div>
                       {contentSections?.length > 0 && (
                         <div className="space-y-6">
-                          {contentSections.map((section, idx) => (
+                          {contentSections.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                             <div key={idx} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800">
                               <h3 className="text-xl font-bold text-white mb-3">{section.heading}</h3>
                               <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1290,7 +1411,7 @@ export default function OTTMovieDetailPage({
                       )}
                       {contentSections?.length > 0 && (
                         <div className="space-y-6">
-                          {contentSections.map((section, idx) => (
+                          {contentSections.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                             <div key={idx} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800">
                               <h3 className="text-xl font-bold text-white mb-3">{section.heading}</h3>
                               <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1314,7 +1435,7 @@ export default function OTTMovieDetailPage({
                       </div>
                       {contentSections?.length > 0 ? (
                         <div className="space-y-6">
-                          {contentSections.map((section, idx) => (
+                          {contentSections.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                             <div key={idx} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800 border-l-4 border-l-orange-500">
                               <h3 className="text-xl font-bold text-white mb-3">{section.heading}</h3>
                               <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1360,7 +1481,7 @@ export default function OTTMovieDetailPage({
                       )}
                       {contentSections?.length > 0 ? (
                         <div className="space-y-6">
-                          {contentSections.map((section, idx) => (
+                          {contentSections.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                             <div key={idx} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800">
                               <h3 className="text-xl font-bold text-white mb-3">{section.heading}</h3>
                               <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1399,7 +1520,7 @@ export default function OTTMovieDetailPage({
                       </div>
                       {contentSections?.length > 0 && (
                         <div className="space-y-6">
-                          {contentSections.map((section, idx) => (
+                          {contentSections.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                             <div key={idx} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800">
                               <h3 className="text-xl font-bold text-white mb-3">{section.heading}</h3>
                               <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1437,7 +1558,7 @@ export default function OTTMovieDetailPage({
                       </div>
                       {contentSections?.length > 0 ? (
                         <div className="space-y-6">
-                          {contentSections.map((section, idx) => (
+                          {contentSections.filter(s => !s.heading?.toLowerCase().includes('faq')).map((section, idx) => (
                             <div key={idx} className="p-6 rounded-2xl bg-gray-900/50 border border-gray-800">
                               <h3 className="text-xl font-bold text-white mb-3">{section.heading}</h3>
                               <p className="text-zinc-400 leading-relaxed">{section.content}</p>
@@ -1524,26 +1645,29 @@ export default function OTTMovieDetailPage({
             </div>
 
             {/* FAQ Section */}
-            <motion.div
-              initial={{ y: 30, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="pt-16 border-t border-gray-800"
-            >
-              <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
-                <h2 className="text-2xl font-bold text-white flex items-center gap-3">
-                  <HelpCircle className="w-6 h-6 text-red-500" /> Frequently Asked Questions
-                </h2>
-                <span className="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full">{faqs.length} questions</span>
-              </div>
-              <FAQDropdown faqs={faqs} loading={loadingFAQs} />
-              <div className="mt-8 text-center">
-                <p className="text-xs text-gray-600 uppercase tracking-wider">
-                  Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400">Contact our film experts</Link>
-                </p>
-              </div>
-            </motion.div>
+            {faqs.length > 0 && (
+              <motion.div
+                initial={{ y: 30, opacity: 0 }}
+                whileInView={{ y: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="pt-16 border-t border-gray-800"
+              >
+                <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                    <HelpCircle className="w-6 h-6 text-red-500" /> Frequently Asked Questions
+                  </h2>
+                  <span className="text-xs text-gray-500 bg-gray-800 px-3 py-1 rounded-full">{faqs.length} questions</span>
+                </div>
+                <FAQDropdown faqs={faqs} loading={false} />
+                <div className="mt-8 text-center">
+                  <p className="text-xs text-gray-600 uppercase tracking-wider">
+                    Still have questions? <Link href="/contact" className="text-red-500 hover:text-red-400">Contact our film experts</Link>
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </div>
           </div>
         </main>
       </div>
