@@ -1,7 +1,7 @@
 "use client";
  import { useState } from "react";
  import Link from "next/link";
- import { Flame, Menu, X, Shield } from "lucide-react";
+ import { Flame, Menu, X, Shield, LogIn } from "lucide-react";
  
  const SiteHeader = () => {
    const [openMobile, setOpenMobile] = useState(false);
@@ -75,7 +75,7 @@
                 href="/admin/login"
                 className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-red-600/25"
               >
-                <Shield className="w-4 h-4" />
+                <LogIn className="w-4 h-4" />
                 Admin Login
               </Link>
 

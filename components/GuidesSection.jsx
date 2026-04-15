@@ -90,7 +90,7 @@ export default function GuidesSection() {
                 <div className="mt-3 flex items-start justify-between gap-6">
                   <div>
                     <h3 className="text-2xl md:text-3xl text-white font-bold leading-tight mb-4 transition-colors group-hover:text-red-500">
-                      {g.title}
+                      {g.title?.replace(" (null)", "").replace("(null)", "")}
                     </h3>
                     <p className="mt-0 text-gray-400 text-lg leading-relaxed max-w-3xl">
                       {g.summary}

@@ -109,9 +109,11 @@ export default async function handler(req, res) {
         // Custom redirection logic based on requirements
         if (a.category === "Bollywood" || a.category === "Hollywood") {
           href = `/movie/${a.slug}`;
-        } else if (a.category === "OTT" || a.category === "WebSeries") {
+        } else if (a.category === "OTT") {
           const platform = a.ott?.platform?.toLowerCase()?.replace(/\s+/g, "-") || "netflix";
           href = `/ott/${platform}/${a.slug}`;
+        } else if (a.category === "WebSeries") {
+          href = `/category/webseries/${a.slug}`;
         }
 
         return {
