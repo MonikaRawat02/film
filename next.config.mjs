@@ -12,6 +12,14 @@ const nextConfig = {
       {
         source: '/bollywood/movies/:slug*',
         destination: '/category/bollywood/:slug*',
+      },
+      {
+        source: '/articles/:category/:slug*',
+        destination: '/category/:category/:slug*',
+      },
+      {
+        source: '/ott/:slug((?!.*\/).*)',
+        destination: '/ott/streaming/:slug',
       }
     ]
   },

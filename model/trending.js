@@ -87,6 +87,14 @@ const trendingSchema = new mongoose.Schema({
     default: {}
   },
 
+  // Region (User's requirement #9)
+  region: {
+    type: String,
+    default: "IN",
+    uppercase: true,
+    trim: true
+  },
+
   // Timestamps (User's requirement #7)
   trendTimestamp: {
     type: Date,
@@ -101,16 +109,18 @@ const trendingSchema = new mongoose.Schema({
 });
 
 // Indexes for efficient querying (User's requirement #8)
-trendingSchema.index({ type: 1, status: 1, score: -1 });
-trendingSchema.index({ entityType: 1, status: 1 });
-trendingSchema.index({ source: 1, trendTimestamp: -1 });
+trendingSchema.index({ type: 1, status: 1, score: -1, region: 1 });
+trendingSchema.index({ entityType: 1, status: 1, region: 1 });
+trendingSchema.index({ source: 1, trendTimestamp: -1, region: 1 });
+trendingSchema.index({ region: 1 });
 trendingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 // Static method to get trending items by type
-trendingSchema.statics.getTrendingByType = async function (type, limit = 10) {
+trendingSchema.statics.getTrendingByType = async function (type, limit = 10, region = "IN") {
   return await this.find({
     type,
     status: "active",
+    region: region.toUpperCase(),
     $or: [
       { expiresAt: { $exists: false } },
       { expiresAt: { $gte: new Date() } }
@@ -122,10 +132,10 @@ trendingSchema.statics.getTrendingByType = async function (type, limit = 10) {
 };
 
 // Static method to get all trending items (User's requirement #8)
-trendingSchema.statics.getAllTrending = async function (limit = 10) {
-  const movies = await this.getTrendingByType("trending_movies", limit);
-  const actors = await this.getTrendingByType("trending_actors", limit);
-  const topics = await this.getTrendingByType("viral_topics", limit);
+trendingSchema.statics.getAllTrending = async function (limit = 10, region = "IN") {
+  const movies = await this.getTrendingByType("trending_movies", limit, region);
+  const actors = await this.getTrendingByType("trending_actors", limit, region);
+  const topics = await this.getTrendingByType("viral_topics", limit, region);
 
   return {
     trending_movies: movies,

@@ -93,10 +93,6 @@ const FeaturedSpotlight = ({ item, rank }) => {
       <div className="absolute top-5 left-6 z-10 select-none pointer-events-none">
         <span className="text-[88px] font-black text-white/[0.06] leading-none">{String(rank).padStart(2, "0")}</span>
       </div>
-      <div className="absolute top-5 right-5 z-10 flex items-center gap-2 bg-black/55 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10">
-        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
-        <span className="text-[10px] font-black text-white tracking-widest uppercase">Live</span>
-      </div>
       {/* Source badge */}
       {item.source && item.source !== "intelligence" && (
         <div className="absolute top-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 bg-black/55 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
@@ -112,16 +108,6 @@ const FeaturedSpotlight = ({ item, rank }) => {
         <p className="text-zinc-400 text-sm leading-relaxed line-clamp-2 mb-5">
           {item.description || "Deep intelligence analysis and insights."}
         </p>
-        <div className="flex items-center gap-4">
-          <Link href={href}
-            className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r ${grad} text-white font-bold text-sm shadow-2xl hover:scale-105 active:scale-95 transition-transform`}>
-            <Play className="w-3.5 h-3.5 fill-white" /> Read Now
-          </Link>
-          <div className="flex items-center gap-3 text-xs text-zinc-500">
-            <span className="flex items-center gap-1"><Eye className="w-3 h-3" />{item.views || "2.1K"}</span>
-            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{item.readTime || "6 min"}</span>
-          </div>
-        </div>
       </div>
     </motion.div>
   );
@@ -742,7 +728,6 @@ export default function TrendingExplainersPage() {
                 <span className="text-[10px] text-zinc-600">{rawTrending.youtube.length} YouTube</span></>
               )}
             </div>
-            <Link href="/" className="text-[10px] text-zinc-700 hover:text-white transition-colors">← Home</Link>
           </div>
         </div>
 
@@ -750,7 +735,6 @@ export default function TrendingExplainersPage() {
 
           {/* ═══ 1. COMMAND CENTER ══════════════════════════════ */}
           <div className="pt-10 pb-14">
-            <SectionDivider label="Command Center" sub="Click a rank to preview" />
             {loading ? (
               <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 animate-pulse">
                 <div className="space-y-2">{[...Array(8)].map((_, i) => <div key={i} className="h-14 rounded-xl bg-white/[0.04]" />)}</div>
@@ -800,7 +784,6 @@ export default function TrendingExplainersPage() {
           {/* ═══ 4. FILM STRIP ────────────────────────────────── */}
           {!loading && filmItems.length > 0 && (
             <section className="py-14 border-t border-white/[0.04]">
-              <SectionDivider label="Film Strip" sub="Scroll horizontally →" />
               <FilmStripScroll items={filmItems} />
             </section>
           )}

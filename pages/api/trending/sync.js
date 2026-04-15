@@ -133,6 +133,8 @@ function calculateScore(trend) {
 }
 
 export default async function handler(req, res) {
+  const { region = "IN" } = req.query;
+
   // Verify CRON secret
   if (req.method === "POST") {
     const secret = req.headers["x-cron-secret"];
@@ -147,19 +149,20 @@ export default async function handler(req, res) {
     await dbConnect();
 
     console.log("\n" + "=".repeat(70));
-    console.log("🚀 Starting Trend Sync & Enrichment Pipeline");
+    console.log(`🚀 Starting Trend Sync & Enrichment Pipeline for Region: ${region.toUpperCase()}`);
     console.log("=".repeat(70));
 
     // Step 1: Fetch raw trends from all sources
-    console.log("\n📊 Step 1: Fetching trends from Google & YouTube...");
-    const rawTrends = await fetchAllTrends("IN");
+    console.log(`\n📊 Step 1: Fetching trends from Google & YouTube for ${region.toUpperCase()}...`);
+    const rawTrends = await fetchAllTrends(region.toUpperCase());
     console.log(`   ✅ Fetched ${rawTrends.length} raw trends`);
 
     if (rawTrends.length === 0) {
       return res.status(200).json({
         success: true,
-        message: "No trends found",
-        stats: { processed: 0, validated: 0, rejected: 0, movies: 0, actors: 0, topics: 0 }
+        message: `No trends found for ${region.toUpperCase()}`,
+        stats: { processed: 0, validated: 0, rejected: 0, movies: 0, actors: 0, topics: 0 },
+        region: region.toUpperCase()
       });
     }
 
@@ -198,19 +201,21 @@ export default async function handler(req, res) {
 
           // Create record for database
           const trendRecord = {
-            title: enriched.title,
+            title: validation.title,
+            originalTitle: preprocessed.title,
             type: validation.type,
             entityType: validation.entityType,
-            referenceId: enriched.referenceId,
-            referenceModel: enriched.referenceModel,
+            referenceId: validation.referenceId,
+            referenceModel: validation.referenceModel,
             slug: validation.slug,
-            source: enriched.source,
-            traffic: enriched.traffic || 0,
-            viewCount: enriched.viewCount || 0,
-            keywords: enriched.keywords || [],
-            classificationConfidence: enriched.classificationConfidence || 0.5,
+            source: preprocessed.source || "manual",
+            traffic: preprocessed.traffic || 0,
+            viewCount: preprocessed.viewCount || 0,
+            keywords: preprocessed.keywords || [],
+            classificationConfidence: preprocessed.classificationConfidence || 0.5,
             status: "active",
-            trendTimestamp: new Date(enriched.timestamp),
+            region: region.toUpperCase(), // Store region
+            trendTimestamp: new Date(preprocessed.timestamp || Date.now()),
             expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             metadata: enriched.metadata,
             score: score,
@@ -218,34 +223,28 @@ export default async function handler(req, res) {
 
           return { success: true, record: trendRecord, validation, enriched, score };
         } catch (error) {
-          return { success: false, title: rawTrend.title, error: error.message };
+          console.error(`   ❌ Error processing "${rawTrend.title.substring(0, 30)}...": ${error.message}`);
+          return { success: false, title: rawTrend.title, reason: error.message };
         }
       }));
 
-      // Process batch results
+      // Handle batch results
       for (const res of results) {
         if (res.success) {
           trendingRecords.push(res.record);
-          validatedDetails.push({
-            title: res.record.title,
-            type: res.record.type,
-            score: res.score,
-            image: res.record.metadata?.coverImage || res.record.metadata?.profileImage || null
-          });
-
-          const typeLabel = res.record.type === "trending_movies" ? "🎬" : res.record.type === "trending_actors" ? "👤" : "📊";
-          console.log(`   ${typeLabel} Validated & enriched: "${res.record.title.substring(0, 30)}..." (Score: ${res.score})`);
-
+          validatedDetails.push({ title: res.record.title, type: res.record.type, score: res.score, region: region.toUpperCase() });
           validated++;
           if (res.record.type === "trending_movies") movies++;
           else if (res.record.type === "trending_actors") actors++;
           else if (res.record.type === "viral_topics") topics++;
         } else {
-          console.log(`   ⏭️  Skipped/Error: "${res.title.substring(0, 40)}..." (${res.reason || res.error})`);
-          rejectedDetails.push({ title: res.title, reason: res.reason || res.error });
+          rejectedDetails.push({ title: res.title, reason: res.reason });
           rejected++;
         }
       }
+
+      // Small delay between batches
+      await new Promise(r => setTimeout(r, 200));
     }
 
     console.log(`\n📝 Processing Complete`);
@@ -258,31 +257,39 @@ export default async function handler(req, res) {
     if (trendingRecords.length > 0) {
       console.log(`\n💾 Step 3: Saving to database...`);
 
-      // Delete expired trends
+      // Delete expired trends for this region
       const expiredCount = await Trending.deleteMany({
-        expiresAt: { $lt: new Date() }
+        region: region.toUpperCase(),
+        expiresAt: { $lt: new Date() },
       });
-      console.log(`   🗑️  Cleaned up ${expiredCount.deletedCount} expired trends`);
+      console.log(`   🗑️  Cleaned up ${expiredCount.deletedCount} expired trends for ${region.toUpperCase()}`);
 
       // Upsert new trends
+      let saved = 0;
       for (const record of trendingRecords) {
         await Trending.findOneAndUpdate(
-          { title: record.title, source: record.source },
+          { 
+            title: record.title, 
+            source: record.source,
+            type: record.type,
+            region: record.region // Add region to uniqueness check
+          },
           record,
           { upsert: true, returnDocument: 'after' }
         );
+        saved++;
       }
 
-      console.log(`   ✅ Saved ${trendingRecords.length} trends to database`);
+      console.log(`   ✅ Saved ${saved} trends to database for ${region.toUpperCase()}`);
     }
 
     console.log("\n" + "=".repeat(70));
-    console.log("✅ Sync & Enrichment Pipeline Complete!");
+    console.log(`✅ Trend Sync Complete for ${region.toUpperCase()}!`);
     console.log("=".repeat(70) + "\n");
 
     return res.status(200).json({
       success: true,
-      message: "Trends synced and enriched successfully",
+      message: `Trend sync completed for ${region.toUpperCase()}`,
       stats: {
         processed: rawTrends.length,
         validated,
@@ -291,9 +298,10 @@ export default async function handler(req, res) {
         actors,
         topics,
         saved: trendingRecords.length,
+        region: region.toUpperCase()
       },
       validatedData: validatedDetails,
-      rejectedData: rejectedDetails
+      rejectedData: rejectedDetails.length > 0 ? rejectedDetails : undefined
     });
   } catch (error) {
     console.error("❌ Sync Pipeline Error:", error.message);

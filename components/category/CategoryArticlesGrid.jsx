@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Flame, Sparkles, Film, Clock, Eye, ArrowRight, Star, Users, DollarSign, Tv } from "lucide-react";
+import { slugify } from "@/lib/slugify";
 
 export default function CategoryArticlesGrid({ category, articles, loading, filterType }) {
   const renderItem = (item) => {
@@ -133,11 +134,21 @@ export default function CategoryArticlesGrid({ category, articles, loading, filt
       );
     }
 
+    // Determine the correct href based on category and platform
+    let itemHref = `/category/${item.category?.toLowerCase() || 'bollywood'}/${item.slug}`;
+    
+    if (item.category?.toLowerCase() === 'ott') {
+      const platformSlug = item.ott?.platform ? slugify(item.ott.platform) : 'streaming';
+      itemHref = `/ott/${platformSlug}/${item.slug}`;
+    } else if (item.category?.toLowerCase() === 'bollywood') {
+      itemHref = `/bollywood/movies/${item.slug}`;
+    }
+
     // Handle Article data (Explained, Industry, or default)
     return (
       <Link
         key={item._id}
-        href={item.category?.toLowerCase() === 'ott' ? `/ott/${item.slug}` : `/category/${item.category?.toLowerCase() || 'bollywood'}/${item.slug}`}
+        href={itemHref}
         className="group bg-zinc-900/50 border border-zinc-800 rounded-2xl overflow-hidden hover:border-amber-500/30 transition-all duration-300 hover:-translate-y-1"
       >
         <div className="aspect-video relative overflow-hidden">

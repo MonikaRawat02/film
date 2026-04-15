@@ -389,6 +389,8 @@ function calculateScore(trend) {
 }
 
 export default async function handler(req, res) {
+  const { region = "IN" } = req.query;
+
   // Verify CRON secret for POST requests
   if (req.method === "POST") {
     const secret = req.headers["x-cron-secret"];
@@ -403,15 +405,15 @@ export default async function handler(req, res) {
     await dbConnect();
 
     console.log("\n" + "=".repeat(70));
-    console.log("🎬 Starting YouTube Trends Sync Pipeline");
+    console.log(`🎬 Starting YouTube Trends Sync Pipeline for Region: ${region.toUpperCase()}`);
     console.log("=".repeat(70));
 
     // Step 1: Fetch ONLY YouTube data (3 categories)
-    console.log("\n📺 Step 1: Fetching YouTube trending data from 3 categories...");
+    console.log(`\n📺 Step 1: Fetching YouTube trending data from 3 categories for ${region.toUpperCase()}...`);
     const [ytFilmTrends, ytEntTrends, ytMovieTrends] = await Promise.all([
-      fetchYouTubeTrending("Film & Animation", "IN"),
-      fetchYouTubeTrending("Entertainment", "IN"),
-      fetchYouTubeTrending("Movies", "IN"),
+      fetchYouTubeTrending("Film & Animation", region.toUpperCase()),
+      fetchYouTubeTrending("Entertainment", region.toUpperCase()),
+      fetchYouTubeTrending("Movies", region.toUpperCase()),
     ]);
 
     const rawTrends = [...ytFilmTrends, ...ytEntTrends, ...ytMovieTrends];
@@ -422,13 +424,13 @@ export default async function handler(req, res) {
     );
 
     console.log(
-      `   ✅ Fetched ${uniqueTrends.length} unique YouTube trends (Film: ${ytFilmTrends.length}, Entertainment: ${ytEntTrends.length}, Movies: ${ytMovieTrends.length})`
+      `   ✅ Fetched ${uniqueTrends.length} unique YouTube trends for ${region.toUpperCase()} (Film: ${ytFilmTrends.length}, Entertainment: ${ytEntTrends.length}, Movies: ${ytMovieTrends.length})`
     );
 
     if (uniqueTrends.length === 0) {
       return res.status(200).json({
         success: true,
-        message: "No YouTube trends found",
+        message: `No YouTube trends found for ${region.toUpperCase()}`,
         stats: {
           processed: 0,
           validated: 0,
@@ -437,6 +439,7 @@ export default async function handler(req, res) {
           actors: 0,
           topics: 0,
           source: "youtube",
+          region: region.toUpperCase()
         },
         validatedData: [],
         rejectedData: []
@@ -500,6 +503,7 @@ export default async function handler(req, res) {
           keywords: preprocessed.keywords || [],
           classificationConfidence: preprocessed.classificationConfidence || 0.5,
           status: "active",
+          region: region.toUpperCase(), // Store region
           trendTimestamp: new Date(preprocessed.timestamp || Date.now()),
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
           metadata: {
@@ -525,7 +529,8 @@ export default async function handler(req, res) {
           image: enriched.poster || enriched.image || validation.metadata?.thumbnail || validation.metadata?.coverImage || null,
           slug: validation.slug,
           referenceId: validation.referenceId,
-          localMatch: true
+          localMatch: true,
+          region: region.toUpperCase()
         });
 
         validated++;
@@ -565,12 +570,13 @@ export default async function handler(req, res) {
     if (trendingRecords.length > 0) {
       console.log(`\n💾 Step 3: Saving to database...`);
 
-      // Delete expired YouTube trends
+      // Delete expired YouTube trends for this region
       const expiredCount = await Trending.deleteMany({
         source: "youtube",
+        region: region.toUpperCase(),
         expiresAt: { $lt: new Date() },
       });
-      console.log(`   🗑️  Cleaned up ${expiredCount.deletedCount} expired YouTube trends`);
+      console.log(`   🗑️  Cleaned up ${expiredCount.deletedCount} expired YouTube trends for ${region.toUpperCase()}`);
 
       // Upsert new trends
       let saved = 0;
@@ -579,7 +585,8 @@ export default async function handler(req, res) {
           { 
             title: record.title, 
             source: "youtube",
-            type: record.type 
+            type: record.type,
+            region: record.region // Add region to uniqueness check
           },
           record,
           { upsert: true, returnDocument: 'after' }
@@ -587,16 +594,16 @@ export default async function handler(req, res) {
         saved++;
       }
 
-      console.log(`   ✅ Saved ${saved} YouTube trends to database`);
+      console.log(`   ✅ Saved ${saved} YouTube trends to database for ${region.toUpperCase()}`);
     }
 
     console.log("\n" + "=".repeat(70));
-    console.log("✅ YouTube Trends Sync Complete!");
+    console.log(`✅ YouTube Trends Sync Complete for ${region.toUpperCase()}!`);
     console.log("=".repeat(70) + "\n");
 
     return res.status(200).json({
       success: true,
-      message: "YouTube trends synced successfully",
+      message: `YouTube trends synced successfully for ${region.toUpperCase()}`,
       stats: {
         processed: uniqueTrends.length,
         validated,
@@ -606,6 +613,7 @@ export default async function handler(req, res) {
         topics,
         saved: trendingRecords.length,
         source: "youtube",
+        region: region.toUpperCase()
       },
       validatedData: validatedDetails,
       rejectedData: rejectedDetails.length > 0 ? rejectedDetails : undefined
