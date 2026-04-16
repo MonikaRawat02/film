@@ -134,6 +134,7 @@ function parseFAQsFromContent(content) {
 function extractFAQsFromSections(sections) {
   if (!sections || !Array.isArray(sections)) return [];
   
+  // Method 1: Look for FAQ sections with Q&A in content
   for (const section of sections) {
     if (section.heading?.toLowerCase().includes('faq') || 
         section.content?.includes('Q1:') || 
@@ -142,6 +143,30 @@ function extractFAQsFromSections(sections) {
       if (parsed.length > 0) return parsed;
     }
   }
+  
+  // Method 2: Extract FAQs from sections where heading is the question (Q1:, Q2:, etc.)
+  const faqs = [];
+  for (const section of sections) {
+    // Check if heading matches Q1:, Q2:, **Q1:**, etc.
+    const questionMatch = section.heading?.match(/^[\*\s]*(Q\.?\s*\d+[:\.]?\s*)(.+)$/i);
+    if (questionMatch && section.content) {
+      // Extract question from heading (remove Q1:, ** markers, etc.)
+      const question = questionMatch[2].replace(/\*\*/g, '').trim();
+      
+      // Extract answer from content (remove **A1:**, **A:**, etc.)
+      let answer = section.content
+        .replace(/\*\*[Aa]\.?\s*\d*[:\.]?\s*\*\*/g, '') // Remove **A1:**
+        .replace(/[Aa]\.?\s*\d*[:\.]?\s*/g, '') // Remove A1:
+        .replace(/\*\*/g, '') // Remove remaining **
+        .trim();
+      
+      if (question && answer && question.length > 3) {
+        faqs.push({ question, answer });
+      }
+    }
+  }
+  
+  if (faqs.length > 0) return faqs;
   
   return [];
 }
@@ -1061,21 +1086,61 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       <DollarSign className="w-4 h-4 text-blue-500" />
                       Budget Analysis
                     </h3>
-                    {article.budget && (
-                      <div className="mb-3">
-                        <p className="text-[10px] text-gray-500 uppercase mb-1">Production Budget</p>
-                        <p className="text-xl font-bold text-blue-400">{article.budget}</p>
+                    
+                    {/* Budget Data from Article */}
+                    <div className="space-y-3 mb-4">
+                      {article.budget && (
+                        <div className="p-3 rounded-lg bg-blue-600/10 border border-blue-500/20">
+                          <p className="text-[10px] text-blue-400 uppercase mb-1">Production Budget</p>
+                          <p className="text-lg font-bold text-white">{article.budget}</p>
+                        </div>
+                      )}
+                      
+                      {article.boxOffice?.worldwide && (
+                        <div className="p-3 rounded-lg bg-green-600/10 border border-green-500/20">
+                          <p className="text-[10px] text-green-400 uppercase mb-1">Worldwide Collection</p>
+                          <p className="text-lg font-bold text-white">{article.boxOffice.worldwide}</p>
+                        </div>
+                      )}
+                      
+                      {article.boxOffice?.india && (
+                        <div className="p-3 rounded-lg bg-emerald-600/10 border border-emerald-500/20">
+                          <p className="text-[10px] text-emerald-400 uppercase mb-1">India Collection</p>
+                          <p className="text-lg font-bold text-white">{article.boxOffice.india}</p>
+                        </div>
+                      )}
+                      
+                      {article.boxOffice?.openingWeekend && (
+                        <div className="p-3 rounded-lg bg-purple-600/10 border border-purple-500/20">
+                          <p className="text-[10px] text-purple-400 uppercase mb-1">Opening Weekend</p>
+                          <p className="text-lg font-bold text-white">{article.boxOffice.openingWeekend}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Summary if available */}
+                    {article.summary && (
+                      <div className="mb-4 pb-4 border-b border-gray-800">
+                        <p className="text-xs text-gray-400 leading-relaxed">
+                          {getCompleteSentence(article.summary, 200)}
+                        </p>
                       </div>
                     )}
-                    {article.pSEO_Content_budget && article.pSEO_Content_budget.length > 1 && (
-                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_budget.slice(0, 4).map((section, idx) => (
+                    
+                    {/* pSEO Content Sections */}
+                    {article.pSEO_Content_budget && article.pSEO_Content_budget.length > 0 ? (
+                      <div className="space-y-3">
+                        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Detailed Analysis</p>
+                        {article.pSEO_Content_budget.filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 5).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                            <p className="text-xs font-bold text-white mb-2">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 250)}</p>
                           </div>
                         ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-lg bg-gray-800/30 border border-gray-700">
+                        <p className="text-xs text-gray-500 italic">Detailed budget analysis is being prepared. Check back soon for comprehensive financial breakdown.</p>
                       </div>
                     )}
                   </>
@@ -1088,27 +1153,70 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                       <Tv className="w-4 h-4 text-purple-500" />
                       OTT Release Details
                     </h3>
-                    {article.ott?.platform && (
-                      <div className="mb-3 p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
-                        <p className="text-[10px] text-purple-400 uppercase mb-1">Streaming On</p>
-                        <p className="text-lg font-bold text-white">{article.ott.platform}</p>
+                    
+                    {/* OTT Data from Article */}
+                    <div className="space-y-3 mb-4">
+                      {article.ott?.platform && (
+                        <div className="p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
+                          <p className="text-[10px] text-purple-400 uppercase mb-1">Streaming Platform</p>
+                          <p className="text-lg font-bold text-white">{article.ott.platform}</p>
+                          {article.ott.link && (
+                            <a 
+                              href={article.ott.link} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 mt-2 text-xs text-purple-400 hover:text-purple-300 transition-colors"
+                            >
+                              Watch Now <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+                      )}
+                      
+                      {article.ott?.releaseDate && (
+                        <div className="p-3 rounded-lg bg-pink-600/10 border border-pink-500/20">
+                          <p className="text-[10px] text-pink-400 uppercase mb-1">OTT Release Date</p>
+                          <p className="text-lg font-bold text-white">
+                            {new Date(article.ott.releaseDate).toLocaleDateString('en-IN', { 
+                              day: 'numeric', 
+                              month: 'long', 
+                              year: 'numeric' 
+                            })}
+                          </p>
+                        </div>
+                      )}
+                      
+                      {article.releaseDate && (
+                        <div className="p-3 rounded-lg bg-blue-600/10 border border-blue-500/20">
+                          <p className="text-[10px] text-blue-400 uppercase mb-1">Theatrical Release</p>
+                          <p className="text-lg font-bold text-white">{article.releaseDate}</p>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Summary if available */}
+                    {article.summary && (
+                      <div className="mb-4 pb-4 border-b border-gray-800">
+                        <p className="text-xs text-gray-400 leading-relaxed">
+                          {getCompleteSentence(article.summary, 200)}
+                        </p>
                       </div>
                     )}
-                    {article.ott?.releaseDate && (
-                      <div className="mb-3">
-                        <p className="text-[10px] text-gray-500 uppercase mb-1">Release Date</p>
-                        <p className="text-sm font-bold text-white">{article.ott.releaseDate}</p>
-                      </div>
-                    )}
-                    {article.pSEO_Content_ott_release && article.pSEO_Content_ott_release.length > 1 && (
-                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_ott_release.slice(0, 4).map((section, idx) => (
+                    
+                    {/* pSEO Content Sections */}
+                    {article.pSEO_Content_ott_release && article.pSEO_Content_ott_release.length > 0 ? (
+                      <div className="space-y-3">
+                        <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Streaming Details & Analysis</p>
+                        {article.pSEO_Content_ott_release.filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 5).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
+                            <p className="text-xs font-bold text-white mb-2">{section.heading}</p>
+                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 250)}</p>
                           </div>
                         ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 rounded-lg bg-gray-800/30 border border-gray-700">
+                        <p className="text-xs text-gray-500 italic">OTT release details are being updated. Check back soon for complete streaming information.</p>
                       </div>
                     )}
                   </>
@@ -1557,11 +1665,78 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                 The commercial performance of {article.movieTitle} has been analyzed based on its box office collection, 
                 budget recovery, and audience reception. This verdict reflects the film's success in the competitive market.
               </p>
+
+              {/* Hit or Flop FAQs Section - Extract from pSEO_Content_hit_or_flop */}
+              {(() => {
+                const verdictFaqs = extractFAQsFromSections(article.pSEO_Content_hit_or_flop);
+                
+                // Get non-FAQ sections for hit-or-flop (exclude FAQ sections and Q&A heading sections)
+                const nonFaqSections = (article.pSEO_Content_hit_or_flop || []).filter(section => {
+                  // Exclude sections with FAQ in heading
+                  if (section.heading?.toLowerCase().includes('faq')) return false;
+                  
+                  // Exclude sections where heading is a question (Q1:, Q2:, **Q1:**, etc.)
+                  if (/^[\*\s]*(Q\.?\s*\d+[:\.]?)/i.test(section.heading || '')) return false;
+                  
+                  // Exclude sections with Q&A patterns in content
+                  if (section.content?.includes('**Q') || 
+                      section.content?.includes('Q1:') ||
+                      /^\s*\d+\.\s+\*\*/.test(section.content)) return false;
+                  
+                  // Keep this section (it's regular content, not FAQ)
+                  return true;
+                });
+                
+                return (
+                  <>
+                    {/* Non-FAQ Content Sections */}
+                    {nonFaqSections.length > 0 && (
+                      <div className="space-y-8 mb-12">
+                        {nonFaqSections.map((section, idx) => (
+                          <div key={idx}>
+                            <h3 className="text-xl font-bold text-white mb-4">{section.heading}</h3>
+                            <div className="space-y-4">
+                              {section.content?.split('\n\n').map((para, i) => (
+                                <p key={i} className="text-zinc-400 leading-relaxed">{para}</p>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* FAQ Section */}
+                    {verdictFaqs.length > 0 && (
+                      <div className="mt-12 pt-8 border-t border-gray-800">
+                        {/* FAQ Header */}
+                        <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+                          <h3 className="text-xl font-bold text-white flex items-center gap-3">
+                            <span className="w-10 h-10 rounded-full bg-gradient-to-br from-red-600 to-pink-600 flex items-center justify-center shadow-lg shadow-red-900/30">
+                              <HelpCircle className="w-5 h-5 text-white" />
+                            </span>
+                            Frequently Asked Questions
+                          </h3>
+                          <span className="text-xs font-medium text-gray-400 bg-gray-800/80 px-3 py-1.5 rounded-full border border-gray-700">{verdictFaqs.length} questions</span>
+                        </div>
+                        
+                        {/* FAQ Container Card */}
+                        <div className="rounded-2xl border border-gray-800/80 bg-gradient-to-b from-[#1a1a2e]/40 to-[#1a1a2e]/20 p-6 backdrop-blur-sm">
+                          <div className="space-y-3">
+                            {verdictFaqs.map((faq, i) => (
+                              <FAQItem key={i} question={faq.question} answer={faq.answer} index={i} />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
             </section>
           )}
 
           {/* Generic Content Sections - Sub-pages only */}
-          {sections && sections.length > 0 && pageType !== "cast" && pageType !== "overview" && (
+          {sections && sections.length > 0 && pageType !== "cast" && pageType !== "overview" && pageType !== "hit-or-flop" && (
             <div className="space-y-12 mt-12">
               {sections.map((section, idx) => {
                 // Check if this section is a Q&A formatted section (FAQ or numbered questions)
