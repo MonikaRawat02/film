@@ -5,10 +5,8 @@ import { useRouter } from "next/router";
 import { slugify } from "@/lib/slugify";
 import { motion } from "framer-motion";
 import { 
-  ArrowLeft, BarChart3, Share2, Clock, User, 
-  Calendar, DollarSign, Users, Play, Award,
-  Check, Download, ExternalLink, ChevronRight, Eye, Briefcase,
-  Target, HelpCircle, ShieldCheck, Film, List, Zap, TrendingUp, Star, BookOpen, Tv, Tag, Info, Heart, FileText, ChevronDown ,
+  ArrowLeft, BarChart3, User, DollarSign, Users, Award, ExternalLink, ChevronRight, Briefcase,
+  Target, HelpCircle, ShieldCheck, Film, TrendingUp, Star, BookOpen, Tv, Tag, Info, Heart, FileText ,Zap
 } from "lucide-react";
 
 // Utility function to extract complete sentences without cutting mid-word
@@ -1826,7 +1824,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
 
                 {/* Scrollable Container */}
                 {dynamicRecommendations && dynamicRecommendations.length > 0 ? (
-                  <div id="recommendations-scroll" className="flex gap-4 overflow-x-auto pb-8 snap-x scrollbar-hide">
+                  <div id="recommendations-scroll" className="flex gap-4 overflow-x-auto pb-8 snap-x ">
                     {dynamicRecommendations.map((rec, i) => (
                       <Link key={i} href={`${categoryPageUrl}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
                         <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-gray-700 group-hover/rec:border-red-500/30 transition-all shadow-lg">
