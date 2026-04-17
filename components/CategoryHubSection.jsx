@@ -19,7 +19,10 @@ export default function CategoryHubSection() {
         const res = await fetch("/api/public/category-counts");
         const data = await res.json();
         if (data.success) {
+          console.log("Category counts received:", data.counts);
           setCounts(data.counts);
+        } else {
+          console.error("Failed to fetch category counts:", data);
         }
       } catch (error) {
         console.error("Failed to fetch category counts", error);
