@@ -33,6 +33,7 @@ export default async function handler(req, res) {
       "cast",
       "review-analysis",
       "hit-or-flop",
+      "genres",
     ];
 
     // If content is empty for a page type, try to populate it from existing sections as a baseline
@@ -53,6 +54,7 @@ export default async function handler(req, res) {
     populateFromSections(["cast", "starring", "characters"], "pSEO_Content_cast");
     populateFromSections(["reception", "critical", "review"], "pSEO_Content_review_analysis");
     populateFromSections(["verdict", "box office"], "pSEO_Content_hit_or_flop");
+    populateFromSections(["genre", "theme", "style", "category"], "pSEO_Content_genres");
 
     let generatedCount = 0;
     for (const pageType of subPageTypes) {

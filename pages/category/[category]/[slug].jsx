@@ -236,30 +236,38 @@ export async function getServerSideProps(context) {
 
     const article = data.data;
 
-    // Fetch dynamic recommendations based on User Score (Rating) from the same category
+    // Fetch dynamic recommendations - Show ALL data from API response
     let dynamicRecommendations = [];
     try {
-      // Use includeDrafts=true and case-insensitive category (handled by API now)
-      const recRes = await fetch(`${baseUrl}/api/articles/list?category=${category}&limit=20&includeDrafts=true`);
-      const recData = await recRes.json();
+      // PRIORITY 1: Fetch trending movies - show ALL results
+      const trendingRes = await fetch(`${baseUrl}/api/trending?type=trending_movies&limit=20`);
+      const trendingData = await trendingRes.json();
       
-      if (recData.success && recData.data && recData.data.length > 0) {
-        // Filter out current article and sort by rating
-        dynamicRecommendations = recData.data
-          .filter(a => a.slug !== slug)
-          .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
-          .slice(0, 8);
+      if (trendingData.success && trendingData.data && trendingData.data.trending_movies) {
+        const trendingMovies = trendingData.data.trending_movies;
+        
+        // Get ALL trending movies with article data (no category filter)
+        dynamicRecommendations = trendingMovies
+          .filter(trend => trend.referenceId && trend.referenceId.slug)
+          .map(trend => ({
+            ...trend.referenceId,
+            trendingScore: trend.score,
+            trendingTraffic: trend.traffic,
+            trendingType: trend.type,
+            trendingSource: trend.source
+          }))
+          .slice(0, 15); // Show up to 15 trending items
       }
       
-      // Global fallback: If category is empty, fetch ANY high-rated movies
+      // PRIORITY 2: If trending is empty, fetch articles - show ALL results
       if (dynamicRecommendations.length === 0) {
-        const globalRes = await fetch(`${baseUrl}/api/articles/list?limit=10&includeDrafts=true`);
-        const globalData = await globalRes.json();
-        if (globalData.success && globalData.data) {
-          dynamicRecommendations = globalData.data
+        const recRes = await fetch(`${baseUrl}/api/articles/list?limit=30&includeDrafts=true`);
+        const recData = await recRes.json();
+        
+        if (recData.success && recData.data && recData.data.length > 0) {
+          dynamicRecommendations = recData.data
             .filter(a => a.slug !== slug)
-            .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
-            .slice(0, 8);
+            .slice(0, 15); // Show up to 15 articles
         }
       }
     } catch (err) {
@@ -298,6 +306,10 @@ export async function getServerSideProps(context) {
       pageType = "hit-or-flop";
       contentKey = "pSEO_Content_hit_or_flop";
       seoKey = "hitOrFlop";
+    } else if (slug.endsWith("-genres")) {
+      pageType = "genres";
+      contentKey = "pSEO_Content_genres";
+      seoKey = "genres";
     }
 
     let sections = [];
@@ -316,7 +328,8 @@ export async function getServerSideProps(context) {
         "ott-release": ["release", "distribution", "streaming", "digital", "television"],
         "cast": ["cast", "starring", "characters", "personnel"],
         "review-analysis": ["reception", "critical", "review", "consensus", "response"],
-        "hit-or-flop": ["verdict", "box office", "reception", "collection"]
+        "hit-or-flop": ["verdict", "box office", "reception", "collection"],
+        "genres": ["genre", "theme", "style", "category", "motif"]
       };
 
       const keywords = searchKeywords[pageType] || [];
@@ -419,6 +432,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
     { label: "Box Office", slug: `${article.slug}-box-office`, active: pageType === "box-office" },
     { label: "Budget", slug: `${article.slug}-budget`, active: pageType === "budget" },
     { label: "OTT", slug: `${article.slug}-ott`, active: pageType === "ott-release" },
+    { label: "Genres", slug: `${article.slug}-genres`, active: pageType === "genres" },
     { label: "Cast", slug: `${article.slug}-cast`, active: pageType === "cast" },
     { label: "Reviews", slug: `${article.slug}-reviews`, active: pageType === "review-analysis" },
     { label: "Verdict", slug: `${article.slug}-hit-or-flop`, active: pageType === "hit-or-flop" },
@@ -561,6 +575,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   transition={{ delay: 0.2, duration: 0.6 }}
                   className="flex flex-col sm:flex-row gap-8 md:gap-10 items-start"
                 >
+                  
               {/* Poster Card */}
               <motion.div 
                 initial={{ x: -30, opacity: 0, scale: 0.9 }}
@@ -573,6 +588,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   transition={{ type: "spring", stiffness: 300 }}
                   className="relative group"
                 >
+                  
                   <div className="absolute -inset-1.5 bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 rounded-xl blur-md opacity-60 group-hover:opacity-80 transition duration-300"></div>
                   <div className="relative w-full aspect-[2/3] rounded-xl overflow-hidden border-2 border-gray-600 shadow-2xl">
                     {article.coverImage ? (
@@ -779,11 +795,39 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                         ))}
                       </div>
                     )}
+                    {/* GENRES */}
+                    {pageType === "genres" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Genre & Theme Analysis</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {article.genres && article.genres.length > 0 ? (
+                            article.genres.map((genre, idx) => (
+                              <span key={idx} className="px-3 py-1 rounded-full bg-green-600/20 border border-green-500/30 text-green-400 text-xs font-bold">
+                                {genre}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-500 text-xs italic">No genre data available</span>
+                          )}
+                        </div>
+                        {article.pSEO_Content_genres && article.pSEO_Content_genres.length > 0 ? (
+                          <div className="space-y-3">
+                            <p className="text-gray-300 text-sm leading-relaxed">
+                              {getCompleteSentence(article.pSEO_Content_genres[0].content, 250)}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="text-gray-300 text-sm leading-relaxed">
+                            {article.summary ? getCompleteSentence(article.summary, 250) : `Exploring the unique blend of genres and thematic elements in ${movieTitle}.`}
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 </motion.div>
               </motion.div>
             </div>
-          </div>
+            </div>
         </motion.div>
 
         {/* Horizontal Quick Navigation Bar */}
@@ -796,6 +840,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                 { label: "Box Office", suffix: "-box-office", icon: TrendingUp },
                 { label: "Budget", suffix: "-budget", icon: DollarSign },
                 { label: "OTT Release", suffix: "-ott-release", icon: Tv },
+                { label: "Genres", suffix: "-genres", icon: BookOpen },
                 { label: "Cast", suffix: "-cast", icon: Users },
                 { label: "Reviews", suffix: "-review-analysis", icon: Star },
                 { label: "Verdict", suffix: "-hit-or-flop", icon: ShieldCheck },
@@ -824,9 +869,8 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                 );
               })}
             </div>
-          </div>
         </div>
-
+</div>
           <div className="max-w-[1600px] mx-auto px-4 md:px-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             {/* Left Sidebar - Movie Stats Only */}
@@ -897,8 +941,35 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </div>
                 </motion.div>
 
-              {/* Quick Links - Hidden (Already in Top Navigation Bar) */}
-            </div>
+                {/* Genre Options Card */}
+                {article.genres && article.genres.length > 0 && (
+                  <motion.div 
+                    initial={{ x: -30, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                    className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                  >
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-gradient-to-br from-green-600 to-teal-600 flex items-center justify-center">
+                        <BookOpen className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      Genre Options
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {article.genres.map((genre, idx) => (
+                        <Link 
+                          key={idx} 
+                          href={`/category/${slugify(genre)}`} 
+                          className="px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700 text-xs text-gray-400 hover:text-white hover:border-green-500/50 transition-all"
+                        >
+                          {genre}
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+             
 
             {/* Right Side - Similar Movies + Content */}
             <div className="lg:col-span-8 space-y-6">
@@ -1045,12 +1116,12 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </>
                 )}
 
-                {/* BOX OFFICE */}
+                {/* BOX OFFICE - Quick stats only */}
                 {pageType === "box-office" && (
                   <>
                     <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
                       <TrendingUp className="w-4 h-4 text-green-500" />
-                      Box Office Analysis
+                      Box Office Quick Stats
                     </h3>
                     {article.boxOffice?.worldwide && (
                       <div className="mb-3">
@@ -1063,17 +1134,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                         <span className="text-xs font-bold text-green-400 uppercase">{article.stats.verdict}</span>
                       </div>
                     )}
-                    {article.pSEO_Content_box_office && article.pSEO_Content_box_office.length > 1 && (
-                      <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_box_office.slice(0, 4).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
-                            <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    {/* Content sections removed - shown in main area only */}
                   </>
                 )}
 
@@ -1360,10 +1421,8 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </>
                 )}
               </motion.div>
-
             </div>
           </div>
-
           {/* Main Content Area - Full Width with Horizontal Padding */}
           <div className="max-w-[1600px] mx-auto px-4 md:px-6">
           <div id="overview-section" className="space-y-12 mt-8">
@@ -1500,7 +1559,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
             </motion.section>
           )}
 
-          {/* Box Office Page - Rich Stats */}
+          {/* Box Office Page - Rich Stats (ONLY show stats, content is already shown in content card) */}
           {pageType === "box-office" && (
             <section>
               <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
@@ -1539,10 +1598,8 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </div>
                 </div>
               )}
-              <p className="text-zinc-400 leading-relaxed mt-6">
-                The box office performance of {article.movieTitle} has been a major talking point in the industry. 
-                With a global reach and strong domestic interest, the numbers reflect the audience's massive reaction to this cinematic intelligence.
-              </p>
+              
+              {/* Do NOT show pSEO_Content_box_office here - it's already shown in the content card above */}
             </section>
           )}
 
@@ -1787,96 +1844,139 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
             </div>
           )}
 
-          {/* Recommendations Section */}
-          <div className="mt-20 pt-12 border-t border-gray-800">
-            <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
-              <Target className="w-6 h-6 text-red-500" /> Explore More
-            </h2>
-            
-            {/* Recommendations with Desktop Arrows */}
-            {(dynamicRecommendations && dynamicRecommendations.length > 0) || (article.recommendations && article.recommendations.length > 0) ? (
-              <div className="relative group/recommendations">
-                {/* Left Arrow - Desktop Only */}
-                <button
+          {/* Dynamic Recommendations Section - Infinite Loop Scroll */}
+          {dynamicRecommendations && dynamicRecommendations.length > 0 && (
+            <div className="mt-8 pt-6 border-t border-gray-800">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-yellow-500" /> 
+                  {dynamicRecommendations.some(m => m.trendingScore) ? 'Trending Now' : 'Recommended for You'}
+                </h2>
+                <span className="text-xs text-gray-500">{dynamicRecommendations.length} titles</span>
+              </div>
+              
+              {/* Scroll Container with Arrows */}
+              <div className="relative group/scroll">
+                {/* Left Arrow - Transparent */}
+                <button 
                   onClick={() => {
                     const container = document.getElementById('recommendations-scroll');
                     if (container) container.scrollBy({ left: -300, behavior: 'smooth' });
                   }}
-                  className="hidden lg:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-12 h-12 rounded-full bg-gray-900/60 backdrop-blur-sm border border-gray-700/50 items-center justify-center text-white opacity-0 group-hover/recommendations:opacity-100 transition-all duration-300 hover:bg-gray-800/80 hover:border-red-500/50"
+                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-12 h-full flex items-center justify-center bg-gradient-to-r from-gray-950/90 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-white/70 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
 
-                {/* Right Arrow - Desktop Only */}
-                <button
+                {/* Scrollable Container with Infinite Loop */}
+                <div 
+                  id="recommendations-scroll"
+                  className="flex gap-2 overflow-x-auto scroll-smooth px-1 no-scrollbar"
+                  onScroll={(e) => {
+                    const container = e.target;
+                    const scrollLeft = container.scrollLeft;
+                    const scrollWidth = container.scrollWidth;
+                    const clientWidth = container.clientWidth;
+                    
+                    // Infinite loop logic
+                    if (scrollLeft <= 0) {
+                      // Jump to end when reaching start
+                      container.scrollLeft = scrollWidth / 2;
+                    } else if (scrollLeft + clientWidth >= scrollWidth - 1) {
+                      // Jump to middle when reaching end
+                      container.scrollLeft = scrollWidth / 4;
+                    }
+                  }}
+                >
+                  {/* Triple the items for seamless infinite loop */}
+                  {[...dynamicRecommendations, ...dynamicRecommendations, ...dynamicRecommendations].map((movie, idx) => {
+                    const movieCategory = movie.category?.toLowerCase() || 'bollywood';
+                    const movieUrl = `${categoryUrlMap[movieCategory] || '/category/bollywood'}/${movie.slug}`;
+                    
+                    return (
+                      <Link key={`rec-${idx}`} href={movieUrl} className="flex-shrink-0 w-[120px] group">
+                        <motion.div 
+                          whileHover={{ scale: 1.05 }}
+                          className="relative rounded-md overflow-hidden bg-gray-900/80 border border-gray-800/50 hover:border-yellow-500/50 transition-all duration-200"
+                        >
+                          {/* Compact Poster */}
+                          <div className="aspect-[2/3] relative overflow-hidden">
+                            {movie.coverImage ? (
+                              <img 
+                                src={movie.coverImage} 
+                                alt={movie.movieTitle || movie.title}
+                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                                <Film className="w-5 h-5 text-gray-700" />
+                              </div>
+                            )}
+                            
+                            {/* Gradient Overlay */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                            
+                            {/* Trending Badge - Top Left */}
+                            {movie.trendingScore && (
+                              <div className="absolute top-1 left-1 px-1 py-0.5 rounded bg-red-600/90 backdrop-blur-sm flex items-center gap-0.5">
+                                <Zap className="w-2 h-2 text-white" />
+                                <span className="text-[7px] font-bold text-white">T</span>
+                              </div>
+                            )}
+                            
+                            {/* Rating Badge - Top Right */}
+                            {movie.rating && (
+                              <div className="absolute top-1 right-1 px-1 py-0.5 rounded bg-black/70 backdrop-blur-sm flex items-center gap-0.5">
+                                <Star className="w-2 h-2 text-yellow-500 fill-yellow-500" />
+                                <span className="text-[8px] font-semibold text-white">{movie.rating}</span>
+                              </div>
+                            )}
+                            
+                            {/* Category Badge - Bottom (Changed to Amber/Yellow) */}
+                            {movie.category && (
+                              <div className="absolute bottom-1 left-1 px-1 py-0.5 rounded bg-amber-600/90 backdrop-blur-sm">
+                                <span className="text-[7px] font-bold text-white">{movie.category}</span>
+                              </div>
+                            )}
+                          </div>
+                          
+                          {/* Compact Info */}
+                          <div className="p-1.5">
+                            <h4 className="text-[10px] font-semibold text-white group-hover:text-yellow-400 transition-colors line-clamp-1 leading-tight mb-0.5">
+                              {movie.movieTitle || movie.title}
+                            </h4>
+                            <div className="flex items-center justify-between gap-1">
+                              {movie.releaseYear && (
+                                <span className="text-[8px] text-gray-500">{movie.releaseYear}</span>
+                              )}
+                              {movie.trendingScore && (
+                                <span className="text-[7px] text-red-400 font-medium">⚡{movie.trendingScore}</span>
+                              )}
+                            </div>
+                          </div>
+                        </motion.div>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* Right Arrow - Transparent */}
+                <button 
                   onClick={() => {
                     const container = document.getElementById('recommendations-scroll');
                     if (container) container.scrollBy({ left: 300, behavior: 'smooth' });
                   }}
-                  className="hidden lg:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-12 h-12 rounded-full bg-gray-900/60 backdrop-blur-sm border border-gray-700/50 items-center justify-center text-white opacity-0 group-hover/recommendations:opacity-100 transition-all duration-300 hover:bg-gray-800/80 hover:border-red-500/50"
+                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-12 h-full flex items-center justify-center bg-gradient-to-l from-gray-950/90 to-transparent opacity-0 group-hover/scroll:opacity-100 transition-opacity duration-300"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-white/70 hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 </button>
-
-                {/* Scrollable Container */}
-                {dynamicRecommendations && dynamicRecommendations.length > 0 ? (
-                  <div id="recommendations-scroll" className="flex gap-4 overflow-x-auto pb-8 snap-x ">
-                    {dynamicRecommendations.map((rec, i) => (
-                      <Link key={i} href={`${categoryPageUrl}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
-                        <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-gray-700 group-hover/rec:border-red-500/30 transition-all shadow-lg">
-                          {rec.backdropImage ? (
-                            <img src={rec.backdropImage} alt={rec.movieTitle || rec.title} className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105" />
-                          ) : (
-                            <div className="w-full h-full bg-gray-900 flex items-center justify-center text-gray-700 font-black uppercase text-[10px] tracking-widest">No Image</div>
-                          )}
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/rec:opacity-100 transition-opacity flex items-center justify-center">
-                            <ExternalLink className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <h4 className="text-sm font-bold text-white group-hover/rec:text-red-400 transition-colors line-clamp-1 flex-grow pr-4">{rec.movieTitle || rec.title}</h4>
-                          <span className="text-sm font-black text-zinc-400">{rec.rating ? `${rec.rating}/10` : 'NR'}</span>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : article.recommendations && article.recommendations.length > 0 ? (
-                  <div id="recommendations-scroll" className="flex gap-4 overflow-x-auto pb-8 snap-x scrollbar-hide">
-                    {article.recommendations.map((rec, i) => (
-                      <Link key={i} href={`${categoryPageUrl}/${rec.slug}`} className="min-w-[180px] md:min-w-[220px] snap-start group/rec cursor-pointer">
-                        <div className="relative aspect-video rounded-xl overflow-hidden mb-3 border border-gray-700 group-hover/rec:border-red-500/30 transition-all shadow-lg">
-                          {rec.backdropImage ? (
-                            <img src={rec.backdropImage} alt={rec.title} className="w-full h-full object-cover transition-transform duration-500 group-hover/rec:scale-105" />
-                          ) : (
-                            <div className="w-full h-full bg-gray-900 flex items-center justify-center text-gray-700 font-black uppercase text-[10px] tracking-widest">No Image</div>
-                          )}
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover/rec:opacity-100 transition-opacity flex items-center justify-center">
-                            <ExternalLink className="w-5 h-5 text-white" />
-                          </div>
-                        </div>
-                        <div className="flex justify-between items-center">
-                          <h4 className="text-sm font-bold text-white group-hover/rec:text-red-400 transition-colors line-clamp-1 flex-grow pr-4">{rec.title}</h4>
-                          <span className="text-sm font-black text-zinc-400">{rec.rating ? `${rec.rating}/10` : 'NR'}</span>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-20 border border-dashed border-gray-700 rounded-3xl">
-                    <p className="text-zinc-600 font-black uppercase tracking-widest text-xs">Awaiting Intelligence for {category} Database</p>
-                  </div>
-                )}
               </div>
-            ) : (
-              <div className="text-center py-20 border border-dashed border-gray-700 rounded-3xl">
-                <p className="text-zinc-600 font-black uppercase tracking-widest text-xs">Awaiting Intelligence for {category} Database</p>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
           {/* FAQ Section */}

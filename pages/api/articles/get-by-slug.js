@@ -34,7 +34,7 @@ export default async function handler(req, res) {
         const suffixes = [
           "-explained", "-ending-explained", "-box-office", "-budget", 
           "-ott", "-ott-release", "-analysis", "-reviews", "-review-analysis", 
-          "-critics", "-cast", "-hit-or-flop", "hit", "flop"
+          "-critics", "-cast", "-hit-or-flop", "hit", "flop", "-genres"
         ];
         for (const suffix of suffixes) {
           if (slug.endsWith(suffix)) {

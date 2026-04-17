@@ -36,6 +36,37 @@ export async function getServerSideProps(context) {
     }
 
     const article = data.data;
+
+    // Fetch dynamic recommendations based on User Score (Rating) from the same category
+    let dynamicRecommendations = [];
+    try {
+      const category = article.category || 'Bollywood';
+      const recRes = await fetch(`${baseUrl}/api/articles/list?category=${category}&limit=20&includeDrafts=true`);
+      const recData = await recRes.json();
+      
+      if (recData.success && recData.data && recData.data.length > 0) {
+        // Filter out current article and sort by rating
+        dynamicRecommendations = recData.data
+          .filter(a => a.slug !== article.slug)
+          .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
+          .slice(0, 8);
+      }
+      
+      // Global fallback: If category is empty, fetch ANY high-rated movies
+      if (dynamicRecommendations.length === 0) {
+        const globalRes = await fetch(`${baseUrl}/api/articles/list?limit=10&includeDrafts=true`);
+        const globalData = await globalRes.json();
+        if (globalData.success && globalData.data) {
+          dynamicRecommendations = globalData.data
+            .filter(a => a.slug !== article.slug)
+            .sort((a, b) => parseFloat(b.rating || 0) - parseFloat(a.rating || 0))
+            .slice(0, 8);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching dynamic recommendations:", err);
+    }
+
     let pageType = "overview"; // Default page type
 
     // Determine sub-page type from the slug suffix
@@ -43,6 +74,7 @@ export async function getServerSideProps(context) {
     else if (slug.endsWith("-box-office")) pageType = "box-office";
     else if (slug.endsWith("-budget")) pageType = "budget";
     else if (slug.endsWith("-ott-release")) pageType = "ott-release";
+    else if (slug.endsWith("-genres")) pageType = "genres";
     else if (slug.endsWith("-cast")) pageType = "cast";
     else if (slug.endsWith("-review-analysis")) pageType = "review-analysis";
     else if (slug.endsWith("-hit-or-flop")) pageType = "hit-or-flop";
@@ -52,6 +84,7 @@ export async function getServerSideProps(context) {
         article,
         pageType,
         slug,
+        dynamicRecommendations
       },
     };
   } catch (error) {
@@ -66,6 +99,7 @@ const pageTitles = {
   "box-office": "Box Office Collection & Financial Report",
   budget: "Budget, Production Costs & Profit Analysis",
   "ott-release": "OTT Release Date & Streaming Platform Details",
+  genres: "Genres, Themes & Style Analysis",
   cast: "Cast, Characters & Performance Analysis",
   "review-analysis": "Critical Review & Audience Reaction Analysis",
   "hit-or-flop": "Hit or Flop? Verdict & Performance Analysis",
@@ -250,32 +284,9 @@ function FAQItem({ question, answer, index }) {
   );
 }
 
-export default function MovieDetailPage({ article, pageType, slug }) {
+export default function MovieDetailPage({ article, pageType, slug, dynamicRecommendations = [] }) {
   const router = useRouter();
   const [showFullAnalysis, setShowFullAnalysis] = useState(false);
-
-  if (!article) {
-    return (
-      <ErrorState 
-        type="movie" 
-        title="Intelligence Data Unavailable" 
-        description="We couldn't find the requested movie intelligence report in our database. It may be under review or scheduled for automation."
-      />
-    );
-  }
-
-  // Map category slug to actual page URL
-  const categoryUrlMap = {
-    'boxoffice': '/category/box-office',
-    'bollywood': '/category/bollywood',
-    'hollywood': '/category/hollywood',
-    'webseries': '/category/webseries',
-    'ott': '/category/ott',
-    'celebrity': '/category/celebrity'
-  };
-  const categoryPageUrl = categoryUrlMap[article.category?.toLowerCase()] || `/category/${article.category?.toLowerCase() || 'bollywood'}`;
-
-  const Icon = categoryIcons[article.category] || FileText;
   const [scrollProgress, setProgress] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -316,6 +327,29 @@ export default function MovieDetailPage({ article, pageType, slug }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  if (!article) {
+    return (
+      <ErrorState 
+        type="movie" 
+        title="Intelligence Data Unavailable" 
+        description="We couldn't find the requested movie intelligence report in our database. It may be under review or scheduled for automation."
+      />
+    );
+  }
+
+  // Map category slug to actual page URL
+  const categoryUrlMap = {
+    'boxoffice': '/category/box-office',
+    'bollywood': '/category/bollywood',
+    'hollywood': '/category/hollywood',
+    'webseries': '/category/webseries',
+    'ott': '/category/ott',
+    'celebrity': '/category/celebrity'
+  };
+  const categoryPageUrl = categoryUrlMap[article.category?.toLowerCase()] || `/category/${article.category?.toLowerCase() || 'bollywood'}`;
+
+  const Icon = categoryIcons[article.category] || FileText;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -587,7 +621,29 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       </p>
                     )}
 
-                    {/* BOX OFFICE */}
+                    {/* GENRES */}
+                {pageType === "genres" && (
+                  <>
+                    <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-green-500" />
+                      Genre Intelligence
+                    </h3>
+                    <div className="flex flex-wrap gap-2 mb-4">
+                      {(article.genres && article.genres.length > 0 ? article.genres : ["Fantasy", "Horror", "Comedy"]).map((genre, idx) => (
+                        <span key={idx} className="px-3 py-1.5 rounded-full bg-green-600/10 border border-green-500/20 text-xs text-green-400 font-semibold">
+                          {genre}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="text-sm text-gray-300 leading-relaxed">
+                      {article.pSEO_Content_genres && article.pSEO_Content_genres.length > 0 
+                        ? getCompleteSentence(article.pSEO_Content_genres[0].content, 250)
+                        : `Detailed analysis of the genre elements, thematic depth, and stylistic choices that define ${movieTitle}.`}
+                    </p>
+                  </>
+                )}
+
+                {/* BOX OFFICE */}
                     {pageType === "box-office" && article.pSEO_Content_box_office && article.pSEO_Content_box_office.length > 0 && (
                       <div className="space-y-3 max-w-2xl">
                         <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Box Office Analysis</p>
@@ -709,6 +765,34 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                       </div>
                     )}
 
+                    {/* GENRES */}
+                    {pageType === "genres" && (
+                      <div className="space-y-3 max-w-2xl">
+                        <p className="text-xs font-bold text-green-400 uppercase tracking-wider">Genre & Theme Analysis</p>
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {article.genres && article.genres.length > 0 ? (
+                            article.genres.map((genre, idx) => (
+                              <span key={idx} className="px-3 py-1 rounded-full bg-green-600/20 border border-green-500/30 text-green-400 text-xs font-bold">
+                                {genre}
+                              </span>
+                            ))
+                          ) : (
+                            <span className="text-gray-500 text-xs italic">No genre data available</span>
+                          )}
+                        </div>
+                        {article.pSEO_Content_genres && article.pSEO_Content_genres.length > 0 ? (
+                          <div className="space-y-3">
+                            <p className="text-gray-300 text-sm leading-relaxed">
+                              {getCompleteSentence(article.pSEO_Content_genres[0].content, 250)}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="text-gray-300 text-sm leading-relaxed">
+                            {article.summary ? getCompleteSentence(article.summary, 250) : `Exploring the unique blend of genres and thematic elements in ${movieTitle}.`}
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </motion.div>
                 </motion.div>
               </motion.div>
@@ -726,13 +810,16 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 { label: "Box Office", suffix: "-box-office", icon: TrendingUp },
                 { label: "Budget", suffix: "-budget", icon: DollarSign },
                 { label: "OTT Release", suffix: "-ott-release", icon: Tv },
+                { label: "Genres", suffix: "-genres", icon: BookOpen },
                 { label: "Cast", suffix: "-cast", icon: Users },
                 { label: "Reviews", suffix: "-review-analysis", icon: Star },
                 { label: "Verdict", suffix: "-hit-or-flop", icon: ShieldCheck },
               ].map((link, idx) => {
                 const IconComponent = link.icon;
+                const linkHref = `/movie/${article.slug}${link.suffix}`;
                 const isActive = (pageType === "overview" && link.suffix === "") || 
                                  (pageType !== "overview" && link.suffix === `-${pageType}`);
+                
                 return (
                   <motion.div 
                     key={idx} 
@@ -740,7 +827,7 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     whileTap={{ scale: 0.95 }}
                   >
                     <Link 
-                      href={`/movie/${article.slug}${link.suffix}`}
+                      href={linkHref}
                       className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
                         isActive
                           ? "bg-gradient-to-r from-red-600 to-pink-600 text-white shadow-lg shadow-red-900/30" 
@@ -825,14 +912,44 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                     { label: "Runtime", value: article.runtime || "TBA" },
                     { label: "Release", value: article.releaseDate || article.releaseYear || "TBA" },
                   ].map((stat, idx) => (
-                    <div key={idx} className="flex justify-between items-start gap-3 py-2 border-b border-gray-800 last:border-0">
-                      <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider flex-shrink-0">{stat.label}</span>
-                      <span className="text-xs font-semibold text-white text-right">{stat.value}</span>
+                      <div key={idx} className="flex justify-between items-start gap-3 py-2 border-b border-gray-800 last:border-0">
+                        <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider flex-shrink-0">{stat.label}</span>
+                        <span className="text-xs font-semibold text-white text-right">{stat.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Genre Options Card */}
+                 <motion.div 
+                   initial={{ x: -30, opacity: 0 }}
+                   animate={{ x: 0, opacity: 1 }}
+                   transition={{ duration: 0.5, delay: 0.3 }}
+                   className="rounded-xl bg-gray-900/80 border border-gray-800 p-5"
+                 >
+                   <h3 className="text-xs font-bold text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                     <div className="w-6 h-6 rounded bg-gradient-to-br from-green-600 to-teal-600 flex items-center justify-center">
+                       <BookOpen className="w-3.5 h-3.5 text-white" />
+                     </div>
+                     Genre Options
+                   </h3>
+                   <div className="flex flex-wrap gap-2">
+                      {article.genres && article.genres.length > 0 ? (
+                        article.genres.map((genre, idx) => (
+                          <Link 
+                            key={idx} 
+                            href={`/category/${slugify(genre)}`} 
+                            className="px-3 py-1.5 rounded-full bg-gray-800/50 border border-gray-700 text-xs text-gray-400 hover:text-white hover:border-green-500/50 transition-all"
+                          >
+                            {genre}
+                          </Link>
+                        ))
+                      ) : (
+                        <span className="text-gray-500 text-xs italic">No genre data available</span>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </motion.div>
-            </div>
+                 </motion.div>
+              </div>
 
             {/* Right Side - Related Movies + Content Preview */}
             <div className="lg:col-span-8 space-y-6">
@@ -1728,6 +1845,29 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                 }
                 
                 if (!pageContent || pageContent.length === 0) {
+                  if (pageType === "genres") {
+                    return (
+                      <div className="space-y-12">
+                        <motion.section
+                          initial={{ opacity: 0, y: 40 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5 }}
+                          className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
+                        >
+                          <h2 className="text-2xl font-black text-white mb-6">Genre & Style Overview</h2>
+                          <div className="space-y-4">
+                            <p className="text-zinc-400 leading-relaxed text-lg">
+                              {movieTitle} is primarily defined by its unique combination of genres: {article.genres && article.genres.length > 0 ? article.genres.join(", ") : "N/A"}.
+                            </p>
+                            <p className="text-zinc-400 leading-relaxed text-lg">
+                              {article.summary || `The film explores themes relevant to these genres, providing a distinctive cinematic experience for audiences interested in ${article.category} cinema.`}
+                            </p>
+                          </div>
+                        </motion.section>
+                      </div>
+                    );
+                  }
                   return (
                     <div className="text-center py-12">
                       <p className="text-gray-500 text-lg">Content for this section is being updated.</p>
@@ -1872,6 +2012,59 @@ export default function MovieDetailPage({ article, pageType, slug }) {
                   </div>
                 </div>
               </div>
+
+              {/* Dynamic Recommendations Section - Bottom of Page */}
+              {dynamicRecommendations && dynamicRecommendations.length > 0 && (
+                <div className="mt-20 pt-12 border-t border-gray-800">
+                  <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-3">
+                    <Sparkles className="w-6 h-6 text-yellow-500" /> Recommended for You
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
+                    {dynamicRecommendations.map((movie, idx) => (
+                      <Link key={idx} href={`/movie/${movie.slug}`} className="group block">
+                        <motion.div 
+                          whileHover={{ y: -8 }}
+                          className="relative rounded-2xl overflow-hidden bg-gray-900 border border-gray-800 hover:border-red-500/50 transition-all duration-300 shadow-xl"
+                        >
+                          <div className="aspect-[2/3] relative overflow-hidden">
+                            {movie.coverImage ? (
+                              <img 
+                                src={movie.coverImage} 
+                                alt={movie.movieTitle || movie.title}
+                                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              />
+                            ) : (
+                              <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                                <Film className="w-12 h-12 text-gray-700" />
+                              </div>
+                            )}
+                            <div className="absolute inset-0 bg-gradient-to-t from-gray-950 via-transparent to-transparent opacity-80" />
+                            
+                            {/* Rating Badge */}
+                            {movie.rating && (
+                              <div className="absolute top-3 right-3 px-2 py-1 rounded-lg bg-black/60 backdrop-blur-md border border-yellow-500/30 flex items-center gap-1">
+                                <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
+                                <span className="text-[10px] font-bold text-white">{movie.rating}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="p-4">
+                            <h4 className="text-sm font-bold text-white group-hover:text-red-400 transition-colors line-clamp-1 mb-1">
+                              {movie.movieTitle || movie.title}
+                            </h4>
+                            <div className="flex items-center justify-between">
+                              <span className="text-[10px] text-gray-500">{movie.releaseYear}</span>
+                              <span className="text-[10px] text-gray-400 px-2 py-0.5 rounded-full bg-gray-800 border border-gray-700">
+                                {movie.category}
+                              </span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
 

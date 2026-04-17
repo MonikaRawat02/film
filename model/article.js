@@ -100,6 +100,7 @@ const ArticleSchema = new mongoose.Schema(
     pSEO_Content_cast: [{ heading: String, content: String }],
     pSEO_Content_review_analysis: [{ heading: String, content: String }],
     pSEO_Content_hit_or_flop: [{ heading: String, content: String }],
+    pSEO_Content_genres: [{ heading: String, content: String }],
     pSEO_Content_overview: [{ heading: String, content: String }], // Added for 1200-2000 word main page
 
     // Detailed SEO fields per sub-page
@@ -111,6 +112,7 @@ const ArticleSchema = new mongoose.Schema(
       cast: { title: String, description: String, faq: [{ question: String, answer: String }] },
       reviewAnalysis: { title: String, description: String, faq: [{ question: String, answer: String }] },
       hitOrFlop: { title: String, description: String, faq: [{ question: String, answer: String }] },
+      genres: { title: String, description: String, faq: [{ question: String, answer: String }] },
     },
 
     meta: {

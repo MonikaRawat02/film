@@ -84,7 +84,7 @@ export default function DiscoveryPage({ movies, meta, discoveryType, discoveryVa
         </div>
 
         {/* Hero Section with Glassmorphism */}
-        <div className="relative pt-16 pb-20 overflow-hidden">
+        <div className="relative pt-8 pb-20 overflow-hidden">
           {/* Background Ambient Glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-96 bg-red-600/10 blur-[120px] rounded-full -z-10" />
           
