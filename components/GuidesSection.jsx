@@ -11,6 +11,16 @@ const playfair = Playfair_Display({
 
 export default function GuidesSection() {
   const [guides, setGuides] = useState([]);
+  const [expandedGuides, setExpandedGuides] = useState({});
+
+  const toggleExpand = (e, index) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setExpandedGuides((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
 
   useEffect(() => {
     const fetchGuides = async () => {
@@ -93,7 +103,17 @@ export default function GuidesSection() {
                       {g.title?.replace(" (null)", "").replace("(null)", "")}
                     </h3>
                     <p className="mt-0 text-gray-400 text-lg leading-relaxed max-w-3xl">
-                      {g.summary}
+                      {expandedGuides[i] || (g.summary?.length || 0) <= 200
+                        ? g.summary
+                        : `${g.summary.slice(0, 200)}...`}
+                      {(g.summary?.length || 0) > 200 && (
+                        <button
+                          onClick={(e) => toggleExpand(e, i)}
+                          className="ml-2 text-red-500 hover:text-red-400 text-sm font-medium transition-colors focus:outline-none"
+                        >
+                          {expandedGuides[i] ? "Read Less" : "Read More"}
+                        </button>
+                      )}
                     </p>
                   </div>
                   <div className="hidden md:block">
