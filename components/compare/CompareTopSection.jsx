@@ -228,7 +228,7 @@ export default function CompareTopSection({ celebrityA, celebrityB, onSelectA, o
   return (
     <div className="bg-[#0a0a0a]">
       <div className="border-b border-gray-800 bg-gradient-to-b from-gray-900/50 to-transparent">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 pt-0">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 pt-20">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-sm text-gray-400 mb-3">
             <Link href="/" className="hover:text-white transition-colors cursor-pointer">Home</Link>

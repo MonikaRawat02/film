@@ -30,7 +30,7 @@ export default function ProfileHeroSection({ celebrity }) {
   ];
 
   return (
-    <section className="relative min-h-[600px] bg-[#0a0c14]">
+    <section className="relative min-h-[600px] bg-[#0a0c14] pt-20">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-[#0a0c14] via-[#0f1220] to-[#0a0c14]" />
       

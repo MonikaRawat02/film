@@ -260,7 +260,7 @@ export default function NetWorthSection({ celebrity }) {
   return (
     <section className="min-h-screen bg-[#0a0a0f]" style={{ overflowX: 'clip' }}>
       {/* Breadcrumb */}
-      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-4">
+      <div className="mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-8 pt-20">
         <nav className="flex items-center gap-2 text-sm text-[var(--ff-text-muted)]">
           <Link href="/" className="ff-hover-text-primary transition-colors cursor-pointer hover:text-white font-medium">
             Home

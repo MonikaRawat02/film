@@ -44,7 +44,7 @@ export default function Top10RichestPage({ celebrities }) {
 
   return (
    
-      <div className="min-h-screen bg-[#050505] text-zinc-100 selection:bg-red-600/30 font-sans pb-24">
+      <div className="min-h-screen bg-[#050505] text-zinc-100 selection:bg-red-600/30 font-sans pb-24 pt-20">
         {/* Navigation Header */}
         <nav className="sticky top-0 z-[60] bg-black/80 backdrop-blur-2xl border-b border-white/5 py-4">
           <div className="max-w-[1440px] mx-auto px-6 flex items-center justify-between">
