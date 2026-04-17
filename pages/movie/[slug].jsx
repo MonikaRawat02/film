@@ -149,6 +149,19 @@ function cleanContent(content) {
 function parseFAQsFromContent(content) {
   if (!content) return [];
   const faqs = [];
+
+  // Method 0: Parse "### Q1: Question?\nContent" format (often seen in pSEO content)
+  const qBlockPattern = /### Q(\d+):\s*([^?]+\?)\s*\n([\s\S]*?)(?=\n### Q\d+:|$)/g;
+  let qMatch;
+  while ((qMatch = qBlockPattern.exec(content)) !== null) {
+    const question = qMatch[2].trim();
+    const answer = qMatch[3].replace(/\*\*/g, '').trim();
+    if (question && answer && question.length > 3) {
+      faqs.push({ question, answer });
+    }
+  }
+
+  if (faqs.length > 0) return faqs;
   
   // Method 1: Split by **Q patterns (with or without numbers)
   const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
@@ -650,12 +663,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         <p className="text-gray-300 text-sm leading-relaxed">
                           {getCompleteSentence(article.pSEO_Content_box_office[0].content, 250)}
                         </p>
-                        {article.pSEO_Content_box_office.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-green-600/10 border border-green-500/20">
-                            <p className="text-xs font-bold text-green-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
-                          </div>
-                        ))}
                       </div>
                     )}
 
@@ -692,12 +699,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         <p className="text-gray-300 text-sm leading-relaxed">
                           {getCompleteSentence(article.pSEO_Content_budget[0].content, 250)}
                         </p>
-                        {article.pSEO_Content_budget.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-blue-600/10 border border-blue-500/20">
-                            <p className="text-xs font-bold text-blue-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
-                          </div>
-                        ))}
                       </div>
                     )}
 
@@ -708,12 +709,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         <p className="text-gray-300 text-sm leading-relaxed">
                           {getCompleteSentence(article.pSEO_Content_ending_explained[0].content, 250)}
                         </p>
-                        {article.pSEO_Content_ending_explained.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-orange-600/10 border border-orange-500/20">
-                            <p className="text-xs font-bold text-orange-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
-                          </div>
-                        ))}
                       </div>
                     )}
 
@@ -724,12 +719,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         <p className="text-gray-300 text-sm leading-relaxed">
                           {getCompleteSentence(article.pSEO_Content_review_analysis[0].content, 250)}
                         </p>
-                        {article.pSEO_Content_review_analysis.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-yellow-600/10 border border-yellow-500/20">
-                            <p className="text-xs font-bold text-yellow-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
-                          </div>
-                        ))}
                       </div>
                     )}
 
@@ -740,12 +729,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         <p className="text-gray-300 text-sm leading-relaxed">
                           {getCompleteSentence(article.pSEO_Content_hit_or_flop[0].content, 250)}
                         </p>
-                        {article.pSEO_Content_hit_or_flop.slice(1, 6).filter(s => !s.heading?.toLowerCase().includes('faq')).slice(0, 4).map((section, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-red-600/10 border border-red-500/20">
-                            <p className="text-xs font-bold text-red-300 mb-1">{section.heading}</p>
-                            <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 200)}</p>
-                          </div>
-                        ))}
                       </div>
                     )}
 
@@ -1233,8 +1216,8 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                     {/* Key Sections from API */}
                     {article.pSEO_Content_box_office && article.pSEO_Content_box_office.length > 1 && (
                       <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_box_office.slice(0, 4).map((section, idx) => (
+                        <p className="text-xs font-semibold text-green-400 uppercase tracking-wider">Analysis Highlights</p>
+                        {article.pSEO_Content_box_office.filter(s => !s.heading?.toLowerCase().includes('faq') && !s.content?.includes('### Q1:')).slice(1, 4).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
@@ -1262,8 +1245,8 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                     {/* Key Sections from API */}
                     {article.pSEO_Content_budget && article.pSEO_Content_budget.length > 1 && (
                       <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_budget.slice(0, 4).map((section, idx) => (
+                        <p className="text-xs font-semibold text-blue-400 uppercase tracking-wider">Analysis Highlights</p>
+                        {article.pSEO_Content_budget.filter(s => !s.heading?.toLowerCase().includes('faq') && !s.content?.includes('### Q1:')).slice(1, 4).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
@@ -1297,8 +1280,8 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                     {/* Key Sections from API */}
                     {article.pSEO_Content_ott_release && article.pSEO_Content_ott_release.length > 1 && (
                       <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_ott_release.slice(0, 4).map((section, idx) => (
+                        <p className="text-xs font-semibold text-purple-400 uppercase tracking-wider">Analysis Highlights</p>
+                        {article.pSEO_Content_ott_release.filter(s => !s.heading?.toLowerCase().includes('faq') && !s.content?.includes('### Q1:')).slice(1, 4).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
@@ -1338,8 +1321,8 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                     {/* Key Sections from API */}
                     {article.pSEO_Content_cast && article.pSEO_Content_cast.length > 1 && (
                       <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-pink-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_cast.slice(0, 4).map((section, idx) => (
+                        <p className="text-xs font-semibold text-pink-400 uppercase tracking-wider">Analysis Highlights</p>
+                        {article.pSEO_Content_cast.filter(s => !s.heading?.toLowerCase().includes('faq') && !s.content?.includes('### Q1:')).slice(1, 4).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
@@ -1430,8 +1413,8 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                     {/* Key Sections from API */}
                     {article.pSEO_Content_hit_or_flop && article.pSEO_Content_hit_or_flop.length > 1 && (
                       <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
-                        <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">Key Sections</p>
-                        {article.pSEO_Content_hit_or_flop.slice(0, 4).map((section, idx) => (
+                        <p className="text-xs font-semibold text-red-400 uppercase tracking-wider">Analysis Highlights</p>
+                        {article.pSEO_Content_hit_or_flop.filter(s => !s.heading?.toLowerCase().includes('faq') && !s.content?.includes('### Q1:')).slice(1, 4).map((section, idx) => (
                           <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                             <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                             <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
@@ -1459,7 +1442,7 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         {article.pSEO_Content_ending_explained.length > 1 && (
                           <div className="space-y-3 mt-4 pt-4 border-t border-gray-800">
                             <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">Key Sections</p>
-                            {article.pSEO_Content_ending_explained.slice(1, 5).map((section, idx) => (
+                            {article.pSEO_Content_ending_explained.filter(s => !s.heading?.toLowerCase().includes('faq') && !s.content?.includes('### Q1:')).slice(1, 5).map((section, idx) => (
                               <div key={idx} className="p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                                 <p className="text-xs font-bold text-white mb-1">{section.heading}</p>
                                 <p className="text-gray-400 text-xs leading-relaxed">{getCompleteSentence(section.content, 180)}</p>
@@ -1477,18 +1460,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
 
           {/* Main Content Area */}
           <div id="overview-section" className="space-y-12">
-              {/* Intro Paragraph for ALL pages */}
-              {pageType !== "overview" && (
-                <div className="mb-12 p-8 rounded-2xl bg-gradient-to-br from-gray-900/80 to-gray-800/50 border border-gray-700 border-l-4 border-l-red-500">
-                  <p className="text-gray-300 leading-relaxed text-base">
-                    {article.summary ? 
-                      `${article.summary.substring(0, 300)}... This dedicated report focuses specifically on the ${pageType.replace("-", " ")} of ${movieTitle}.` : 
-                      `Explore the detailed ${pageType.replace("-", " ")} analysis for ${movieTitle} (${article.releaseYear}). Our film intelligence team has dissected every aspect of this ${article.category} feature to bring you exclusive insights.`
-                    }
-                  </p>
-                </div>
-              )}
-
               {pageType === "box-office" && (
                 <>
                   {/* Hero Stats - Opening Weekend Focus */}
@@ -1638,25 +1609,6 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </section>
-
-                  {/* Analysis Section */}
-                  <section>
-                    <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-3">
-                      <FileText className="w-6 h-6 text-blue-600" />
-                      Trade Analysis
-                    </h3>
-                    <div className="p-6 rounded-2xl bg-white/5 border border-white/10">
-                      <p className="text-zinc-300 leading-relaxed text-base mb-6">
-                        {article.summary || "Trade analysis coming soon."}
-                      </p>
-                      {article.sections?.map((section, idx) => (
-                        <div key={idx} className="mb-6 last:mb-0">
-                          <h4 className="text-lg font-bold text-white mb-3">{section.heading}</h4>
-                          <p className="text-zinc-400 leading-relaxed">{section.content}</p>
-                        </div>
-                      ))}
                     </div>
                   </section>
                 </>
@@ -1885,7 +1837,8 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                       .filter(section => {
                         const isFAQSection = section.heading?.toLowerCase().includes('faq') || 
                                             section.content?.includes('**Q') || 
-                                            section.content?.includes('Q1:');
+                                            section.content?.includes('Q1:') ||
+                                            section.content?.includes('### Q1:');
                         return !isFAQSection;
                       })
                       .map((section, idx) => (

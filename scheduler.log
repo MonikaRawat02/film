@@ -2709,3 +2709,30 @@
 [2026-04-17T07:30:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-04-17T07:30:53.549Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-04-17T07:31:18.385Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-17T07:31:40.123Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-04-17T07:31:40.123Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-04-17T07:31:40.147Z] [INFO] 🚀 Executing initial automation run...
+[2026-04-17T07:31:40.147Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-04-17T07:31:40.158Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-04-17T07:31:40.532Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-04-17T07:31:40.532Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-17T07:31:40.533Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-17T07:32:11.528Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood. Skipped 3 existing.
+[2026-04-17T07:32:25.522Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood. Skipped 2 existing.
+[2026-04-17T07:33:40.777Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-04-17T08:00:00.021Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T08:00:56.567Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T08:27:00.023Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-17T08:27:39.119Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood. Skipped 5 existing.
+[2026-04-17T08:27:53.396Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood. Skipped 6 existing.
+[2026-04-17T08:30:00.023Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-17T08:30:00.024Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T08:30:52.976Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T08:32:00.027Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 3
+[2026-04-17T09:00:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T09:00:54.044Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T09:30:00.028Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-17T09:30:00.029Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T09:30:53.658Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T09:32:00.593Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-04-17T09:57:56.185Z] [INFO] Received kill signal, shutting down gracefully...

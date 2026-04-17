@@ -159,7 +159,7 @@ export default function InsightsDuoSection() {
           </div>
 
           {/* OTT Intelligence Section */}
-          <div id="ott-intelligence">
+          <div id="ott-intelligence" className="scroll-mt-24">
             <div className="flex items-center gap-3 mb-6">
               <div className="h-10 w-10 grid place-items-center rounded-xl border border-blue-700/40 bg-blue-600/10">
                 <TrendingUp className="w-6 h-6 text-blue-500" />
