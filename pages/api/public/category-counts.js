@@ -19,6 +19,9 @@ export default async function handler(req, res) {
     // Get celebrity count (total)
     const celebrityCount = await Celebrity.countDocuments();
 
+    // Debug logging
+    console.log("Article counts by category:", articleCounts);
+
     // Map results to a cleaner format
     const countsMap = {
       Bollywood: 0,
@@ -34,6 +37,8 @@ export default async function handler(req, res) {
         countsMap[item._id] = item.count;
       }
     });
+
+    console.log("Final counts map:", countsMap);
 
     return res.status(200).json({
       success: true,

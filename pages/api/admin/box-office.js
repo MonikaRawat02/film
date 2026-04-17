@@ -26,7 +26,7 @@ export default async function handler(req, res) {
       try {
         const { q, page = 1, limit = 20 } = req.query;
         
-        // Build query - only filter by contentType, not by q initially
+        // Build query - fetch all articles (both published and draft for admin)
         let query = {};
         
         // If search query provided, add it to the filter
@@ -44,6 +44,13 @@ export default async function handler(req, res) {
           .skip(skip)
           .limit(parseInt(limit))
           .lean();
+        
+        // Log for debugging
+        console.log(`Box Office API: Found ${movies.length} articles`, {
+          totalInDB: await Article.countDocuments({}),
+          withBoxOffice: await Article.countDocuments({ boxOffice: { $exists: true, $ne: null } }),
+          query
+        });
         
         // Map Article model to the expected BoxOffice UI format
         const data = movies.map(movie => {
