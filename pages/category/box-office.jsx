@@ -80,17 +80,23 @@ export default function BoxOfficePage({ initialData }) {
   const stats = useMemo(() => {
     if (!data.length) return null;
     
-    const verdicts = data.reduce((acc, m) => {
+    const movieData = data.filter(m => m.filterType === "BoxOffice");
+    if (!movieData.length) return null;
+
+    const verdicts = movieData.reduce((acc, m) => {
       const v = m.verdict?.toUpperCase() || "N/A";
       acc[v] = (acc[v] || 0) + 1;
       return acc;
     }, {});
     
-    const topVerdict = Object.entries(verdicts).sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
-    const blockbusters = data.filter(m => m.verdict?.toUpperCase().includes('BLOCKBUSTER')).length;
+    const topVerdict = Object.entries(verdicts)
+      .filter(([v]) => v !== "N/A")
+      .sort((a, b) => b[1] - a[1])[0]?.[0] || "N/A";
+      
+    const blockbusters = movieData.filter(m => m.verdict?.toUpperCase().includes('BLOCKBUSTER')).length;
     
     return {
-      total: data.length,
+      total: movieData.length,
       topVerdict,
       blockbusters,
       avgRoi: "Varies"
@@ -100,10 +106,12 @@ export default function BoxOfficePage({ initialData }) {
   const filteredData = useMemo(() => {
     let currentData = data;
     if (searchQuery.trim()) {
-      currentData = currentData.filter(m => 
-        m.movieName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        m.verdict?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      const query = searchQuery.toLowerCase().trim();
+      currentData = currentData.filter(m => {
+        const name = (m.movieName || m.name || m.title || "").toLowerCase();
+        const verdict = (m.verdict || "").toLowerCase();
+        return name.includes(query) || verdict.includes(query);
+      });
     }
 
     if (activeFilter === "All") return currentData;
