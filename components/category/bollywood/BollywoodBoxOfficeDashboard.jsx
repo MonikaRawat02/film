@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { 
   BarChart, 
   Bar, 
@@ -20,7 +21,7 @@ export default function BollywoodBoxOfficeDashboard() {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const res = await fetch("/api/admin/box-office");
+        const res = await fetch("/api/public/box-office?limit=20");
         const data = await res.json();
         if (data.success) {
           setMovies(data.data);
@@ -75,7 +76,9 @@ export default function BollywoodBoxOfficeDashboard() {
           rank: `#${idx + 1}`,
           name: m.movieName,
           collection: m.collection,
-          growth: displayROI
+          growth: displayROI,
+          slug: m.slug,
+          image: m.image
         };
       });
   }, [movies]);
@@ -115,56 +118,59 @@ export default function BollywoodBoxOfficeDashboard() {
 
       {loading ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-xl p-6 h-[400px] animate-pulse" />
-          <div className="space-y-4">
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 h-48 animate-pulse" />
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 h-48 animate-pulse" />
+          <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-8 h-[450px] animate-pulse" />
+          <div className="space-y-6">
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 h-64 animate-pulse" />
+            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 h-40 animate-pulse" />
           </div>
         </div>
       ) : movies.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Chart Card */}
-          <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-white">Top Grossing Films</h3>
-              <p className="text-xs text-zinc-500 mt-1">Relative performance based on collections</p>
+          <div className="lg:col-span-2 bg-zinc-900/50 border border-zinc-800 rounded-2xl p-8">
+            <div className="mb-8">
+              <h3 className="text-xl font-bold text-white">Top Grossing Films 2023-2024</h3>
+              <p className="text-sm text-zinc-400 mt-2">Box office collection in crores (₹)</p>
             </div>
             
-            <div className="h-[300px] w-full">
+            <div className="h-[350px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#27272a" strokeOpacity={0.5} vertical={false} />
                   <XAxis 
                     dataKey="name" 
                     stroke="#71717a" 
-                    fontSize={10} 
+                    fontSize={13}
+                    fontWeight={500}
                     tickLine={false} 
                     axisLine={false}
                     dy={10}
                   />
                   <YAxis 
                     stroke="#71717a" 
-                    fontSize={12} 
+                    fontSize={13}
+                    fontWeight={500}
                     tickLine={false} 
                     axisLine={false}
+                    tickFormatter={(value) => value >= 1000 ? `${value/1000}k` : value}
                   />
                   <Tooltip 
-                    cursor={{ fill: '#d4d4d8', opacity: 0.1 }}
+                    cursor={{ fill: '#f59e0b', opacity: 0.1 }}
                     contentStyle={{ 
                       backgroundColor: '#18181b', 
                       border: '1px solid #27272a',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       fontSize: '14px',
-                      padding: '10px 14px',
+                      padding: '12px 16px',
                       boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.5)'
                     }}
-                    itemStyle={{ color: '#fbbf24', fontWeight: '500', marginTop: '4px' }}
-                    labelStyle={{ color: '#ffffff', fontWeight: '600' }}
+                    itemStyle={{ color: '#f59e0b', fontWeight: '600', marginTop: '4px' }}
+                    labelStyle={{ color: '#ffffff', fontWeight: '700', marginBottom: '4px' }}
                   />
                   <Bar 
                     dataKey="collection" 
-                    radius={[4, 4, 0, 0]}
-                    barSize={40}
+                    radius={[8, 8, 0, 0]}
+                    barSize={60}
                   >
                     {chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill="#f59e0b" />
@@ -176,26 +182,26 @@ export default function BollywoodBoxOfficeDashboard() {
           </div>
 
           {/* Sidebar Cards */}
-          <div className="space-y-4">
+          <div className="space-y-6">
             {/* Top Performers Card */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-              <div className="flex items-center gap-2 mb-4">
+            <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-6">
                 <Trophy className="w-5 h-5 text-amber-500" />
                 <h3 className="text-lg font-bold text-white">Top Performers</h3>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {topPerformers.map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between group">
                     <div className="flex items-center gap-4">
-                      <span className="text-zinc-600 font-bold text-lg">{item.rank}</span>
+                      <span className="text-zinc-600 font-bold text-lg w-8">#{idx + 1}</span>
                       <div>
-                        <p className="text-sm font-serif font-bold text-white group-hover:text-amber-500 transition-colors leading-tight">{item.name}</p>
-                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mt-0.5">{item.collection}</p>
+                        <p className="text-sm font-bold text-white group-hover:text-amber-500 transition-colors leading-tight">{item.name}</p>
+                        <p className="text-xs text-zinc-400 mt-0.5">₹{item.collection}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-emerald-500 text-xs font-bold">
-                      <TrendingUp className="w-3 h-3" />
+                    <div className="flex items-center gap-1 text-emerald-500 text-sm font-bold">
+                      <TrendingUp className="w-4 h-4" />
                       <span>{item.growth}</span>
                     </div>
                   </div>
@@ -204,25 +210,25 @@ export default function BollywoodBoxOfficeDashboard() {
             </div>
 
             {/* Quick Stats Card */}
-            <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-              <h3 className="text-lg font-bold text-white mb-4">Quick Stats</h3>
-              <div className="space-y-3">
+            <div className="bg-zinc-900/50 border border-zinc-800 rounded-2xl p-6">
+              <h3 className="text-lg font-bold text-white mb-5">Quick Stats</h3>
+              <div className="space-y-4">
                 <div>
-                  <p className="text-xs text-zinc-500 mb-1">Top Collection</p>
-                  <p className="text-xl font-bold text-amber-500">{quickStats.biggestOpening}</p>
-                  <p className="text-[10px] text-zinc-600 line-clamp-1">{quickStats.biggestOpeningName}</p>
+                  <p className="text-sm text-zinc-400 mb-1">Biggest Opening</p>
+                  <p className="text-2xl font-bold text-amber-500">{quickStats.biggestOpening}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{quickStats.biggestOpeningName}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-zinc-500 mb-1">Highest ROI</p>
-                  <p className="text-xl font-bold text-amber-500">{quickStats.mostProfitable}</p>
-                  <p className="text-[10px] text-zinc-600 line-clamp-1">{quickStats.mostProfitableName}</p>
+                <div className="pt-4 border-t border-zinc-800">
+                  <p className="text-sm text-zinc-400 mb-1">Highest ROI</p>
+                  <p className="text-2xl font-bold text-amber-500">{quickStats.mostProfitable}</p>
+                  <p className="text-xs text-zinc-500 mt-0.5">{quickStats.mostProfitableName}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="text-center py-12 bg-zinc-900/30 border border-dashed border-zinc-800 rounded-xl">
+        <div className="text-center py-16 bg-zinc-900/30 border border-dashed border-zinc-800 rounded-2xl">
           <p className="text-zinc-500 italic">No box office data available yet.</p>
         </div>
       )}
