@@ -31,11 +31,29 @@ export default function BoxOfficeAdmin() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/box-office?q=${searchQuery}`);
+      // Only add query parameter if searchQuery is not empty
+      const queryParams = searchQuery ? `?q=${encodeURIComponent(searchQuery)}` : '';
+      const res = await fetch(`/api/admin/box-office${queryParams}`);
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        console.error("API Error:", errorData);
+        toast.error(`Failed to fetch movies: ${errorData.message || 'Unknown error'}`);
+        setItems([]);
+        return;
+      }
+      
       const data = await res.json();
-      if (data.success) setItems(data.data);
+      if (data.success) {
+        setItems(data.data);
+      } else {
+        console.error("API returned success: false");
+        setItems([]);
+      }
     } catch (error) {
       console.error("Error fetching data:", error);
+      toast.error("Network error while fetching movies");
+      setItems([]);
     } finally {
       setLoading(false);
     }
@@ -207,8 +225,18 @@ export default function BoxOfficeAdmin() {
             </div>
           ) : (
             <div className="text-center py-12 bg-gray-900/20 border border-dashed border-gray-800 rounded-xl">
-              <SearchIcon className="h-8 w-8 text-gray-600 mx-auto mb-2" />
-              <p className="text-gray-500">No movies found matching "{searchQuery}"</p>
+              {searchQuery ? (
+                <>
+                  <SearchIcon className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+                  <p className="text-gray-500">No movies found matching "{searchQuery}"</p>
+                </>
+              ) : (
+                <>
+                  <Film className="h-8 w-8 text-gray-600 mx-auto mb-2" />
+                  <p className="text-gray-500 mb-2">No movies in the database yet</p>
+                  <p className="text-sm text-gray-600">Click "Add Movie" to create your first entry</p>
+                </>
+              )}
             </div>
           )}
         </div>

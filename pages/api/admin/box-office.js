@@ -24,17 +24,26 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const { q } = req.query;
-        let query = { contentType: "movie" };
-        if (q) {
+        const { q, page = 1, limit = 20 } = req.query;
+        
+        // Build query - only filter by contentType, not by q initially
+        let query = {};
+        
+        // If search query provided, add it to the filter
+        if (q && q.trim()) {
           query.$or = [
-            { title: { $regex: q, $options: "i" } },
-            { movieTitle: { $regex: q, $options: "i" } }
+            { title: { $regex: q.trim(), $options: "i" } },
+            { movieTitle: { $regex: q.trim(), $options: "i" } }
           ];
         }
         
         // Fetch movies from Article collection
-        const movies = await Article.find(query).sort({ createdAt: -1 }).lean();
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+        const movies = await Article.find(query)
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(parseInt(limit))
+          .lean();
         
         // Map Article model to the expected BoxOffice UI format
         const data = movies.map(movie => {
@@ -98,9 +107,22 @@ export default async function handler(req, res) {
           };
         });
 
-        return res.status(200).json({ success: true, data });
+        return res.status(200).json({ 
+          success: true, 
+          data,
+          pagination: {
+            total: movies.length,
+            page: parseInt(page),
+            limit: parseInt(limit)
+          }
+        });
       } catch (error) {
-        return res.status(400).json({ success: false, message: error.message });
+        console.error("Error in box-office GET:", error);
+        return res.status(500).json({ 
+          success: false, 
+          message: "Internal server error",
+          error: error.message 
+        });
       }
 
     case "PUT":

@@ -2683,26 +2683,3 @@
 [2026-04-17T04:48:10.755Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
 [2026-04-17T05:00:00.306Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-04-17T05:00:28.866Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
-[2026-04-17T05:35:00.493Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
-[2026-04-17T05:37:02.623Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 10 movies for 2026
-[2026-04-17T05:50:02.530Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
-[2026-04-17T05:50:14.194Z] [INFO] 📊 Refreshing data for 16 recent movies
-[2026-04-17T05:50:18.456Z] [INFO] ✅ Refreshed data for blue-hill-avenue
-[2026-04-17T05:50:20.215Z] [INFO] ✅ Refreshed data for the-night-of-the-shooting-stars
-[2026-04-17T05:50:21.360Z] [INFO] ✅ Refreshed data for red-scorpion
-[2026-04-17T05:50:22.617Z] [INFO] ✅ Refreshed data for queen-of-katwe
-[2026-04-17T05:50:23.692Z] [INFO] ✅ Refreshed data for lenny
-[2026-04-17T05:50:25.164Z] [INFO] ✅ Refreshed data for the-tin-drum
-[2026-04-17T05:50:27.218Z] [INFO] ✅ Refreshed data for a-cat-in-paris
-[2026-04-17T05:50:29.085Z] [INFO] ✅ Refreshed data for ek-din
-[2026-04-17T05:50:30.868Z] [INFO] ✅ Refreshed data for bhooth-bangla
-[2026-04-17T05:50:32.201Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
-[2026-04-17T05:50:33.805Z] [INFO] ✅ Refreshed data for azad-bharath
-[2026-04-17T05:50:35.082Z] [INFO] ✅ Refreshed data for bharatiya-digital-party
-[2026-04-17T05:50:36.958Z] [INFO] ✅ Refreshed data for bhanwar
-[2026-04-17T05:50:39.021Z] [INFO] ✅ Refreshed data for back-benchers
-[2026-04-17T05:50:40.874Z] [INFO] ✅ Refreshed data for anusandhan
-[2026-04-17T05:50:42.145Z] [INFO] ✅ Refreshed data for andhar-maya
-[2026-04-17T05:50:42.147Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 16 movies
-[2026-04-17T06:00:00.241Z] [INFO] 🕒 CRON START: Trending Data Sync
-[2026-04-17T06:00:23.338Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
