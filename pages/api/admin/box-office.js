@@ -101,9 +101,23 @@ export default async function handler(req, res) {
             image: movie.coverImage,
             budget: budgetStr,
             collection: collectionStr,
+            boxOffice: {
+              openingWeekend: movie.boxOffice?.openingWeekend || "N/A",
+              worldwide: collectionStr,
+              india: movie.boxOffice?.india || "N/A",
+              analysisLink: movie.boxOffice?.analysisLink || "",
+            },
             roi: roi || "N/A",
             verdict: verdict || "AVERAGE",
-            analysisLink: movie.boxOffice?.analysisLink || "",
+            subPages: movie.subPages || {
+              endingExplained: false,
+              boxOffice: false,
+              budget: false,
+              ottRelease: false,
+              cast: false,
+              reviewAnalysis: false,
+              hitOrFlop: false,
+            },
             movieDNA: movie.boxOffice?.movieDNA || {
               emotionalIntensity: 0,
               violenceLevel: 0,
@@ -136,16 +150,19 @@ export default async function handler(req, res) {
       if (!isAdmin(token)) return res.status(401).json({ message: "Unauthorized" });
       try {
         const { id } = req.query;
-        const { movieName, budget, collection, roi, verdict, analysisLink, movieDNA } = req.body;
+        const { movieName, budget, collection, boxOffice, roi, verdict, subPages, movieDNA } = req.body;
         
         // Update the Article collection
         const updateData = {
           movieTitle: movieName,
           budget,
-          "boxOffice.worldwide": collection,
+          "boxOffice.worldwide": collection || boxOffice?.worldwide,
+          "boxOffice.openingWeekend": boxOffice?.openingWeekend,
+          "boxOffice.india": boxOffice?.india,
           "boxOffice.roi": roi,
           verdict,
-          "boxOffice.analysisLink": analysisLink,
+          "boxOffice.analysisLink": boxOffice?.analysisLink || req.body.analysisLink,
+          subPages: subPages,
           "boxOffice.movieDNA": {
             emotionalIntensity: movieDNA?.emotionalIntensity || 0,
             violenceLevel: movieDNA?.violenceLevel || 0,

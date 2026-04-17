@@ -12,11 +12,12 @@ export default async function handler(req, res) {
     // Get IP address from request
     const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
 
-    // Create a new record for every single visit (not unique)
-    await Visitor.create({ 
-      ip, 
-      lastVisit: new Date() 
-    });
+    // Update existing visitor or create a new one (Unique by IP)
+    await Visitor.findOneAndUpdate(
+      { ip },
+      { lastVisit: new Date() },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
 
     res.status(200).json({ success: true });
   } catch (error) {
