@@ -14,34 +14,48 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { industry = "Bollywood", limit = 50 } = req.body;
+  const { industry = "Bollywood", limit = 20 } = req.body;
 
   try {
     await dbConnect();
 
     const celebUrls = await getCelebrityUrlsByIndustry(industry);
     console.log(`Found ${celebUrls.length} celebrity URLs for ${industry}`);
+    
     const results = {
       totalFound: celebUrls.length,
       synced: 0,
       failed: 0,
+      skipped: 0,
       celebrities: []
     };
 
-    // Limit the number of new celebrities to scrape per request
+    // Use the limit from request body, default to 20
+    const MAX_TO_SYNC = parseInt(limit) || 20;
     let syncedInIndustry = 0;
-    const MAX_PER_RUN = 20; // Increased from 5 to 20 for more coverage per run
 
     for (const celebInfo of celebUrls) {
-      if (syncedInIndustry >= MAX_PER_RUN) break;
+      if (syncedInIndustry >= MAX_TO_SYNC) break;
 
       try {
         const celebSlug = slugify(celebInfo.name);
-        const existing = await Celebrity.findOne({ "heroSection.slug": celebSlug });
-        if (existing) continue; // Skip if already exists
+        
+        // Quick check if exists to avoid unnecessary scraping
+        const existing = await Celebrity.findOne({ 
+          $or: [
+            { "heroSection.slug": celebSlug },
+            { "heroSection.name": celebInfo.name }
+          ]
+        });
+        
+        if (existing) {
+          results.skipped++;
+          continue; 
+        }
 
         console.log(`🔍 Scraping new celebrity: ${celebInfo.name}...`);
         const scrapedData = await scrapeWikipediaCelebrity(celebInfo.url, industry);
+        
         if (!scrapedData) {
           results.failed++;
           continue;
@@ -49,7 +63,7 @@ export default async function handler(req, res) {
 
         const finalSlug = scrapedData.heroSection.slug;
         
-        // Update if exists, otherwise create
+        // Final upsert check
         await Celebrity.findOneAndUpdate(
           { "heroSection.slug": finalSlug },
           { $set: scrapedData },
@@ -59,7 +73,11 @@ export default async function handler(req, res) {
         syncedInIndustry++;
         results.synced++;
         results.celebrities.push(scrapedData.heroSection.name);
-        console.log(`✅ Saved celebrity: ${scrapedData.heroSection.name}`);
+        console.log(`✅ Saved celebrity: ${scrapedData.heroSection.name} (${syncedInIndustry}/${MAX_TO_SYNC})`);
+        
+        // Small delay to be nice to Wikipedia
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
       } catch (err) {
         console.error(`Failed to sync ${celebInfo.name}:`, err.message);
         results.failed++;
@@ -68,7 +86,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: `Successfully synced ${results.synced} new celebrities for ${industry}`,
+      message: `Successfully synced ${results.synced} new celebrities for ${industry}. Skipped ${results.skipped} existing.`,
       data: results
     });
 

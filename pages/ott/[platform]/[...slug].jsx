@@ -782,10 +782,6 @@ export default function OTTMovieDetailPage({
                     <span className="text-xs font-bold text-white">{article.stats?.readTime || '5 min'}</span>
                   </div>
                   <div className="flex justify-between items-center py-2 border-b border-gray-800">
-                    <span className="text-[10px] text-gray-500 uppercase">Published</span>
-                    <span className="text-xs font-bold text-white">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString() : 'N/A'}</span>
-                  </div>
-                  <div className="flex justify-between items-center py-2 border-b border-gray-800">
                     <span className="text-[10px] text-gray-500 uppercase">Platform</span>
                     <span className="text-xs font-bold text-purple-400">{article.ott?.platform || platform}</span>
                   </div>
