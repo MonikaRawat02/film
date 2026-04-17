@@ -97,6 +97,8 @@ export default async function handler(req, res) {
           return {
             _id: movie._id,
             movieName: movie.movieTitle || movie.title,
+            slug: movie.slug,
+            image: movie.coverImage,
             budget: budgetStr,
             collection: collectionStr,
             roi: roi || "N/A",
