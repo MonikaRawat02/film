@@ -22,6 +22,21 @@ export default function BoxOfficeAdmin() {
     movieName: "",
     budget: "",
     collection: "",
+    boxOffice: {
+      openingWeekend: "",
+      india: "",
+      worldwide: "",
+      analysisLink: "",
+    },
+    subPages: {
+      endingExplained: false,
+      boxOffice: false,
+      budget: false,
+      ottRelease: false,
+      cast: false,
+      reviewAnalysis: false,
+      hitOrFlop: false,
+    },
     roi: "",
     verdict: "HIT",
     analysisLink: "",
@@ -88,6 +103,21 @@ export default function BoxOfficeAdmin() {
           movieName: "", 
           budget: "", 
           collection: "", 
+          boxOffice: {
+            openingWeekend: "",
+            india: "",
+            worldwide: "",
+            analysisLink: "",
+          },
+          subPages: {
+            endingExplained: false,
+            boxOffice: false,
+            budget: false,
+            ottRelease: false,
+            cast: false,
+            reviewAnalysis: false,
+            hitOrFlop: false,
+          },
           roi: "", 
           verdict: "HIT", 
           analysisLink: "", 
@@ -107,9 +137,24 @@ export default function BoxOfficeAdmin() {
 
   const handleEdit = (item) => {
     setEditingItem(item);
-    // Merge item with default DNA to handle old records
+    // Merge item with default DNA and subPages to handle old records
     setFormData({
       ...item,
+      boxOffice: item.boxOffice || {
+        openingWeekend: "",
+        india: "",
+        worldwide: item.collection || "",
+        analysisLink: "",
+      },
+      subPages: item.subPages || {
+        endingExplained: false,
+        boxOffice: false,
+        budget: false,
+        ottRelease: false,
+        cast: false,
+        reviewAnalysis: false,
+        hitOrFlop: false,
+      },
       movieDNA: item.movieDNA ? { ...item.movieDNA } : { ...initialDNA }
     });
     setIsModalOpen(true);
@@ -141,17 +186,34 @@ export default function BoxOfficeAdmin() {
         <title>Box Office Management | Admin</title>
       </Head>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <BarChart className="text-red-600" /> Box Office Truth
-          </h1>
-          <button
-            onClick={() => {
+        <div className="flex flex-col gap-2">
+          <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Dashboard</p>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <BarChart className="text-red-600" /> Box Office Truth
+            </h1>
+            <button
+              onClick={() => {
               setEditingItem(null);
               setFormData({ 
                 movieName: "", 
                 budget: "", 
                 collection: "", 
+                boxOffice: {
+                  openingWeekend: "",
+                  india: "",
+                  worldwide: "",
+                  analysisLink: "",
+                },
+                subPages: {
+                  endingExplained: false,
+                  boxOffice: false,
+                  budget: false,
+                  ottRelease: false,
+                  cast: false,
+                  reviewAnalysis: false,
+                  hitOrFlop: false,
+                },
                 roi: "", 
                 verdict: "HIT", 
                 analysisLink: "",
@@ -159,65 +221,106 @@ export default function BoxOfficeAdmin() {
               });
               setIsModalOpen(true);
             }}
-            className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
-          >
-            <Plus size={18} /> Add Movie
-          </button>
+              className="bg-red-600 hover:bg-red-700 text-white px-6 py-2.5 rounded-lg flex items-center gap-2 transition-all hover:scale-105 active:scale-95 font-bold shadow-lg shadow-red-600/20"
+            >
+              <Plus size={18} /> Add Movie
+            </button>
+          </div>
         </div>
 
-        <div className="bg-gray-900/20 rounded-xl border border-gray-800 p-5">
-          <div className="flex items-center gap-2 mb-4 pb-2 border-b border-gray-800">
+        <div className="bg-[#0c0c14] rounded-2xl border border-zinc-800/50 p-6">
+          <div className="flex items-center gap-2 mb-6">
             <div className="h-6 w-6 rounded-lg bg-red-500/10 flex items-center justify-center">
               <Edit className="h-3.5 w-3.5 text-red-500" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-300">Update Existing Movie</h3>
+            <h3 className="text-sm font-bold text-zinc-300">Update Existing Movie</h3>
           </div>
           
-          <div className="relative group mb-6">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
-              <SearchIcon className="h-4 w-4 text-gray-500 group-focus-within:text-red-500 transition-colors" />
+          <div className="relative group mb-8">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
+              <SearchIcon className="h-4 w-4 text-zinc-600 group-focus-within:text-red-500 transition-colors" />
             </div>
             <input
               type="text"
               placeholder="Search movie by name..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full rounded-lg bg-gray-900/50 border border-gray-800 pl-10 pr-4 py-3 text-sm text-gray-200 placeholder-gray-600 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-700"
+              className="w-full rounded-xl bg-zinc-950/50 border border-zinc-800/80 pl-12 pr-4 py-4 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-red-500/50 focus:ring-1 focus:ring-red-500/20 transition-all"
             />
           </div>
 
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-12 text-gray-500">
-              <Loader2 className="h-8 w-8 animate-spin text-red-500 mb-2" />
-              <p className="text-sm">Searching movies...</p>
+            <div className="flex flex-col items-center justify-center py-20 text-zinc-600">
+              <Loader2 className="h-8 w-8 animate-spin text-red-500 mb-3" />
+              <p className="text-xs font-bold uppercase tracking-widest">Scanning Intelligence Database...</p>
             </div>
           ) : items.length > 0 ? (
-            <div className="grid gap-4">
+            <div className="space-y-4">
               {items.map((item) => (
-                <div key={item._id} className="bg-gray-900/50 border border-gray-800 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 hover:border-gray-700 transition-all">
-                  <div className="flex-1 pr-6 w-full">
-                    <h3 className="font-bold text-lg mb-2">{item.movieName}</h3>
-                    <div className="flex flex-wrap gap-3 text-sm text-gray-400">
-                      <span className="bg-gray-800/50 px-2 py-1 rounded">Budget: <span className="text-white font-medium">{item.budget}</span></span>
-                      <span className="bg-gray-800/50 px-2 py-1 rounded">Collection: <span className="text-white font-medium">{item.collection}</span></span>
-                      <span className="bg-gray-800/50 px-2 py-1 rounded">ROI: <span className="text-green-500 font-medium">{item.roi}</span></span>
-                      <span className={`px-3 py-1 rounded text-xs font-bold ${
-                        item.verdict === "BLOCKBUSTER" ? "bg-purple-900/50 text-purple-400" :
-                        item.verdict === "SUPER HIT" ? "bg-blue-900/50 text-blue-400" :
-                        item.verdict === "HIT" ? "bg-green-900/50 text-green-400" :
-                        item.verdict === "AVERAGE" ? "bg-yellow-900/50 text-yellow-400" :
-                        "bg-red-900/50 text-red-400"
+                <div key={item._id} className="group bg-zinc-950/40 border border-zinc-800/50 p-6 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 hover:bg-zinc-900/40 transition-all border-l-2 border-l-transparent hover:border-l-red-500/50 shadow-sm">
+                  <div className="flex-1 w-full">
+                    <div className="flex flex-col mb-4">
+                      <h3 className="font-black text-xl text-white group-hover:text-red-400 transition-colors tracking-tight">{item.movieName}</h3>
+                    </div>
+                    
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex items-center gap-3 bg-zinc-900/80 px-4 py-2 rounded-xl border border-zinc-800/50">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Budget:</span>
+                        <span className="text-xs font-bold text-zinc-200">{item.budget || 'N/A'}</span>
+                      </div>
+                      
+                      <div className="flex items-center gap-3 bg-zinc-900/80 px-4 py-2 rounded-xl border border-zinc-800/50">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">WW:</span>
+                        <span className="text-xs font-bold text-zinc-100">{item.boxOffice?.worldwide || item.collection || 'N/A'}</span>
+                      </div>
+                      
+                      {item.boxOffice?.openingWeekend && item.boxOffice.openingWeekend !== 'N/A' && (
+                        <div className="flex items-center gap-3 bg-zinc-900/80 px-4 py-2 rounded-xl border border-zinc-800/50">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">OW:</span>
+                          <span className="text-xs font-bold text-orange-400">{item.boxOffice.openingWeekend}</span>
+                        </div>
+                      )}
+
+                      {item.boxOffice?.india && item.boxOffice.india !== 'N/A' && (
+                        <div className="flex items-center gap-3 bg-zinc-900/80 px-4 py-2 rounded-xl border border-zinc-800/50">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">India:</span>
+                          <span className="text-xs font-bold text-blue-400">{item.boxOffice.india}</span>
+                        </div>
+                      )}
+
+                      <div className="flex items-center gap-3 bg-zinc-900/80 px-4 py-2 rounded-xl border border-zinc-800/50">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-zinc-500">ROI:</span>
+                        <span className={`text-xs font-black ${
+                          item.roi && item.roi.includes('-') ? 'text-red-400' : 'text-green-400'
+                        }`}>{item.roi || 'N/A'}</span>
+                      </div>
+
+                      <span className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg ${
+                        item.verdict === "BLOCKBUSTER" ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" :
+                        item.verdict === "SUPER HIT" ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" :
+                        item.verdict === "HIT" ? "bg-green-500/10 text-green-400 border border-green-500/20" :
+                        item.verdict === "AVERAGE" ? "bg-amber-500/10 text-amber-400 border border-amber-500/20" :
+                        "bg-red-500/10 text-red-400 border border-red-500/20"
                       }`}>
                         {item.verdict}
                       </span>
                     </div>
                   </div>
-                  <div className="flex gap-2 self-end sm:self-center">
-                    <button onClick={() => handleEdit(item)} className="p-2 hover:bg-gray-800 rounded-lg text-blue-400 transition-all hover:scale-110">
-                      <Edit size={18} />
+                  
+                  <div className="flex gap-3 self-end sm:self-center shrink-0">
+                    <button 
+                      onClick={() => handleEdit(item)} 
+                      className="h-10 w-10 flex items-center justify-center bg-blue-500/10 hover:bg-blue-500 text-blue-500 hover:text-white rounded-xl transition-all border border-blue-500/20"
+                      title="Edit Movie"
+                    >
+                      <Edit size={16} />
                     </button>
-                    <button onClick={() => handleDelete(item._id)} className="p-2 hover:bg-gray-800 rounded-lg text-red-400 transition-all hover:scale-110">
-                      <Trash2 size={18} />
+                    <button 
+                      onClick={() => handleDelete(item._id)} 
+                      className="h-10 w-10 flex items-center justify-center bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all border border-red-500/20"
+                      title="Delete Movie"
+                    >
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
@@ -311,15 +414,54 @@ export default function BoxOfficeAdmin() {
                       <div className="space-y-2">
                         <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
                           <DollarSign className="h-4 w-4 text-green-500" />
-                          Collection
+                          Worldwide Collection
                         </label>
                         <input
                           type="text"
                           required
                           placeholder="$2.3B"
                           className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
-                          value={formData.collection}
-                          onChange={(e) => setFormData({ ...formData, collection: e.target.value })}
+                          value={formData.boxOffice?.worldwide || formData.collection}
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            collection: e.target.value,
+                            boxOffice: { ...formData.boxOffice, worldwide: e.target.value }
+                          })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 text-orange-500" />
+                          Opening Weekend
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="₹150 crore"
+                          className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
+                          value={formData.boxOffice?.openingWeekend || ""}
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            boxOffice: { ...formData.boxOffice, openingWeekend: e.target.value }
+                          })}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
+                          <DollarSign className="h-4 w-4 text-blue-500" />
+                          India Collection
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="₹500 crore"
+                          className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
+                          value={formData.boxOffice?.india || ""}
+                          onChange={(e) => setFormData({ 
+                            ...formData, 
+                            boxOffice: { ...formData.boxOffice, india: e.target.value }
+                          })}
                         />
                       </div>
                     </div>
@@ -356,6 +498,24 @@ export default function BoxOfficeAdmin() {
                           <option value="FLOP" className="bg-gray-900">FLOP</option>
                         </select>
                       </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="block text-sm font-medium text-gray-300 flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4 text-red-500" />
+                        Analysis Page Link
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="https://filmyfire.com/bollywood/box-office/movie-slug"
+                        className="w-full bg-gray-800/50 border border-gray-700 rounded-xl px-4 py-3 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all hover:border-gray-600"
+                        value={formData.boxOffice?.analysisLink || formData.analysisLink || ""}
+                        onChange={(e) => setFormData({ 
+                          ...formData, 
+                          analysisLink: e.target.value,
+                          boxOffice: { ...formData.boxOffice, analysisLink: e.target.value }
+                        })}
+                      />
                     </div>
                   </div>
 
@@ -421,6 +581,35 @@ export default function BoxOfficeAdmin() {
                             />
                           </div>
                         </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Page Configuration Section */}
+                  <div className="bg-gray-800/20 rounded-2xl border border-gray-800 p-5 space-y-4 col-span-1 md:col-span-2">
+                    <label className="block text-sm font-bold text-blue-400 flex items-center gap-2 uppercase tracking-widest">
+                      <SlidersHorizontal className="h-4 w-4" />
+                      Page Configuration (Sub-pages)
+                    </label>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {Object.keys(formData.subPages || {}).map((page) => (
+                        <label key={page} className="flex items-center gap-2 cursor-pointer group">
+                          <input
+                            type="checkbox"
+                            className="w-4 h-4 rounded border-gray-700 bg-gray-800 text-red-600 focus:ring-red-500 transition-all"
+                            checked={formData.subPages?.[page] || false}
+                            onChange={(e) => setFormData({
+                              ...formData,
+                              subPages: {
+                                ...formData.subPages,
+                                [page]: e.target.checked
+                              }
+                            })}
+                          />
+                          <span className="text-xs font-medium text-gray-400 group-hover:text-gray-200 transition-colors capitalize">
+                            {page.replace(/([A-Z])/g, ' $1')}
+                          </span>
+                        </label>
                       ))}
                     </div>
                   </div>

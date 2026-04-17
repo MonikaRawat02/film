@@ -2683,3 +2683,22 @@
 [2026-04-17T04:48:10.755Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
 [2026-04-17T05:00:00.306Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-04-17T05:00:28.866Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T06:30:00.218Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T06:30:00.291Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-17T06:30:22.526Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T06:32:11.050Z] [ERROR] ❌ CRON FATAL (Daily Sync): request to http://localhost:3000/api/admin/automation/run-daily-sync failed, reason: read ECONNRESET
+[2026-04-17T07:00:00.536Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T07:00:27.386Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T07:30:00.273Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-17T07:30:00.350Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T07:30:26.661Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T07:32:04.395Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
+[2026-04-17T08:00:00.272Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T08:00:26.657Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T08:27:00.350Z] [INFO] 🕒 CRON START: Celebrity Scraper
+[2026-04-17T08:27:44.629Z] [INFO] ✅ CRON SUCCESS: Bollywood Celebrity Scraper - Successfully synced 10 new celebrities for Bollywood. Skipped 14 existing.
+[2026-04-17T08:28:04.530Z] [INFO] ✅ CRON SUCCESS: Hollywood Celebrity Scraper - Successfully synced 10 new celebrities for Hollywood. Skipped 5 existing.
+[2026-04-17T08:30:00.079Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-04-17T08:30:00.090Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-04-17T08:30:25.076Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-04-17T09:30:39.364Z] [ERROR] ❌ CRON FATAL (Daily Sync): network timeout at: http://localhost:3000/api/admin/automation/run-daily-sync
