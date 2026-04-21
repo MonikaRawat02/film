@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import Head from "next/head";
-import { TrendingUp, Award, Film, Activity, PieChart, Wallet, DollarSign, ExternalLink, Search, Flame } from "lucide-react";
+import { TrendingUp, Award, Film, Activity, PieChart, Wallet, DollarSign, ExternalLink, Search, Flame, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
@@ -55,6 +55,11 @@ export default function BoxOfficePage({ initialData }) {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [navigatingId, setNavigatingId] = useState(null);
+
+  const handleLinkClick = (id) => {
+    setNavigatingId(id);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -271,7 +276,11 @@ export default function BoxOfficePage({ initialData }) {
                 >
                   <div className="flex flex-1 items-center gap-6">
                     {/* Movie Poster */}
-                    <Link href={movieUrl} className="shrink-0 block overflow-hidden rounded-lg border border-zinc-800 group-hover:border-amber-500/50 transition-all shadow-xl">
+                    <Link 
+                      href={movieUrl} 
+                      onClick={() => handleLinkClick(m._id)}
+                      className="shrink-0 block overflow-hidden rounded-lg border border-zinc-800 group-hover:border-amber-500/50 transition-all shadow-xl"
+                    >
                       <div className="relative h-24 w-16 bg-zinc-800">
                         {m.image ? (
                           <img 
@@ -288,7 +297,11 @@ export default function BoxOfficePage({ initialData }) {
                     </Link>
 
                     <div className="flex-1">
-                      <Link href={movieUrl} className="block group/title">
+                      <Link 
+                        href={movieUrl} 
+                        onClick={() => handleLinkClick(m._id)}
+                        className="block group/title"
+                      >
                         <h3 className="font-bold text-lg text-white group-hover/title:text-amber-400 transition-colors tracking-tight mb-1">
                           {m.movieName}
                         </h3>
@@ -321,10 +334,20 @@ export default function BoxOfficePage({ initialData }) {
 
                   <Link
                     href={movieUrl}
+                    onClick={() => handleLinkClick(m._id)}
                     className="flex items-center gap-2 px-4 py-2 bg-zinc-950 border border-zinc-800 text-zinc-400 rounded-lg text-xs font-bold uppercase tracking-widest hover:bg-amber-500 hover:border-amber-400 hover:text-black transition-all shadow-sm"
                   >
-                    More Details
-                    <ExternalLink className="w-3 h-3" />
+                    {navigatingId === m._id ? (
+                      <>
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        Loading...
+                      </>
+                    ) : (
+                      <>
+                        More Details
+                        <ExternalLink className="w-3 h-3" />
+                      </>
+                    )}
                   </Link>
                 </motion.div>
                 );

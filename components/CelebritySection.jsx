@@ -152,7 +152,7 @@ export default function CelebritySection() {
                   {/* Button */}
                   <Link
                     href={slug ? `/celebrity/${slug}/networth` : "#"}
-                    className="flex w-full items-center justify-center rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/20 transition-all hover:scale-[1.02] hover:shadow-purple-900/40 active:scale-95"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-pink-600 py-3.5 text-sm font-bold text-white shadow-lg shadow-purple-900/20 transition-all hover:scale-[1.02] hover:shadow-purple-900/40 active:scale-95"
                   >
                     View Complete Profile
                   </Link>

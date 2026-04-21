@@ -17,6 +17,9 @@ export default function Dashboard() {
   });
   const [loading, setLoading] = useState(true);
 
+
+  console.log('Stats:', stats);
+
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -100,6 +103,8 @@ export default function Dashboard() {
       gradient: "from-purple-500 to-pink-500"
     }
   ];
+
+  console.log('Active users:', stats.activeUsers);
 
   return (
     <>
