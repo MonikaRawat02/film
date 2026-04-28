@@ -5,6 +5,7 @@ import Visitor from "../../../model/visitor";
 import BoxOffice from "../../../model/boxOffice";
 import OTTIntelligence from "../../../model/ottIntelligence";
 import SearchAnalytics from "../../../model/searchAnalytics";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -12,6 +13,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Cache for 5 minutes (admin stats can be slightly stale)
+    const cacheKey = `admin:stats`;
+    
+    const data = await cacheManager(cacheKey, 300, async () => {
     await dbConnect();
 
     const articleCount = await Article.countDocuments();
@@ -54,7 +59,15 @@ export default async function handler(req, res) {
         trending: trendingCount,
         totalViews: totalViewsData[0]?.total || 0,
         recentActivity: combinedActivity
-      },
+      }
+    });
+    
+    return data;
+    });
+
+    res.status(200).json({
+      success: true,
+      data
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Film, Clapperboard, Tv, PlaySquare, TrendingUp, Users, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
-export default function CategoryHubSection() {
+export default function CategoryHubSection({ unifiedData }) {
   const [counts, setCounts] = useState({
     Bollywood: 0,
     Hollywood: 0,
@@ -14,36 +15,26 @@ export default function CategoryHubSection() {
   const [celebrityPreview, setCelebrityPreview] = useState([]);
 
   useEffect(() => {
-    async function fetchCounts() {
-      try {
-        const res = await fetch("/api/public/category-counts");
-        const data = await res.json();
-        if (data.success) {
-          console.log("Category counts received:", data.counts);
-          setCounts(data.counts);
-        } else {
-          console.error("Failed to fetch category counts:", data);
+    // Use unified data if provided, otherwise fetch independently
+    if (unifiedData) {
+      setCounts(unifiedData.categoryCounts);
+      setCelebrityPreview(unifiedData.celebrities);
+    } else {
+      async function fetchData() {
+        try {
+          const res = await fetch("/api/public/homepage-unified");
+          const data = await res.json();
+          if (data.success) {
+            setCounts(data.data.categoryCounts);
+            setCelebrityPreview(data.data.celebrities);
+          }
+        } catch (error) {
+          console.error("Failed to fetch homepage data", error);
         }
-      } catch (error) {
-        console.error("Failed to fetch category counts", error);
       }
+      fetchData();
     }
-    
-    async function fetchCelebrityPreview() {
-      try {
-        const res = await fetch("/api/public/celebrities");
-        const data = await res.json();
-        if (data.success) {
-          setCelebrityPreview(data.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch celebrity preview", error);
-      }
-    }
-
-    fetchCounts();
-    fetchCelebrityPreview();
-  }, []);
+  }, [unifiedData]);
 
   const categories = [
     {
@@ -149,7 +140,14 @@ export default function CategoryHubSection() {
                     <div className="flex -space-x-3 mb-4">
                       {c.preview.map((p, idx) => (
                         <div key={idx} className="h-10 w-10 rounded-full border-2 border-gray-900 overflow-hidden ring-2 ring-white/10 group-hover:ring-white/30 transition-all">
-                          <img src={p.image} alt={p.name} className="h-full w-full object-cover" />
+                          <Image 
+                            src={p.image} 
+                            alt={p.name} 
+                            width={40}
+                            height={40}
+                            className="h-full w-full object-cover"
+                            loading="lazy"
+                          />
                         </div>
                       ))}
                     </div>

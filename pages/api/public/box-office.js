@@ -1,5 +1,6 @@
 import dbConnect from "../../../lib/mongodb";
 import BoxOffice from "../../../model/boxOffice";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,18 +8,18 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
     const { industry, limit = 10 } = req.query;
+    const cacheKey = `public:box-office:${industry || 'all'}:${limit}`;
 
-    let query = {};
-    // If we have industry info in the model, we should filter. 
-    // Assuming BoxOffice model might have movieName which we can use to infer industry if needed,
-    // or just return all for now if no industry field exists.
-
-    const data = await BoxOffice.find(query)
-      .sort({ createdAt: -1 })
-      .limit(Number(limit))
-      .lean();
+    const data = await cacheManager(cacheKey, 300, async () => {
+      await dbConnect();
+      let query = {};
+      const data = await BoxOffice.find(query)
+        .sort({ createdAt: -1 })
+        .limit(Number(limit))
+        .lean();
+      return data;
+    });
 
     return res.status(200).json({ success: true, data });
   } catch (error) {

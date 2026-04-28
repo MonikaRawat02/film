@@ -3598,3 +3598,36 @@
 [2026-04-28T05:30:09.802Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
 [2026-04-28T05:30:14.902Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-04-28T05:30:33.741Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-04-28T05:50:00.274Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
+[2026-04-28T05:50:01.231Z] [INFO] 📊 Refreshing data for 30 recent movies
+[2026-04-28T05:50:02.662Z] [INFO] ✅ Refreshed data for hai-jawani-toh-ishq-hona-hai
+[2026-04-28T05:50:02.922Z] [INFO] ✅ Refreshed data for main-actor-nahin-hoon
+[2026-04-28T05:50:03.170Z] [INFO] ✅ Refreshed data for les-amies-de-ma-femme
+[2026-04-28T05:50:03.430Z] [INFO] ✅ Refreshed data for princess-jasnenka-and-the-flying-shoemaker
+[2026-04-28T05:50:03.760Z] [INFO] ✅ Refreshed data for get-carter
+[2026-04-28T05:50:07.902Z] [INFO] ✅ Refreshed data for barbers-tales
+[2026-04-28T05:50:11.684Z] [INFO] ✅ Refreshed data for cool-hand-luke
+[2026-04-28T05:50:14.678Z] [INFO] ✅ Refreshed data for blue-hill-avenue
+[2026-04-28T05:50:18.174Z] [INFO] ✅ Refreshed data for the-night-of-the-shooting-stars
+[2026-04-28T05:50:21.507Z] [INFO] ✅ Refreshed data for red-scorpion
+[2026-04-28T05:50:24.352Z] [INFO] ✅ Refreshed data for queen-of-katwe
+[2026-04-28T05:50:27.157Z] [INFO] ✅ Refreshed data for lenny
+[2026-04-28T05:50:29.825Z] [INFO] ✅ Refreshed data for la-liceale
+[2026-04-28T05:50:32.785Z] [INFO] ✅ Refreshed data for case-of-the-naves-brothers
+[2026-04-28T05:50:35.626Z] [INFO] ✅ Refreshed data for stealing-heaven
+[2026-04-28T05:50:38.584Z] [INFO] ✅ Refreshed data for the-tin-drum
+[2026-04-28T05:50:41.760Z] [INFO] ✅ Refreshed data for a-cat-in-paris
+[2026-04-28T05:50:44.821Z] [INFO] ✅ Refreshed data for mirzapur
+[2026-04-28T05:50:47.730Z] [INFO] ✅ Refreshed data for ek-din
+[2026-04-28T05:50:52.797Z] [INFO] ✅ Refreshed data for mallari
+[2026-04-28T05:50:55.761Z] [INFO] ✅ Refreshed data for tu-yaa-main
+[2026-04-28T05:50:56.354Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
+[2026-04-28T05:50:59.175Z] [INFO] ✅ Refreshed data for azad-bharath
+[2026-04-28T05:50:59.912Z] [INFO] ✅ Refreshed data for bharatiya-digital-party
+[2026-04-28T05:51:03.377Z] [INFO] ✅ Refreshed data for bhanwar
+[2026-04-28T05:51:04.103Z] [INFO] ✅ Refreshed data for back-benchers
+[2026-04-28T05:51:07.535Z] [INFO] ✅ Refreshed data for anusandhan
+[2026-04-28T05:51:08.051Z] [INFO] ✅ Refreshed data for andhar-maya
+[2026-04-28T05:51:08.552Z] [INFO] ✅ Refreshed data for alma-matters-inside-the-iit-dream
+[2026-04-28T05:51:11.989Z] [INFO] ✅ Refreshed data for all-india-bakchod
+[2026-04-28T05:51:11.995Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 30 movies

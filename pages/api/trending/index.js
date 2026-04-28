@@ -2,6 +2,7 @@
 // Returns validated & enriched trending movies, actors, and viral topics
 import dbConnect from "../../../lib/mongodb";
 import Trending from "../../../model/trending";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -11,7 +12,11 @@ export default async function handler(req, res) {
   const { type, limit = 200, region = "IN" } = req.query;
 
   try {
-    await dbConnect();
+    // Cache for 15 minutes
+    const cacheKey = `trending:${type || 'all'}:${region}:${limit}`;
+    
+    const result = await cacheManager(cacheKey, 900, async () => {
+      await dbConnect();
 
     // Filter for active trends that haven't expired
     const baseFilter = {
@@ -57,14 +62,14 @@ export default async function handler(req, res) {
         createdAt: trend.createdAt
       }));
 
-      return res.status(200).json({
+      return {
         success: true,
         data: {
           [type]: formatted
         },
         count: formatted.length,
         region
-      });
+      };
     }
 
     // Get all trending items grouped by type
@@ -113,7 +118,7 @@ export default async function handler(req, res) {
         createdAt: trend.createdAt
       }));
 
-    return res.status(200).json({
+    return {
       success: true,
       data: {
         trending_movies: formatTrends(movies),
@@ -127,7 +132,12 @@ export default async function handler(req, res) {
         all: movies.length + actors.length + topics.length
       },
       region
+    };
+    
+    return result;
     });
+
+    return res.status(200).json(result);
   } catch (error) {
     console.error("Trending API Error:", error);
     return res.status(500).json({
