@@ -60,6 +60,7 @@ export default async function handler(req, res) {
 
     // Search Articles
     const articles = await Article.find({
+      status: "published",
       $or: [
         { title: allWordsRegex },
         { movieTitle: allWordsRegex },

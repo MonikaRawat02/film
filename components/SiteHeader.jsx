@@ -96,13 +96,6 @@ const SiteHeader = () => {
  
              <div className="flex items-center gap-2">
               {/* Admin Login Button */}
-              <Link
-                href="/admin/login"
-                className="hidden lg:inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-sm font-semibold transition-all duration-300 shadow-lg hover:shadow-red-600/25"
-              >
-                <LogIn className="w-4 h-4" />
-                Admin Login
-              </Link>
 
               <button
                 aria-label="Open menu"

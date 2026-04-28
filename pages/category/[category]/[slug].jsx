@@ -1806,8 +1806,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800"
-                >
+                  className="p-8 rounded-2xl bg-gray-900/50 border border-gray-800">
                   {isQASection && sectionFaqs.length > 0 ? (
                     <>
                       <h2 className="text-2xl font-black text-white mb-6 flex items-center gap-3">
@@ -1921,7 +1920,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                                 <span className="text-[7px] font-bold text-white">T</span>
                               </div>
                             )}
-                            
+  
                             {/* Rating Badge - Top Right */}
                             {movie.rating && (
                               <div className="absolute top-1 right-1 px-1 py-0.5 rounded bg-black/70 backdrop-blur-sm flex items-center gap-0.5">
@@ -1982,8 +1981,8 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="pt-16"
-            >
+              className="pt-16" >
+
               {/* FAQ Header */}
               <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
                 <h2 className="text-xl font-bold text-white flex items-center gap-3">

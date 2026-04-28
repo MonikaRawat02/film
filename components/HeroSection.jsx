@@ -186,7 +186,7 @@ export default function HeroSection() {
 
         <div className="flex flex-wrap items-center justify-center gap-5 mt-14 mb-10">
           <Link
-            href="/create"
+            href="/explore-cinema-intelligence"
             className="group inline-flex items-center gap-2 rounded-2xl px-10 py-5 text-base font-semibold text-white bg-gradient-to-r from-red-600 to-red-700 shadow-sm transition active:scale-95 hover:from-red-500 hover:to-red-600"
           >
             Explore Intelligence Pages

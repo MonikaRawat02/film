@@ -1,8 +1,25 @@
 import { useState, useEffect, useMemo } from "react";
 import Head from "next/head";
-import { Lightbulb, Search, X, ArrowLeft, Clock, Eye, ArrowRight, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { 
+  Lightbulb, 
+  ArrowRight, 
+  Clock, 
+  Users, 
+  Search, 
+  Sparkles,
+  TrendingUp,
+  Brain,
+  Globe,
+  Zap,
+  ChevronRight,
+  Filter,
+  Eye,
+  X,
+  ArrowLeft
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PopularTopicsListingPage() {
   const router = useRouter();
@@ -116,12 +133,8 @@ export default function PopularTopicsListingPage() {
 
                 <div className="flex items-center gap-6 text-gray-500 text-[10px] font-black uppercase tracking-[0.2em] mb-8">
                   <div className="inline-flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-yellow-500/50" />
-                    <span>{t.views} views</span>
-                  </div>
-                  <div className="inline-flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-yellow-500/50" />
-                    <span>{t.readTime}</span>
+                    <Users className="w-4 h-4 text-yellow-500/50" />
+                    <span>Intelligence Analysis</span>
                   </div>
                 </div>
 
