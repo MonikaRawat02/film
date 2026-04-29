@@ -1,0 +1,16 @@
+{
+  "name": "FilmyFire - Cinema Intelligence Platform",
+  "short_name": "FilmyFire",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#dc2626",
+  "background_color": "#000000"
+}

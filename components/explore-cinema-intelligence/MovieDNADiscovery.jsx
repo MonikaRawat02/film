@@ -1,6 +1,7 @@
 import { Dna, Heart, Brain, Users, Target, Sparkles, Star, Loader2, ArrowUpRight, SlidersHorizontal } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { slugify } from "@/lib/slugify";
 
 export default function MovieDNADiscovery() {
   const router = useRouter();
@@ -67,8 +68,9 @@ export default function MovieDNADiscovery() {
   };
 
   const handleMovieClick = (movie) => {
-    // Navigate to box office page with search query to show this specific movie
-    router.push(`/box-office?search=${encodeURIComponent(movie.movieName)}`);
+    // Navigate to the main movie page
+    const movieSlug = movie.slug || slugify(movie.movieName);
+    router.push(`/movie/${movieSlug}`);
   };
 
   const getRadarPoints = () => {

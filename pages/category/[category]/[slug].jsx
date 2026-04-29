@@ -6,7 +6,7 @@ import { slugify } from "@/lib/slugify";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, BarChart3, User, DollarSign, Users, Award, ExternalLink, ChevronRight, Briefcase,
-  Target, HelpCircle, ShieldCheck, Film, TrendingUp, Star, BookOpen, Tv, Tag, Info, Heart, FileText ,Zap
+  Target, HelpCircle, ShieldCheck, Film, TrendingUp, Star, BookOpen, Tv, Tag, Info, Heart, FileText, Zap
 } from "lucide-react";
 
 // Utility function to extract complete sentences without cutting mid-word
@@ -48,36 +48,65 @@ function parseFAQsFromContent(content) {
   if (!content) return [];
   const faqs = [];
   
-  // Method 1: Split by **Q patterns (with or without numbers)
-  const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
-  if (blocks.length > 1) {
-    for (let i = 1; i < blocks.length; i++) {
-      const block = blocks[i];
-      const questionMatch = block.match(/^([^?]*\?)/);
-      if (!questionMatch) continue;
-      const question = questionMatch[1].trim();
-      let answer = '';
-      const aMatch = block.match(/\*\*A\.?\s*\d*:?\s*([^\n]+)/);
-      if (aMatch) {
-        answer = aMatch[1].trim();
-      } else {
-        // Try to find "A:" without bold
-        const aMatchPlain = block.match(/^A:\s*([^\n]+)/m);
-        if (aMatchPlain) {
-          answer = aMatchPlain[1].trim();
-        } else {
-          const afterQuestion = block.substring(block.indexOf('?') + 1);
-          answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
-        }
+  // Method 1: Parse "### Q1: Question?" format (from screenshot)
+  if (faqs.length === 0) {
+    const hashQPattern = /###\s*Q\.?\s*(\d+)[:\.\s]+([^?]+\?)/gi;
+    let match;
+    while ((match = hashQPattern.exec(content)) !== null) {
+      const questionNum = match[1];
+      const question = match[2].trim();
+      
+      // Find the corresponding answer **A1:** or **A:**
+      const answerPattern = new RegExp(`\\*\\*[Aa]\\.?\\s*${questionNum}[:\\.]?\\*\\*\\s*([^\\n]+)`, 'i');
+      const answerMatch = content.match(answerPattern);
+      let answer = answerMatch ? answerMatch[1].replace(/\*\*/g, '').trim() : '';
+      
+      // If no numbered answer found, try to find next Q or end of content
+      if (!answer) {
+        const afterQuestion = content.substring(match.index + match[0].length);
+        const nextQMatch = afterQuestion.match(/###\s*Q\.?\s*\d+/);
+        answer = nextQMatch ? afterQuestion.substring(0, nextQMatch.index) : afterQuestion;
+        answer = answer.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/^[:\s]+/, '').trim();
       }
-      answer = answer.replace(/\*\*/g, '').trim();
+      
       if (question && answer && question.length > 3) {
         faqs.push({ question, answer });
       }
     }
   }
   
-  // Method 2: Parse "**Q: Question?**\nA: Answer" format (your current format)
+  // Method 2: Split by **Q patterns (with or without numbers)
+  if (faqs.length === 0) {
+    const blocks = content.split(/\*\*Q\.?\s*\d*:?\s*/);
+    if (blocks.length > 1) {
+      for (let i = 1; i < blocks.length; i++) {
+        const block = blocks[i];
+        const questionMatch = block.match(/^([^?]*\?)/);
+        if (!questionMatch) continue;
+        const question = questionMatch[1].trim();
+        let answer = '';
+        const aMatch = block.match(/\*\*A\.?\s*\d*:?\s*([^\n]+)/);
+        if (aMatch) {
+          answer = aMatch[1].trim();
+        } else {
+          // Try to find "A:" without bold
+          const aMatchPlain = block.match(/^A:\s*([^\n]+)/m);
+          if (aMatchPlain) {
+            answer = aMatchPlain[1].trim();
+          } else {
+            const afterQuestion = block.substring(block.indexOf('?') + 1);
+            answer = afterQuestion.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
+          }
+        }
+        answer = answer.replace(/\*\*/g, '').trim();
+        if (question && answer && question.length > 3) {
+          faqs.push({ question, answer });
+        }
+      }
+    }
+  }
+  
+  // Method 3: Parse "**Q: Question?**\nA: Answer" format (your current format)
   if (faqs.length === 0) {
     const qaBlockPattern = /\*\*Q:\s*([^?]+\?)\*\*\s*\nA:\s*([^\n]+)/g;
     let match;
@@ -90,7 +119,7 @@ function parseFAQsFromContent(content) {
     }
   }
   
-  // Method 3: Parse numbered format "1. **Question?** Answer"
+  // Method 4: Parse numbered format "1. **Question?** Answer"
   if (faqs.length === 0) {
     const numberedPattern = /(\d+)\.\s+\*\*([^*]+)\*\*/g;
     let match;
@@ -111,7 +140,7 @@ function parseFAQsFromContent(content) {
     }
   }
   
-  // Method 4: Parse "Q1: Question?" format
+  // Method 5: Parse "Q1: Question?" format
   if (faqs.length === 0) {
     const qaPattern = /Q\.?\s*(\d+):?\s*([^?]+\?)\s*A\.?\s*\d+:?\s*([^\n]+)/gi;
     let match;
@@ -1527,7 +1556,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.5 }}
-                    className="pt-8"
+                    className="mt-12 pt-8 border-t border-gray-800"
                   >
                     {/* FAQ Header */}
                     <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
