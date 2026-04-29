@@ -93,6 +93,43 @@ export default function MovieTypePage({ movie, pageType }) {
         
         {/* Keywords */}
         <meta name="keywords" content={movie.metaData?.keywords?.join(", ")} />
+
+        {/* Breadcrumb Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://filmyfire.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": movie.category || "Movies",
+                  "item": `https://filmyfire.com/category/${movie.category?.toLowerCase() || 'bollywood'}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": movie.movieTitle,
+                  "item": `https://filmyfire.com/movie/${movie.slug}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 4,
+                  "name": pageTypeLabels[pageType],
+                  "item": `https://filmyfire.com/movie/${movie.slug}/${pageType}`
+                }
+              ]
+            })
+          }}
+        />
       </Head>
 
       <div className="min-h-screen bg-[#050505] text-zinc-100 selection:bg-red-600/30 font-sans pt-24 pb-24">

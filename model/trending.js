@@ -81,6 +81,11 @@ const trendingSchema = new mongoose.Schema({
     default: "active"
   },
 
+  isValidated: {
+    type: Boolean,
+    default: false
+  },
+
   // Additional metadata for display (User's requirement #1 & #7)
   metadata: {
     type: mongoose.Schema.Types.Mixed,

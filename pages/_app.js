@@ -160,7 +160,7 @@ export default function App({
     <div className="font-sans">
       {/* PERFECT CENTER LOADER */}
       {loading && (
-        <div className="fixed top-0 left-0 w-full h-screen z-[9999] flex items-center justify-center pointer-events-none bg-[#050505]/20 backdrop-blur-[2px]">
+        <div className="fixed top-0 left-0 w-full h-screen z-[9999] flex items-center justify-center pointer-events-none">
           <div className="flex flex-col items-center justify-center -mt-8">
             <div className="relative h-14 w-14">
               <div className="absolute inset-0 rounded-full border-4 border-[#ef4444]/10"></div>

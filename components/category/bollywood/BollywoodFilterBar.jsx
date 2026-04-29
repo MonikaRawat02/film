@@ -2,7 +2,7 @@
 
 import { Flame, Film, BarChart3, Tv, Users, TrendingUp } from "lucide-react";
 
-export default function BollywoodFilterBar({ activeFilter, setActiveFilter }) {
+export default function BollywoodFilterBar({ activeFilter, setActiveFilter, loading }) {
   const filters = [
     { id: "All", label: "All Bollywood", icon: Flame },
     { id: "Explained", label: "Movie Explainers", icon: Film },
@@ -23,15 +23,22 @@ export default function BollywoodFilterBar({ activeFilter, setActiveFilter }) {
               <button
                 key={filter.id}
                 onClick={() => setActiveFilter(filter.id)}
+                disabled={loading}
                 className={`group relative px-5 py-2.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 flex items-center gap-2 ${
+                  loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                } ${
                   isActive
                     ? "text-white bg-gradient-to-r from-amber-600 via-orange-600 to-amber-600 shadow-lg shadow-amber-500/30"
                     : "text-zinc-400 hover:text-white bg-transparent hover:bg-zinc-900/50"
                 }`}
               >
-                <Icon className="w-4 h-4" />
+                {loading && isActive ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : (
+                  <Icon className="w-4 h-4" />
+                )}
                 <span className="relative z-10">{filter.label}</span>
-                {isActive && (
+                {isActive && !loading && (
                   <div className="absolute inset-0 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 rounded-xl opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
                 )}
               </button>

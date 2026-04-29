@@ -12,6 +12,7 @@ import {
   ChevronDown, Star, ExternalLink, Sparkles, Tag
 } from "lucide-react";
 import ErrorState from "../../components/common/ErrorState";
+import { LazyImage } from "../../components/LazyImage";
 
 export async function getServerSideProps(context) {
   const { slug } = context.params;
@@ -443,6 +444,37 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
             })
           }}
         />
+
+        {/* Breadcrumb Schema */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://filmyfire.com"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": article.category || "Movies",
+                  "item": `https://filmyfire.com${categoryPageUrl}`
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 3,
+                  "name": article.movieTitle,
+                  "item": `https://filmyfire.com/movie/${slug}`
+                }
+              ]
+            })
+          }}
+        />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-black text-white selection:bg-red-600/30 font-sans relative">
@@ -486,14 +518,19 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
           className="relative w-full min-h-[60vh] bg-cover bg-center overflow-hidden mt-4 md:mt-6">
           {/* Background Image */}
           {article.coverImage ? (
-            <motion.img 
+            <motion.div 
               initial={{ scale: 1.1 }}
               animate={{ scale: 1 }}
               transition={{ duration: 1.2, ease: "easeOut" }}
-              src={article.coverImage} 
-              alt={article.movieTitle}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
+              className="absolute inset-0 w-full h-full"
+            >
+              <LazyImage 
+                src={article.coverImage} 
+                alt={article.movieTitle}
+                className="w-full h-full object-cover"
+                priority={true}
+              />
+            </motion.div>
           ) : (
             <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-800 via-gray-900 to-black" />
           )}
@@ -535,10 +572,12 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                     <div className="absolute -inset-1.5 bg-gradient-to-r from-red-500 via-pink-500 to-purple-600 rounded-xl blur-md opacity-60 group-hover:opacity-80 transition duration-300"></div>
                     <div className="relative w-full aspect-[2/3] rounded-xl overflow-hidden border-2 border-gray-600 shadow-2xl">
                       {article.coverImage ? (
-                        <img 
+                        <LazyImage 
                           src={article.coverImage} 
                           alt={article.movieTitle}
                           className="w-full h-full object-cover"
+                          aspectRatio="poster"
+                          priority={true}
                         />
                       ) : (
                         <div className="w-full h-full bg-gray-800 flex items-center justify-center">
@@ -1045,10 +1084,11 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                           className="rounded-lg overflow-hidden bg-gray-800/50 border border-gray-700 hover:border-gray-600 transition-all"
                         >
                           {movie.coverImage ? (
-                            <img 
+                            <LazyImage 
                               src={movie.coverImage} 
                               alt={movie.movieTitle}
                               className="w-full h-32 object-cover"
+                              aspectRatio="video"
                             />
                           ) : (
                             <div className="w-full h-32 bg-gray-800 flex items-center justify-center">
@@ -1265,10 +1305,13 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                       OTT Release Details
                     </h3>
                     {article.ott?.platform && (
-                      <div className="mb-3 p-3 rounded-lg bg-purple-600/20 border border-purple-500/30">
-                        <p className="text-[10px] text-purple-400 uppercase mb-1">Streaming On</p>
-                        <p className="text-lg font-bold text-white">{article.ott.platform}</p>
-                      </div>
+                      <Link href={`/ott/${slugify(article.ott.platform)}`} className="block mb-3 p-3 rounded-lg bg-purple-600/20 border border-purple-500/30 hover:bg-purple-600/30 hover:border-purple-500/50 transition-all group">
+                        <p className="text-[10px] text-purple-400 uppercase mb-1 group-hover:text-purple-300">Streaming On</p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-lg font-bold text-white">{article.ott.platform}</p>
+                          <ExternalLink className="w-4 h-4 text-purple-400 group-hover:text-white transition-colors" />
+                        </div>
+                      </Link>
                     )}
                     {article.ott?.releaseDate && (
                       <div className="mb-3">
@@ -1304,15 +1347,15 @@ export default function MovieDetailPage({ article, pageType, slug, dynamicRecomm
                         <p className="text-[10px] text-gray-500 uppercase mb-2">Lead Cast</p>
                         <div className="space-y-2">
                           {article.cast.slice(0, 4).map((actor, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0">
-                                <User className="w-3 h-3 text-gray-400" />
+                            <Link key={idx} href={`/celebrity/${actor.slug || slugify(actor.name)}`} className="group flex items-center gap-2">
+                              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-600/30 to-purple-600/30 flex items-center justify-center flex-shrink-0 group-hover:from-pink-600 group-hover:to-purple-600 transition-all">
+                                <User className="w-3 h-3 text-gray-400 group-hover:text-white transition-colors" />
                               </div>
                               <div className="min-w-0 flex-1">
-                                <p className="text-xs font-semibold text-white truncate">{actor.name}</p>
+                                <p className="text-xs font-semibold text-white truncate group-hover:text-pink-400 transition-colors">{actor.name}</p>
                                 {actor.role && <p className="text-[10px] text-gray-500 truncate">{actor.role}</p>}
                               </div>
-                            </div>
+                            </Link>
                           ))}
                         </div>
                       </div>

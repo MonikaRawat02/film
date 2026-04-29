@@ -181,12 +181,62 @@ async function createIndexes() {
     }
 
     // ============================================
+    // INTERNAL LINKS COLLECTION INDEXES
+    // ============================================
+    console.log('\n🔗 Creating indexes for INTERNALLINKS collection...');
+    
+    const internalLinkIndexes = [
+      { key: { sourceSlug: 1 }, options: { name: 'idx_source_slug' } },
+      { key: { targetSlug: 1 }, options: { name: 'idx_target_slug' } },
+      { key: { anchorText: 1 }, options: { name: 'idx_anchor_text' } },
+      { key: { lastChecked: 1 }, options: { name: 'idx_last_checked' } },
+    ];
+
+    for (const idx of internalLinkIndexes) {
+      try {
+        await db.collection('internallinks').createIndex(idx.key, idx.options);
+        console.log(`  ✅ Created index: ${idx.options.name}`);
+      } catch (error) {
+        if (error.code === 85 || error.code === 11000) {
+          console.log(`  ⚠️ Index ${idx.options.name} already exists`);
+        } else {
+          console.error(`  ❌ Failed to create ${idx.options.name}:`, error.message);
+        }
+      }
+    }
+
+    // ============================================
+    // PSEOPAGES COLLECTION INDEXES
+    // ============================================
+    console.log('\n📄 Creating indexes for PSEOPAGES collection...');
+    
+    const pseoIndexes = [
+      { key: { slug: 1 }, options: { unique: true, name: 'idx_slug_unique' } },
+      { key: { movieSlug: 1 }, options: { name: 'idx_movie_slug' } },
+      { key: { pageType: 1 }, options: { name: 'idx_page_type' } },
+      { key: { status: 1 }, options: { name: 'idx_status' } },
+    ];
+
+    for (const idx of pseoIndexes) {
+      try {
+        await db.collection('pseopages').createIndex(idx.key, idx.options);
+        console.log(`  ✅ Created index: ${idx.options.name}`);
+      } catch (error) {
+        if (error.code === 85 || error.code === 11000) {
+          console.log(`  ⚠️ Index ${idx.options.name} already exists`);
+        } else {
+          console.error(`  ❌ Failed to create ${idx.options.name}:`, error.message);
+        }
+      }
+    }
+
+    // ============================================
     // PRINT INDEX STATISTICS
     // ============================================
     console.log('\n📊 INDEX CREATION SUMMARY:');
     console.log('='.repeat(50));
     
-    const collections = ['articles', 'celebrities', 'discoverypages', 'trendings', 'boxoffices'];
+    const collections = ['articles', 'celebrities', 'discoverypages', 'trendings', 'boxoffices', 'internallinks', 'pseopages'];
     
     for (const collName of collections) {
       try {

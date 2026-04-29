@@ -404,6 +404,33 @@ const runWeeklySEOUpdate = async () => {
   }
 };
 
+/**
+ * Task 8: Weekly Broken Link Audit
+ * Scans for broken internal and external links
+ */
+const runBrokenLinkAudit = async () => {
+  log('🕒 CRON START: Weekly Broken Link Audit');
+  try {
+    const response = await fetch(`${NEXTJS_URL}/api/admin/automation/check-broken-links`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 600000, // 10 minutes timeout
+    });
+
+    if (!response.ok) {
+      errorLog(`Broken Link Audit returned status ${response.status}`);
+    } else {
+      const data = await response.json();
+      log(`✅ CRON SUCCESS: Broken Link Audit - ${data.message}`);
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (Broken Links):', error);
+  }
+};
+
 // --- Schedule Jobs ---
 
 // 1. Daily Sync (11:00 AM)
@@ -429,6 +456,9 @@ cron.schedule('0 3 * * 0', runDiscoveryPageGeneration);
 
 // 8. Weekly SEO Content Update (Every Sunday at 4:00 AM)
 cron.schedule('0 4 * * 0', runWeeklySEOUpdate);
+
+// 9. Weekly Broken Link Audit (Every Saturday at 2:00 AM)
+cron.schedule('0 2 * * 6', runBrokenLinkAudit);
 
 // Heartbeat (Daily 11:00 AM)
 cron.schedule(HEARTBEAT_INTERVAL, () => {

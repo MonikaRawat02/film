@@ -47,10 +47,38 @@ export default function BollywoodPage({ initialArticles }) {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/articles/list?category=Bollywood&limit=20");
+        
+        // Build query based on active filter
+        let url = "/api/public/unified-content?limit=50";
+        
+        if (activeFilter === "All") {
+          // Fetch all Bollywood content
+          url = "/api/articles/list?category=Bollywood&limit=50";
+        } else if (activeFilter === "Explained") {
+          // Fetch movie explainers (Bollywood, Hollywood, WebSeries articles)
+          url = "/api/public/unified-content?filter=Explained&limit=50";
+        } else if (activeFilter === "BoxOffice") {
+          // Fetch box office content
+          url = "/api/public/unified-content?filter=BoxOffice&limit=50";
+        } else if (activeFilter === "OTT") {
+          // Fetch OTT content
+          url = "/api/public/unified-content?filter=OTT&limit=50";
+        } else if (activeFilter === "Celebrity") {
+          // Fetch celebrity content
+          url = "/api/public/unified-content?filter=Celebrity&limit=50";
+        } else if (activeFilter === "Industry") {
+          // Fetch industry insights (BoxOffice category articles)
+          url = "/api/public/unified-content?filter=Industry&limit=50";
+        }
+        
+        const res = await fetch(url);
         const data = await res.json();
-        if (data.data) {
-          setArticles(data.data);
+        
+        if (data.success && data.data) {
+          // For unified-content API, data might be array or object
+          const articlesData = Array.isArray(data.data) ? data.data : 
+                               data.data.articles || data.data.explained || [];
+          setArticles(articlesData);
         }
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -60,11 +88,10 @@ export default function BollywoodPage({ initialArticles }) {
     };
 
     fetchArticles();
-  }, []);
+  }, [activeFilter]);
 
-  const filteredArticles = activeFilter === "All" 
-    ? articles 
-    : articles.filter(article => article.category === activeFilter);
+  // No client-side filtering needed - API returns filtered data
+  const filteredArticles = articles;
 
   return (
     <>
@@ -75,8 +102,8 @@ export default function BollywoodPage({ initialArticles }) {
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
         <BollywoodHeroSection />
-        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
-        <BollywoodArticlesGrid articles={filteredArticles} loading={loading} />
+        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} loading={loading} />
+        <BollywoodArticlesGrid articles={filteredArticles} loading={loading} activeFilter={activeFilter} />
         <BollywoodMovieIntelligence />
         <BollywoodBoxOfficeDashboard />
         <CelebrityIntelligenceHub industry="Bollywood" />

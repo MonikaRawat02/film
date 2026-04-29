@@ -832,6 +832,7 @@ async function processTrend(rawTrend, region) {
             score,
             region,
             status: "active",
+            isValidated: true,
             trendTimestamp: new Date(
               pre.timestamp || Date.now()
             ),
@@ -899,6 +900,7 @@ export default async function handler(req, res) {
           const data = await Trending.find({
             source: "youtube",
             region: REGION,
+            isValidated: true,
             expiresAt: { $gt: new Date() },
           })
             .sort({ score: -1 })

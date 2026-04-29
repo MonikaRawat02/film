@@ -493,6 +493,7 @@ async function processTrend(rawTrend, region) {
             score,
             region,
             status: "active",
+            isValidated: true,
             traffic: pre.traffic || 0,
             viewCount: 0,
             trendTimestamp: new Date(
@@ -561,6 +562,7 @@ export default async function handler(req, res) {
           const data = await Trending.find({
             source: "google",
             region: REGION,
+            isValidated: true,
             expiresAt: { $gt: new Date() },
           })
             .sort({ score: -1 })

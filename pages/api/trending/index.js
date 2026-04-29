@@ -21,6 +21,7 @@ export default async function handler(req, res) {
     // Filter for active trends that haven't expired
     const baseFilter = {
       status: "active",
+      isValidated: true,
       region: region.toUpperCase(),
       $or: [
         { expiresAt: { $exists: false } },
