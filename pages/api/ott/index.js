@@ -1,6 +1,7 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
 import { slugify } from "@/lib/slugify";
+import { cacheManager } from "../../../lib/redis";
 
 /**
  * GET /api/ott
@@ -12,7 +13,11 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
+    // Cache for 30 minutes
+    const cacheKey = `ott:platforms`;
+    
+    const result = await cacheManager(cacheKey, 1800, async () => {
+      await dbConnect();
 
     // Get all unique OTT platforms from published movies
     const platforms = await Article.aggregate([
@@ -36,6 +41,14 @@ export default async function handler(req, res) {
         totalPlatforms: formattedPlatforms.length,
         totalMovies: formattedPlatforms.reduce((sum, p) => sum + p.movieCount, 0)
       }
+    });
+    
+    return result;
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: result
     });
   } catch (error) {
     console.error("OTT API Error:", error);

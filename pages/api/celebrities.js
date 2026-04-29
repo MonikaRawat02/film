@@ -1,5 +1,6 @@
 import dbConnect from "../../lib/mongodb";
 import Celebrity from "../../model/celebrity";
+import { cacheManager } from "../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,6 +8,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Cache for 15 minutes
+    const cacheKey = `celebrities:list:latest`;
+    
+    const data = await cacheManager(cacheKey, 900, async () => {
     await dbConnect();
 
     const docs = await Celebrity.find({})
@@ -22,6 +27,9 @@ export default async function handler(req, res) {
       recentProjects: c.heroSection?.profession || [],
       slug: c.heroSection?.slug
     }));
+    
+    return data;
+    });
 
     return res.status(200).json({ success: true, data });
   } catch (error) {

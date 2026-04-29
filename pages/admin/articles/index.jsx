@@ -55,6 +55,7 @@ export default function ArticleModule() {
   const [loadingList, setLoadingList] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("All");
   const [editingId, setEditingId] = useState(null);
   const [openMenuId, setOpenMenuId] = useState(null);
   const [page, setPage] = useState(1);
@@ -142,7 +143,8 @@ export default function ArticleModule() {
 
     try {
       const token = typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
-      const res = await fetch(`/api/admin/articles/list?q=${searchQuery}&page=${pageNum}&limit=${LIMIT}`, {
+      const categoryParam = categoryFilter !== "All" ? `&category=${categoryFilter}` : "";
+      const res = await fetch(`/api/admin/articles/list?q=${searchQuery}&page=${pageNum}&limit=${LIMIT}${categoryParam}`, {
         headers: { Authorization: token ? `Bearer ${token}` : "" }
       });
       const data = await res.json();
@@ -169,7 +171,7 @@ export default function ArticleModule() {
       setLoadingList(false);
       setLoadingMore(false);
     }
-  }, [searchQuery]);
+  }, [searchQuery, categoryFilter]);
 
   useEffect(() => {
     if (page > 1) {
@@ -632,6 +634,32 @@ export default function ArticleModule() {
                 className="bg-gray-900/50 border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-sm text-gray-200 focus:outline-none focus:border-red-500 transition-all w-64"
               />
             </div>
+            
+            {/* Category Filter Dropdown */}
+            <div className="relative">
+              <select
+                value={categoryFilter}
+                onChange={(e) => {
+                  setCategoryFilter(e.target.value);
+                  setPage(1);
+                  setHasMore(true);
+                }}
+                className="appearance-none bg-gray-900/50 border border-gray-800 rounded-xl pl-4 pr-10 py-2 text-sm text-gray-200 focus:outline-none focus:border-blue-500 transition-all cursor-pointer hover:bg-gray-900/70"
+              >
+                <option value="All">All Categories</option>
+                <option value="Bollywood">Bollywood</option>
+                <option value="Hollywood">Hollywood</option>
+                <option value="WebSeries">Web Series</option>
+                <option value="OTT">OTT</option>
+                <option value="BoxOffice">Box Office</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+
             <button
               onClick={handleBackfillImages}
               disabled={backfilling}

@@ -1441,8 +1441,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6 }}
-                className="space-y-8"
-              >
+                className="space-y-8">
               {/* Render all sections from pSEO_Content_overview */}
               {article.pSEO_Content_overview?.map((section, idx) => {
                 // Skip FAQ section - we'll render it separately
@@ -1594,7 +1593,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   </div>
                 </div>
               )}
-              
+          
               {/* Do NOT show pSEO_Content_box_office here - it's already shown in the content card above */}
             </section>
           )}

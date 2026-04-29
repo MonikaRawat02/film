@@ -10,9 +10,10 @@ export default function InsightsDuoSection() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const t = Date.now();
         const [boRes, ottRes] = await Promise.all([
-          fetch("/api/public/box-office?limit=3"),
-          fetch("/api/public/ott-intelligence?limit=3")
+          fetch(`/api/public/box-office?limit=4&v=${t}`),
+          fetch(`/api/public/ott-intelligence?limit=3&v=${t}`)
         ]);
         
         // Check if responses are ok
@@ -29,7 +30,7 @@ export default function InsightsDuoSection() {
         
         // Use API data if available, otherwise use fallback
         if (boJson.success && boJson.data && boJson.data.length > 0) {
-          setBoxOfficeData(boJson.data.slice(0, 3));
+          setBoxOfficeData(boJson.data);
         } else {
           setBoxOfficeData(getFallbackBoxOffice());
         }

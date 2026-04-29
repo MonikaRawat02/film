@@ -3,6 +3,7 @@ import Article from "../../../model/article";
 import Celebrity from "../../../model/celebrity";
 import BoxOffice from "../../../model/boxOffice";
 import OTTIntelligence from "../../../model/ottIntelligence";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -14,6 +15,12 @@ export default async function handler(req, res) {
     
     const { filter, limit = 12 } = req.query;
     const lim = Math.min(Number(limit) || 12, 50);
+
+    // Create cache key based on filter and limit
+    const cacheKey = `public:unified-content:${filter || 'all'}:${lim}`;
+
+    // Cache for 10 minutes
+    const data = await cacheManager(cacheKey, 600, async () => {
 
     // If no filter specified, return all data
     if (!filter || filter === "All") {
@@ -162,11 +169,21 @@ export default async function handler(req, res) {
         });
 
       default:
-        return res.status(400).json({ 
-          success: false, 
-          message: "Invalid filter type" 
-        });
+        return null;
     }
+    });
+
+    if (!data) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid filter type" 
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      data
+    });
 
   } catch (error) {
     console.error("Unified Content API Error:", error);

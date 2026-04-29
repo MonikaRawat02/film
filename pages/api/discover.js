@@ -1,5 +1,6 @@
 import dbConnect from "../../lib/mongodb";
 import Article from "../../model/article";
+import { cacheManager } from "../../lib/redis";
 
 /**
  * Discovery API: Find movies based on genres, keywords, or similarity
@@ -12,6 +13,10 @@ export default async function handler(req, res) {
   const { type, value, limit = 20 } = req.query;
 
   try {
+    // Cache for 20 minutes
+    const cacheKey = `discover:${type || 'latest'}:${value || 'all'}:${limit}`;
+    
+    const result = await cacheManager(cacheKey, 1200, async () => {
     await dbConnect();
 
     let query = { contentType: "movie", status: "published" };
@@ -46,14 +51,21 @@ export default async function handler(req, res) {
     const movies = await Article.find(query)
       .sort({ "stats.rating": -1, publishedAt: -1 })
       .limit(parseInt(limit))
-      .select("movieTitle releaseYear slug coverImage summary genres stats.rating");
+      .select("movieTitle releaseYear slug coverImage summary genres stats.rating")
+      .lean();
 
-    return res.status(200).json({
+    return {
       success: true,
       data: {
         pageTitle,
         movies,
       },
+    };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: result.data
     });
 
   } catch (error) {

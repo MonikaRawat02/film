@@ -8,6 +8,12 @@ export default async function handler(req, res) {
   const { method } = req;
   await dbConnect();
 
+  // Set cache control headers to prevent browser/CDN caching
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  res.setHeader('Surrogate-Control', 'no-store');
+
   // Helper for admin auth
   const isAdmin = (token) => {
     try {
@@ -62,14 +68,19 @@ export default async function handler(req, res) {
           // Helper to parse currency strings like "₹275 crore" or "$400M"
           const parseCurrency = (str) => {
             if (!str || typeof str !== 'string' || str.toLowerCase() === 'n/a') return 0;
-            const numStr = str.replace(/[^0-9.]/g, '');
-            let num = parseFloat(numStr);
-            if (isNaN(num)) return 0;
-
-            if (str.toLowerCase().includes('crore')) num *= 10000000;
-            else if (str.toLowerCase().includes('lakh')) num *= 100000;
-            else if (str.toLowerCase().includes('b')) num *= 1000000000;
-            else if (str.toLowerCase().includes('m')) num *= 1000000;
+            
+            // Extract the first number found in the string (handling decimals)
+            const match = str.match(/(\d+(\.\d+)?)/);
+            if (!match) return 0;
+            
+            let num = parseFloat(match[0]);
+            const lowerStr = str.toLowerCase();
+            
+            // Apply multiplier based on keywords
+            if (lowerStr.includes('crore') || lowerStr.includes('cr')) num *= 10000000;
+            else if (lowerStr.includes('lakh')) num *= 100000;
+            else if (lowerStr.includes('billion') || lowerStr.includes(' b')) num *= 1000000000;
+            else if (lowerStr.includes('million') || lowerStr.includes(' m')) num *= 1000000;
             
             return num;
           };

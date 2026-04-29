@@ -1,5 +1,6 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,32 +8,45 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
     const { category, limit = 20, page = 1 } = req.query;
     
-    const filter = { status: "published" };
-    if (category) {
-      filter.category = category;
-    }
+    // Create cache key based on query params
+    const cacheKey = `articles:list:${category || 'all'}:${limit}:${page}`;
 
-    const lim = Math.min(Number(limit) || 20, 50);
-    const pg = Math.max(Number(page) || 1, 1);
+    // Cache for 15 minutes
+    const result = await cacheManager(cacheKey, 900, async () => {
+      await dbConnect();
+      
+      const filter = { status: "published" };
+      if (category) {
+        filter.category = category;
+      }
 
-    const total = await Article.countDocuments(filter);
-    const data = await Article.find(filter)
-      .skip((pg - 1) * lim)
-      .limit(lim)
-      .sort({ publishedAt: -1, createdAt: -1 });
+      const lim = Math.min(Number(limit) || 20, 50);
+      const pg = Math.max(Number(page) || 1, 1);
+
+      const total = await Article.countDocuments(filter);
+      const data = await Article.find(filter)
+        .skip((pg - 1) * lim)
+        .limit(lim)
+        .sort({ publishedAt: -1, createdAt: -1 })
+        .lean();
+
+      return {
+        data,
+        pagination: {
+          page: pg,
+          limit: lim,
+          total,
+          pages: Math.ceil(total / lim) || 1
+        }
+      };
+    });
 
     return res.status(200).json({ 
       success: true, 
-      data,
-      pagination: {
-        page: pg,
-        limit: lim,
-        total,
-        pages: Math.ceil(total / lim) || 1
-      }
+      data: result.data,
+      pagination: result.pagination
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });

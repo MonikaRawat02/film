@@ -95,7 +95,6 @@ const SiteHeader = () => {
              </nav>
  
              <div className="flex items-center gap-2">
-              {/* Admin Login Button */}
 
               <button
                 aria-label="Open menu"
@@ -150,17 +149,6 @@ const SiteHeader = () => {
                  </Link>
                ))}
                
-               {/* Mobile Admin Login Button */}
-               <div className="pt-4 mt-4 border-t border-gray-800">
-                 <Link
-                   href="/admin/login"
-                   onClick={() => setOpenMobile(false)}
-                   className="flex items-center justify-center gap-2 w-full rounded-lg px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white text-base font-semibold transition-all duration-300"
-                 >
-                   <Shield className="w-5 h-5" />
-                   Admin Login
-                 </Link>
-               </div>
              </nav>
            </div>
          </div>

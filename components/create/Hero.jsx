@@ -2,6 +2,7 @@
 import { Film, Search, Loader2 } from "lucide-react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function CreateHero() {
   const [isFocused, setIsFocused] = useState(false);
@@ -151,7 +152,13 @@ export default function CreateHero() {
                       >
                         <div className="w-12 h-16 rounded-lg bg-zinc-800 overflow-hidden flex-shrink-0 border border-white/5 group-hover/item:border-white/10 transition-colors">
                           {result.image ? (
-                            <img src={result.image} alt={result.title} className="w-full h-full object-cover" />
+                            <Image 
+                              src={result.image} 
+                              alt={result.title} 
+                              width={48}
+                              height={64}
+                              className="w-full h-full object-cover"
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-zinc-600">
                               <Film className="w-5 h-5" />

@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { Search, Film, Star, TrendingUp, Loader2, X } from "lucide-react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 export default function HeroSection() {
   const [query, setQuery] = useState("");
@@ -137,7 +138,13 @@ export default function HeroSection() {
                       >
                         <div className="relative w-12 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-gray-900 border border-gray-800">
                           {result.image ? (
-                            <img src={result.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                            <Image 
+                              src={result.image} 
+                              alt="" 
+                              width={48}
+                              height={64}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               {result.type === "Celebrity" ? <Star className="w-5 h-5 text-gray-700" /> : <Film className="w-5 h-5 text-gray-700" />}
