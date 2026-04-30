@@ -1,26 +1,24 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
-import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
-  try {
-    const { industry, limit = 10, page = 1, sortBy = "roi", q = "" } = req.query;
-    
-    // Create a unique cache key based on query parameters
-    const cacheKey = `public:box-office:v2:${industry || 'all'}:${limit}:${page}:${sortBy}:${q || 'no-q'}`;
+  // Enable browser/CDN caching for 5 minutes
+  res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
 
-    const result = await cacheManager(cacheKey, 300, async () => {
-      await dbConnect();
-      
-      let query = { status: "published" };
-      
-      if (industry && industry !== 'all') {
-        query.category = industry;
-      }
+  try {
+    const { industry, limit = 20, page = 1, sortBy = "roi", q = "", _t } = req.query;
+    
+    await dbConnect();
+    
+    let query = { status: "published" };
+    
+    if (industry && industry !== 'all') {
+      query.category = industry;
+    }
 
       if (q) {
         const searchRegex = { $regex: q, $options: "i" };
@@ -32,7 +30,9 @@ export default async function handler(req, res) {
       }
 
       const articles = await Article.find(query)
+      .select('movieTitle title slug category budget boxOffice verdict sections')
         .sort({ publishedAt: -1, createdAt: -1 })
+      .limit(100)
         .lean();
 
       const parseCurrency = (str) => {
@@ -108,31 +108,24 @@ export default async function handler(req, res) {
         return b.roiNum - a.roiNum;
       });
 
-      const total = processedData.length;
-      const lim = Number(limit);
-      const pg = Number(page);
-      const start = (pg - 1) * lim;
-      const paginatedData = processedData.slice(start, start + lim);
+    const total = processedData.length;
+    const lim = Number(limit);
+    const pg = Number(page);
+    const start = (pg - 1) * lim;
+    const paginatedData = processedData.slice(start, start + lim);
 
-      return {
-        paginatedData,
-        total,
-        limit: lim,
-        page: pg,
-        pages: Math.ceil(total / lim) || 1
-      };
-    });
-
-    return res.status(200).json({ 
+    const result = {
       success: true, 
       data: result.paginatedData,
       pagination: {
-        total: result.total,
-        page: result.page,
-        limit: result.limit,
-        pages: result.pages
+        total,
+        page: pg,
+        limit: lim,
+        pages: Math.ceil(total / lim) || 1
       }
-    });
+    };
+
+    res.status(200).json(result);
   } catch (error) {
     console.error("Public Box Office API Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });

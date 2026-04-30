@@ -7,6 +7,7 @@ import BollywoodFilterBar from "../../components/category/bollywood/BollywoodFil
 import BollywoodArticlesGrid from "../../components/category/bollywood/BollywoodArticlesGrid";
 import BollywoodMovieIntelligence from "../../components/category/bollywood/BollywoodMovieIntelligence";
 import BollywoodBoxOfficeDashboard from "../../components/category/bollywood/BollywoodBoxOfficeDashboard";
+import BollywoodOTTPerformance from "../../components/category/bollywood/BollywoodOTTPerformance";
 import CelebrityIntelligenceHub from "../../components/category/bollywood/CelebrityIntelligenceHub";
 import BollywoodMovieDiscovery from "../../components/category/bollywood/BollywoodMovieDiscovery";
 import BollywoodTrendingTopics from "../../components/category/bollywood/BollywoodTrendingTopics";
@@ -29,7 +30,7 @@ export async function getServerSideProps(context) {
       },
     };
   } catch (error) {
-    console.error("Error fetching articles:", error);
+    console.error("Error fetching articles in getServerSideProps:", error);
     return {
       props: {
         initialArticles: [],
@@ -40,58 +41,45 @@ export async function getServerSideProps(context) {
 
 export default function BollywoodPage({ initialArticles }) {
   const [activeFilter, setActiveFilter] = useState("All");
-  const [articles, setArticles] = useState(initialArticles);
+  const [articles, setArticles] = useState(initialArticles || []);
   const [loading, setLoading] = useState(false);
 
+  // Fetch data client-side if server-side didn't provide data
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        setLoading(true);
-        
-        // Build query based on active filter
-        let url = "/api/public/unified-content?limit=50";
-        
-        if (activeFilter === "All") {
-          // Fetch all Bollywood content
-          url = "/api/articles/list?category=Bollywood&limit=50";
-        } else if (activeFilter === "Explained") {
-          // Fetch movie explainers (Bollywood, Hollywood, WebSeries articles)
-          url = "/api/public/unified-content?filter=Explained&limit=50";
-        } else if (activeFilter === "BoxOffice") {
-          // Fetch box office content
-          url = "/api/public/unified-content?filter=BoxOffice&limit=50";
-        } else if (activeFilter === "OTT") {
-          // Fetch OTT content
-          url = "/api/public/unified-content?filter=OTT&limit=50";
-        } else if (activeFilter === "Celebrity") {
-          // Fetch celebrity content
-          url = "/api/public/unified-content?filter=Celebrity&limit=50";
-        } else if (activeFilter === "Industry") {
-          // Fetch industry insights (BoxOffice category articles)
-          url = "/api/public/unified-content?filter=Industry&limit=50";
+    if (!initialArticles || initialArticles.length === 0) {
+      const fetchArticles = async () => {
+        try {
+          setLoading(true);
+          const timestamp = Date.now();
+          const res = await fetch(`/api/articles/list?category=Bollywood&limit=20&t=${timestamp}&cache=no-store`, {
+            cache: 'no-store'
+          });
+          const data = await res.json();
+          if (data.data && data.data.length > 0) {
+            setArticles(data.data);
+          }
+        } catch (error) {
+          console.error("Error fetching articles:", error);
+        } finally {
+          setLoading(false);
         }
-        
-        const res = await fetch(url);
-        const data = await res.json();
-        
-        if (data.success && data.data) {
-          // For unified-content API, data might be array or object
-          const articlesData = Array.isArray(data.data) ? data.data : 
-                               data.data.articles || data.data.explained || [];
-          setArticles(articlesData);
-        }
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
+      fetchArticles();
+    }
+  }, [initialArticles]);
 
-    fetchArticles();
-  }, [activeFilter]);
-
-  // No client-side filtering needed - API returns filtered data
-  const filteredArticles = articles;
+  const filteredArticles = activeFilter === "All" 
+    ? articles 
+    : articles.filter(article => {
+        // For Explained filter - show all movie articles (most Bollywood articles are explainers)
+        if (activeFilter === "Explained") return true; // Show all articles as movie explainers
+        // For other filters - show all articles (they'll be handled by their dedicated components)
+        if (activeFilter === "BoxOffice") return true;
+        if (activeFilter === "OTT") return true;
+        if (activeFilter === "Celebrity") return true;
+        if (activeFilter === "Industry") return true;
+        return true;
+      });
 
   return (
     <>
@@ -102,14 +90,42 @@ export default function BollywoodPage({ initialArticles }) {
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
         <BollywoodHeroSection />
-        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} loading={loading} />
-        <BollywoodArticlesGrid articles={filteredArticles} loading={loading} activeFilter={activeFilter} />
-        <BollywoodMovieIntelligence />
-        <BollywoodBoxOfficeDashboard />
-        <CelebrityIntelligenceHub industry="Bollywood" />
-        <BollywoodMovieDiscovery />
-        <BollywoodTrendingTopics />
-        <BollywoodIndustryInsights />
+        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+        
+        {/* Show specialized dashboards based on active filter */}
+        {activeFilter === "Explained" && (
+          <BollywoodArticlesGrid articles={filteredArticles} loading={loading} filterType="Explained" />
+        )}
+        
+        {activeFilter === "BoxOffice" && (
+          <BollywoodBoxOfficeDashboard />
+        )}
+        
+        {activeFilter === "OTT" && (
+          <BollywoodOTTPerformance />
+        )}
+        
+        {activeFilter === "Celebrity" && (
+          <CelebrityIntelligenceHub industry="Bollywood" />
+        )}
+        
+        {activeFilter === "Industry" && (
+          <BollywoodIndustryInsights />
+        )}
+        
+        {/* Show all sections when "All" filter is active */}
+        {activeFilter === "All" && (
+          <>
+            <BollywoodArticlesGrid articles={filteredArticles} loading={loading} filterType="All" />
+            <BollywoodMovieIntelligence />
+            <BollywoodBoxOfficeDashboard />
+            <CelebrityIntelligenceHub industry="Bollywood" />
+            <BollywoodMovieDiscovery />
+            <BollywoodTrendingTopics />
+            <BollywoodIndustryInsights />
+          </>
+        )}
+        
         <BollywoodExploreMore />
         <BollywoodFooterSection />
       </div>
