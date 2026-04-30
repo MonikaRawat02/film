@@ -116,7 +116,7 @@ export default async function handler(req, res) {
 
     const result = {
       success: true, 
-      data: result.paginatedData,
+      data: paginatedData,
       pagination: {
         total,
         page: pg,
