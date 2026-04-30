@@ -20,100 +20,93 @@ export default async function handler(req, res) {
       query.category = industry;
     }
 
-    if (q) {
-      const searchRegex = { $regex: q, $options: "i" };
-      query.$or = [
-        { title: searchRegex },
-        { movieTitle: searchRegex },
-        { slug: searchRegex }
-      ];
-    }
+      if (q) {
+        const searchRegex = { $regex: q, $options: "i" };
+        query.$or = [
+          { title: searchRegex },
+          { movieTitle: searchRegex },
+          { slug: searchRegex }
+        ];
+      }
 
-    const articles = await Article.find(query)
+      const articles = await Article.find(query)
       .select('movieTitle title slug category budget boxOffice verdict sections')
-      .sort({ publishedAt: -1, createdAt: -1 })
+        .sort({ publishedAt: -1, createdAt: -1 })
       .limit(100)
-      .lean();
+        .lean();
 
-    const parseCurrency = (str) => {
-      if (!str || typeof str !== 'string' || str.toLowerCase() === 'n/a') return 0;
-      const match = str.match(/(\d+(\.\d+)?)/);
-      if (!match) return 0;
-      let num = parseFloat(match[0]);
-      const lowerStr = str.toLowerCase();
-      if (lowerStr.includes('crore') || lowerStr.includes('cr')) num *= 10000000;
-      else if (lowerStr.includes('lakh')) num *= 100000;
-      else if (lowerStr.includes('billion') || lowerStr.includes(' b')) num *= 1000000000;
-      else if (lowerStr.includes('million') || lowerStr.includes(' m')) num *= 1000000;
-      return num;
-    };
-
-    let processedData = articles.map(movie => {
-      const budgetStr = movie.budget || "N/A";
-      const collectionStr = movie.boxOffice?.worldwide || movie.boxOffice?.india || "N/A";
-      const budgetNum = parseCurrency(budgetStr);
-      const collectionNum = parseCurrency(collectionStr);
-      let roiPercentage = 0;
-      if (budgetNum > 0) {
-        roiPercentage = (collectionNum - budgetNum) / budgetNum;
-      }
-
-      let verdict = movie.verdict;
-      if (!verdict && budgetNum > 0 && collectionNum > 0) {
-        if (roiPercentage > 3) verdict = "BLOCKBUSTER";
-        else if (roiPercentage > 1.5) verdict = "SUPER HIT";
-        else if (roiPercentage > 0.5) verdict = "HIT";
-        else if (roiPercentage >= -0.1) verdict = "AVERAGE";
-        else verdict = "FLOP";
-      }
-
-      return {
-        _id: movie._id,
-        movieName: movie.movieTitle || movie.title,
-        slug: movie.slug,
-        category: movie.category,
-        budget: budgetStr,
-        collection: collectionStr,
-        roi: movie.boxOffice?.roi || (roiPercentage !== 0 ? `${(roiPercentage * 100).toFixed(0)}%` : "N/A"),
-        roiNum: roiPercentage,
-        budgetNum,
-        collectionNum,
-        verdict: verdict || "N/A",
-        analysisLink: `/movie/${movie.slug}-box-office`
+      const parseCurrency = (str) => {
+        if (!str || typeof str !== 'string' || str.toLowerCase() === 'n/a') return 0;
+        const match = str.match(/(\d+(\.\d+)?)/);
+        if (!match) return 0;
+        let num = parseFloat(match[0]);
+        const lowerStr = str.toLowerCase();
+        if (lowerStr.includes('crore') || lowerStr.includes('cr')) num *= 10000000;
+        else if (lowerStr.includes('lakh')) num *= 100000;
+        else if (lowerStr.includes('billion') || lowerStr.includes(' b')) num *= 1000000000;
+        else if (lowerStr.includes('million') || lowerStr.includes(' m')) num *= 1000000;
+        return num;
       };
-    });
 
-    processedData = processedData.filter(m => m.movieName);
+      let processedData = articles.map(movie => {
+        const budgetStr = movie.budget || "N/A";
+        const collectionStr = movie.boxOffice?.worldwide || movie.boxOffice?.india || "N/A";
+        const budgetNum = parseCurrency(budgetStr);
+        const collectionNum = parseCurrency(collectionStr);
+        let roiPercentage = 0;
+        if (budgetNum > 0) {
+          roiPercentage = (collectionNum - budgetNum) / budgetNum;
+        }
 
-    // Calculate data completeness score for each movie
-    // This helps prioritize movies with more complete financial data
-    processedData = processedData.map(movie => {
-      let completenessScore = 0;
-      if (movie.budget !== "N/A") completenessScore += 1;
-      if (movie.collection !== "N/A") completenessScore += 1;
-      if (movie.roi !== "N/A") completenessScore += 1;
-      if (movie.verdict !== "N/A") completenessScore += 1;
-      
-      return {
-        ...movie,
-        dataCompleteness: completenessScore // 0-4 score
-      };
-    });
+        let verdict = movie.verdict;
+        if (!verdict && budgetNum > 0 && collectionNum > 0) {
+          if (roiPercentage > 3) verdict = "BLOCKBUSTER";
+          else if (roiPercentage > 1.5) verdict = "SUPER HIT";
+          else if (roiPercentage > 0.5) verdict = "HIT";
+          else if (roiPercentage >= -0.1) verdict = "AVERAGE";
+          else verdict = "FLOP";
+        }
 
-    // Filter out movies with ZERO financial data (all fields are N/A)
-    // Keep movies that have at least SOME data
-    processedData = processedData.filter(m => m.dataCompleteness > 0);
+        return {
+          _id: movie._id,
+          movieName: movie.movieTitle || movie.title,
+          slug: movie.slug,
+          category: movie.category,
+          budget: budgetStr,
+          collection: collectionStr,
+          roi: movie.boxOffice?.roi || (roiPercentage !== 0 ? `${(roiPercentage * 100).toFixed(0)}%` : "N/A"),
+          roiNum: roiPercentage,
+          budgetNum,
+          collectionNum,
+          verdict: verdict || "N/A",
+          analysisLink: `/movie/${movie.slug}-box-office`
+        };
+      });
 
-    // Sort by data completeness first (complete data shows first)
-    // Then by ROI for movies with same completeness
-    processedData.sort((a, b) => {
-      // First sort by completeness (higher = more complete)
-      if (b.dataCompleteness !== a.dataCompleteness) {
-        return b.dataCompleteness - a.dataCompleteness;
-      }
-      // Then sort by ROI for movies with same completeness level
-      return b.roiNum - a.roiNum;
-    });
+      processedData = processedData.filter(m => m.movieName);
+
+      // Calculate data completeness score for each movie
+      processedData = processedData.map(movie => {
+        let completenessScore = 0;
+        if (movie.budget !== "N/A") completenessScore += 1;
+        if (movie.collection !== "N/A") completenessScore += 1;
+        if (movie.roi !== "N/A") completenessScore += 1;
+        if (movie.verdict !== "N/A") completenessScore += 1;
+        
+        return {
+          ...movie,
+          dataCompleteness: completenessScore 
+        };
+      });
+
+      processedData = processedData.filter(m => m.dataCompleteness > 0);
+
+      processedData.sort((a, b) => {
+        if (b.dataCompleteness !== a.dataCompleteness) {
+          return b.dataCompleteness - a.dataCompleteness;
+        }
+        return b.roiNum - a.roiNum;
+      });
 
     const total = processedData.length;
     const lim = Number(limit);

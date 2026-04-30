@@ -1,6 +1,7 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
 import Celebrity from "../../../model/celebrity";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -8,25 +9,24 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
+    const cacheKey = 'public:bollywood-explore-stats';
+    
+    const data = await cacheManager(cacheKey, 3600, async () => {
+      await dbConnect();
 
-    // 1. Bollywood Movie Explanations (Articles in Bollywood category)
-    const bollywoodCount = await Article.countDocuments({ category: "Bollywood", status: "published" });
+      // 1. Bollywood Movie Explanations (Articles in Bollywood category)
+      const bollywoodCount = await Article.countDocuments({ category: "Bollywood", status: "published" });
 
-    // 2. Bollywood Box Office Reports
-    // We'll count articles in BoxOffice category that mention Bollywood or are likely Bollywood
-    // For now, let's count all BoxOffice articles as they are usually grouped together
-    const boxOfficeCount = await Article.countDocuments({ category: "BoxOffice", status: "published" });
+      // 2. Bollywood Box Office Reports
+      const boxOfficeCount = await Article.countDocuments({ category: "BoxOffice", status: "published" });
 
-    // 3. Bollywood Celebrity Intelligence
-    const bollywoodCelebCount = await Celebrity.countDocuments({ "heroSection.industry": "Bollywood" });
+      // 3. Bollywood Celebrity Intelligence
+      const bollywoodCelebCount = await Celebrity.countDocuments({ "heroSection.industry": "Bollywood" });
 
-    // 4. Bollywood OTT Analysis
-    const ottCount = await Article.countDocuments({ category: "OTT", status: "published" });
+      // 4. Bollywood OTT Analysis
+      const ottCount = await Article.countDocuments({ category: "OTT", status: "published" });
 
-    return res.status(200).json({
-      success: true,
-      data: [
+      return [
         {
           title: "Bollywood Movie Explanations",
           count: `${bollywoodCount}+ Articles`,
@@ -55,7 +55,12 @@ export default async function handler(req, res) {
           href: "/category/ott",
           icon: "Calendar"
         }
-      ]
+      ];
+    });
+
+    return res.status(200).json({
+      success: true,
+      data
     });
   } catch (error) {
     console.error("Error fetching bollywood explore stats:", error);

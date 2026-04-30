@@ -1,5 +1,6 @@
 import dbConnect from "../../../lib/mongodb";
 import Celebrity from "../../../model/celebrity";
+import { cacheManager } from "../../../lib/redis";
 
 function getDisplayNetWorth(c) {
   const usd = c?.netWorth?.netWorthUSD;
@@ -55,22 +56,26 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
   try {
-    await dbConnect();
+    const cacheKey = 'public:richest-celebrities';
     
-    const richest = await Celebrity.find({ "netWorth.netWorthUSD.max": { $exists: true, $ne: null } })
-      .sort({ "netWorth.netWorthUSD.max": -1 })
-      .limit(10);
+    const data = await cacheManager(cacheKey, 3600, async () => {
+      await dbConnect();
+      
+      const richest = await Celebrity.find({ "netWorth.netWorthUSD.max": { $exists: true, $ne: null } })
+        .sort({ "netWorth.netWorthUSD.max": -1 })
+        .limit(10);
 
-    const data = richest.map(c => ({
-      name: c.heroSection?.name || "Unknown",
-      netWorth: getDisplayNetWorth(c),
-      slug: c.heroSection?.slug,
-      image: c.heroSection?.profileImage,
-      industry: c.heroSection?.industry || "Hollywood",
-      profession: Array.isArray(c.heroSection?.profession) 
-        ? c.heroSection.profession.join(", ") 
-        : c.heroSection?.profession || "Actor"
-    }));
+      return richest.map(c => ({
+        name: c.heroSection?.name || "Unknown",
+        netWorth: getDisplayNetWorth(c),
+        slug: c.heroSection?.slug,
+        image: c.heroSection?.profileImage,
+        industry: c.heroSection?.industry || "Hollywood",
+        profession: Array.isArray(c.heroSection?.profession) 
+          ? c.heroSection.profession.join(", ") 
+          : c.heroSection?.profession || "Actor"
+      }));
+    });
 
     res.status(200).json({ success: true, data });
   } catch (error) {

@@ -388,7 +388,7 @@ export async function getServerSideProps(context) {
 
     // Get SEO metadata for this specific page type
     const seo = article.subPagesSEO?.[seoKey] || {
-      title: `${article.movieTitle || article.title} (${article.releaseYear || ''}) – ${pageType.replace("-", " ")}`,
+      title: `${article.movieTitle || article.title}${article.releaseYear ? ` (${article.releaseYear})` : ""} – ${pageType.replace("-", " ")}`,
       description: article.summary,
       faq: article.meta?.faq || []
     };
@@ -671,7 +671,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                     textShadow: '0 4px 20px rgba(0,0,0,0.8), 0 0 40px rgba(239,68,68,0.3)'
                   }}
                 >
-                  {movieTitle} <span className="text-zinc-500 font-light text-3xl sm:text-4xl md:text-5xl">({article.releaseYear})</span>
+                  {movieTitle} {article.releaseYear && <span className="text-zinc-500 font-light text-3xl sm:text-4xl md:text-5xl">({article.releaseYear})</span>}
                 </motion.h1>
                 
                 <motion.div 
@@ -1457,7 +1457,7 @@ export default function ArticleDetailPage({ article, sections, seo, category, pa
                   <p className="text-gray-300 leading-relaxed text-base">
                     {article.summary ? 
                       `${article.summary.substring(0, 300)}... This dedicated report focuses specifically on the ${pageType.replace("-", " ")} of ${movieTitle}.` : 
-                      `Explore the detailed ${pageType.replace("-", " ")} analysis for ${movieTitle} (${article.releaseYear}).`
+                      `Explore the detailed ${pageType.replace("-", " ")} analysis for ${movieTitle}${article.releaseYear ? ` (${article.releaseYear})` : ""}.`
                     }
                   </p>
                 </div>
