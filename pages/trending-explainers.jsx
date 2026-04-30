@@ -5,8 +5,8 @@ import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import {
   TrendingUp, Film, BarChart3, Tv, Star, Eye, Clock,
-  Zap, ArrowRight, Play, ChevronRight, Activity,
-  Globe, ArrowUpRight, Youtube, Flame, User, Image as ImageIcon, RefreshCw
+  Zap, ArrowRight, Play, ChevronRight, Activity, RefreshCw,
+  Globe, ArrowUpRight, Youtube, Flame, User, Image as ImageIcon
 } from "lucide-react";
 
 // ─── IMAGE FALLBACK COMPONENT
@@ -134,7 +134,7 @@ const FeaturedSpotlight = ({ item, rank }) => {
     default: "from-red-600 to-pink-500"
   };
   const grad = catGrad[item.category] || catGrad.default;
-  const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
+  const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}/profile` : `/intelligence/${item.slug}`) : "#";
 
   return (
     <motion.div key={item._id || rank} initial={{ opacity: 0, scale: 0.97 }} animate={{ opacity: 1, scale: 1 }}
@@ -178,7 +178,7 @@ const EditorialCard = ({ item, rank, flip = false }) => {
   };
   const cfg = catConfig[item.category] || catConfig.default;
   const CatIcon = cfg.icon;
-  const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
+  const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}/profile` : `/intelligence/${item.slug}`) : "#";
 
   return (
     <motion.div initial={{ opacity: 0, x: flip ? 50 : -50 }}
@@ -214,7 +214,7 @@ const EditorialCard = ({ item, rank, flip = false }) => {
             <>
               <span className="text-zinc-700 mx-1">·</span>
               <span className={`text-[9px] font-black uppercase tracking-widest ${item.region === "US" ? "text-blue-400" : "text-orange-400"}`}>
-                {item.region === "US" ? "Hollywood" : "Bollywood"}
+                {item.region === "US" ? "🇺🇸 Hollywood" : "🇮🇳 Bollywood"}
               </span>
             </>
           )}
@@ -243,7 +243,7 @@ const MosaicStrip = ({ items }) => {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {items.slice(0, 4).map((item, i) => {
         const accent = accentMap[item.category] || "#ef4444";
-        const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
+        const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}/profile` : `/intelligence/${item.slug}`) : "#";
         return (
           <motion.div key={item._id || i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }} transition={{ delay: i * 0.08 }}
@@ -360,7 +360,7 @@ const VelocityTracker = ({ items }) => {
             </div>
             <div className="space-y-3">
               {bucketItems.map((item, i) => {
-                const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
+                const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}/profile` : `/intelligence/${item.slug}`) : "#";
                 const accent = accentMap[item.category] || bucket.color;
                 return (
                   <motion.div key={item._id || i} initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }}
@@ -425,7 +425,7 @@ const FilmStripScroll = ({ items }) => {
         <div className="flex gap-5 pb-6" style={{ width: "max-content" }}>
           {items.map((item, i) => {
             const accent = accentMap[item.category] || "#ef4444";
-            const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
+            const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}/profile` : `/intelligence/${item.slug}`) : "#";
             return (
               <motion.div 
                 key={item._id || i} 
@@ -482,7 +482,7 @@ const SourcePanel = ({ googleItems, youtubeItems }) => {
       </div>
       <div className="divide-y divide-white/[0.03]">
         {items.map((item, i) => {
-          const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}` : `/intelligence/${item.slug}`) : "#";
+          const href = item.slug ? (item.category === "Celebrity" ? `/celebrity/${item.slug}/profile` : `/intelligence/${item.slug}`) : "#";
           const accent = accentMap[item.category] || color;
           return (
             <motion.div key={item._id || i} initial={{ opacity: 0, x: dir === "l" ? -12 : 12 }}
@@ -532,7 +532,7 @@ const RegionFilter = ({ activeRegion, onRegionChange }) => (
           : "bg-white/[0.05] text-white/60 hover:bg-white/[0.1]"
       }`}
     >
-      Bollywood
+      🇮🇳 Bollywood
     </button>
     <button
       onClick={() => onRegionChange("US")}
@@ -542,7 +542,7 @@ const RegionFilter = ({ activeRegion, onRegionChange }) => (
           : "bg-white/[0.05] text-white/60 hover:bg-white/[0.1]"
       }`}
     >
-      Hollywood
+      🇺🇸 Hollywood
     </button>
   </div>
 );
@@ -822,7 +822,7 @@ export default function TrendingExplainersPage() {
             <div className="flex items-center gap-3">
               <Activity className="w-3.5 h-3.5 text-red-500 animate-pulse" />
               <span className="text-[10px] font-black text-white uppercase tracking-[0.25em]">
-                Live Trending {activeRegion === "IN" ? "Bollywood" : "Hollywood"}
+                Live Trending {activeRegion === "IN" ? "🇮🇳 Bollywood" : "🇺🇸 Hollywood"}
               </span>
               <span className="text-zinc-700 mx-1">·</span>
               <span className="text-[10px] text-zinc-600">{allItems.length} unique items</span>
@@ -839,6 +839,14 @@ export default function TrendingExplainersPage() {
             </div>
             <div className="flex items-center gap-3">
               <RegionFilter activeRegion={activeRegion} onRegionChange={handleRegionChange} />
+              <button
+                onClick={handleRefresh}
+                disabled={syncing}
+                className="p-2 rounded-lg bg-white/[0.05] text-white/60 hover:bg-white/[0.1] hover:text-white transition-all disabled:opacity-50"
+                title="Refresh Trends"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
+              </button>
             </div>
           </div>
         </div>

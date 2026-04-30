@@ -84,17 +84,9 @@ export default function GuidesSection() {
                   <span className="px-3 py-1 rounded-lg bg-red-600/10 border border-red-600/30 text-red-400 font-bold tracking-wide uppercase">
                     {g.category}
                   </span>
-                  {/* <div className="flex items-center gap-1 text-gray-400">
-                    <Clock className="w-4 h-4" />
-                    <span>{g.stats?.readTime}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-yellow-400">
-                    <Star className="w-4 h-4" />
-                    <span>{g.stats?.rating}</span>
-                  </div> */}
                   <div className="flex items-center gap-1 text-gray-400">
-                    <Users className="w-4 h-4" />
-                    <span>{formatReaders(g.stats?.views || 0)}</span>
+                    <BookOpen className="w-4 h-4" />
+                    <span>In-depth Analysis</span>
                   </div>
                 </div>
                 <div className="mt-3 flex items-start justify-between gap-6">

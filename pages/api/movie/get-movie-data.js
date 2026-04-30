@@ -85,7 +85,7 @@ function generateContentSections(article, pageType) {
       sections.push(
         {
           type: "introduction",
-          heading: `${article.movieTitle} (${article.releaseYear}) – Full Analysis, Box Office & OTT Details`,
+          heading: `${article.movieTitle}${article.releaseYear ? ` (${article.releaseYear})` : ""} – Full Analysis, Box Office & OTT Details`,
           content: article.summary
         },
         {

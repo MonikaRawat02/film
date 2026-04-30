@@ -702,7 +702,6 @@ export default function ArticleModule() {
             <div className="col-span-full py-20 border-2 border-dashed border-gray-800 rounded-2xl flex flex-col items-center justify-center gap-3 text-gray-500">
               <FileText className="h-10 w-10" />
               <p className="text-sm font-medium">No articles found</p>
-              <button onClick={handleCreateNew} className="text-red-500 text-sm hover:underline">Create your first article</button>
             </div>
           ) : (
             articles.map((article, i) => (

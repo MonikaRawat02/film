@@ -207,7 +207,7 @@ export default function MovieTypePage({ movie, pageType }) {
               </div>
 
               <h1 className="text-4xl md:text-6xl font-bold text-white leading-[1.1] tracking-tight mb-6">
-                {movie.movieTitle} ({movie.releaseYear}) – {pageTypeLabels[pageType]}
+                {movie.movieTitle} {movie.releaseYear && `(${movie.releaseYear})`} – {pageTypeLabels[pageType]}
               </h1>
             </div>
           </div>

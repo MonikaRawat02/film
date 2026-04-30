@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BarChart, TrendingUp, ExternalLink, Target } from "lucide-react";
+import { BarChart, TrendingUp, ExternalLink, Target, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default function InsightsDuoSection() {
@@ -195,14 +195,11 @@ export default function InsightsDuoSection() {
                       </div>
                       <div className="absolute -top-8 right-0 text-white font-bold text-sm">{p.marketShare}%</div>
                     </div>
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-800">
-                      <span className="text-gray-500 text-sm">Market Share</span>
-                      <a 
-                        href={p.detailsLink || "#"} 
-                        className="text-sm text-gray-400 hover:text-white transition-colors font-semibold inline-flex items-center gap-1"
-                      >
+                    <div className="flex items-center justify-between">
+                      <span className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Market Share</span>
+                      <Link href={`/ott/${p.slug || ''}`} className="text-white hover:text-red-500 text-xs font-black uppercase tracking-widest flex items-center gap-1 transition-colors">
                         View Details <ExternalLink className="w-3 h-3" />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 ))
@@ -211,11 +208,13 @@ export default function InsightsDuoSection() {
                   No OTT intelligence data available.
                 </div>
               )}
+            </div>
+            <div className="mt-12 flex justify-center">
               <Link 
-                href="/ott-insights"
-                className="w-full py-5 bg-gradient-to-r from-blue-600/10 to-purple-600/10 border-2 border-blue-600/30 text-blue-500 rounded-2xl hover:from-blue-600/20 hover:to-purple-600/20 transition-all font-bold text-lg inline-flex items-center justify-center"
+                href="/ott"
+                className="inline-flex items-center gap-2 px-10 py-4 bg-zinc-900 border border-zinc-800 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-zinc-800 transition-all shadow-xl"
               >
-                Explore OTT Platform Insights →
+                View All Intelligence <ChevronRight className="w-4 h-4" />
               </Link>
             </div>
           </div>

@@ -11,7 +11,7 @@ const SiteHeader = () => {
   const nav = [
     { name: "Explained", href: "/#explained" },
     { name: "Box Office", href: "/#box-office" },
-    { name: "OTT Analysis", href: "/#ott-intelligence" },
+    { name: "OTT Intelligence", href: "/ott" },
     { name: "Celebrities", href: "/#celebrities" },
     { name: "Categories", href: "/#categories" },
   ];

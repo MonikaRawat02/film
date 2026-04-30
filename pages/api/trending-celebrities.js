@@ -66,6 +66,7 @@
 import dbConnect from "@/lib/mongodb";
 import Celebrity from "@/model/celebrity";
 import SearchAnalytics from "@/model/searchAnalytics";
+import { cacheManager } from "@/lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -76,136 +77,140 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Add timeout wrapper for dbConnect
-    const connectWithTimeout = async () => {
-      const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Connection timeout after 10s")), 10000)
-      );
-      return Promise.race([require("@/lib/mongodb").default(), timeout]);
-    };
+    const cacheKey = 'public:trending-celebrities:v2';
+    
+    const data = await cacheManager(cacheKey, 600, async () => {
+      // Add timeout wrapper for dbConnect
+      const connectWithTimeout = async () => {
+        const timeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Connection timeout after 10s")), 10000)
+        );
+        return Promise.race([dbConnect(), timeout]);
+      };
 
-    await connectWithTimeout();
+      await connectWithTimeout();
 
-    /* ==================================================
-       STEP 1: TOP SEARCHES
-    ================================================== */
+      /* ==================================================
+         STEP 1: TOP SEARCHES
+      ================================================== */
 
-    const topSearches = await Promise.race([
-      SearchAnalytics.find({
-        category: "Celebrities",
-      })
-        .sort({ count: -1 })
-        .limit(50)
-        .lean(),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Query timeout after 8s")), 8000)
-      )
-    ]);
+      const topSearches = await Promise.race([
+        SearchAnalytics.find({
+          category: "Celebrities",
+        })
+          .sort({ count: -1 })
+          .limit(50)
+          .lean(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Query timeout after 8s")), 8000)
+        )
+      ]);
 
-    /* ==================================================
-       STEP 2: FETCH CELEBRITIES
-    ================================================== */
+      /* ==================================================
+         STEP 2: FETCH CELEBRITIES
+      ================================================== */
 
-    const allCelebrities = await Promise.race([
-      Celebrity.find({}).lean(),
-      new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Query timeout after 8s")), 8000)
-      )
-    ]);
+      const allCelebrities = await Promise.race([
+        Celebrity.find({}).lean(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Query timeout after 8s")), 8000)
+        )
+      ]);
 
-    /* ==================================================
-       STEP 3: MAP + RANK
-    ================================================== */
+      /* ==================================================
+         STEP 3: MAP + RANK
+      ================================================== */
 
-    const trendingCelebrities = allCelebrities
-      .map((c) => {
-        const name =
-          c?.heroSection?.name?.toLowerCase()?.trim() || "";
+      const trendingCelebrities = allCelebrities
+        .map((c) => {
+          const name =
+            c?.heroSection?.name?.toLowerCase()?.trim() || "";
 
-        const searchMatch = topSearches.find((s) => {
-          const query =
-            s?.query?.toLowerCase()?.trim() || "";
+          const searchMatch = topSearches.find((s) => {
+            const query =
+              s?.query?.toLowerCase()?.trim() || "";
+
+            return (
+              query === name ||
+              name.includes(query) ||
+              query.includes(name)
+            );
+          });
+
+          return {
+            ...c,
+            searchCount: searchMatch?.count || 0,
+          };
+        })
+        .sort((a, b) => {
+          if (b.searchCount !== a.searchCount) {
+            return b.searchCount - a.searchCount;
+          }
 
           return (
-            query === name ||
-            name.includes(query) ||
-            query.includes(name)
+            (b?.heroSection?.growthPercentage || 0) -
+            (a?.heroSection?.growthPercentage || 0)
           );
-        });
+        })
+        .slice(0, 10);
+
+      /* ==================================================
+         STEP 4: FORMAT RESPONSE
+      ================================================== */
+
+      return trendingCelebrities.map((c) => {
+        const bioCount = Array.isArray(c?.biographyTimeline)
+          ? c.biographyTimeline.length
+          : 0;
+
+        const bioWords = bioCount * 50 || 150;
+
+        const readTime = `${Math.max(
+          4,
+          Math.ceil(bioWords / 150) + 2
+        )} min`;
+
+        const rating = (
+          Math.random() * (9.9 - 8.4) +
+          8.4
+        ).toFixed(1);
 
         return {
-          ...c,
-          searchCount: searchMatch?.count || 0,
+          title:
+            c?.heroSection?.name ||
+            "Unknown Celebrity",
+
+          description: Array.isArray(
+            c?.heroSection?.profession
+          )
+            ? c.heroSection.profession.join(", ")
+            : c?.heroSection?.profession ||
+              "Celebrity Intelligence Profile",
+
+          image:
+            c?.heroSection?.profileImage ||
+            "/placeholder.jpg",
+
+          category: "Celebrity",
+
+          rating,
+
+          views: `${(
+            (c.searchCount || 0) * 125 +
+            1200
+          ).toLocaleString()} views`,
+
+          readTime,
+
+          slug:
+            c?.heroSection?.slug || "",
         };
-      })
-      .sort((a, b) => {
-        if (b.searchCount !== a.searchCount) {
-          return b.searchCount - a.searchCount;
-        }
-
-        return (
-          (b?.heroSection?.growthPercentage || 0) -
-          (a?.heroSection?.growthPercentage || 0)
-        );
-      })
-      .slice(0, 10);
-
-    /* ==================================================
-       STEP 4: FORMAT RESPONSE
-    ================================================== */
-
-    const formattedData = trendingCelebrities.map((c) => {
-      const bioCount = Array.isArray(c?.biographyTimeline)
-        ? c.biographyTimeline.length
-        : 0;
-
-      const bioWords = bioCount * 50 || 150;
-
-      const readTime = `${Math.max(
-        4,
-        Math.ceil(bioWords / 150) + 2
-      )} min`;
-
-      const rating = (
-        Math.random() * (9.9 - 8.4) +
-        8.4
-      ).toFixed(1);
-
-      return {
-        title:
-          c?.heroSection?.name ||
-          "Unknown Celebrity",
-
-        description: Array.isArray(
-          c?.heroSection?.profession
-        )
-          ? c.heroSection.profession.join(", ")
-          : c?.heroSection?.profession ||
-            "Celebrity Intelligence Profile",
-
-        image:
-          c?.heroSection?.profileImage ||
-          "/placeholder.jpg",
-
-        category: "Celebrity",
-
-        rating,
-
-        views: `${(
-          (c.searchCount || 0) * 125 +
-          1200
-        ).toLocaleString()} views`,
-
-        readTime,
-
-        slug:
-          c?.heroSection?.slug || "",
-      };
+      });
     });
 
     return res.status(200).json({
       success: true,
-      data: formattedData,
+      data,
     });
   } catch (error) {
     console.error(

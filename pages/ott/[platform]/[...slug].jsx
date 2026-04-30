@@ -1158,7 +1158,7 @@ export default function OTTMovieDetailPage({
                 <p className="text-gray-300 leading-relaxed text-base">
                   {article.summary ?
                     `${article.summary.substring(0, 300)}... This dedicated report focuses specifically on the ${pageType.replace(/-/g, " ")} of ${movieTitle}.` :
-                    `Explore the detailed ${pageType.replace(/-/g, " ")} analysis for ${movieTitle} (${article.releaseYear}).`
+                    `Explore the detailed ${pageType.replace(/-/g, " ")} analysis for ${movieTitle}${article.releaseYear ? ` (${article.releaseYear})` : ""}.`
                   }
                 </p>
               </div>
