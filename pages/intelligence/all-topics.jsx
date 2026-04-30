@@ -20,9 +20,11 @@ import {
   ArrowLeft
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSmartBack, getFallbackUrl } from "@/lib/useSmartBack";
 
 export default function PopularTopicsListingPage() {
   const router = useRouter();
+  const smartBack = useSmartBack(getFallbackUrl(router.pathname));
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -62,7 +64,7 @@ export default function PopularTopicsListingPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-6">
             <button 
-              onClick={() => router.back()}
+              onClick={smartBack}
               className="inline-flex items-center gap-2 text-gray-500 hover:text-yellow-500 transition-colors text-xs font-bold uppercase tracking-widest group cursor-pointer"
             >
               <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back

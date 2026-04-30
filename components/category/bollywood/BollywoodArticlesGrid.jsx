@@ -3,12 +3,26 @@
 import Link from "next/link";
 import { TrendingUp, Sparkles, Film, Clock, Eye, ChevronRight } from "lucide-react";
 
-export default function BollywoodArticlesGrid({ articles, loading }) {
+export default function BollywoodArticlesGrid({ articles, loading, activeFilter }) {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="flex items-center gap-3 mb-8">
-        <TrendingUp className="w-5 h-5 text-amber-500" />
-        <h2 className="text-2xl font-bold text-white tracking-tight">Trending Bollywood Intelligence</h2>
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <TrendingUp className="w-5 h-5 text-amber-500" />
+          <h2 className="text-2xl font-bold text-white tracking-tight">
+            {activeFilter === "All" && "Trending Bollywood Intelligence"}
+            {activeFilter === "Explained" && "Movie Explainers"}
+            {activeFilter === "BoxOffice" && "Box Office Analysis"}
+            {activeFilter === "OTT" && "OTT Performance"}
+            {activeFilter === "Celebrity" && "Celebrity Intelligence"}
+            {activeFilter === "Industry" && "Industry Insights"}
+          </h2>
+        </div>
+        {!loading && (
+          <div className="text-sm text-zinc-400">
+            {articles.length} {articles.length === 1 ? 'result' : 'results'}
+          </div>
+        )}
       </div>
 
       {loading ? (

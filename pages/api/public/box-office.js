@@ -1,6 +1,5 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
-import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -13,11 +12,7 @@ export default async function handler(req, res) {
   try {
     const { industry, limit = 20, page = 1, sortBy = "roi", q = "", _t } = req.query;
     
-    // Use Redis cache with 5-minute TTL for fast responses
-    const cacheKey = `public:box-office:${industry || 'all'}:${limit}:${page}:${q}`;
-    
-    const cachedData = await cacheManager(cacheKey, 300, async () => {
-      await dbConnect();
+    await dbConnect();
     
     let query = { status: "published" };
     
@@ -126,19 +121,18 @@ export default async function handler(req, res) {
     const start = (pg - 1) * lim;
     const paginatedData = processedData.slice(start, start + lim);
 
-      return {
-        success: true, 
-        data: paginatedData,
-        pagination: {
-          total,
-          page: pg,
-          limit: lim,
-          pages: Math.ceil(total / lim) || 1
-        }
-      };
-    });
+    const result = {
+      success: true, 
+      data: paginatedData,
+      pagination: {
+        total,
+        page: pg,
+        limit: lim,
+        pages: Math.ceil(total / lim) || 1
+      }
+    };
 
-    res.status(200).json(cachedData);
+    res.status(200).json(result);
   } catch (error) {
     console.error("Public Box Office API Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });

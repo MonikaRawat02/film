@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { ArrowLeft, Clock, Eye, Share2, Bookmark, BarChart, Film, Tv, Star } from "lucide-react";
+import { useSmartBack, getFallbackUrl } from "@/lib/useSmartBack";
 
 export default function IntelligenceDetailPage() {
   const router = useRouter();
   const { slug } = router.query;
+  const smartBack = useSmartBack(getFallbackUrl(router.pathname));
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -42,7 +44,7 @@ export default function IntelligenceDetailPage() {
         <h1 className="text-4xl font-serif font-black text-white mb-4">Intelligence Not Found</h1>
         <p className="text-gray-400 mb-8">The deep-dive you're looking for doesn't exist or has been moved.</p>
         <button 
-          onClick={() => router.back()}
+          onClick={smartBack}
           className="text-red-500 font-black text-sm uppercase tracking-widest hover:text-red-400 transition-colors cursor-pointer"
         >
           Back
@@ -89,7 +91,7 @@ export default function IntelligenceDetailPage() {
           
           <div className="relative z-10 h-full mx-auto max-w-[1400px] px-4 sm:px-6 lg:px-12 flex flex-col justify-center pt-8 sm:pt-12">
             <button 
-              onClick={() => router.back()}
+              onClick={smartBack}
               className="inline-flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] mb-6 sm:mb-8 group cursor-pointer w-fit"
             >
               <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back

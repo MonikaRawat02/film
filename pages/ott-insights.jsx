@@ -4,9 +4,11 @@ import PublicLayout from "@/components/PublicLayout";
 import { TrendingUp, ExternalLink, ArrowLeft, Target, Search, X } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSmartBack, getFallbackUrl } from "@/lib/useSmartBack";
 
 export default function OTTInsightsPage() {
   const router = useRouter();
+  const smartBack = useSmartBack(getFallbackUrl(router.pathname));
   const [data, setData] = useState([]);
   const [topPlatform, setTopPlatform] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -69,7 +71,7 @@ export default function OTTInsightsPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <button 
-              onClick={() => router.back()}
+              onClick={smartBack}
               className="inline-flex items-center gap-2 text-gray-500 hover:text-white transition-colors mb-4 text-xs font-bold uppercase tracking-widest cursor-pointer"
             >
               <ArrowLeft className="w-3 h-3" /> Back

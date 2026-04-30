@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { TrendingUp, Users, Bell, ArrowRight } from "lucide-react";
 import RichestActorsModal from "./RichestActorsModal";
+import { useRouter } from "next/router";
 
 export default function ExploreCTASection({ celebrity }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const router = useRouter();
 
   if (!celebrity) return null;
   const premium = celebrity.premiumIntelligence || {};
@@ -78,7 +80,18 @@ export default function ExploreCTASection({ celebrity }) {
                   Browse by Industry
                 </button>
                 
-                <button className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer w-full sm:w-auto h-14">
+                <button 
+                  onClick={() => {
+                    router.push('/');
+                    setTimeout(() => {
+                      const subscribeSection = document.getElementById('subscribe-section');
+                      if (subscribeSection) {
+                        subscribeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }, 100);
+                  }}
+                  className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 cursor-pointer w-full sm:w-auto h-14"
+                >
                   <Bell className="w-5 h-5 text-white" />
                   Get Updates
                 </button>

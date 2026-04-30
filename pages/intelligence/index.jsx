@@ -4,9 +4,11 @@ import PublicLayout from "@/components/PublicLayout";
 import { BarChart, Search, X, ArrowLeft, Clock, Eye, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useSmartBack, getFallbackUrl } from "@/lib/useSmartBack";
 
 export default function IntelligenceListingPage() {
   const router = useRouter();
+  const smartBack = useSmartBack(getFallbackUrl(router.pathname));
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,7 +63,7 @@ export default function IntelligenceListingPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-6">
             <button 
-              onClick={() => router.back()}
+              onClick={smartBack}
               className="inline-flex items-center gap-2 text-gray-500 hover:text-red-500 transition-colors text-xs font-bold uppercase tracking-widest group cursor-pointer"
             >
               <ArrowLeft className="w-3 h-3 transition-transform group-hover:-translate-x-1" /> Back
