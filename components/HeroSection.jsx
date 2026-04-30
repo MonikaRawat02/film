@@ -126,7 +126,7 @@ export default function HeroSection() {
                     <p className="text-gray-500 text-sm animate-pulse">Scanning database...</p>
                   </div>
                 ) : results.length > 0 ? (
-                  <div className="max-h-[450px] overflow-y-auto custom-scrollbar">
+                  <div className="max-h-[450px] overflow-y-auto scrollbar-thin">
                     <div className="p-3 border-b border-gray-800/50 bg-white/[0.02]">
                       <span className="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] ml-2">Intelligence Matches</span>
                     </div>
@@ -223,21 +223,6 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          width: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-          background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #333;
-          border-radius: 10px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #444;
-        }
-      `}</style>
     </section>
   );
 }
