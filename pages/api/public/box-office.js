@@ -1,27 +1,23 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
-// Removed Redis cache - always fetch fresh data from database
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ success: false, message: "Method not allowed" });
   }
 
-  // Set cache control headers to prevent browser/CDN caching
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  res.setHeader('Surrogate-Control', 'no-store');
-  
-  // Next.js specific cache control
-  res.setHeader('x-nextjs-cache', '0');
+  // Enable browser/CDN caching for 5 minutes
+  res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
 
   try {
-    const { industry, limit = 10, page = 1, sortBy = "roi", q = "", _t } = req.query;
+    const { industry, limit = 20, page = 1, sortBy = "roi", q = "", _t } = req.query;
     
-    // _t parameter is used for cache busting - ignore it in logic
-    // Fetch directly from database without any caching
-    await dbConnect();
+    // Use Redis cache with 5-minute TTL for fast responses
+    const cacheKey = `public:box-office:${industry || 'all'}:${limit}:${page}:${q}`;
+    
+    const cachedData = await cacheManager(cacheKey, 300, async () => {
+      await dbConnect();
     
     let query = { status: "published" };
     
@@ -39,7 +35,9 @@ export default async function handler(req, res) {
     }
 
     const articles = await Article.find(query)
+      .select('movieTitle title slug category budget boxOffice verdict sections')
       .sort({ publishedAt: -1, createdAt: -1 })
+      .limit(100)
       .lean();
 
     const parseCurrency = (str) => {
@@ -128,16 +126,19 @@ export default async function handler(req, res) {
     const start = (pg - 1) * lim;
     const paginatedData = processedData.slice(start, start + lim);
 
-    return res.status(200).json({ 
-      success: true, 
-      data: paginatedData,
-      pagination: {
-        total,
-        page: pg,
-        limit: lim,
-        pages: Math.ceil(total / lim) || 1
-      }
+      return {
+        success: true, 
+        data: paginatedData,
+        pagination: {
+          total,
+          page: pg,
+          limit: lim,
+          pages: Math.ceil(total / lim) || 1
+        }
+      };
     });
+
+    res.status(200).json(cachedData);
   } catch (error) {
     console.error("Public Box Office API Error:", error);
     return res.status(500).json({ success: false, message: "Server error" });
