@@ -55,11 +55,19 @@ export default function WealthBreakdownSection({ celebrity }) {
   const breakdownItems = incomeSources.map((source, index) => {
     const amountVal = netWorthTotal ? Math.round((netWorthTotal * (source.percentage / 100)) * 100) / 100 : 0;
 
-    const amountDisplay = amountVal >= 1000
-      ? `$${(amountVal / 1000).toFixed(2)}B`
-      : amountVal >= 1
-        ? `$${amountVal.toFixed(2)}M`
-        : `$${(amountVal * 1000).toFixed(0)}K`;
+    const formatAmount = (val) => {
+      if (val >= 1000000000) {
+        return `$${(val / 1000000000).toFixed(1)}B`;
+      } else if (val >= 1000000) {
+        return `$${(val / 1000000).toFixed(0)}M`;
+      } else if (val >= 1000) {
+        return `$${(val / 1000).toFixed(0)}K`;
+      } else {
+        return `$${val.toFixed(0)}`;
+      }
+    };
+
+    const amountDisplay = formatAmount(amountVal);
 
     return {
       Icon: icons[index % icons.length],

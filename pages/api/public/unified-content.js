@@ -25,7 +25,10 @@ export default async function handler(req, res) {
     // If no filter specified, return all data
     if (!filter || filter === "All") {
       const [articles, celebrities, boxOfficeData, ottData] = await Promise.all([
-        Article.find({ status: "published" })
+        Article.find({ 
+          status: "published",
+          category: { $in: ["Bollywood", "Hollywood", "WebSeries", "OTT", "Celebrities"] }
+        })
           .sort({ publishedAt: -1, createdAt: -1 })
           .limit(lim)
           .lean(),
@@ -43,7 +46,7 @@ export default async function handler(req, res) {
           .lean()
       ]);
 
-      return res.status(200).json({
+      return {
         success: true,
         data: {
           articles: articles.map(a => ({
@@ -68,7 +71,7 @@ export default async function handler(req, res) {
             filterType: "OTT"
           }))
         }
-      });
+      };
     }
 
     // Filter-specific data fetching
@@ -76,24 +79,21 @@ export default async function handler(req, res) {
       case "Explained":
         const explainedArticles = await Article.find({ 
           status: "published",
-          $or: [
-            { category: "Bollywood" },
-            { category: "Hollywood" },
-            { category: "WebSeries" }
-          ]
+          category: { $in: ["Bollywood", "Hollywood", "WebSeries", "OTT", "Celebrities"] }
         })
           .sort({ publishedAt: -1 })
           .limit(lim)
           .lean();
         
-        return res.status(200).json({
+        return {
           success: true,
           data: explainedArticles.map(a => ({ ...a, filterType: "Explained" }))
-        });
+        };
 
       case "BoxOffice":
         const boxOfficeArticles = await Article.find({ 
           status: "published",
+          category: { $in: ["Bollywood", "Hollywood"] },
           "boxOffice.worldwide": { $exists: true, $ne: "" }
         })
           .sort({ "stats.views": -1 })
@@ -105,17 +105,18 @@ export default async function handler(req, res) {
           .limit(Math.floor(lim / 2))
           .lean();
 
-        return res.status(200).json({
+        return {
           success: true,
           data: [
             ...boxOfficeArticles.map(a => ({ ...a, filterType: "BoxOffice" })),
             ...boxOfficeData.map(b => ({ ...b, filterType: "BoxOffice" }))
           ]
-        });
+        };
 
       case "OTT":
         const ottArticles = await Article.find({ 
           status: "published",
+          category: { $in: ["Bollywood", "Hollywood", "WebSeries", "OTT"] },
           "ott.platform": { $exists: true, $ne: "" }
         })
           .sort({ "ott.releaseDate": -1 })
@@ -127,13 +128,13 @@ export default async function handler(req, res) {
           .limit(Math.floor(lim / 3))
           .lean();
 
-        return res.status(200).json({
+        return {
           success: true,
           data: [
             ...ottArticles.map(a => ({ ...a, filterType: "OTT" })),
             ...ottIntelligence.map(o => ({ ...o, filterType: "OTT" }))
           ]
-        });
+        };
 
       case "Celebrity":
         const celebrities = await Celebrity.find({})
@@ -141,7 +142,7 @@ export default async function handler(req, res) {
           .limit(lim)
           .lean();
 
-        return res.status(200).json({
+        return {
           success: true,
           data: celebrities.map(c => ({
             _id: c._id,
@@ -152,21 +153,21 @@ export default async function handler(req, res) {
             category: "Celebrities",
             filterType: "Celebrity"
           }))
-        });
+        };
 
       case "Industry":
         const industryArticles = await Article.find({ 
           status: "published",
-          category: "BoxOffice"
+          category: { $in: ["Bollywood", "Hollywood", "BoxOffice"] }
         })
           .sort({ publishedAt: -1 })
           .limit(lim)
           .lean();
 
-        return res.status(200).json({
+        return {
           success: true,
           data: industryArticles.map(a => ({ ...a, filterType: "Industry" }))
-        });
+        };
 
       default:
         return null;

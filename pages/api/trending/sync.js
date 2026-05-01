@@ -1985,6 +1985,9 @@ export default async function handler(req, res) {
       const validation = validResults[i].validation;
       const rawTrend = validResults[i].rawTrend;
 
+      // Only add record if it has a valid referenceId!
+      if (!validation.referenceId) continue;
+
       const score = calculateTrendScore({
         ...trend,
         trendTimestamp: rawTrend.timestamp,
@@ -2012,7 +2015,8 @@ export default async function handler(req, res) {
         expiresAt: new Date(Date.now() + 7 * 24 * 3600000),
         metadata: trend.metadata,
         score: score,
-        updatedAt: now
+        updatedAt: now,
+        isValidated: true
       };
 
       trendingRecords.push(record);
