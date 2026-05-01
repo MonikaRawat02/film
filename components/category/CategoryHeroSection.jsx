@@ -69,7 +69,7 @@ const categoryConfig = {
   },
 };
 
-export default function CategoryHeroSection({ category }) {
+export default function CategoryHeroSection({ category, onQuickTagClick, onPrimaryBtnClick, onSecondaryBtnClick }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -249,7 +249,7 @@ export default function CategoryHeroSection({ category }) {
             {config.quickTags.map((tag, index) => (
               <button
                 key={index}
-                onClick={() => setQuery(tag)}
+                onClick={() => onQuickTagClick ? onQuickTagClick(tag) : setQuery(tag)}
                 className={`px-4 py-2 rounded-full text-sm transition-all ${
                   isHollywood
                     ? "bg-zinc-800/50 border border-zinc-700 text-zinc-300 hover:border-purple-500/50 hover:text-purple-300"
@@ -263,19 +263,25 @@ export default function CategoryHeroSection({ category }) {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-            <button className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all shadow-lg ${
-              isHollywood
-                ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-purple-500/25 hover:shadow-purple-500/40"
-                : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40"
-            }`}>
+            <button
+              onClick={onPrimaryBtnClick}
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all shadow-lg ${
+                isHollywood
+                  ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-purple-500/25 hover:shadow-purple-500/40"
+                  : "bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white shadow-lg shadow-amber-500/25 hover:shadow-amber-500/40"
+              }`}
+            >
               <Play className="w-5 h-5" />
               {config.primaryBtn}
             </button>
-            <button className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all ${
-              isHollywood
-                ? "bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 text-zinc-300 hover:text-purple-300 backdrop-blur-sm"
-                : "bg-zinc-900/50 border border-zinc-800 hover:border-amber-500/30 text-zinc-300 hover:text-amber-500"
-            }`}>
+            <button
+              onClick={onSecondaryBtnClick}
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold transition-all ${
+                isHollywood
+                  ? "bg-zinc-800/50 border border-zinc-700 hover:border-purple-500/50 text-zinc-300 hover:text-purple-300 backdrop-blur-sm"
+                  : "bg-zinc-900/50 border border-zinc-800 hover:border-amber-500/30 text-zinc-300 hover:text-amber-500"
+              }`}
+            >
               <TrendingUp className="w-5 h-5" />
               {config.secondaryBtn}
             </button>
