@@ -97,7 +97,7 @@ export default function CategoryHeroSection({ category, onQuickTagClick, onPrima
         setShowDropdown(false);
         return;
       }
-
+      
       setLoading(true);
       setShowDropdown(true);
       try {

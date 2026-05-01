@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import CategoryHeroSection from "../../components/category/CategoryHeroSection";
 import WebSeriesFilterBar from "../../components/category/webseries/WebSeriesFilterBar";
 import CategoryArticlesGrid from "../../components/category/CategoryArticlesGrid";
@@ -39,6 +40,7 @@ export default function WebSeriesPage({ initialArticles }) {
   const [activeFilter, setActiveFilter] = useState("All");
   const [articles, setArticles] = useState(initialArticles);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -92,8 +94,7 @@ export default function WebSeriesPage({ initialArticles }) {
   };
 
   const handleSecondaryBtnClick = () => {
-    setActiveFilter("ViewershipTrends");
-    scrollToContent();
+    router.push("/trending-webseries");
   };
 
   return (
