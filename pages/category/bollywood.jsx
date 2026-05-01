@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import BollywoodHeroSection from "../../components/category/bollywood/BollywoodHeroSection";
 import BollywoodFilterBar from "../../components/category/bollywood/BollywoodFilterBar";
 import BollywoodArticlesGrid from "../../components/category/bollywood/BollywoodArticlesGrid";
 import BollywoodMovieIntelligence from "../../components/category/bollywood/BollywoodMovieIntelligence";
 import BollywoodBoxOfficeDashboard from "../../components/category/bollywood/BollywoodBoxOfficeDashboard";
 import BollywoodOTTPerformance from "../../components/category/bollywood/BollywoodOTTPerformance";
-import CelebrityIntelligenceHub from "../../components/category/bollywood/CelebrityIntelligenceHub";
+const CelebrityIntelligenceHub = dynamic(
+  () => import("../../components/category/bollywood/CelebrityIntelligenceHub"), 
+  { ssr: false }
+);
 import BollywoodMovieDiscovery from "../../components/category/bollywood/BollywoodMovieDiscovery";
 import BollywoodTrendingTopics from "../../components/category/bollywood/BollywoodTrendingTopics";
 import BollywoodIndustryInsights from "../../components/category/bollywood/BollywoodIndustryInsights";
@@ -90,7 +94,7 @@ export default function BollywoodPage({ initialArticles }) {
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100">
         <BollywoodHeroSection />
-        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} />
+        <BollywoodFilterBar activeFilter={activeFilter} setActiveFilter={setActiveFilter} loading={loading} />
         
         {/* Show specialized dashboards based on active filter */}
         {activeFilter === "Explained" && (
