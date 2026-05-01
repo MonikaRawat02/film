@@ -676,7 +676,7 @@ export default function TrendingExplainersPage() {
     // Process trending_movies as Explained category
     if (rawData.trending_movies && Array.isArray(rawData.trending_movies)) {
       const movies = rawData.trending_movies
-        .filter(t => t.isValidated !== false)
+        .filter(t => t.isValidated === true && t.slug && t.slug !== "-")
         .map(t => ({
           _id: t._id,
           title: t.title,
@@ -698,7 +698,7 @@ export default function TrendingExplainersPage() {
     // Process trending_actors as Celebrity category
     if (rawData.trending_actors && Array.isArray(rawData.trending_actors)) {
       const actors = rawData.trending_actors
-        .filter(t => t.isValidated !== false)
+        .filter(t => t.isValidated === true && t.slug && t.slug !== "-")
         .map(t => ({
           _id: t._id,
           title: t.title,
@@ -720,7 +720,7 @@ export default function TrendingExplainersPage() {
     // Process viral_topics as OTT category
     if (rawData.viral_topics && Array.isArray(rawData.viral_topics)) {
       const topics = rawData.viral_topics
-        .filter(t => t.isValidated === true)
+        .filter(t => t.isValidated === true && t.slug && t.slug !== "-")
         .map(t => ({
           _id: t._id,
           title: t.title,

@@ -1,6 +1,7 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
 import Celebrity from "../../../model/celebrity";
+import BoxOffice from "../../../model/boxOffice";
 import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
@@ -22,6 +23,9 @@ export default async function handler(req, res) {
 
       // Get celebrity count (total)
       const celebrityCount = await Celebrity.countDocuments();
+      
+      // Get box office count from BoxOffice model
+      const boxOfficeCount = await BoxOffice.countDocuments();
 
       // Map results to a cleaner format
       const countsMap = {
@@ -29,7 +33,7 @@ export default async function handler(req, res) {
         Hollywood: 0,
         WebSeries: 0,
         OTT: 0,
-        BoxOffice: 0,
+        BoxOffice: boxOfficeCount,
         Celebrities: celebrityCount
       };
 

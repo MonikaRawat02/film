@@ -33,13 +33,14 @@ export default async function handler(req, res) {
           ]);
           
           const celebrityCount = await Celebrity.countDocuments();
+          const boxOfficeCount = await BoxOffice.countDocuments();
           
           const countsMap = {
             Bollywood: 0,
             Hollywood: 0,
             WebSeries: 0,
             OTT: 0,
-            BoxOffice: 0,
+            BoxOffice: boxOfficeCount,
             Celebrities: celebrityCount
           };
 

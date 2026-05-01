@@ -48,21 +48,16 @@ export default async function handler(req, res) {
       time: s.updatedAt || s.createdAt
     }));
 
-    res.status(200).json({
-      success: true,
-      data: {
-        articles: articleCount,
-        celebrities: celebrityCount,
-        activeUsers: activeUsers,
-        boxOffice: boxOfficeCount,
-        ott: ottCount,
-        trending: trendingCount,
-        totalViews: totalViewsData[0]?.total || 0,
-        recentActivity: combinedActivity
-      }
-    });
-    
-    return data;
+    return {
+      articles: articleCount,
+      celebrities: celebrityCount,
+      activeUsers: activeUsers,
+      boxOffice: boxOfficeCount,
+      ott: ottCount,
+      trending: trendingCount,
+      totalViews: totalViewsData[0]?.total || 0,
+      recentActivity: combinedActivity
+    };
     });
 
     res.status(200).json({

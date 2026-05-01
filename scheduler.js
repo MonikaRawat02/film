@@ -465,13 +465,11 @@ cron.schedule(HEARTBEAT_INTERVAL, () => {
   log('💓 Scheduler Heartbeat: Service is active and monitoring.');
 });
 
-// Initial run on startup
+// Initial run on startup (disabled - only run at scheduled times)
 const start = async () => {
-  log('🚀 Executing initial automation run...');
-  const isReady = await waitForServer();
-  if (isReady) {
-    Promise.allSettled([runDailySync(), runCelebrityScraper()]);
-  }
+  log('🚀 Scheduler started. Automation will run at scheduled times only.');
+  await waitForServer();
+  // Promise.allSettled([runDailySync(), runCelebrityScraper()]);
 };
 
 start();

@@ -60,7 +60,8 @@ export default async function handler(req, res) {
         status: trend.status,
         metadata: trend.metadata,
         trendTimestamp: trend.trendTimestamp,
-        createdAt: trend.createdAt
+        createdAt: trend.createdAt,
+        isValidated: trend.isValidated
       }));
 
       return {
@@ -116,7 +117,8 @@ export default async function handler(req, res) {
         status: trend.status,
         metadata: trend.metadata,
         trendTimestamp: trend.trendTimestamp,
-        createdAt: trend.createdAt
+        createdAt: trend.createdAt,
+        isValidated: trend.isValidated
       }));
 
     return {
