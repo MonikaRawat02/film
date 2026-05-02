@@ -212,19 +212,6 @@ export default function OTTIntelligenceHome() {
                     Compare Now
                   </Link>
                </div>
-
-               <div className="p-8 rounded-3xl bg-zinc-900 border border-zinc-800">
-                  <h3 className="text-xl font-black mb-4 flex items-center gap-2">
-                    <ShieldCheck className="w-5 h-5 text-green-500" />
-                    Market Report
-                  </h3>
-                  <p className="text-zinc-500 text-sm mb-6 leading-relaxed">
-                    Download the latest streaming market movement report (Q1 2026).
-                  </p>
-                  <button className="w-full py-4 rounded-2xl border border-zinc-700 font-bold text-xs uppercase tracking-widest hover:bg-zinc-800 transition-colors">
-                    Download Intelligence
-                  </button>
-               </div>
             </div>
           </div>
         </div>

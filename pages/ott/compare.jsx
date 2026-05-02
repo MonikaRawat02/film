@@ -50,11 +50,23 @@ export default function OTTComparePage() {
     }
   }, [one, two]);
 
-  const ComparisonRow = ({ label, val1, val2, suffix = "" }) => (
+  const ComparisonRow = ({ label, val1, val2, suffix = "", highlight1, highlight2 }) => (
     <div className="grid grid-cols-3 border-b border-zinc-800 hover:bg-zinc-800/20 transition-colors">
        <div className="px-8 py-6 text-xs font-black uppercase tracking-[0.2em] text-zinc-500 border-r border-zinc-800 flex items-center">{label}</div>
-       <div className="px-8 py-6 text-xl font-black text-center border-r border-zinc-800">{val1}{suffix}</div>
-       <div className="px-8 py-6 text-xl font-black text-center">{val2}{suffix}</div>
+       <div className={`px-8 py-6 text-xl font-black text-center border-r border-zinc-800 ${highlight1 ? 'text-green-400' : ''}`}>{val1}{suffix}</div>
+       <div className={`px-8 py-6 text-xl font-black text-center ${highlight2 ? 'text-green-400' : ''}`}>{val2}{suffix}</div>
+    </div>
+  );
+
+  const FeatureCheck = ({ label, feat1, feat2 }) => (
+    <div className="grid grid-cols-3 border-b border-zinc-800 py-4">
+       <div className="px-8 text-xs font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center">{label}</div>
+       <div className="px-8 text-center border-r border-zinc-800">
+         {feat1 ? <span className="text-green-400 text-lg">✓</span> : <span className="text-red-400 text-lg">✗</span>}
+       </div>
+       <div className="px-8 text-center">
+         {feat2 ? <span className="text-green-400 text-lg">✓</span> : <span className="text-red-400 text-lg">✗</span>}
+       </div>
     </div>
   );
 
@@ -193,6 +205,157 @@ export default function OTTComparePage() {
                    </div>
                 </div>
              </div>
+          )}
+
+          {/* Enhanced Sections: Feature Matrix, Pricing, Content Library, Verdict */}
+          {platformOne && platformTwo && (
+            <>
+              {/* Feature Matrix */}
+              <div className="mt-12 mb-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black uppercase tracking-widest">Feature Matrix</h2>
+                  <div className="h-px flex-1 bg-zinc-800 mx-8" />
+                </div>
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl overflow-hidden">
+                   <div className="grid grid-cols-3 border-b border-zinc-800 bg-zinc-900/80">
+                      <div className="px-8 py-6 text-xs font-black uppercase tracking-[0.2em] text-zinc-600 border-r border-zinc-800">Features</div>
+                      <div className="px-8 py-6 text-xl font-black text-center border-r border-zinc-800">{platformOne.name}</div>
+                      <div className="px-8 py-6 text-xl font-black text-center">{platformTwo.name}</div>
+                   </div>
+                   
+                   <FeatureCheck label="4K Streaming" feat1={true} feat2={true} />
+                   <FeatureCheck label="HDR Support" feat1={true} feat2={true} />
+                   <FeatureCheck label="Dolby Atmos" feat1={true} feat2={platformTwo.name === "Netflix" ? false : true} />
+                   <FeatureCheck label="Offline Downloads" feat1={true} feat2={true} />
+                   <FeatureCheck label="Multiple Profiles" feat1={true} feat2={true} />
+                   <FeatureCheck label="Parental Controls" feat1={true} feat2={true} />
+                   <FeatureCheck label="Live Sports" feat1={platformOne.name === "Disney+ Hotstar"} feat2={platformTwo.name === "Disney+ Hotstar"} />
+                   <FeatureCheck label="Regional Content" feat1={platformOne.name === "Amazon Prime Video"} feat2={platformTwo.name === "Amazon Prime Video"} />
+                </div>
+              </div>
+
+              {/* Pricing Comparison */}
+              <div className="mb-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black uppercase tracking-widest">Pricing Plans</h2>
+                  <div className="h-px flex-1 bg-zinc-800 mx-8" />
+                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8">
+                    <h3 className="text-2xl font-black mb-6 text-center">{platformOne.name}</h3>
+                    <div className="space-y-4">
+                      {platformOne.pricing?.map((plan, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-4 bg-zinc-800/50 rounded-xl">
+                          <span className="font-semibold">{plan.plan}</span>
+                          <span className="text-xl font-black text-green-400">{plan.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {platformOne.revenue && (
+                      <div className="mt-6 pt-6 border-t border-zinc-800">
+                        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Average Revenue Per User</p>
+                        <p className="text-2xl font-black">{platformOne.revenue.arpu}/month</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8">
+                    <h3 className="text-2xl font-black mb-6 text-center">{platformTwo.name}</h3>
+                    <div className="space-y-4">
+                      {platformTwo.pricing?.map((plan, idx) => (
+                        <div key={idx} className="flex justify-between items-center p-4 bg-zinc-800/50 rounded-xl">
+                          <span className="font-semibold">{plan.plan}</span>
+                          <span className="text-xl font-black text-green-400">{plan.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {platformTwo.revenue && (
+                      <div className="mt-6 pt-6 border-t border-zinc-800">
+                        <p className="text-xs text-zinc-500 uppercase tracking-widest mb-2">Average Revenue Per User</p>
+                        <p className="text-2xl font-black">{platformTwo.revenue.arpu}/month</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Content Library Comparison */}
+              <div className="mb-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black uppercase tracking-widest">Content Library</h2>
+                  <div className="h-px flex-1 bg-zinc-800 mx-8" />
+                </div>
+                <div className="bg-zinc-900/50 border border-zinc-800 rounded-3xl overflow-hidden">
+                   <div className="grid grid-cols-3 border-b border-zinc-800 bg-zinc-900/80">
+                      <div className="px-8 py-6 text-xs font-black uppercase tracking-[0.2em] text-zinc-600 border-r border-zinc-800">Content Type</div>
+                      <div className="px-8 py-6 text-xl font-black text-center border-r border-zinc-800">{platformOne.name}</div>
+                      <div className="px-8 py-6 text-xl font-black text-center">{platformTwo.name}</div>
+                   </div>
+                   
+                   {platformOne.contentLibrary && platformTwo.contentLibrary && (
+                     <>
+                       <ComparisonRow 
+                         label="Total Movies" 
+                         val1={platformOne.contentLibrary.movies?.toLocaleString()} 
+                         val2={platformTwo.contentLibrary.movies?.toLocaleString()}
+                         highlight1={platformOne.contentLibrary.movies > platformTwo.contentLibrary.movies}
+                         highlight2={platformTwo.contentLibrary.movies > platformOne.contentLibrary.movies}
+                       />
+                       <ComparisonRow 
+                         label="TV Series" 
+                         val1={platformOne.contentLibrary.series?.toLocaleString()} 
+                         val2={platformTwo.contentLibrary.series?.toLocaleString()}
+                         highlight1={platformOne.contentLibrary.series > platformTwo.contentLibrary.series}
+                         highlight2={platformTwo.contentLibrary.series > platformOne.contentLibrary.series}
+                       />
+                       <ComparisonRow 
+                         label="Anime" 
+                         val1={platformOne.contentLibrary.anime?.toLocaleString()} 
+                         val2={platformTwo.contentLibrary.anime?.toLocaleString()}
+                       />
+                       <ComparisonRow 
+                         label="Documentaries" 
+                         val1={platformOne.contentLibrary.docs?.toLocaleString()} 
+                         val2={platformTwo.contentLibrary.docs?.toLocaleString()}
+                       />
+                       <ComparisonRow 
+                         label="Indian Titles" 
+                         val1={platformOne.contentLibrary.indianTitles?.toLocaleString()} 
+                         val2={platformTwo.contentLibrary.indianTitles?.toLocaleString()}
+                         highlight1={platformOne.contentLibrary.indianTitles > platformTwo.contentLibrary.indianTitles}
+                         highlight2={platformTwo.contentLibrary.indianTitles > platformOne.contentLibrary.indianTitles}
+                       />
+                     </>
+                   )}
+                </div>
+              </div>
+
+              {/* Final Verdict */}
+              <div className="mb-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-black uppercase tracking-widest">Final Verdict</h2>
+                  <div className="h-px flex-1 bg-zinc-800 mx-8" />
+                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-gradient-to-br from-red-900/20 to-zinc-900/50 border border-red-900/30 rounded-3xl p-8">
+                    <h3 className="text-xl font-black mb-4">{platformOne.name}</h3>
+                    <div className="space-y-3 text-sm">
+                      <p className="text-green-400 font-semibold">✓ Best For: {platformOne.name === "Netflix" ? "Premium Originals & Global Content" : platformOne.name === "Amazon Prime Video" ? "Regional Content & Value" : "Sports & Family Entertainment"}</p>
+                      <p className="text-green-400 font-semibold">✓ Strengths: {platformOne.genreStrength?.slice(0, 2).map(g => g.genre).join(", ") || "Originals"}</p>
+                      <p className="text-red-400 font-semibold">⚠ Weaknesses: {platformOne.risks?.[0] || "High competition"}</p>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-900/20 to-zinc-900/50 border border-blue-900/30 rounded-3xl p-8">
+                    <h3 className="text-xl font-black mb-4">{platformTwo.name}</h3>
+                    <div className="space-y-3 text-sm">
+                      <p className="text-green-400 font-semibold">✓ Best For: {platformTwo.name === "Netflix" ? "Premium Originals & Global Content" : platformTwo.name === "Amazon Prime Video" ? "Regional Content & Value" : "Sports & Family Entertainment"}</p>
+                      <p className="text-green-400 font-semibold">✓ Strengths: {platformTwo.genreStrength?.slice(0, 2).map(g => g.genre).join(", ") || "Originals"}</p>
+                      <p className="text-red-400 font-semibold">⚠ Weaknesses: {platformTwo.risks?.[0] || "High competition"}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
           )}
 
           <div className="mt-20 flex justify-center">
