@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { RefreshCw, CheckCircle, XCircle, Clock, Tv, Star, Loader2 } from "lucide-react";
+import Image from "next/image";
 
 export default function WebSeriesRenewalStatus() {
   const [data, setData] = useState(null);
@@ -104,7 +105,14 @@ export default function WebSeriesRenewalStatus() {
               >
                 <div className="flex items-start gap-4 mb-3">
                   {show.coverImage ? (
-                    <img src={show.coverImage} alt={show.title} className="w-14 h-20 rounded-lg object-cover flex-shrink-0" />
+                    <Image 
+                      src={show.coverImage} 
+                      alt={show.title} 
+                      width={56}
+                      height={80}
+                      className="rounded-lg object-cover flex-shrink-0"
+                      loading="lazy"
+                    />
                   ) : (
                     <div className="w-14 h-20 bg-zinc-800 rounded-lg flex items-center justify-center flex-shrink-0">
                       <Tv className="w-6 h-6 text-zinc-700" />

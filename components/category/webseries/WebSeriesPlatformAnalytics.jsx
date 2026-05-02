@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Tv, Star, Globe, Play, Loader2, TrendingUp, FileText, Eye } from "lucide-react";
+import Image from "next/image";
 
 export default function WebSeriesPlatformAnalytics() {
   const [data, setData] = useState(null);
@@ -176,7 +177,14 @@ export default function WebSeriesPlatformAnalytics() {
                       >
                         <div className="flex items-center gap-3">
                           {article.coverImage ? (
-                            <img src={article.coverImage} alt="" className="w-8 h-10 rounded object-cover" />
+                            <Image 
+                              src={article.coverImage} 
+                              alt="" 
+                              width={32}
+                              height={40}
+                              className="rounded object-cover"
+                              loading="lazy"
+                            />
                           ) : (
                             <FileText className="w-4 h-4 text-teal-500" />
                           )}

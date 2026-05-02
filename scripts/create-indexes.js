@@ -89,6 +89,11 @@ async function createIndexes() {
       { key: { status: 1 }, options: { name: 'idx_status' } },
       { key: { 'netWorth.estimatedTotal': -1 }, options: { name: 'idx_networth_desc', sparse: true } },
       { key: { name: 'text', biography: 'text' }, options: { name: 'idx_fulltext_search' } },
+      // Additional performance indexes
+      { key: { 'heroSection.slug': 1 }, options: { name: 'idx_hero_slug', sparse: true } },
+      { key: { 'heroSection.name': 1 }, options: { name: 'idx_hero_name' } },
+      { key: { 'netWorth.netWorthUSD.max': -1 }, options: { name: 'idx_networth_usd_max', sparse: true } },
+      { key: { createdAt: -1 }, options: { name: 'idx_created_desc' } },
     ];
 
     for (const idx of celebritiesIndexes) {

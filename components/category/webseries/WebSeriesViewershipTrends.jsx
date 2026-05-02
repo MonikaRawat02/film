@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { TrendingUp, Eye, BarChart3, Loader2, Tv, Star, Calendar, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 
 export default function WebSeriesViewershipTrends() {
   const [data, setData] = useState(null);
@@ -231,7 +232,14 @@ export default function WebSeriesViewershipTrends() {
                 className="flex items-center gap-4 bg-zinc-800/50 border border-zinc-700 rounded-xl p-4 hover:border-cyan-500/30 transition-colors"
               >
                 {item.coverImage ? (
-                  <img src={item.coverImage} alt="" className="w-12 h-16 rounded object-cover flex-shrink-0" />
+                  <Image 
+                    src={item.coverImage} 
+                    alt="" 
+                    width={48}
+                    height={64}
+                    className="rounded object-cover flex-shrink-0"
+                    loading="lazy"
+                  />
                 ) : (
                   <div className="w-12 h-16 bg-zinc-700 rounded flex items-center justify-center flex-shrink-0">
                     <Tv className="w-5 h-5 text-zinc-500" />

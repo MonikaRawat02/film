@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Shield, CheckCircle2, RefreshCw, AlertTriangle, Clock, Info, User, Briefcase, Calendar, TrendingUp, Film, Building2, BarChart3, Users, ArrowRight } from "lucide-react";
 
 export default function NetWorthSection({ celebrity }) {
@@ -284,10 +285,13 @@ export default function NetWorthSection({ celebrity }) {
               <div className="relative">
                 <div className="w-20 h-20 rounded-full overflow-hidden border-2 border-[var(--ff-border)] bg-slate-900 flex items-center justify-center">
                   {processedCelebrity?.image && processedCelebrity.image !== "/placeholder.jpg" ? (
-                    <img
+                    <Image
                       src={processedCelebrity.image}
                       alt={processedCelebrity.name}
-                      className="w-full h-full object-cover"
+                      width={80}
+                      height={80}
+                      className="object-cover"
+                      loading="lazy"
                     />
                   ) : (
                     <User className="w-10 h-10 text-slate-600" />
@@ -769,10 +773,13 @@ export default function NetWorthSection({ celebrity }) {
                     }`}
                   >
                     <div className="w-full aspect-square rounded-lg overflow-hidden border border-[var(--ff-border-subtle)] relative">
-                      <img
+                      <Image
                         src={celeb.image}
                         alt={celeb.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                        sizes="(max-width: 768px) 50vw, 25vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                       <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--ff-deep-dark)]/80 backdrop-blur-sm border border-[var(--ff-border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -824,10 +831,13 @@ export default function NetWorthSection({ celebrity }) {
                   className="group relative rounded-2xl overflow-hidden border border-[var(--ff-border)] bg-[var(--ff-dark-elevated)] hover:border-[var(--ff-cinema-red)] hover:shadow-[0_0_0_1px_var(--ff-cinema-red-glow)] transition-all duration-300 cursor-pointer"
                 >
                   <div className="w-full aspect-square rounded-lg overflow-hidden border border-[var(--ff-border-subtle)] relative">
-                    <img
+                    <Image
                       src={top5Richest[0]?.heroSection?.profileImage || "/placeholder.jpg"}
                       alt="Top 5 Richest"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 50vw, 25vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                     <div className="absolute top-2 right-2 w-8 h-8 rounded-full bg-[var(--ff-deep-dark)]/80 backdrop-blur-sm border border-[var(--ff-border)] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1124,10 +1134,13 @@ export default function NetWorthSection({ celebrity }) {
                   className="flex items-center gap-4 p-3 rounded-2xl bg-[#0F0F14] border border-gray-800 hover:border-cyan-500/50 hover:bg-[#12121a] transition-all group cursor-pointer"
                 >
                   <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
-                    <img 
+                    <Image 
                       src={celeb.heroSection.profileImage || "/placeholder.jpg"} 
                       alt={celeb.heroSection.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      loading="lazy"
+                      sizes="56px"
                     />
                     <div className="absolute top-1 left-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md border border-white/10">
                       #{index + 1}

@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Flame, Search, Play, TrendingUp, X, Loader2, Star, Film, ArrowUpRight } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 const categoryConfig = {
   Bollywood: {
@@ -202,7 +203,14 @@ export default function CategoryHeroSection({ category, onQuickTagClick, onPrima
                       >
                         <div className="relative w-12 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-zinc-950 border border-zinc-800">
                           {result.image ? (
-                            <img src={result.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                            <Image 
+                              src={result.image} 
+                              alt="" 
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                              loading="lazy"
+                              sizes="48px"
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">
                               {result.type === "Celebrity" ? <Star className="w-5 h-5 text-zinc-700" /> : <Film className="w-5 h-5 text-zinc-700" />}
