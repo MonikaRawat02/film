@@ -4,8 +4,9 @@ import Head from "next/head";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Globe, Youtube, ArrowUpRight, TrendingUp, Eye, Clock, Zap, 
-  Filter, X, BarChart3, Activity, Calendar, ChevronRight, Star
+  Globe, ArrowUpRight, TrendingUp, Eye, Clock, Zap, 
+  Filter, X, BarChart3, Activity, Calendar, ChevronRight, Star,
+  Play
 } from "lucide-react";
 
 export default function TrendsPage() {
@@ -42,7 +43,7 @@ export default function TrendsPage() {
       const youtube = (youtubeRes.success && Array.isArray(youtubeRes.data) ? youtubeRes.data : []).map(item => ({
         ...item,
         source: "youtube",
-        sourceIcon: Youtube,
+        sourceIcon: Play,
         sourceColor: "#ff0000",
         sourceBg: "rgba(255,0,0,0.1)",
         type: item.type || item.category || "viral",
@@ -203,7 +204,7 @@ export default function TrendsPage() {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
       {[
         { label: "Google Trends", value: google.length, icon: Globe, color: "#4285f4" },
-        { label: "YouTube Trends", value: youtube.length, icon: Youtube, color: "#ff0000" },
+        { label: "YouTube Trends", value: youtube.length, icon: Play, color: "#ff0000" },
         { label: "Total Items", value: google.length + youtube.length, icon: BarChart3, color: "#a855f7" },
         { label: "Live Updates", value: "Real-time", icon: Activity, color: "#10b981" }
       ].map((stat) => (
@@ -262,7 +263,7 @@ export default function TrendsPage() {
                     <Globe className="w-4 h-4 text-blue-500" />
                   </div>
                   <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
-                    <Youtube className="w-4 h-4 text-red-500" />
+                    <Play className="w-4 h-4 text-red-500" />
                   </div>
                 </div>
                 <div>
@@ -308,7 +309,7 @@ export default function TrendsPage() {
                 {[
                   { id: "all", label: "All", icon: TrendingUp, color: "#a855f7" },
                   { id: "google", label: "Google", icon: Globe, color: "#4285f4" },
-                  { id: "youtube", label: "YouTube", icon: Youtube, color: "#ff0000" },
+                  { id: "youtube", label: "YouTube", icon: Play, color: "#ff0000" },
                 ].map((tab) => (
                   <motion.button
                     key={tab.id}

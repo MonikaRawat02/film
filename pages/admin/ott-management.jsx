@@ -4,8 +4,7 @@ import { useState, useEffect } from "react";
 import AdminLayout from "../../components/AdminLayout";
 import { 
   Plus, Edit2, Trash2, TrendingUp, DollarSign, 
-  Film, Activity, Save, X, RefreshCw, BarChart3,
-  Award, Users, Globe
+  Film, Save, X, RefreshCw, Users, Globe
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 
