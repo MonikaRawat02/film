@@ -4485,3 +4485,15 @@
 [2026-05-02T06:00:00.013Z] [INFO] 🕒 CRON START: Trending Data Sync
 [2026-05-02T06:00:00.384Z] [ERROR] Trending Sync returned status 500 
 [2026-05-02T06:14:19.136Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-05-02T06:16:14.142Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-02T06:16:14.143Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-05-02T06:16:14.165Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-02T06:16:14.166Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-02T06:16:14.176Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-02T06:16:14.181Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-02T06:16:19.647Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-02T06:30:00.021Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-05-02T06:30:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T06:30:00.346Z] [ERROR] Trending Sync returned status 500 
+[2026-05-02T06:30:09.184Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-05-02T06:44:08.244Z] [INFO] Received kill signal, shutting down gracefully...
