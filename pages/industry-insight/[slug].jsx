@@ -141,7 +141,6 @@ function StoryboardSection({ section, index, total, onInView }) {
     </section>
   );
 }
-
 let insight_content_ref = []; // Global ref for helper
 
 export default function IndustryInsightPage({ insight }) {
