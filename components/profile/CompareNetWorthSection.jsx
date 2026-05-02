@@ -4,18 +4,39 @@ import Link from "next/link";
 export default function CompareNetWorthSection({ celebrity }) {
   if (!celebrity) return null;
   const name = celebrity.heroSection?.name || "Unknown";
-  const baseNetWorth = (celebrity.netWorth?.netWorthUSD?.max || celebrity.netWorth?.netWorthUSD?.min || 0) / 1000000; // in millions
   const slug = celebrity.heroSection?.slug || "";
+  
+  // Net worth is stored in millions (e.g., 1300 = $1.3B)
+  const netWorthUSD = celebrity.netWorth?.netWorthUSD;
+  const baseNetWorthInMillions = netWorthUSD?.max || netWorthUSD?.min || 0;
+  
+  // Format display: show as B for billions, M for millions
+  const formatNetWorth = (valueInMillions) => {
+    if (valueInMillions >= 1000) {
+      // Billions
+      const billions = (valueInMillions / 1000).toFixed(1);
+      return `$${billions}B`;
+    } else {
+      // Millions
+      return `$${valueInMillions.toFixed(0)}M`;
+    }
+  };
+  
+  const baseNetWorthDisplay = formatNetWorth(baseNetWorthInMillions);
 
   const comparisonsData = celebrity.celebrityComparisons?.comparisons || [];
-  const comparisons = comparisonsData.map(comp => ({
-    name: comp.name,
-    netWorth: comp.netWorth / 1000000, // assume raw number in API is in USD
-    trend: "down", // default trend
-    display: comp.netWorthDisplay
-  }));
+  const comparisons = comparisonsData.map(comp => {
+    // Comp net worth is in raw USD, convert to millions
+    const netWorthInMillions = comp.netWorth / 1000000;
+    return {
+      name: comp.name,
+      netWorth: netWorthInMillions,
+      trend: "down",
+      display: comp.netWorthDisplay || formatNetWorth(netWorthInMillions)
+    };
+  });
 
-  const getPercentage = (value) => Math.round((value / baseNetWorth) * 100);
+  const getPercentage = (celebNetWorthInMillions) => Math.round((celebNetWorthInMillions / baseNetWorthInMillions) * 100);
   
   const getBarColor = () => "bg-gradient-to-r from-blue-500 to-purple-500";
 
@@ -43,7 +64,7 @@ export default function CompareNetWorthSection({ celebrity }) {
               </div>
               <div className="text-right">
                 <p className="text-2xl sm:text-3xl font-bold text-transparent bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text">
-                  ${baseNetWorth}M
+                  {baseNetWorthDisplay}
                 </p>
                 <p className="text-xs text-slate-400">Net Worth (2025)</p>
               </div>
@@ -85,7 +106,7 @@ export default function CompareNetWorthSection({ celebrity }) {
                     {/* Net Worth & Link */}
                     <div className="flex-shrink-0 sm:w-48 flex flex-col items-end justify-center gap-1">
                       <div className="flex items-center gap-1 leading-none">
-                        <span className="text-xl font-bold text-white">${celeb.netWorth}M</span>
+                        <span className="text-xl font-bold text-white">{celeb.display}</span>
                         <svg className="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                         </svg>

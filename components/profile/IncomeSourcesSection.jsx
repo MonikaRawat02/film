@@ -69,13 +69,13 @@ export default function IncomeSourcesSection({ celebrity }) {
               <p className="text-slate-400 mb-10 leading-relaxed text-sm sm:text-base">
                 {source.description}
               </p>
-              <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 group-hover:gap-2 transition-all text-sm text-blue-400 hover:text-blue-300 cursor-pointer">
+              {/* <span className="absolute bottom-6 right-6 inline-flex items-center gap-1 group-hover:gap-2 transition-all text-sm text-blue-400 hover:text-blue-300 cursor-pointer">
                 Read detailed analysis
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14" />
                   <path d="M12 5l7 7-7 7" />
                 </svg>
-              </span>
+              </span> */}
             </div>
           ))}
         </div>

@@ -11,6 +11,24 @@ export default function CelebritiesPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Smooth scroll to celebrity profiles section
+  const scrollToProfiles = () => {
+    const profilesSection = document.getElementById('celebrity-profiles');
+    if (profilesSection) {
+      profilesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  // Smooth scroll to trending section (or navigate to trending page)
+  const scrollToTrending = () => {
+    // For now, scroll to profiles section as it contains trending celebrities
+    // You can create a dedicated trending section later
+    const profilesSection = document.getElementById('celebrity-profiles');
+    if (profilesSection) {
+      profilesSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   useEffect(() => {
     const fetchCelebrities = async () => {
       try {
@@ -42,9 +60,13 @@ export default function CelebritiesPage() {
       </Head>
 
       <div className="min-h-screen bg-zinc-950 text-zinc-100 pb-20">
-        <CategoryHeroSection category="Celebrities" />
+        <CategoryHeroSection 
+          category="Celebrities" 
+          onPrimaryBtnClick={scrollToProfiles}
+          onSecondaryBtnClick={scrollToTrending}
+        />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <div id="celebrity-profiles" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
           <div className="flex items-center gap-3 mb-10 border-b border-zinc-800 pb-6">
             <Users className="w-8 h-8 text-fuchsia-500" />
             <div>
