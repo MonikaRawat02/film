@@ -6,7 +6,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion"
 import {
   TrendingUp, Film, BarChart3, Tv, Star, Eye, Clock,
   Zap, ArrowRight, Play, ChevronRight, Activity, RefreshCw,
-  Globe, ArrowUpRight, Youtube, Flame, User, Image as ImageIcon
+  Globe, ArrowUpRight, PlaySquare, Flame, User, Image as ImageIcon
 } from "lucide-react";
 
 // ─── IMAGE FALLBACK COMPONENT
@@ -150,7 +150,7 @@ const FeaturedSpotlight = ({ item, rank }) => {
       </div>
       {item.source && item.source !== "intelligence" && (
         <div className="absolute top-5 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 bg-black/55 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/10">
-          {item.source === "google" ? <Globe className="w-3 h-3 text-blue-400" /> : <Youtube className="w-3 h-3 text-red-400" />}
+          {item.source === "google" ? <Globe className="w-3 h-3 text-blue-400" /> : <PlaySquare className="w-3 h-3 text-red-400" />}
           <span className="text-[9px] font-black text-white/70 uppercase tracking-widest">{item.source}</span>
         </div>
       )}
@@ -205,7 +205,7 @@ const EditorialCard = ({ item, rank, flip = false }) => {
             <>
               <span className="text-zinc-700 mx-1">·</span>
               <span className="text-[9px] text-zinc-600 flex items-center gap-0.5">
-                {item.source === "google" ? <Globe className="w-2.5 h-2.5" /> : <Youtube className="w-2.5 h-2.5" />}
+                {item.source === "google" ? <Globe className="w-2.5 h-2.5" /> : <PlaySquare className="w-2.5 h-2.5" />}
                 {item.source}
               </span>
             </>
@@ -514,7 +514,7 @@ const SourcePanel = ({ googleItems, youtubeItems }) => {
           color="#4285f4" bg="rgba(66,133,244,0.07)" dir="l" />
       )}
       {youtubeItems.length > 0 && (
-        <PanelCol items={youtubeItems.slice(0, 6)} icon={Youtube} label="YouTube Trends"
+        <PanelCol items={youtubeItems.slice(0, 6)} icon={PlaySquare} label="YouTube Trends"
           color="#ff0000" bg="rgba(255,0,0,0.06)" dir="r" />
       )}
     </div>
@@ -648,10 +648,7 @@ export default function TrendingExplainersPage() {
     try {
       setLoading(true);
       
-      // First, trigger sync to get fresh data
-      await fetchSyncData(region);
-      
-      // Then fetch the synced data
+      // Fetch the synced data
       const response = await fetch(`/api/trending?limit=100&region=${region}`);
       const data = await response.json();
       
