@@ -998,7 +998,15 @@ export default async function handler(req, res) {
       const redisKey = getRedisKey(REGION);
 
       if (redis) {
-        await redis.del(redisKey);
+        try {
+          await redis.del(redisKey);
+        } catch (error) {
+          if (error.message.includes('NOPERM')) {
+            console.warn('⚠️ Redis in read-only mode, skipping cache deletion');
+          } else {
+            console.warn('⚠️ Redis cache deletion failed:', error.message);
+          }
+        }
       }
 
       console.timeEnd("YOUTUBE_SYNC");

@@ -33,7 +33,6 @@ export default async function handler(req, res) {
       "cast",
       "review-analysis",
       "hit-or-flop",
-      "genres",
     ];
 
     // If content is empty for a page type, try to populate it from existing sections as a baseline
@@ -54,29 +53,14 @@ export default async function handler(req, res) {
     populateFromSections(["cast", "starring", "characters"], "pSEO_Content_cast");
     populateFromSections(["reception", "critical", "review"], "pSEO_Content_review_analysis");
     populateFromSections(["verdict", "box office"], "pSEO_Content_hit_or_flop");
-    populateFromSections(["genre", "theme", "style", "category"], "pSEO_Content_genres");
 
     let generatedCount = 0;
     for (const pageType of subPageTypes) {
       try {
-        const subPageKey = pageType.replace(/-/g, "").replace("explained", "Explained").replace("release", "Release").replace("analysis", "Analysis").replace("flop", "Flop").replace("office", "Office");
-        
-        // 1. Strict check: Skip if subPages flag is already true (for everything except overview)
-        if (pageType !== "overview" && movie.subPages && movie.subPages[subPageKey]) {
-          console.log(`⏩ Skipping [${pageType}] for ${slug}: Flag 'subPages.${subPageKey}' is already true.`);
-          continue;
-        }
-
-        // 2. Overview check: Skip if overview content exists
-        if (pageType === "overview" && movie.pSEO_Content_overview && movie.pSEO_Content_overview.length > 0) {
-          console.log(`⏩ Skipping [${pageType}] for ${slug}: Overview content already exists.`);
-          continue;
-        }
-
-        // 3. Data existence check: Skip if content array already has data
+        // Check if we should skip generation (if content already exists and isn't AI generated)
         const updateField = `pSEO_Content_${pageType.replace(/-/g, "_")}`;
-        if (movie[updateField] && movie[updateField].length > 0) {
-          console.log(`⏩ Skipping [${pageType}] for ${slug}: Data already exists in ${updateField}.`);
+        if (movie[updateField] && movie[updateField].length > 5 && !movie.isAIContent) {
+          console.log(`⏩ Skipping [${pageType}] for ${slug}: High-quality content already exists.`);
           continue;
         }
 

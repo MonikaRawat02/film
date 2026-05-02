@@ -238,9 +238,10 @@ export default function NetWorthSection({ celebrity }) {
       if (n >= 1000000) return (n / 1000000).toFixed(0);
       return n.toLocaleString();
     } else {
-      if (n >= 10000000) return (n / 10000000).toFixed(0);
-      if (n >= 100000) return (n / 100000).toFixed(0);
-      return n.toLocaleString();
+      // Convert INR values to crores for display
+      // Values in database are in lakhs, so divide by 10 to get crores
+      const inCrores = n / 10;
+      return Math.round(inCrores).toString();
     }
   };
 
@@ -253,7 +254,7 @@ export default function NetWorthSection({ celebrity }) {
         }
       : { 
           symbol: "₹", 
-          unit: (n) => (n >= 10000000 ? "crore" : "lakh"),
+          unit: (n) => "crore",
           format: (n) => formatCurrency(n, "INR")
         };
 

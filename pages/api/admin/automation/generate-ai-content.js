@@ -1,3 +1,5 @@
+
+//pages/api/admin/automation/generate-ai-content.js
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
 import { generateMovieContent } from "../../../../lib/ai-generator";
@@ -39,7 +41,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ 
         success: false, 
         message: `AI generation failed: ${aiErr.message}`,
-        error: aiErr.status === 429 ? "OpenAI Quota Exceeded. Please check your billing." : aiErr.message
+        error: aiErr.message?.includes('429') ? "AI Quota Exceeded. Please check your provider limits." : aiErr.message
       });
     }
 
@@ -50,15 +52,40 @@ export default async function handler(req, res) {
       });
     }
 
-    const { sections: aiSections, isAI } = aiResponse;
+    const { sections: aiSections, isAI, extraData } = aiResponse;
 
     // 3. Update the article with AI-generated sections
     const updateData = {
       isAIContent: isAI
     };
+
+    // --- Handle Box Office Extra Data ---
+    if (pageType === "box-office" && extraData) {
+      updateData["boxOffice.verdict"] = extraData.verdict;
+      updateData["boxOffice.territorialBreakdown"] = extraData.territorialBreakdown;
+      updateData["boxOffice.overseasMarkets"] = extraData.overseasMarkets;
+    }
     
-    if (pageType === "overview") {
-      updateData.sections = aiSections;
+    // Map pageType to specific pSEO content field
+    const contentFieldMap = {
+      "overview": "pSEO_Content_overview",
+      "ending-explained": "pSEO_Content_ending_explained",
+      "box-office": "pSEO_Content_box_office",
+      "budget": "pSEO_Content_budget",
+      "ott-release": "pSEO_Content_ott_release",
+      "cast": "pSEO_Content_cast",
+      "review-analysis": "pSEO_Content_review_analysis",
+      "hit-or-flop": "pSEO_Content_hit_or_flop"
+    };
+
+    const contentField = contentFieldMap[pageType];
+    if (contentField) {
+      updateData[contentField] = aiSections;
+      
+      // Also update main sections if it's the overview
+      if (pageType === "overview") {
+        updateData.sections = aiSections;
+      }
     }
     
     // Mark sub-page as active in the schema
@@ -72,6 +99,19 @@ export default async function handler(req, res) {
     
     if (subPageKey) {
       updateData[`subPages.${subPageKey}`] = true;
+      
+      // Update SEO metadata for the sub-page
+      updateData[`subPagesSEO.${subPageKey}`] = {
+        title: `${movie.movieTitle} (${movie.releaseYear}) – ${pageType.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`,
+        description: aiSections[0]?.content.slice(0, 160) || movie.summary,
+        faq: aiSections.find(s => s.heading.toLowerCase().includes('faq'))?.content
+          .split('\n\n')
+          .filter(q => q.includes('?'))
+          .map(q => ({
+            question: q.split('?')[0] + '?',
+            answer: q.split('?')[1]?.trim() || "Information coming soon."
+          })) || []
+      };
     }
 
     await Article.findOneAndUpdate(

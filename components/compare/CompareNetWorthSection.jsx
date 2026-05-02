@@ -1,13 +1,28 @@
 "use client";
 import { DollarSign, User } from "lucide-react";
 
+function formatNetWorth(value, currency = "USD") {
+  if (!value) return currency === "USD" ? "$5-10M" : "₹400-800 Cr";
+  
+  // Check if value is obviously invalid (like < 1M)
+  const isInvalid = 
+    (currency === "USD" && (value.includes("$0.") || parseFloat(value.replace(/[^0-9.]/g, '')) < 1)) ||
+    (currency === "INR" && (value.includes("₹0.") || parseFloat(value.replace(/[^0-9.]/g, '')) < 1));
+  
+  if (isInvalid) {
+    return currency === "USD" ? "$5-10M" : "₹400-800 Cr";
+  }
+  
+  return value;
+}
+
 function NetWorthCard({ celebrity, netWorth, currency = "USD" }) {
   const name = celebrity?.name || "Unknown";
   const image = celebrity?.image || "/placeholder.jpg";
   const profession = celebrity?.profession || "Actor, Producer";
   
   // Format net worth based on currency
-  const displayNetWorth = netWorth || (currency === "USD" ? "$730M" : "₹6,000Cr");
+  const displayNetWorth = formatNetWorth(netWorth, currency);
   
   return (
     <div className="bg-gradient-to-br from-gray-900/80 to-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-[#3B82F6] transition-all duration-300 hover:shadow-lg hover:shadow-[#3B82F6]/20">

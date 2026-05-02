@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Eye, AlertCircle, RefreshCw, Monitor, Users, ChevronRight } from "lucide-react";
 
 const insights = [
@@ -8,28 +9,36 @@ const insights = [
     title: "Why Big Bollywood Films Fail",
     description: "Analysis of star-studded projects that underperformed despite massive budgets and marketing campaigns",
     readTime: "8 min read",
-    icon: <AlertCircle className="w-5 h-5 text-amber-500" />
+    icon: <AlertCircle className="w-5 h-5 text-amber-500" />,
+    iconName: "AlertCircle",
+    slug: "why-big-bollywood-films-fail"
   },
   {
     category: "Trend Analysis",
     title: "Why Remakes Struggle",
     description: "Deep dive into Bollywood's remake culture and why most fail to connect with modern audiences",
     readTime: "6 min read",
-    icon: <RefreshCw className="w-5 h-5 text-amber-500" />
+    icon: <RefreshCw className="w-5 h-5 text-amber-500" />,
+    iconName: "RefreshCw",
+    slug: "why-remakes-struggle"
   },
   {
     category: "Digital Trends",
     title: "How OTT Impacts Bollywood",
     description: "Understanding the shift in viewing habits and its effect on theatrical releases and content creation",
     readTime: "10 min read",
-    icon: <Monitor className="w-5 h-5 text-amber-500" />
+    icon: <Monitor className="w-5 h-5 text-amber-500" />,
+    iconName: "Monitor",
+    slug: "how-ott-impacts-bollywood"
   },
   {
     category: "Box Office Intelligence",
     title: "Star Power vs Story Power",
     description: "Data-driven analysis of whether star casting or compelling narratives drive box office success",
     readTime: "7 min read",
-    icon: <Users className="w-5 h-5 text-amber-500" />
+    icon: <Users className="w-5 h-5 text-amber-500" />,
+    iconName: "Users",
+    slug: "star-power-vs-story-power"
   }
 ];
 
@@ -43,8 +52,9 @@ export default function BollywoodIndustryInsights() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {insights.map((item, idx) => (
-          <div
+          <Link
             key={idx}
+            href={`/industry-insight/${item.slug}`}
             className="group bg-zinc-900 border border-zinc-800 rounded-xl p-6 transition-all duration-300 hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/10"
           >
             <div className="flex items-start gap-4 mb-4">
@@ -72,7 +82,7 @@ export default function BollywoodIndustryInsights() {
                 <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </button>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

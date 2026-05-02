@@ -82,8 +82,9 @@ export default function CreateHero() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter" && searchQuery.length >= 2) {
-                    router.push(`/intelligence?search=${encodeURIComponent(searchQuery)}`);
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    // Stay on current page, do not redirect
                     setIsFocused(false);
                   }
                 }}

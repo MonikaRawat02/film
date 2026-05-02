@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Star, ChevronLeft, ChevronRight, TrendingUp, Award, Loader2 } from "lucide-react";
+import { Star, ChevronLeft, ChevronRight, TrendingUp, Award, Loader2, User } from "lucide-react";
 import Link from "next/link";
 
 function CelebrityCard({ celebrity }) {
@@ -24,12 +24,18 @@ function CelebrityCard({ celebrity }) {
   return (
     <div className="group relative flex-shrink-0 w-[320px] bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-2xl overflow-hidden hover:border-zinc-700/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/10 snap-start">
       {/* Image Container */}
-      <div className="relative aspect-[4/5] overflow-hidden">
-        <img
-          src={celebrity.image}
-          alt={celebrity.name}
-          className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105"
-        />
+      <div className="relative aspect-[4/5] overflow-hidden bg-zinc-900">
+        {celebrity.image ? (
+          <img
+            src={celebrity.image}
+            alt={celebrity.name}
+            className="w-full h-full object-cover transition-all duration-700 scale-100 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900">
+            <User className="w-24 h-24 text-zinc-600" />
+          </div>
+        )}
         
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/40 to-transparent" />

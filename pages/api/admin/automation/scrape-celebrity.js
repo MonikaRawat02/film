@@ -1,7 +1,8 @@
 import dbConnect from "../../../../lib/mongodb";
 import Celebrity from "../../../../model/celebrity";
 import { getCelebrityUrlsByIndustry, scrapeWikipediaCelebrity } from "../../../../lib/scrapers/wikipedia";
-import { slugify } from "@/lib/slugify";
+import { slugify } from "../../../../lib/slugify";
+import { generateCelebrityData } from "../../../../lib/ai-generator";
 
 export default async function handler(req, res) {
   // Security check for production
@@ -14,70 +15,103 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { industry = "Bollywood", limit = 20 } = req.body;
+  const { industry = "Bollywood", limit = 10 } = req.body;
 
   try {
     await dbConnect();
 
-    const celebUrls = await getCelebrityUrlsByIndustry(industry);
+    // --- Daily Limit Check ---
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const countToday = await Celebrity.countDocuments({
+      createdAt: { $gte: today },
+      isAutomated: true
+    });
+
+    const DAILY_LIMIT = 50; // Increased daily cap for more flexibility
+    if (countToday >= DAILY_LIMIT) {
+      return res.status(200).json({
+        success: true,
+        message: `Daily limit of ${DAILY_LIMIT} celebrities reached. Skipping for today.`,
+        synced: 0
+      });
+    }
+
+    const remainingQuota = DAILY_LIMIT - countToday;
+    const MAX_PER_RUN = Math.min(remainingQuota, limit); // Respect the requested limit
+    // --- End Daily Limit Check ---
+
+    let celebUrls = await getCelebrityUrlsByIndustry(industry);
     console.log(`Found ${celebUrls.length} celebrity URLs for ${industry}`);
+    
+    // Randomize the list to discover different celebrities each time
+    celebUrls = celebUrls.sort(() => Math.random() - 0.5);
     
     const results = {
       totalFound: celebUrls.length,
       synced: 0,
       failed: 0,
-      skipped: 0,
       celebrities: []
     };
 
-    // Use the limit from request body, default to 20
-    const MAX_TO_SYNC = parseInt(limit) || 20;
     let syncedInIndustry = 0;
 
     for (const celebInfo of celebUrls) {
-      if (syncedInIndustry >= MAX_TO_SYNC) break;
+      if (syncedInIndustry >= MAX_PER_RUN) break;
 
       try {
         const celebSlug = slugify(celebInfo.name);
-        
-        // Quick check if exists to avoid unnecessary scraping
-        const existing = await Celebrity.findOne({ 
-          $or: [
-            { "heroSection.slug": celebSlug },
-            { "heroSection.name": celebInfo.name }
-          ]
-        });
-        
-        if (existing) {
-          results.skipped++;
-          continue; 
-        }
+        const existing = await Celebrity.findOne({ "heroSection.slug": celebSlug });
+        if (existing) continue; // Skip if already exists
 
         console.log(`🔍 Scraping new celebrity: ${celebInfo.name}...`);
         const scrapedData = await scrapeWikipediaCelebrity(celebInfo.url, industry);
-        
         if (!scrapedData) {
           results.failed++;
           continue;
         }
 
-        const finalSlug = scrapedData.heroSection.slug;
+        // --- New AI Intelligence Enhancement ---
+        console.log(`🤖 Generating intelligence data for ${celebInfo.name}...`);
+        const aiData = await generateCelebrityData(celebInfo.name, industry);
         
-        // Final upsert check
+        let finalData = scrapedData;
+        if (aiData) {
+          // Merge AI data but PRIORITIZE Wikipedia (scrapedData)
+          finalData = {
+            ...aiData, // AI data as base
+            ...scrapedData, // Wikipedia data overwrites AI data where both exist
+            heroSection: {
+              ...aiData.heroSection,
+              ...scrapedData.heroSection, // Wikipedia hero section info is more accurate
+              industry // Ensure industry is preserved
+            },
+            quickFacts: {
+              ...aiData.quickFacts,
+              ...scrapedData.quickFacts // Wikipedia facts are more accurate
+            }
+          };
+          
+          // Specialized merge for biographyTimeline to combine both sources if possible
+          if (scrapedData.biographyTimeline?.length > 0) {
+            finalData.biographyTimeline = scrapedData.biographyTimeline;
+          }
+        }
+        // --- End AI Intelligence Enhancement ---
+
+        const finalSlug = finalData.heroSection.slug;
+        
+        // Update if exists, otherwise create
         await Celebrity.findOneAndUpdate(
           { "heroSection.slug": finalSlug },
-          { $set: scrapedData },
+          { $set: finalData },
           { upsert: true, returnDocument: 'after' }
         );
 
         syncedInIndustry++;
         results.synced++;
         results.celebrities.push(scrapedData.heroSection.name);
-        console.log(`✅ Saved celebrity: ${scrapedData.heroSection.name} (${syncedInIndustry}/${MAX_TO_SYNC})`);
-        
-        // Small delay to be nice to Wikipedia
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
+        console.log(`✅ Saved celebrity: ${scrapedData.heroSection.name}`);
       } catch (err) {
         console.error(`Failed to sync ${celebInfo.name}:`, err.message);
         results.failed++;
@@ -86,7 +120,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       success: true,
-      message: `Successfully synced ${results.synced} new celebrities for ${industry}. Skipped ${results.skipped} existing.`,
+      message: `Successfully synced ${results.synced} new celebrities for ${industry}`,
       data: results
     });
 

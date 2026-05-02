@@ -1,61 +1,36 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Flame, Menu, X, Shield, LogIn } from "lucide-react";
-
-const SiteHeader = () => {
-  const [openMobile, setOpenMobile] = useState(false);
-  const router = useRouter();
-
-  const nav = [
-    { name: "Explained", href: "/#explained" },
-    { name: "Box Office", href: "/#box-office" },
-    { name: "OTT Analysis", href: "/#ott-intelligence" },
+ import { useState } from "react";
+ import Link from "next/link";
+ import { Flame, Menu, X } from "lucide-react";
+ 
+ const SiteHeader =() =>{
+   const [openMobile, setOpenMobile] = useState(false);
+ 
+   const nav = [
+    { name: "Explained", href: "/#categories" },
+    { name: "Box Office", href: "/category/box-office" },
+    { name: "OTT Analysis", href: "/ott" },
     { name: "Celebrities", href: "/#celebrities" },
     { name: "Categories", href: "/#categories" },
   ];
 
-  const handleScroll = (id) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const headerOffset = 90;
-      const elementPosition = element.getBoundingClientRect().top;
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-      window.scrollTo({
-        top: offsetPosition,
-        behavior: "smooth",
-      });
-      return true;
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    // Handle scroll on initial load or route change if hash exists
-    if (router.pathname === "/" && window.location.hash) {
-      const id = window.location.hash.replace("#", "");
-      // Give it a small timeout to ensure content is rendered
-      const timer = setTimeout(() => handleScroll(id), 100);
-      return () => clearTimeout(timer);
-    }
-  }, [router.asPath]);
-
   const scrollToSection = (e, href) => {
-    if (href.startsWith("/#")) {
-      const sectionId = href.split("#")[1];
-
-      if (router.pathname !== "/") {
-        // If not on home, let normal navigation happen
-        setOpenMobile(false);
-        return;
-      }
-
-      // If on home, handle smooth scroll
-      e.preventDefault();
-      setOpenMobile(false);
-      handleScroll(sectionId);
-      window.history.pushState(null, null, href);
+    if (href.startsWith('/#')) {
+      const sectionId = href.split('#')[1];
+                  const element = document.getElementById(sectionId);
+        if (element) {
+          e.preventDefault();
+          setOpenMobile(false);
+          const headerOffset = 80;
+          const elementPosition = element.getBoundingClientRect().top;
+          const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+          // Update URL without jump
+          window.history.pushState(null, null, href);
+        }
     }
   };
 
@@ -83,7 +58,7 @@ const SiteHeader = () => {
             <nav className="hidden lg:flex items-center gap-10">
                {nav.map((item) => (
                  <Link
-                   key={item.name}
+                   key={item.href}
                    href={item.href}
                    onClick={(e) => scrollToSection(e, item.href)}
                    className="relative text-[15px] text-gray-400 hover:text-white transition-colors font-medium group"
@@ -95,7 +70,6 @@ const SiteHeader = () => {
              </nav>
  
              <div className="flex items-center gap-2">
-
               <button
                 aria-label="Open menu"
                 className="inline-flex lg:hidden items-center justify-center rounded-lg p-2.5 hover:bg-gray-900"
@@ -148,7 +122,6 @@ const SiteHeader = () => {
                    {item.name}
                  </Link>
                ))}
-               
              </nav>
            </div>
          </div>
