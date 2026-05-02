@@ -1,5 +1,5 @@
-import dbConnect from "../../../../../lib/mongodb.js";
-import OTTTrend from "../../../../../model/OTTTrend.js";
+import dbConnect from "../../../../lib/mongodb.js";
+import OTTTrend from "../../../../model/OTTTrend.js";
 
 export default async function handler(req, res) {
   await dbConnect();

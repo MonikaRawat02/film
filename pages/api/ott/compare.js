@@ -1,5 +1,5 @@
-import dbConnect from "../../../../../lib/mongodb";
-import OTTPlatform from "../../../../../model/OTTPlatform";
+import dbConnect from "../../../../lib/mongodb.js";
+import OTTPlatform from "../../../../model/OTTPlatform.js";
 
 export default async function handler(req, res) {
   if (req.method !== 'GET') {

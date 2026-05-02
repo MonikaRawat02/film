@@ -1,5 +1,5 @@
-import dbConnect from "../../../../../lib/mongodb";
-import seedOTT from "../../../../../scripts/seed-ott";
+import dbConnect from "../../../../lib/mongodb.js";
+import seedOTT from "../../../../scripts/seed-ott.js";
 
 export default async function handler(req, res) {
   try {

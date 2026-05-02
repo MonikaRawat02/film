@@ -1,6 +1,6 @@
-import dbConnect from "../../../../../l   ib/mongodb.js";
-import OTTAcquisition from "../../../../../model/OTTAcquisition.js";
-import OTTPlatform from "../../../../../model/OTTPlatform.js";
+import dbConnect from "../../../../lib/mongodb.js";
+import OTTAcquisition from "../../../../model/OTTAcquisition.js";
+import OTTPlatform from "../../../../model/OTTPlatform.js";
 
 export default async function handler(req, res) {
   await dbConnect();
