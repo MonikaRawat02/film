@@ -431,6 +431,87 @@ const runBrokenLinkAudit = async () => {
   }
 };
 
+/**
+ * Task 10: Weekly OTT Platform Stats Update (Every Monday at 5:00 AM)
+ * Updates platform statistics, subscriber counts, and market share
+ */
+const runOTTPlatformUpdate = async () => {
+  log('🕒 CRON START: Weekly OTT Platform Stats Update');
+  try {
+    const response = await fetch(`${NEXTJS_URL}/api/admin/automation/update-ott-platforms`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 120000, // 2 min timeout
+    });
+
+    if (!response.ok) {
+      errorLog(`OTT Platform Update returned status ${response.status}`);
+    } else {
+      const data = await response.json();
+      log(`✅ CRON SUCCESS: OTT Platform Update - ${data.message || 'Platforms updated'}`);
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (OTT Platform Update):', error);
+  }
+};
+
+/**
+ * Task 11: Weekly OTT Trend Report Generation (Every Monday at 6:00 AM)
+ * Analyzes Google Trends and generates weekly OTT trend insights
+ */
+const runOTTTrendReport = async () => {
+  log('🕒 CRON START: Weekly OTT Trend Report Generation');
+  try {
+    const response = await fetch(`${NEXTJS_URL}/api/admin/automation/generate-ott-trends`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 180000, // 3 min timeout
+    });
+
+    if (!response.ok) {
+      errorLog(`OTT Trend Report returned status ${response.status}`);
+    } else {
+      const data = await response.json();
+      log(`✅ CRON SUCCESS: OTT Trend Report - ${data.message || 'Trends generated'}`);
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (OTT Trend Report):', error);
+  }
+};
+
+/**
+ * Task 12: Daily OTT Content Sync (Every day at 12:00 PM)
+ * Syncs trending content from TMDB for all platforms
+ */
+const runOTTContentSync = async () => {
+  log('🕒 CRON START: Daily OTT Content Sync');
+  try {
+    const response = await fetch(`${NEXTJS_URL}/api/admin/automation/sync-ott-content`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'x-cron-secret': CRON_SECRET
+      },
+      timeout: 120000, // 2 min timeout
+    });
+
+    if (!response.ok) {
+      errorLog(`OTT Content Sync returned status ${response.status}`);
+    } else {
+      const data = await response.json();
+      log(`✅ CRON SUCCESS: OTT Content Sync - ${data.message || 'Content synced'}`);
+    }
+  } catch (error) {
+    errorLog('❌ CRON FATAL (OTT Content Sync):', error);
+  }
+};
+
 // --- Schedule Jobs ---
 
 // 1. Daily Sync (11:00 AM)
@@ -459,6 +540,15 @@ cron.schedule('0 4 * * 0', runWeeklySEOUpdate);
 
 // 9. Weekly Broken Link Audit (Every Saturday at 2:00 AM)
 cron.schedule('0 2 * * 6', runBrokenLinkAudit);
+
+// 10. Weekly OTT Platform Stats Update (Every Monday at 5:00 AM)
+cron.schedule('0 5 * * 1', runOTTPlatformUpdate);
+
+// 11. Weekly OTT Trend Report Generation (Every Monday at 6:00 AM)
+cron.schedule('0 6 * * 1', runOTTTrendReport);
+
+// 12. Daily OTT Content Sync (Every day at 12:00 PM)
+cron.schedule('0 12 * * *', runOTTContentSync);
 
 // Heartbeat (Daily 11:00 AM)
 cron.schedule(HEARTBEAT_INTERVAL, () => {

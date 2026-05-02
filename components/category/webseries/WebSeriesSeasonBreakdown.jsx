@@ -102,7 +102,7 @@ export default function WebSeriesSeasonBreakdown() {
           >
             <div className="grid md:grid-cols-3 gap-6 p-6">
               <div className="md:col-span-1">
-                <div className="aspect-video bg-zinc-800 rounded-xl overflow-hidden mb-4">
+                <div className="relative w-full h-48 bg-zinc-800 rounded-xl overflow-hidden mb-4">
                   {item.coverImage ? (
                     <Image 
                       src={item.coverImage} 
