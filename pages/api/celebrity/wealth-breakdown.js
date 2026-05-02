@@ -2,12 +2,7 @@
 // Dynamically generates real wealth breakdown using celebrity biography + Gemini AI
 import dbConnect from "../../../lib/mongodb";
 import Celebrity from "../../../model/celebrity";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../lib/gemini-helper";
-
-const genAI = process.env.GEMINI_API_KEY
-  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  : null;
+import { generateContent } from "../../../lib/openai-helper";
 
 const STATIC_DEFAULTS = ["Acting", "Endorsements", "Business Ventures"];
 
@@ -24,7 +19,7 @@ function isStaticDefault(incomeSources = []) {
 }
 
 async function generateWealthBreakdownWithAI(celebrity) {
-  if (!genAI) throw new Error("Gemini API key not configured");
+  if (!process.env.OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
 
   const name = celebrity.heroSection?.name || "Unknown";
   const industry = celebrity.heroSection?.industry || "Bollywood";
@@ -82,8 +77,8 @@ Respond ONLY with a valid JSON array like this:
 
 IMPORTANT: Make it realistic and specific to ${name}'s actual career. Do NOT use generic 65/25/10 split.`;
 
-  const text = await generateWithFallback(prompt);
-  if (!text) throw new Error("All AI models failed to generate wealth breakdown");
+  const text = await generateContent(prompt);
+  if (!text) throw new Error("OpenAI model failed to generate wealth breakdown");
 
   // Extract JSON from response
   const jsonMatch = text.match(/\[[\s\S]*\]/);

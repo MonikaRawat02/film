@@ -4419,3 +4419,18 @@
 [2026-05-02T05:09:44.548Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
 [2026-05-02T05:09:44.635Z] [INFO] ✅ Next.js server is ready. Starting automation.
 [2026-05-02T05:09:45.319Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-05-02T06:30:00.209Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T06:30:00.250Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-05-02T06:30:00.299Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T06:30:04.339Z] [ERROR] Trending Sync returned status 500 
+[2026-05-02T06:30:04.347Z] [ERROR] Trending Sync returned status 500 
+[2026-05-02T06:30:14.289Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-05-02T06:43:06.511Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-05-02T06:43:16.039Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-02T06:43:16.043Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-05-02T06:43:16.338Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-02T06:43:16.340Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-02T06:43:16.417Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-02T06:43:16.458Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-02T06:43:23.514Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-05-02T06:43:29.880Z] [INFO] ✅ Next.js server is ready. Starting automation.

@@ -1,8 +1,22 @@
 "use client";
 
 import { Film, Search, TrendingUp } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function HollywoodHeroSection() {
+  const router = useRouter();
+
+  const scrollToMovies = () => {
+    const moviesSection = document.querySelector('[data-section="hollywood-movies"]');
+    if (moviesSection) {
+      moviesSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const navigateToTrending = () => {
+    router.push('/trending-explainers?region=US');
+  };
+
   return (
     <section className="relative overflow-hidden flex items-center bg-[#0b0f1a]">
       {/* Background Gradient Overlay */}
@@ -31,11 +45,17 @@ export default function HollywoodHeroSection() {
 
           {/* 5. CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <button className="inline-flex items-center justify-center gap-2 h-10 rounded-md px-6 text-sm font-medium transition-all bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-500/25">
+            <button 
+              onClick={scrollToMovies}
+              className="inline-flex items-center justify-center gap-2 h-10 rounded-md px-6 text-sm font-medium transition-all bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg shadow-purple-500/25 cursor-pointer"
+            >
               <Search className="w-4 h-4" />
               Explore Hollywood Movies
             </button>
-            <button className="inline-flex items-center justify-center gap-2 h-10 rounded-md px-6 text-sm font-medium transition-all bg-white text-[#f97316] hover:bg-gray-100 shadow-lg">
+            <button 
+              onClick={navigateToTrending}
+              className="inline-flex items-center justify-center gap-2 h-10 rounded-md px-6 text-sm font-medium transition-all bg-white text-[#f97316] hover:bg-gray-100 shadow-lg cursor-pointer"
+            >
               <TrendingUp className="w-4 h-4" />
               View Trending Films
             </button>

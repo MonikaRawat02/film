@@ -1,11 +1,7 @@
 import dbConnect from "../../../../lib/mongodb";
 import Article from "../../../../model/article";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../../lib/gemini-helper";
+import { generateContent } from "../../../../lib/openai-helper";
 import axios from "axios";
-
-// Initialize Gemini (Paid Tier as requested earlier)
-const genAI = process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null;
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const BASE_URL = "https://api.themoviedb.org/3";
@@ -42,8 +38,8 @@ export default async function handler(req, res) {
       verdict: movie.verdict || "AVERAGE",
     };
 
-    // 1. Try Gemini for the latest intelligence (Sacnilk/BollyHungama accuracy)
-    if (genAI) {
+    // 1. Try OpenAI for the latest intelligence (Sacnilk/BollyHungama accuracy)
+    if (process.env.OPENAI_API_KEY) {
       try {
         const prompt = `Provide the latest and most accurate box office intelligence for the movie "${movieTitle}" (${releaseYear}). 
         I need specifically:
@@ -64,7 +60,7 @@ export default async function handler(req, res) {
           "verdict": "string"
         }`;
 
-        const text = await generateWithFallback(prompt);
+        const text = await generateContent(prompt);
         if (text) {
           const jsonMatch = text.match(/\{[\s\S]*?\}/);
           if (jsonMatch) {
@@ -77,11 +73,11 @@ export default async function handler(req, res) {
               roi: geminiData.roi || intelligence.roi,
               verdict: geminiData.verdict?.toUpperCase() || intelligence.verdict,
             };
-            console.log(`✅ Gemini Intelligence Success for ${movieTitle}`);
+            console.log(`✅ OpenAI Intelligence Success for ${movieTitle}`);
           }
         }
-      } catch (geminiErr) {
-        console.error("❌ Gemini Intelligence Failed:", geminiErr.message);
+      } catch (openaiErr) {
+        console.error("❌ OpenAI Intelligence Failed:", openaiErr.message);
       }
     }
 
