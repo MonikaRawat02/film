@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Calendar, Tv, Star, Clock, TrendingUp, Play, Loader2 } from "lucide-react";
+import Image from "next/image";
 
 export default function WebSeriesSeasonBreakdown() {
   const [data, setData] = useState(null);
@@ -103,7 +104,14 @@ export default function WebSeriesSeasonBreakdown() {
               <div className="md:col-span-1">
                 <div className="aspect-video bg-zinc-800 rounded-xl overflow-hidden mb-4">
                   {item.coverImage ? (
-                    <img src={item.coverImage} alt={item.title} className="w-full h-full object-cover" />
+                    <Image 
+                      src={item.coverImage} 
+                      alt={item.title} 
+                      fill
+                      className="object-cover"
+                      loading="lazy"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <Tv className="w-12 h-12 text-zinc-700" />

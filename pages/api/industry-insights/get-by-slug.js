@@ -1,5 +1,6 @@
 import dbConnect from "../../../lib/mongodb";
 import IndustryInsight from "../../../model/industryInsight";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -13,8 +14,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: "Slug is required" });
     }
 
-    await dbConnect();
-    const insight = await IndustryInsight.findOne({ slug }).lean();
+    // Cache for 1 hour
+    const cacheKey = `industry-insight:${slug}`;
+    
+    const insight = await cacheManager(cacheKey, 3600, async () => {
+      await dbConnect();
+      return await IndustryInsight.findOne({ slug }).lean();
+    });
     
     if (!insight) {
       return res.status(404).json({ message: "Industry insight not found" });

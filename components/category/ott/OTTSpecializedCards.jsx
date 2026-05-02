@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Clock, Film, Star, TrendingUp, DollarSign, Play, Users, ArrowRight } from "lucide-react";
 
 // 1. Movie Explainer Card
@@ -9,7 +10,14 @@ export const OTTExplainerCard = ({ movie }) => (
   >
     <div className="aspect-video relative overflow-hidden">
       {movie.coverImage ? (
-        <img src={movie.coverImage} alt={movie.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+        <Image 
+          src={movie.coverImage} 
+          alt={movie.title} 
+          fill
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          loading="lazy"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       ) : (
         <div className="w-full h-full bg-zinc-800 flex items-center justify-center"><Film className="w-10 h-10 text-zinc-700" /></div>
       )}
@@ -160,7 +168,14 @@ export const OTTCelebrityCard = ({ celeb }) => (
   >
     <div className="relative aspect-square rounded-xl overflow-hidden mb-4">
       {celeb.profileImage ? (
-        <img src={celeb.profileImage} alt={celeb.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+        <Image 
+          src={celeb.profileImage} 
+          alt={celeb.name} 
+          fill
+          className="object-cover group-hover:scale-110 transition-transform duration-700"
+          loading="lazy"
+          sizes="(max-width: 768px) 50vw, 25vw"
+        />
       ) : (
         <div className="w-full h-full bg-zinc-800 flex items-center justify-center"><Users className="w-10 h-10 text-zinc-700" /></div>
       )}

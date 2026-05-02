@@ -1,5 +1,6 @@
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
+import { cacheManager } from "../../../lib/redis";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -7,12 +8,17 @@ export default async function handler(req, res) {
   }
 
   try {
-    await dbConnect();
     const { slug } = req.query;
 
     if (!slug) {
       return res.status(400).json({ message: "Slug is required" });
     }
+
+    // Cache for 30 minutes
+    const cacheKey = `article:slug:${slug}`;
+    
+    const item = await cacheManager(cacheKey, 1800, async () => {
+      await dbConnect();
 
     // List of common pSEO suffixes (backward compatibility for old suffix-style URLs)
     // New URLs use path-style: /movie/:slug/:type
@@ -41,13 +47,20 @@ export default async function handler(req, res) {
       item = allArticles.find(a => slug.startsWith(a.slug));
     }
 
+      if (!item) {
+        return null;
+      }
+
+      // Increment view count (don't cache this)
+      item.stats.views = (item.stats.views || 0) + 1;
+      await Article.updateOne({ _id: item._id }, { $inc: { 'stats.views': 1 } });
+
+      return item;
+    });
+
     if (!item) {
       return res.status(404).json({ message: "Article not found" });
     }
-
-    // Increment view count
-    item.stats.views = (item.stats.views || 0) + 1;
-    await item.save();
 
     return res.status(200).json({ 
       success: true,
