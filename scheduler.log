@@ -4202,3 +4202,29 @@
 [2026-05-01T12:30:06.139Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
 [2026-05-01T12:30:11.825Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies: 2
 [2026-05-01T12:36:25.401Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-05-01T12:36:59.014Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-01T12:36:59.014Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-05-01T12:36:59.039Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-01T12:36:59.039Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-01T12:36:59.050Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-01T12:36:59.055Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-01T12:37:04.132Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-01T12:44:13.707Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-01T12:44:13.708Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-05-01T12:44:13.777Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-01T12:44:13.777Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-01T12:44:13.789Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-01T12:44:13.795Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-01T12:44:19.388Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-01T13:00:00.027Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-01T13:00:07.267Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-02T04:44:27.235Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-02T04:44:27.236Z] [INFO] Log file location: C:\Users\pc\Downloads\project2\my-project\scheduler.log
+[2026-05-02T04:44:27.299Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-02T04:44:27.300Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-02T04:44:27.318Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-02T04:44:27.323Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-02T04:44:32.703Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-02T05:00:00.023Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T05:00:05.484Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-02T05:16:37.958Z] [INFO] Received kill signal, shutting down gracefully...
