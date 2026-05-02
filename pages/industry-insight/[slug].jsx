@@ -2,29 +2,18 @@ import { useState, useEffect, useRef } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { motion, useScroll, useSpring, useTransform, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useSpring, useTransform, AnimatePresence, useInView } from "framer-motion";
 import { slugify } from "../../lib/slugify";
 import { 
   ArrowLeft, 
   Clock, 
-  Eye, 
-  AlertCircle, 
-  RefreshCw, 
-  Monitor, 
-  Users, 
   ChevronRight, 
-  Calendar,
-  User,
-  Hash,
-  MessageCircle,
-  Share2,
-  Bookmark,
-  Shield,
-  Zap,
-  Activity,
-  Cpu,
-  Target,
-  BarChart3
+  Play,
+  Film,
+  Layers,
+  Sparkles,
+  ArrowUp,
+  ChevronDown
 } from "lucide-react";
 
 export async function getServerSideProps(context) {
@@ -59,355 +48,317 @@ export async function getServerSideProps(context) {
   }
 }
 
-const IconMap = {
-  AlertCircle,
-  RefreshCw,
-  Monitor,
-  Users
-};
 
-// --- New Feature: HUD Progress Component ---
-function HUDProgress() {
-  const { scrollYProgress } = useScroll();
-  const radius = 30;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = useTransform(scrollYProgress, [0, 1], [circumference, 0]);
+// --- New Feature: Minimal Navigation ---
+function MinimalNav({ content, hasFaqs, activeIndex }) {
+  const navItems = [...content];
+  if (hasFaqs) {
+    navItems.push({ heading: "Discussion & FAQs", id: "faqs" });
+  }
 
   return (
-    <div className="fixed bottom-10 right-10 z-[100] hidden md:block">
-      <div className="relative w-20 h-20 bg-zinc-950/80 backdrop-blur-xl rounded-full border border-amber-500/20 flex items-center justify-center shadow-2xl shadow-amber-500/10">
-        <svg className="w-full h-full rotate-[-90deg]">
-          <circle
-            cx="40"
-            cy="40"
-            r={radius}
-            fill="transparent"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="text-zinc-800"
-          />
-          <motion.circle
-            cx="40"
-            cy="40"
-            r={radius}
-            fill="transparent"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="text-amber-500"
-            strokeDasharray={circumference}
-            style={{ strokeDashoffset }}
-            strokeLinecap="round"
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <motion.span className="text-[10px] font-black text-amber-500">
-            {useTransform(scrollYProgress, (v) => `${Math.round(v * 100)}%`)}
-          </motion.span>
-          <span className="text-[6px] uppercase tracking-widest text-zinc-500">Sync</span>
-        </div>
-      </div>
+    <div className="fixed left-10 top-1/2 -translate-y-1/2 z-[100] hidden xl:flex flex-col gap-6">
+      {navItems.map((section, idx) => {
+        const id = section.id || slugify(section.heading);
+        return (
+          <div key={idx} className="relative flex items-center group">
+            <motion.a
+              href={`#${id}`}
+              className="w-2 h-2 rounded-full border border-zinc-700 bg-zinc-950 transition-colors"
+              animate={{
+                scale: activeIndex === idx ? 1.5 : 1,
+                backgroundColor: activeIndex === idx ? "#f59e0b" : "transparent",
+                borderColor: activeIndex === idx ? "#f59e0b" : "#3f3f46"
+              }}
+            />
+            <span className={`absolute left-6 text-[10px] font-bold uppercase tracking-[0.2em] whitespace-nowrap transition-all duration-300 ${
+              activeIndex === idx ? 'opacity-100 translate-x-0 text-amber-500' : 'opacity-0 -translate-x-2 text-zinc-500 group-hover:opacity-50'
+            }`}>
+              {section.heading}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-// --- New Feature: Dossier Card Component ---
-function DossierCard({ section, index }) {
-  return (
-    <motion.section
-      initial={{ opacity: 0, x: -20 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      id={slugify(section.heading)}
-      className="relative group mb-12"
-    >
-      {/* Corner Markers */}
-      <div className="absolute -top-2 -left-2 w-4 h-4 border-t-2 border-l-2 border-amber-500/30 group-hover:border-amber-500 transition-colors" />
-      <div className="absolute -bottom-2 -right-2 w-4 h-4 border-b-2 border-r-2 border-amber-500/30 group-hover:border-amber-500 transition-colors" />
-
-      <div className="bg-[#121826]/40 backdrop-blur-sm border border-white/5 p-8 md:p-10 transition-all duration-500 group-hover:bg-[#121826]/60 group-hover:border-amber-500/20">
-        <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/5">
-          <div className="flex items-center gap-4">
-            <span className="text-amber-500 text-xs font-black font-mono">[{String(index + 1).padStart(2, '0')}]</span>
-            <h2 className="text-xl md:text-2xl font-bold text-white tracking-tight">{section.heading}</h2>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 text-[10px] font-mono text-zinc-600">
-            <Activity className="w-3 h-3 text-amber-500/50" />
-            <span>DATA_STREAMS_ACTIVE</span>
-          </div>
-        </div>
-        
-        <p className="text-zinc-400 leading-relaxed font-light text-lg whitespace-pre-wrap group-hover:text-zinc-200 transition-colors">
-          {section.content}
-        </p>
-
-        {/* Footer Meta */}
-        <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-[10px] font-mono text-zinc-600 tracking-tighter">
-          <span>SOURCE: FILMYFIRE_INTEL_DB</span>
-          <span>STAMP: {new Date().toISOString().split('T')[0]}</span>
-        </div>
-      </div>
-    </motion.section>
-  );
-}
-
-function FAQItem({ question, answer, index }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      className="bg-zinc-950/40 border border-white/5 mb-4 overflow-hidden group transition-all duration-300 hover:border-amber-500/20"
-    >
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full p-5 flex items-center justify-between gap-4 text-left"
-      >
-        <span className="flex items-center gap-4">
-          <Cpu className={`w-4 h-4 transition-colors ${isOpen ? 'text-amber-500' : 'text-zinc-700'}`} />
-          <span className={`text-sm font-bold tracking-tight transition-colors ${isOpen ? 'text-white' : 'text-zinc-400 group-hover:text-zinc-200'}`}>
-            {question}
-          </span>
-        </span>
-        <div className={`transition-transform duration-300 ${isOpen ? 'rotate-90 text-amber-500' : 'text-zinc-600'}`}>
-          <ChevronRight className="w-4 h-4" />
-        </div>
-      </button>
-      
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-6 pt-0 border-t border-white/5">
-              <p className="text-zinc-500 text-sm leading-relaxed mt-4 font-mono uppercase text-[11px]">
-                {answer}
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
-}
-
-function DecodingText({ text }) {
-  const [displayText, setDisplayText] = useState("");
-  const chars = "!@#$%^&*()_+{}:<>?|ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+// --- New Feature: Storyboard Section ---
+function StoryboardSection({ section, index, total, onInView }) {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { margin: "-45% 0px -45% 0px" });
 
   useEffect(() => {
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(
-        text.split("")
-          .map((char, index) => {
-            if (index < iteration) return text[index];
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
-          .join("")
-      );
+    if (isInView) onInView(index);
+  }, [isInView, index, onInView]);
 
-      if (iteration >= text.length) clearInterval(interval);
-      iteration += 1 / 3;
-    }, 30);
-    return () => clearInterval(interval);
-  }, [text]);
+  return (
+    <section 
+      ref={ref}
+      id={slugify(section.heading)}
+      className="flex flex-col lg:flex-row gap-8 lg:gap-16 mb-20 relative pt-12"
+    >
+      <div className="lg:w-1/4 lg:sticky lg:top-40 h-fit">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col gap-3"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-amber-500 font-medium text-lg tracking-tight">Scene {index + 1}</span>
+            <div className="h-[1px] flex-1 bg-amber-500/20" />
+          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-zinc-100 leading-tight tracking-tight">
+            {section.heading}
+          </h2>
+        </motion.div>
+      </div>
 
-  return <span>{displayText}</span>;
+      <div className="lg:w-3/4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative"
+        >
+          <p className="text-lg md:text-xl text-zinc-400 font-normal leading-relaxed mb-8">
+            {section.content}
+          </p>
+
+          {/* Quick Jump Link */}
+          <div className="flex justify-end">
+            <a 
+              href={index === total - 1 ? "#faqs" : `#${slugify(insight_content_ref[index + 1]?.heading || "")}`}
+              className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-600 hover:text-amber-500 transition-colors"
+            >
+              {index === total - 1 ? "Jump to FAQs" : "Next Scene"}
+              <ChevronDown className="w-3 h-3 group-hover:translate-y-0.5 transition-transform" />
+            </a>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
 }
+
+let insight_content_ref = []; // Global ref for helper
 
 export default function IndustryInsightPage({ insight }) {
   const router = useRouter();
-  const containerRef = useRef(null);
-  const { scrollYProgress } = useScroll({ target: containerRef });
-  
-  const IconComponent = IconMap[insight.icon] || AlertCircle;
+  const [activeScene, setActiveScene] = useState(0);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  insight_content_ref = insight.content;
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 1000);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const faqRef = useRef(null);
+  const isFaqInView = useInView(faqRef, { margin: "-45% 0px -45% 0px" });
+
+  useEffect(() => {
+    if (isFaqInView) setActiveScene(insight.content.length);
+  }, [isFaqInView, insight.content.length]);
 
   return (
     <>
       <Head>
-        <title>{`${insight.title} | FilmyFire Intelligence`}</title>
+        <title>{`${insight.title} | FilmyFire Cinema Intelligence`}</title>
         <meta name="description" content={insight.description} />
       </Head>
 
-      <HUDProgress />
+      {/* Floating Back to Top */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="fixed bottom-10 right-10 z-[100] w-12 h-12 bg-amber-500 text-black rounded-full flex items-center justify-center shadow-2xl hover:bg-white transition-colors"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-      <div ref={containerRef} className="min-h-screen bg-[#07090F] text-white selection:bg-amber-500/30 font-sans relative overflow-x-hidden">
+      <div className="min-h-screen bg-[#050505] text-white selection:bg-amber-500/30 font-sans overflow-x-hidden">
         
-        {/* Immersive HUD Header Background */}
+        {/* Background Light Leaks - More Subtle */}
         <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_-20%,rgba(245,158,11,0.15),transparent_60%)]" />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent animate-pulse" />
-          
-          {/* HUD Grid Overlay */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:40px_40px]" />
+          <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-amber-500/[0.02] blur-[150px] rounded-full" />
+          <div className="absolute bottom-0 left-0 w-[40%] h-[40%] bg-blue-500/[0.01] blur-[120px] rounded-full" />
         </div>
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 pt-32 pb-24 relative z-10">
+        {/* Global Progress Line */}
+        <motion.div 
+          className="fixed top-0 left-0 right-0 h-[2px] bg-amber-500 z-[200] origin-left"
+          style={{ scaleX }}
+        />
+
+        <MinimalNav 
+          content={insight.content} 
+          hasFaqs={insight.faqs && insight.faqs.length > 0} 
+          activeIndex={activeScene} 
+        />
+
+        <div className="max-w-6xl mx-auto px-6 lg:px-12 pt-24 pb-24 relative z-10">
           
-          {/* HUD Status Bar */}
-          <div className="flex items-center justify-between mb-16 px-4 py-3 bg-zinc-950/50 backdrop-blur-md border-x border-amber-500/20 rounded-lg">
-            <div className="flex items-center gap-6">
+          {/* Back Button & Metadata - Compact */}
+          <div className="flex items-center justify-between gap-8 mb-16">
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-500 hover:text-white transition-colors group"
+            >
+              <ArrowLeft className="w-3 h-3 group-hover:-translate-x-1 transition-transform" />
+              Back
+            </button>
+
+            <div className="flex items-center gap-6 text-[10px] font-bold uppercase tracking-widest text-zinc-600">
               <div className="flex items-center gap-2">
-                <Shield className="w-4 h-4 text-amber-500" />
-                <span className="text-[10px] font-black uppercase tracking-widest">Secure_Intel_Link</span>
+                <Clock className="w-3 h-3 text-amber-500" />
+                {insight.readTime}
               </div>
-              <div className="h-4 w-px bg-zinc-800" />
               <div className="flex items-center gap-2">
-                <Target className="w-4 h-4 text-zinc-500" />
-                <span className="text-[10px] font-mono text-zinc-500">REF: {insight.slug.toUpperCase()}</span>
+                <Play className="w-3 h-3 text-amber-500" />
+                {new Date(insight.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
               </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] font-mono text-amber-500/70 animate-pulse">● LIVE_ENCRYPTION_ACTIVE</span>
-              <button 
-                onClick={() => router.back()}
-                className="text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors"
-              >
-                [ EXIT_DOUCMENT ]
-              </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-[1fr_350px] gap-16">
-            
-            <main>
-              {/* Dossier Hero */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.98 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="mb-24"
-              >
-                <div className="relative p-10 md:p-16 bg-gradient-to-br from-[#121826]/80 to-transparent border border-white/5 rounded-[2rem] overflow-hidden">
-                  <div className="absolute top-0 right-0 p-8">
-                    <Zap className="w-12 h-12 text-amber-500/20" />
-                  </div>
+          {/* Cinematic Hero - Refined */}
+          <header className="mb-24">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="flex items-center gap-3 mb-6">
+                <Film className="w-4 h-4 text-amber-500" />
+                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-amber-500/70">Industry Intelligence</span>
+                <div className="h-[1px] flex-1 bg-zinc-800/30" />
+              </div>
 
-                  <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: "100px" }}
-                    className="h-1 bg-amber-500 mb-8"
-                  />
-                  
-                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-tight mb-8 tracking-tighter">
-                    <DecodingText text={insight.title} />
-                  </h1>
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-[1.1] tracking-tight mb-8">
+                {insight.title}
+              </h1>
 
-                  <div className="flex flex-wrap gap-8 mb-12">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold">Category</span>
-                      <span className="text-amber-500 font-bold text-sm tracking-tight">{insight.category}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold">Read_Time</span>
-                      <span className="text-zinc-200 font-bold text-sm tracking-tight">{insight.readTime}</span>
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[9px] uppercase tracking-widest text-zinc-500 font-bold">Author_ID</span>
-                      <span className="text-zinc-200 font-bold text-sm tracking-tight">{insight.author}</span>
-                    </div>
-                  </div>
-
-                  <p className="text-xl md:text-2xl text-zinc-400 font-light leading-relaxed max-w-4xl italic border-l-2 border-amber-500/30 pl-8">
-                    {insight.description}
-                  </p>
+              <div className="grid md:grid-cols-[1fr_200px] gap-8 items-start">
+                <p className="text-lg md:text-xl text-zinc-500 font-medium leading-relaxed max-w-3xl">
+                  {insight.description}
+                </p>
+                
+                <div className="flex flex-col items-end gap-1 border-r border-amber-500/50 pr-4">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-600">Author</span>
+                  <span className="text-base font-semibold text-zinc-300">{insight.author}</span>
                 </div>
-              </motion.div>
+              </div>
+            </motion.div>
+          </header>
 
-              {/* Dossier Content Blocks */}
-              <div className="space-y-4">
-                {insight.content && insight.content.map((section, index) => (
-                  <DossierCard key={index} section={section} index={index} />
+          {/* Storyboard Content - Compact */}
+          <div className="space-y-20">
+            {insight.content && insight.content.map((section, index) => (
+              <StoryboardSection 
+                key={index} 
+                section={section} 
+                index={index} 
+                total={insight.content.length}
+                onInView={setActiveScene}
+              />
+            ))}
+          </div>
+
+          {/* Related Intelligence Grid - Minimal */}
+          {insight.relatedTopics && (
+            <div className="mt-32 pt-16 border-t border-zinc-900">
+              <div className="flex items-center gap-3 mb-8">
+                <Layers className="w-4 h-4 text-amber-500" />
+                <h3 className="text-sm font-bold uppercase tracking-widest text-zinc-400">Related Insights</h3>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                {insight.relatedTopics.map((topic, idx) => (
+                  <motion.div
+                    key={idx}
+                    whileHover={{ scale: 1.02, color: "#f59e0b" }}
+                    className="px-4 py-2 border border-zinc-800 rounded-lg text-[10px] font-bold uppercase tracking-widest text-zinc-500 cursor-default transition-colors"
+                  >
+                    {topic}
+                  </motion.div>
                 ))}
               </div>
-            </main>
+            </div>
+          )}
 
-            <aside>
-              <div className="sticky top-32 space-y-10">
+          {/* After-Credits FAQs - Clean */}
+          {insight.faqs && insight.faqs.length > 0 && (
+            <div 
+              ref={faqRef}
+              id="faqs" 
+              className="mt-32 bg-zinc-950/30 border border-zinc-900 rounded-3xl p-10 md:p-16 relative overflow-hidden scroll-mt-24"
+            >
+              <div className="max-w-3xl">
+                <h3 className="text-2xl md:text-4xl font-bold text-zinc-100 mb-12">
+                  Analysis <span className="text-amber-500">Q&A</span>
+                </h3>
                 
-                {/* HUD Navigation Panel */}
-                <div className="p-8 bg-zinc-950/80 backdrop-blur-xl border border-white/5 rounded-3xl relative overflow-hidden group">
-                  <div className="absolute top-0 left-0 w-full h-1 bg-amber-500/20 group-hover:bg-amber-500 transition-colors" />
-                  
-                  <div className="flex items-center gap-3 mb-8">
-                    <BarChart3 className="w-5 h-5 text-amber-500" />
-                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-white">Analysis_Tree</h3>
-                  </div>
-
-                  <nav className="flex flex-col gap-3">
-                    {insight.content && insight.content.map((section, idx) => (
-                      <a 
-                        key={idx}
-                        href={`#${slugify(section.heading)}`}
-                        className="flex items-center justify-between p-3 rounded-xl border border-transparent hover:border-amber-500/20 hover:bg-amber-500/5 transition-all group/nav"
-                      >
-                        <span className="text-xs font-bold text-zinc-500 group-hover/nav:text-amber-500 transition-colors truncate pr-4">
-                          {section.heading}
-                        </span>
-                        <ChevronRight className="w-3 h-3 text-zinc-800 group-hover/nav:text-amber-500 transition-all" />
-                      </a>
-                    ))}
-                  </nav>
+                <div className="space-y-10 mb-12">
+                  {insight.faqs.map((faq, idx) => (
+                    <div key={idx} className="flex items-start gap-4">
+                      <span className="text-amber-500 font-bold text-lg">Q.</span>
+                      <div>
+                        <h4 className="text-lg font-bold text-zinc-200 mb-3">
+                          {faq.question}
+                        </h4>
+                        <p className="text-base text-zinc-500 font-normal leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
-                {/* FAQ HUD */}
-                {insight.faqs && insight.faqs.length > 0 && (
-                  <div className="space-y-6">
-                    <div className="flex items-center gap-3 px-4">
-                      <MessageCircle className="w-5 h-5 text-amber-500" />
-                      <h3 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">Query_Resolution</h3>
-                    </div>
-                    <div>
-                      {insight.faqs.map((faq, index) => (
-                        <FAQItem key={index} question={faq.question} answer={faq.answer} index={index} />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Intelligence Tags */}
-                <div className="p-8 bg-amber-500/5 border border-amber-500/10 rounded-3xl">
-                  <div className="flex items-center gap-3 mb-6">
-                    <Bookmark className="w-5 h-5 text-amber-500" />
-                    <h3 className="text-xs font-black uppercase tracking-[0.3em] text-zinc-400">Keywords</h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {insight.relatedTopics && insight.relatedTopics.map((topic, idx) => (
-                      <span 
-                        key={idx}
-                        className="px-3 py-1.5 bg-zinc-950 border border-white/5 text-[9px] font-black uppercase tracking-widest text-zinc-500 hover:text-amber-500 hover:border-amber-500/30 transition-all cursor-default"
-                      >
-                        {topic}
-                      </span>
-                    ))}
-                  </div>
+                {/* Back to Top Link inside FAQ */}
+                <div className="flex justify-start border-t border-zinc-900 pt-8">
+                  <button 
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="group flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-zinc-600 hover:text-amber-500 transition-colors"
+                  >
+                    <ArrowUp className="w-3 h-3 group-hover:-translate-y-0.5 transition-transform" />
+                    Back to Top
+                  </button>
                 </div>
-
               </div>
-            </aside>
-          </div>
+            </div>
+          )}
+
         </div>
 
-        {/* Global HUD Footer */}
-        <footer className="border-t border-white/5 py-20 bg-[#05070A] relative overflow-hidden">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_100%,rgba(245,158,11,0.05),transparent_50%)]" />
-          <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-            <Cpu className="w-12 h-12 text-amber-500/30 mx-auto mb-8" />
-            <h4 className="text-xs font-black uppercase tracking-[0.5em] text-zinc-500 mb-6">FilmyFire_Intelligence_Network</h4>
-            <div className="flex items-center justify-center gap-8 text-[10px] font-mono text-zinc-700">
-              <span>SYSTEM_STATUS: NOMINAL</span>
-              <span>UPLINK: STABLE</span>
-              <span>DATA_VERIFIED: TRUE</span>
-            </div>
+        {/* Cinematic Footer - Professional */}
+        <footer className="bg-zinc-950 py-24 mt-32 border-t border-zinc-900 text-center relative overflow-hidden">
+          <div className="max-w-4xl mx-auto px-6 relative z-10">
+            <h4 className="text-4xl font-bold text-zinc-800 mb-8 select-none tracking-widest uppercase">
+              FILMYFIRE
+            </h4>
+            <p className="text-zinc-600 text-[9px] font-bold uppercase tracking-[0.4em] mb-10">
+              Intelligence Protocol Alpha
+            </p>
+            <Link 
+              href="/category/bollywood"
+              className="inline-flex items-center gap-2 px-8 py-3 bg-amber-500 text-black font-bold uppercase tracking-widest text-[10px] rounded hover:bg-white transition-all"
+            >
+              Continue Exploration <ChevronRight className="w-3 h-3" />
+            </Link>
           </div>
         </footer>
+
       </div>
     </>
   );
 }
-

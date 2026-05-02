@@ -1,5 +1,6 @@
 // pages/trending-explainers.jsx
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
@@ -605,6 +606,9 @@ const StaticDataRow = ({ items }) => {
 
 // ─── MAIN PAGE ────────────────────────────────────────────────────────────────
 export default function TrendingExplainersPage() {
+  const router = useRouter();
+  const { region: queryRegion } = router.query;
+  
   const [trendingData, setTrendingData] = useState([]);
   const [celebData, setCelebData] = useState([]);
   const [rawTrending, setRawTrending] = useState({ google: [], youtube: [] });
@@ -612,7 +616,7 @@ export default function TrendingExplainersPage() {
   const [syncing, setSyncing] = useState(false);
   const [activeRank, setActiveRank] = useState(0);
   const [activeFilter, setActiveFilter] = useState("All");
-  const [activeRegion, setActiveRegion] = useState("IN"); // IN for Bollywood, US for Hollywood
+  const [activeRegion, setActiveRegion] = useState(queryRegion === "US" ? "US" : "IN");
   const [lastSyncTime, setLastSyncTime] = useState(null);
   const pageRef = useRef(null);
   const { scrollYProgress } = useScroll({ target: pageRef });
@@ -667,7 +671,7 @@ export default function TrendingExplainersPage() {
   };
 
   // Process trending data into display format
-  const processTrendingData = (rawData) => {
+  const processTrendingData = (rawData, region) => {
     const allItems = [];
     
     // Process trending_movies as Explained category
@@ -686,7 +690,7 @@ export default function TrendingExplainersPage() {
           viewCount: t.viewCount || 0,
           trendScore: t.score || 0,
           keywords: t.keywords || [],
-          region: t.region || activeRegion,
+          region: t.region || region,
           // readTime: "4 min"
         }));
       allItems.push(...movies);
@@ -708,7 +712,7 @@ export default function TrendingExplainersPage() {
           viewCount: t.viewCount || 0,
           trendScore: t.score || 0,
           keywords: t.keywords || [],
-          region: t.region || activeRegion,
+          region: t.region || region,
           // readTime: "3 min"
         }));
       allItems.push(...actors);
@@ -730,7 +734,7 @@ export default function TrendingExplainersPage() {
           viewCount: t.viewCount || 0,
           trendScore: t.score || 0,
           keywords: t.keywords || [],
-          region: t.region || activeRegion,
+          region: t.region || region,
           // readTime: "4 min"
         }));
       allItems.push(...topics);
@@ -771,9 +775,17 @@ export default function TrendingExplainersPage() {
     await fetchTrendingData(activeRegion);
   };
 
+  // Update activeRegion when queryRegion changes
+  useEffect(() => {
+    if (queryRegion && (queryRegion === "US" || queryRegion === "IN")) {
+      setActiveRegion(queryRegion);
+    }
+  }, [queryRegion]);
+
   // Initial load
   useEffect(() => {
-    fetchTrendingData(activeRegion);
+    const initialRegionToUse = queryRegion === "US" ? "US" : "IN";
+    fetchTrendingData(initialRegionToUse);
   }, []);
 
   const allItems = trendingData.slice(0, 28);

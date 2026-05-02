@@ -2,15 +2,10 @@
 // Dynamically generates FAQs using Gemini AI based on movie data
 import dbConnect from "../../../lib/mongodb";
 import Article from "../../../model/article";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { generateWithFallback } from "../../../lib/gemini-helper";
-
-const genAI = process.env.GEMINI_API_KEY
-  ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
-  : null;
+import { generateContent } from "../../../lib/openai-helper";
 
 async function generateFAQsWithAI(movieData, pageType) {
-  if (!genAI) throw new Error("Gemini API key not configured");
+  if (!process.env.OPENAI_API_KEY) throw new Error("OpenAI API key not configured");
 
   const { 
     movieTitle, 
@@ -71,8 +66,8 @@ Respond ONLY with a valid JSON array in this exact format:
 
 IMPORTANT: Return ONLY the JSON array, no additional text or explanations.`;
 
-  const text = await generateWithFallback(prompt);
-  if (!text) throw new Error("All AI models failed to generate FAQs");
+  const text = await generateContent(prompt);
+  if (!text) throw new Error("OpenAI model failed to generate FAQs");
 
   // Extract JSON from response (handle markdown code blocks)
   let jsonText = text;

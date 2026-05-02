@@ -25,7 +25,9 @@ export default function HollywoodArticlesGrid({ articles, loading }) {
   const displayArticles = loading ? placeholderArticles : (articles.length > 0 ? articles : placeholderArticles);
 
   return (
-    <section className="bg-[#0B0F1A] text-white py-16 sm:py-24">
+    <section 
+      data-section="hollywood-movies" 
+      className="bg-[#0B0F1A] text-white py-16 sm:py-24">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-3 mb-12">
           <TrendingUp className="w-7 h-7 text-orange-500" />
