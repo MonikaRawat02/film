@@ -21,8 +21,12 @@ export default function QuickStatsSection({ celebrity }) {
     {
       Icon: Calendar,
       color: "#3b82f6", // Blue
-      label: "Age",
-      value: celebrity.quickFacts?.age ? `${celebrity.quickFacts.age} Years` : "N/A",
+      label: celebrity.quickFacts?.isDeceased ? "Lived" : "Age",
+      value: celebrity.quickFacts?.age 
+        ? celebrity.quickFacts?.isDeceased 
+          ? `${celebrity.quickFacts.age} Years` 
+          : `${celebrity.quickFacts.age} Years`
+        : "N/A",
     },
     {
       Icon: Ruler,
@@ -45,8 +49,16 @@ export default function QuickStatsSection({ celebrity }) {
     {
       Icon: CalendarDays,
       color: "#06b6d4", // Cyan
-      label: "Birthdate",
-      value: celebrity.quickFacts?.birthDate ? new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "N/A",
+      label: celebrity.quickFacts?.isDeceased ? "Birth - Death" : "Birthdate",
+      value: celebrity.quickFacts?.isDeceased
+        ? celebrity.quickFacts?.birthDate && celebrity.quickFacts?.deathDate
+          ? `${new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} - ${new Date(celebrity.quickFacts.deathDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`
+          : celebrity.quickFacts?.birthDate 
+            ? new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+            : "N/A"
+        : celebrity.quickFacts?.birthDate 
+          ? new Date(celebrity.quickFacts.birthDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          : "N/A",
     },
     {
       Icon: Star,

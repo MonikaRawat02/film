@@ -12,7 +12,7 @@ export default function InsightsDuoSection() {
       try {
         const t = Date.now();
         const [boRes, ottRes] = await Promise.all([
-          fetch(`/api/public/box-office?limit=4&v=${t}`),
+          fetch(`/api/public/box-office?limit=3&v=${t}`),
           fetch(`/api/public/ott-intelligence?limit=3&v=${t}`)
         ]);
         

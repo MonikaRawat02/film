@@ -206,10 +206,10 @@ export default function CategoryHeroSection({ category, onQuickTagClick, onPrima
                             <Image 
                               src={result.image} 
                               alt="" 
-                              fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                              width={48}
+                              height={64}
+                              className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
                               loading="lazy"
-                              sizes="48px"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center">

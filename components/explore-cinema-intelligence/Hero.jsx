@@ -151,15 +151,15 @@ export default function CreateHero() {
                         onClick={() => handleResultClick(result.href)}
                         className="w-full flex items-center gap-4 p-3 hover:bg-white/5 rounded-xl transition-all group/item text-left"
                       >
-                        <div className="w-12 h-16 rounded-lg bg-zinc-800 overflow-hidden flex-shrink-0 border border-white/5 group-hover/item:border-white/10 transition-colors">
+                        <div className="w-12 h-16 rounded-lg bg-zinc-800 overflow-hidden flex-shrink-0 border border-white/5 group-hover/item:border-white/10 transition-colors relative">
                           {result.image ? (
                             <Image 
                               src={result.image} 
                               alt={result.title} 
-                              fill
-                              className="object-cover"
+                              width={48}
+                              height={64}
+                              className="object-cover w-full h-full"
                               loading="lazy"
-                              sizes="48px"
                             />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center text-zinc-600">
