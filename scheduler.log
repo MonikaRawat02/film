@@ -4492,3 +4492,136 @@
 [2026-05-02T12:39:29.787Z] [INFO] Next.js server not ready yet (attempt 3/20)...
 [2026-05-02T12:39:36.935Z] [INFO] Next.js server not ready yet (attempt 4/20)...
 [2026-05-02T12:39:42.347Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-02T12:55:55.699Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-02T12:55:55.706Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-05-02T12:55:56.075Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-02T12:55:56.079Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-02T12:55:56.184Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-02T12:55:56.247Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-02T12:56:03.279Z] [INFO] Next.js server not ready yet (attempt 2/20)...
+[2026-05-02T12:56:09.503Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-02T13:00:00.217Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T13:00:00.289Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T13:00:31.964Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-02T13:00:32.167Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-02T13:30:00.213Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T13:30:00.242Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-05-02T13:30:00.276Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-02T13:30:13.207Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 2. Background enrichment triggered.
+[2026-05-02T13:30:27.636Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-02T13:30:28.253Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-02T13:33:57.348Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-05-04T04:44:28.615Z] [INFO] Cron job scheduler background service initiated (Target: http://localhost:3000).
+[2026-05-04T04:44:28.618Z] [INFO] Log file location: C:\Users\jnj\Desktop\DigLip7\filmy\film\scheduler.log
+[2026-05-04T04:44:28.863Z] [INFO] 🚀 Scheduler started. Automation will run at scheduled times only.
+[2026-05-04T04:44:28.864Z] [INFO] Waiting for Next.js server at http://localhost:3000 to be ready...
+[2026-05-04T04:44:28.909Z] [INFO] All cron schedules active. Automation interval: 0 * * * *
+[2026-05-04T04:44:28.936Z] [INFO] Next.js server not ready yet (attempt 1/20)...
+[2026-05-04T04:44:34.550Z] [INFO] ✅ Next.js server is ready. Starting automation.
+[2026-05-04T05:00:00.063Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-04T05:00:00.161Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-04T05:00:36.852Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-04T05:00:38.150Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-04T05:30:00.141Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-05-04T05:30:00.167Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-05-04T05:30:00.172Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-04T05:30:00.206Z] [INFO] 🕒 CRON START: Comprehensive Daily Sync (Movies & Content)
+[2026-05-04T05:30:00.270Z] [INFO] 💓 Scheduler Heartbeat: Service is active and monitoring.
+[2026-05-04T05:30:00.278Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-04T05:30:16.151Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 5. Background enrichment triggered.
+[2026-05-04T05:30:16.203Z] [INFO] ✅ CRON SUCCESS: Daily Sync - Daily sync completed. Total new movies synced: 5. Background enrichment triggered.
+[2026-05-04T05:30:37.854Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-04T05:30:38.399Z] [INFO] ✅ CRON SUCCESS: Trending Data Updated
+[2026-05-04T05:35:00.043Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-05-04T05:35:00.043Z] [INFO] 🕒 CRON START: Wikipedia Movie Scraper
+[2026-05-04T05:36:52.277Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 10 movies for 2026
+[2026-05-04T05:36:54.309Z] [INFO] ✅ CRON SUCCESS: Movie Scraper - Successfully synced 10 movies for 2026
+[2026-05-04T05:50:00.070Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
+[2026-05-04T05:50:00.196Z] [INFO] 🕒 CRON START: Daily Box Office & OTT Refresh
+[2026-05-04T05:50:02.176Z] [INFO] 📊 Refreshing data for 40 recent movies
+[2026-05-04T05:50:02.211Z] [INFO] 📊 Refreshing data for 40 recent movies
+[2026-05-04T05:50:02.560Z] [INFO] ✅ Refreshed data for alpha
+[2026-05-04T05:50:07.918Z] [INFO] ✅ Refreshed data for interstellar-ending-explained
+[2026-05-04T05:50:08.231Z] [INFO] ✅ Refreshed data for alpha
+[2026-05-04T05:50:08.549Z] [INFO] ✅ Refreshed data for interstellar-ending-explained
+[2026-05-04T05:50:11.651Z] [INFO] ✅ Refreshed data for the-matrix-plot-explained
+[2026-05-04T05:50:12.513Z] [INFO] ✅ Refreshed data for the-matrix-plot-explained
+[2026-05-04T05:50:15.537Z] [INFO] ✅ Refreshed data for inception-ending-explained
+[2026-05-04T05:50:15.887Z] [INFO] ✅ Refreshed data for inception-ending-explained
+[2026-05-04T05:50:16.245Z] [INFO] ✅ Refreshed data for hai-jawani-toh-ishq-hona-hai
+[2026-05-04T05:50:18.741Z] [INFO] ✅ Refreshed data for hai-jawani-toh-ishq-hona-hai
+[2026-05-04T05:50:21.843Z] [INFO] ✅ Refreshed data for ramyaa
+[2026-05-04T05:50:22.469Z] [INFO] ✅ Refreshed data for ramyaa
+[2026-05-04T05:50:25.024Z] [INFO] ✅ Refreshed data for aakhri-sawal
+[2026-05-04T05:50:25.422Z] [INFO] ✅ Refreshed data for aakhri-sawal
+[2026-05-04T05:50:27.779Z] [INFO] ✅ Refreshed data for main-actor-nahin-hoon
+[2026-05-04T05:50:28.164Z] [INFO] ✅ Refreshed data for main-actor-nahin-hoon
+[2026-05-04T05:50:31.414Z] [INFO] ✅ Refreshed data for blades-of-the-guardians
+[2026-05-04T05:50:31.656Z] [INFO] ✅ Refreshed data for blades-of-the-guardians
+[2026-05-04T05:50:32.008Z] [INFO] ✅ Refreshed data for les-amies-de-ma-femme
+[2026-05-04T05:50:32.283Z] [INFO] ✅ Refreshed data for princess-jasnenka-and-the-flying-shoemaker
+[2026-05-04T05:50:34.729Z] [INFO] ✅ Refreshed data for les-amies-de-ma-femme
+[2026-05-04T05:50:35.654Z] [INFO] ✅ Refreshed data for get-carter
+[2026-05-04T05:50:37.918Z] [INFO] ✅ Refreshed data for princess-jasnenka-and-the-flying-shoemaker
+[2026-05-04T05:50:39.000Z] [INFO] ✅ Refreshed data for barbers-tales
+[2026-05-04T05:50:41.159Z] [INFO] ✅ Refreshed data for get-carter
+[2026-05-04T05:50:42.494Z] [INFO] ✅ Refreshed data for cool-hand-luke
+[2026-05-04T05:50:44.400Z] [INFO] ✅ Refreshed data for barbers-tales
+[2026-05-04T05:50:45.828Z] [INFO] ✅ Refreshed data for blue-hill-avenue
+[2026-05-04T05:50:47.575Z] [INFO] ✅ Refreshed data for cool-hand-luke
+[2026-05-04T05:50:49.139Z] [INFO] ✅ Refreshed data for the-night-of-the-shooting-stars
+[2026-05-04T05:50:50.531Z] [INFO] ✅ Refreshed data for blue-hill-avenue
+[2026-05-04T05:50:52.392Z] [INFO] ✅ Refreshed data for red-scorpion
+[2026-05-04T05:50:53.998Z] [INFO] ✅ Refreshed data for the-night-of-the-shooting-stars
+[2026-05-04T05:50:55.803Z] [INFO] ✅ Refreshed data for queen-of-katwe
+[2026-05-04T05:50:57.000Z] [INFO] ✅ Refreshed data for red-scorpion
+[2026-05-04T05:50:59.374Z] [INFO] ✅ Refreshed data for lenny
+[2026-05-04T05:51:00.049Z] [INFO] ✅ Refreshed data for queen-of-katwe
+[2026-05-04T05:51:00.438Z] [INFO] ✅ Refreshed data for lenny
+[2026-05-04T05:51:02.764Z] [INFO] ✅ Refreshed data for la-liceale
+[2026-05-04T05:51:03.377Z] [INFO] ✅ Refreshed data for la-liceale
+[2026-05-04T05:51:03.624Z] [INFO] ✅ Refreshed data for case-of-the-naves-brothers
+[2026-05-04T05:51:06.054Z] [INFO] ✅ Refreshed data for case-of-the-naves-brothers
+[2026-05-04T05:51:09.163Z] [INFO] ✅ Refreshed data for stealing-heaven
+[2026-05-04T05:51:09.195Z] [INFO] ✅ Refreshed data for stealing-heaven
+[2026-05-04T05:51:12.677Z] [INFO] ✅ Refreshed data for the-tin-drum
+[2026-05-04T05:51:13.191Z] [INFO] ✅ Refreshed data for the-tin-drum
+[2026-05-04T05:51:15.975Z] [INFO] ✅ Refreshed data for a-cat-in-paris
+[2026-05-04T05:51:16.123Z] [INFO] ✅ Refreshed data for a-cat-in-paris
+[2026-05-04T05:51:19.095Z] [INFO] ✅ Refreshed data for mirzapur
+[2026-05-04T05:51:19.830Z] [INFO] ✅ Refreshed data for mirzapur
+[2026-05-04T05:51:22.200Z] [INFO] ✅ Refreshed data for cocktail-2
+[2026-05-04T05:51:23.014Z] [INFO] ✅ Refreshed data for cocktail-2
+[2026-05-04T05:51:25.477Z] [INFO] ✅ Refreshed data for ek-din
+[2026-05-04T05:51:26.113Z] [INFO] ✅ Refreshed data for ek-din
+[2026-05-04T05:51:28.872Z] [INFO] ✅ Refreshed data for ginny-wedss-sunny-2
+[2026-05-04T05:51:29.045Z] [INFO] ✅ Refreshed data for ginny-wedss-sunny-2
+[2026-05-04T05:51:32.085Z] [INFO] ✅ Refreshed data for mallari
+[2026-05-04T05:51:32.841Z] [INFO] ✅ Refreshed data for mallari
+[2026-05-04T05:51:35.567Z] [INFO] ✅ Refreshed data for tu-yaa-main
+[2026-05-04T05:51:36.238Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
+[2026-05-04T05:51:36.417Z] [INFO] ✅ Refreshed data for tu-yaa-main
+[2026-05-04T05:51:36.948Z] [INFO] ✅ Refreshed data for bhabiji-ghar-par-hain-fun-on-the-run
+[2026-05-04T05:51:39.422Z] [INFO] ✅ Refreshed data for azad-bharath
+[2026-05-04T05:51:39.997Z] [INFO] ✅ Refreshed data for azad-bharath
+[2026-05-04T05:51:40.059Z] [INFO] ✅ Refreshed data for bharatiya-digital-party
+[2026-05-04T05:51:40.554Z] [INFO] ✅ Refreshed data for bharatiya-digital-party
+[2026-05-04T05:51:43.298Z] [INFO] ✅ Refreshed data for bhanwar
+[2026-05-04T05:51:43.673Z] [INFO] ✅ Refreshed data for back-benchers
+[2026-05-04T05:51:43.861Z] [INFO] ✅ Refreshed data for bhanwar
+[2026-05-04T05:51:44.432Z] [INFO] ✅ Refreshed data for back-benchers
+[2026-05-04T05:51:46.521Z] [INFO] ✅ Refreshed data for anusandhan
+[2026-05-04T05:51:47.096Z] [INFO] ✅ Refreshed data for andhar-maya
+[2026-05-04T05:51:47.461Z] [INFO] ✅ Refreshed data for anusandhan
+[2026-05-04T05:51:47.666Z] [INFO] ✅ Refreshed data for alma-matters-inside-the-iit-dream
+[2026-05-04T05:51:47.961Z] [INFO] ✅ Refreshed data for andhar-maya
+[2026-05-04T05:51:48.414Z] [INFO] ✅ Refreshed data for alma-matters-inside-the-iit-dream
+[2026-05-04T05:51:50.307Z] [INFO] ✅ Refreshed data for all-india-bakchod
+[2026-05-04T05:51:50.910Z] [INFO] ✅ Refreshed data for the-aam-aadmi-family
+[2026-05-04T05:51:50.911Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 40 movies
+[2026-05-04T05:51:50.978Z] [INFO] ✅ Refreshed data for all-india-bakchod
+[2026-05-04T05:51:51.434Z] [INFO] ✅ Refreshed data for the-aam-aadmi-family
+[2026-05-04T05:51:51.435Z] [INFO] ✅ CRON COMPLETE: Daily Data Refresh for 40 movies
+[2026-05-04T05:59:34.918Z] [INFO] Received kill signal, shutting down gracefully...
+[2026-05-04T06:00:00.731Z] [INFO] 🕒 CRON START: Trending Data Sync
+[2026-05-04T06:00:00.958Z] [ERROR] ❌ CRON FATAL (Trending Sync): request to http://localhost:3000/api/trending/sync failed, reason: 
