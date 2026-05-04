@@ -17,6 +17,7 @@ import OTTIntelligence from "@/model/ottIntelligence";
 export async function getStaticProps() {
   try {
     // Direct database connection - no API call needed during build
+    // BUT: Gracefully handle if database is not accessible during build
     await dbConnect();
 
     // Fetch all homepage data in parallel (same logic as API)
@@ -107,9 +108,12 @@ export async function getStaticProps() {
     };
   } catch (error) {
     console.error("Error fetching homepage data:", error);
+    
+    // CRITICAL: Return empty data instead of failing the build
+    // Data will be fetched client-side or on next request via ISR
     return {
       props: {
-        unifiedData: null,
+        unifiedData: null, // Components will fetch data client-side
       },
       revalidate: 60,
     };

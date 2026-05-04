@@ -4,7 +4,7 @@ const BoxOfficeSchema = new mongoose.Schema(
   {
     movieName: { type: String, required: true },
     budget: { type: String, required: true }, // e.g., "$350M"
-    collection: { type: String, required: true }, // e.g., "$2.3B"
+    totalCollection: { type: String, required: true }, // e.g., "$2.3B" (renamed from 'collection' to avoid Mongoose reserved keyword)
     roi: { type: String, required: true }, // e.g., "+562%"
     verdict: { 
       type: String, 
@@ -20,7 +20,27 @@ const BoxOfficeSchema = new mongoose.Schema(
       complexityLevel: { type: Number, default: 0, min: 0, max: 100 },
     },
   }, 
-  { timestamps: true }
+  { 
+    timestamps: true,
+    toObject: {
+      virtuals: true,
+      transform: function(doc, ret) {
+        // Map totalCollection to collection for backward compatibility
+        ret.collection = ret.totalCollection;
+        delete ret.totalCollection;
+        return ret;
+      }
+    },
+    toJSON: {
+      virtuals: true,
+      transform: function(doc, ret) {
+        // Map totalCollection to collection for backward compatibility
+        ret.collection = ret.totalCollection;
+        delete ret.totalCollection;
+        return ret;
+      }
+    }
+  }
 );
 
 // Delete the model if it exists to ensure schema updates take effect

@@ -40,7 +40,7 @@ const nextConfig = {
   },
   
   // Optimize package imports
-  optimizePackageImports: ['lucide-react', 'framer-motion'],
+  // optimizePackageImports: ['lucide-react', 'framer-motion'],
   
   async rewrites() {
     return [
