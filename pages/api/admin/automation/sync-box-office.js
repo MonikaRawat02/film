@@ -121,7 +121,7 @@ export default async function handler(req, res) {
           lastBackfillAttempt: new Date(),
         },
       },
-      { new: true }
+      { returnDocument: 'after' }
     );
 
     return res.status(200).json({

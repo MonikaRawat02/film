@@ -183,7 +183,7 @@ export default async function handler(req, res) {
           },
         };
 
-        const updatedItem = await Article.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+        const updatedItem = await Article.findByIdAndUpdate(id, { $set: updateData }, { returnDocument: 'after' });
         if (!updatedItem) return res.status(404).json({ message: "Not found" });
         
         // Send notification for major updates (optional)
