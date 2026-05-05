@@ -49,9 +49,8 @@ export async function getServerSideProps(context) {
     movieSlug = slugString.replace(/-hit-or-flop$/, '');
   }
 
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+  const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
 
   try {
     const res = await fetch(`${baseUrl}/api/articles/get-by-slug?slug=${movieSlug}`);

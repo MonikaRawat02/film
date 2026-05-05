@@ -12,9 +12,8 @@ import HollywoodArticlesGrid from "../../components/category/hollywood/Hollywood
 // import HollywoodIndustryAnalysis from "../../components/category/hollywood/HollywoodIndustryAnalysis";
 
 export async function getServerSideProps(context) {
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+  const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
 
   try {
     const res = await fetch(`${baseUrl}/api/articles/list?category=Hollywood&limit=6`);

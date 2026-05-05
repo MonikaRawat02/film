@@ -13,9 +13,8 @@ import {
 import { Sparkles, Loader2 } from "lucide-react";
 
 export async function getServerSideProps(context) {
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+  const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
 
   try {
     const res = await fetch(`${baseUrl}/api/public/ott-category-unified`);

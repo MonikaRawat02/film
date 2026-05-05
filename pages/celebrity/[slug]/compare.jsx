@@ -13,10 +13,8 @@ import ErrorState from "@/components/common/ErrorState";
 export async function getServerSideProps(context) {
   const { slug } = context.params;
   const { with: compareWith } = context.query;
-  const { req } = context;
-  const protocol = req.headers["x-forwarded-proto"] || "http";
-  const host = req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+  const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
   try {
     const res = await fetch(`${baseUrl}/api/celebrity/profile?slug=${encodeURIComponent(slug)}`);
     const data = await res.json();

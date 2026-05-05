@@ -83,9 +83,8 @@ export default async function handler(req, res) {
         // --- NEW: Trigger AI Content Generation for the newly synced movie ---
         try {
           console.log(`🤖 Triggering AI Content Generation for ${movieSlug}...`);
-          const protocol = req.headers["x-forwarded-proto"] || "http";
-          const host = req.headers.host;
-          const baseUrl = `${protocol}://${host}`;
+          const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+          const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
           const headers = { 
             "Content-Type": "application/json",
             "x-cron-secret": cronSecret

@@ -20,9 +20,9 @@ import BollywoodExploreMore from "../../components/category/bollywood/BollywoodE
 import BollywoodFooterSection from "../../components/category/bollywood/BollywoodFooterSection";
 
 export async function getServerSideProps(context) {
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+  // Smart URL detection: Production uses BASE_URL, local uses localhost:3000
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+  const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
 
   try {
     const res = await fetch(`${baseUrl}/api/articles/list?category=Bollywood&limit=20`);

@@ -12,9 +12,8 @@ import {
 
 export async function getServerSideProps(context) {
   const { type, value } = context.query;
-  const protocol = context.req.headers["x-forwarded-proto"] || "http";
-  const host = context.req.headers.host;
-  const baseUrl = `${protocol}://${host}`;
+  const isDevelopment = process.env.NODE_ENV === 'development' || !process.env.BASE_URL;
+  const baseUrl = isDevelopment ? 'http://localhost:3000' : process.env.BASE_URL;
 
   try {
     const res = await fetch(`${baseUrl}/api/discover/get-discovery-data?type=${type}&value=${value}`);
